@@ -26,14 +26,61 @@ volume delete - ashok
 
 volume list - xin
 
+* list volumes for a virtural machine
+
+        --name of vm
+
+* list volumes in the same region
+
+        --name of region
+
+* list volumes in the same cloud
+
+        --name of cloud
+
 volume migrate - xin
-```
-by professor's notes:
-There could be multiple meanings of migrate, e.g. between regions, between volumes, between clouds
-we also want to have a sync. Lets assume i have a volume on a and b I like some mechanism to syncthe volumes.
-Also the cost function is done by everyone.
-there could also be migrate between services on the same cloud. AWS has a flood of storage solutions which we may need to evaluate.
-```
+
+* volume migrate between regions
+        
+        --region name A
+        
+        --region name B
+        
+        --volume name
+
+* volume migrate between vms
+
+        --vm name A
+        
+        --vm name B
+        
+        --volume name
+
+* volume migrate between clouds
+        
+        --cloud name of A
+        
+        --cloud name of B
+        
+        --volume name
+        
+* volume migrate between services on the same cloud
+        
+        --cloud name
+        
+        --service name of A
+        
+        --service name of B
+        
+        --volume name
+
+volume sync
+
+* volume sync between volumes 
+        
+        --volume name of A
+        
+        --volume name of B
 
 volume set - ashley
 
@@ -43,7 +90,9 @@ We all can look into these two methods
 
 volume unset
 
-Multicloud enhanced function including cost estimates and the actual cost accured
+volume cost
+
+* Multicloud enhanced function including cost estimates and the actual cost accured
 
 4. Write test cases for all above methods
 

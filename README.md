@@ -26,18 +26,47 @@ In this project we will be developing features related to completing and simplif
 
 * Volume create - Create new volume - Ashok
 * Volume delete - Delete volumes - Ashok
+
 * Volume list - List volumes - Xin
+    * list volumes for a virtural machine    
+            --volume name: xyz    
+    * list volumes in the same region    
+            --region    
+    * list volumes in the same cloud    
+            --cloud
+            
 * Volume migrate - Migrate volume to a new host - Xin
-```
-Professor's notes:
-There could be multiple meanings of migrate, e.g. between regions, between volumes, between clouds
-we also want to have a sync. Lets assume i have a volume on a and b I like some mechanism to syncthe volumes.
-Also the cost function is done by everyone. There could also be migrate between services on the same cloud. AWS has a flood of storage solutions which we may need to evaluate.
-```
+
+    * volume migrate between regions
+        --region A
+        --region B
+        --volume name
+        
+    * volume migrate between vms
+        --vm A
+        --vm B
+        --volume name
+    
+    * volume migrate between clouds
+        --cloud A
+        --cloud B
+        --volume name
+    * volume migrate between services on the same cloud
+        --cloud
+        --service A
+        --service B
+        --volume name
+
+* volume sync
+    * volume sync between volumes 
+        --volume A
+        --volume B 
+                  
 * Volume set - Set volume properties - Ashley
 * Volume show - Show volume details - Ashley
 * Volume unset - Unset volume properties - Ashley
-* Multicloud enhanced function including cost estimates and the actual cost accured - All
+* volume cost
+    * Multicloud enhanced function including cost estimates and the actual cost accured - All
 
 ## Test cases
 

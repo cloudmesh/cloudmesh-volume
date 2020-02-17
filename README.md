@@ -19,7 +19,7 @@ In this project we will be developing features related to completing and simplif
 ## Team memebers
 
 * Xin Gu sp20-516-227
-* Ashley Tomton sp20-516-230
+* Ashley Thornton sp20-516-230
 * Ashok Singam sp20-516-232
 
 ## Volume Management functions

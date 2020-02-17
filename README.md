@@ -28,54 +28,33 @@ In this project we will be developing features related to completing and simplif
 * Volume delete - Delete volumes - Ashok
 
 * Volume list - List volumes - Xin
-    * volume list for a virtural machine    
-            --volume name: xyz    
-    * volume list in the same region    
-            --region    
-    * volume list in the same cloud    
-            --cloud
-            
+```
+    volume list [VM NAME]
+                [--region=REGION]
+                [--cloud=CLOUD]
+                [--refresh]
+```
+    
 * Volume migrate - Migrate volume to a new host - Xin
-    * volume migrate between regions
-    
-        --region A
-        
-        --region B
-        
-        --volume name
-        
-    * volume migrate between vms
-    
-        --vm A
-        
-        --vm B
-        
-        --volume name
-    
-    * volume migrate between clouds
-    
-        --cloud A
-        
-        --cloud B
-        
-        --volume name
-        
-    * volume migrate between services on the same cloud
-    
-        --cloud
-        
-        --service A
-        
-        --service B
-        
-        --volume name
+```
+    volume migrate [VOLUME NAME]
+                    [--fregion=FROM REGION]
+                    [--tregion=TO REGION]
+                    [--fservice=FROM SERVICE]
+                    [--tservice=TO SERVICE]
+                    [--fcloud=FROM CLOUD]
+                    [--tcloud=TO CLOUD]
+                    [--cloud=CLOUD]
+                    [--region=REGION]
+                    [--service=SERVICE] 
+```
 
 * volume sync
-    * volume sync between volumes
-    
-        --volume A
-        
-        --volume B 
+```
+    volume sync [VOLUME NAME A] [VOLUME NAME B]
+                    [--region=REGION]
+                    [--cloud=CLOUD]
+```
                   
 * Volume set - Set volume properties - Ashley
 * Volume show - Show volume details - Ashley

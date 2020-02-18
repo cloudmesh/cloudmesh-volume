@@ -74,6 +74,7 @@ Write test cases in the form of reproducable pytests
 * Openstack - Ashok and Ashley
 
   * python: <https://docs.openstack.org/python-cinderclient/latest/>
+  * REST: <https://docs.openstack.org/api-ref/block-storage/>
   
 * Multipass - Ashok and Ashley 
      

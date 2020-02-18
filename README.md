@@ -154,6 +154,10 @@ Write test cases in the form of reproducable pytests
 * AWS - Ashley and Xin
 * Google - Ashley and Xin
 * Openstack - Ashok and Ashley
+
+  * python: <https://docs.openstack.org/python-cinderclient/latest/>
+  * REST: <https://docs.openstack.org/api-ref/block-storage/>
+  
 * Multipass - Ashok and Ashley 
      
 ## <https://cloudmesh.github.io/cloudmesh-manual/>

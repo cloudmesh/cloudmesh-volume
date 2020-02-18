@@ -66,41 +66,41 @@ Volume Providers:
 
 * AWS:
 
-python api: 
-
-<https://boto3.amazonaws.com/v1/documentation/api/latest/index.html>
-
-REST api: 
-
-<https://docs.aws.amazon.com/apigateway/api-reference/>
-
-Documentation about volume cost: 
-
-<https://aws.amazon.com/ebs/pricing/>
-
-<https://medium.com/@stefanroman/calculate-price-of-ebs-volumes-with-python-76687bb24530>
-
-manual: 
-
-<https://docs.aws.amazon.com/>
+    python api: 
+    
+    <https://boto3.amazonaws.com/v1/documentation/api/latest/index.html>
+    
+    REST api: 
+    
+    <https://docs.aws.amazon.com/apigateway/api-reference/>
+    
+    Documentation about volume cost: 
+    
+    <https://aws.amazon.com/ebs/pricing/>
+    
+    <https://medium.com/@stefanroman/calculate-price-of-ebs-volumes-with-python-76687bb24530>
+    
+    manual: 
+    
+    <https://docs.aws.amazon.com/>
 
 * Google:
 
-python api: 
-
-<https://cloud.google.com/sdk>
-
-REST api: 
-
-<https://cloud.google.com/apis/docs/overview>
-
-Documentation about volume cost: 
-
-<https://cloud.google.com/compute/disks-image-pricing>
-
-manual: 
-
-<https://cloud.google.com/docs>
+    python api: 
+    
+    <https://cloud.google.com/sdk>
+    
+    REST api: 
+    
+    <https://cloud.google.com/apis/docs/overview>
+    
+    Documentation about volume cost: 
+    
+    <https://cloud.google.com/compute/disks-image-pricing>
+    
+    manual: 
+    
+    <https://cloud.google.com/docs>
 
 * Azure:
 

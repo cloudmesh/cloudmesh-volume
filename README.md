@@ -80,6 +80,9 @@ Write test cases in the form of reproducable pytests
 ## Distribution of clouds between team memebers
 
 * Azure - Ashok and Xin
+
+  * REST: <https://docs.microsoft.com/en-us/rest/api/netapp/volumes>
+  
 * AWS - Ashley and Xin
 * Google - Ashley and Xin
 * Openstack - Ashok and Ashley

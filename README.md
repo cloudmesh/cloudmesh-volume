@@ -25,7 +25,18 @@ In this project we will be developing features related to completing and simplif
 ## Volume Management functions
 
 * Volume create - Create new volume - Ashok
-* Volume delete - Delete volumes - Ashok
+```
+    volume create [name]
+                  [--size <size>]
+                  [--type <volume-type>]
+                  [--image <image> | --snapshot <snapshot> | --source <volume>]
+                  [--description <description>]
+```
+
+* Volume delete - Delete volume - Ashok
+```
+     volume delete [volume] 
+```
 
 * Volume list - List volumes - Xin
 ```

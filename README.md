@@ -16,8 +16,9 @@ A simple abstraction layer to manage Cloud Volumes for AWS, Azure, Google, Opens
 
 In this project we will be developing features related to completing and simplifying the volume management interface to an existing cloud. We will also benchmark the clouds while comparing the volume management functions that are deployed on different clouds.
 
-## Team memebers
+## Team members
 
+* Peter McCandless sp20-516-222
 * Xin Gu sp20-516-227
 * Ashley Thornton sp20-516-230
 * Ashok Singam sp20-516-232
@@ -68,8 +69,33 @@ In this project we will be developing features related to completing and simplif
 ```
                   
 * Volume set - Set volume properties - Ashley
+```
+    volume set [VOLUME NAME]
+                    [--name <name>]
+                    [--size <size>]
+                    [--description <description>]
+                    [--no-property]
+                    [--property <key=value> [...] ]
+                    [--image-property <key=value> [...] ]
+                    [--state <state>]
+                    [--type <volume-type>]
+                    [--retype-policy <retype-policy>]
+                    [--bootable | --non-bootable]
+                    [--read-only | --read-write]
+```
+
 * Volume show - Show volume details - Ashley
+```
+    volume show [VOLUME NAME]
+```
+
 * Volume unset - Unset volume properties - Ashley
+```
+    volume unset [VOLUME NAME]
+                    [--property <key>]
+                    [--image-property <key>]
+```
+
 * volume cost
     * Multicloud enhanced function including cost estimates and the actual cost accured - All
 

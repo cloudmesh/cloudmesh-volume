@@ -80,7 +80,7 @@ Write test cases in the form of reproducable pytests
 ## Distribution of clouds between team memebers
 
 * Azure - Ashok and Xin
-
+  * Azure CLI: <https://docs.microsoft.com/en-us/cli/azure/netappfiles/volume?view=azure-cli-latest#az-netappfiles-volume-create>
   * REST: <https://docs.microsoft.com/en-us/rest/api/netapp/volumes>
   
 * AWS - Ashley and Xin

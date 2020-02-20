@@ -16,8 +16,9 @@ A simple abstraction layer to manage Cloud Volumes for AWS, Azure, Google, Opens
 
 In this project we will be developing features related to completing and simplifying the volume management interface to an existing cloud. We will also benchmark the clouds while comparing the volume management functions that are deployed on different clouds.
 
-## Team memebers
+## Team members
 
+* Peter McCandless sp20-516-222
 * Xin Gu sp20-516-227
 * Ashley Thornton sp20-516-230
 * Ashok Singam sp20-516-232
@@ -25,7 +26,18 @@ In this project we will be developing features related to completing and simplif
 ## Volume Management functions
 
 * Volume create - Create new volume - Ashok
-* Volume delete - Delete volumes - Ashok
+```
+    volume create [name]
+                  [--size <size>]
+                  [--type <volume-type>]
+                  [--image <image> | --snapshot <snapshot> | --source <volume>]
+                  [--description <description>]
+```
+
+* Volume delete - Delete volume - Ashok
+```
+     volume delete [volume] 
+```
 
 * Volume list - List volumes - Xin
 ```
@@ -57,8 +69,33 @@ In this project we will be developing features related to completing and simplif
 ```
                   
 * Volume set - Set volume properties - Ashley
+```
+    volume set [VOLUME NAME]
+                    [--name <name>]
+                    [--size <size>]
+                    [--description <description>]
+                    [--no-property]
+                    [--property <key=value> [...] ]
+                    [--image-property <key=value> [...] ]
+                    [--state <state>]
+                    [--type <volume-type>]
+                    [--retype-policy <retype-policy>]
+                    [--bootable | --non-bootable]
+                    [--read-only | --read-write]
+```
+
 * Volume show - Show volume details - Ashley
+```
+    volume show [VOLUME NAME]
+```
+
 * Volume unset - Unset volume properties - Ashley
+```
+    volume unset [VOLUME NAME]
+                    [--property <key>]
+                    [--image-property <key>]
+```
+
 * volume cost
     * Multicloud enhanced function including cost estimates and the actual cost accured - All
 
@@ -151,14 +188,25 @@ Write test cases in the form of reproducable pytests
 ## Distribution of clouds between team memebers
 
 * Azure - Ashok and Xin
+  * Azure CLI: <https://docs.microsoft.com/en-us/cli/azure/netappfiles/volume?view=azure-cli-latest#az-netappfiles-volume-create>
+  * REST: <https://docs.microsoft.com/en-us/rest/api/netapp/volumes>
+  
 * AWS - Ashley and Xin
+  * AWS CLI: <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
+  * Amazon EBS: <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-volume.html>
+
 * Google - Ashley and Xin
+  * Gcloud container clusters: <https://cloud.google.com/sdk/gcloud/reference/container/clusters>
+  * Google books API: <https://developers.google.com/books/docs/v1/reference/volumes>
+  
 * Openstack - Ashok and Ashley
 
   * python: <https://docs.openstack.org/python-cinderclient/latest/>
   * REST: <https://docs.openstack.org/api-ref/block-storage/>
   
 * Multipass - Ashok and Ashley 
+
+  * <https://freshbrewed.science/ubuntu-multipass-part-deux/index.html>
      
 ## <https://cloudmesh.github.io/cloudmesh-manual/>
 

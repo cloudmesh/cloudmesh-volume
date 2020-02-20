@@ -16,8 +16,11 @@ class VolumeCommand(PluginCommand):
         ::
 
           Usage:
-                volume --file=FILE
-                volume list
+                volume create [name]
+                  [--size SIZE]
+                  [--type <volume-type>]
+                  [--image <image> | --snapshot <snapshot> | --source <volume>]
+                  [--description <description>]
 
           This command does some useful things.
 
@@ -28,19 +31,23 @@ class VolumeCommand(PluginCommand):
               -f      specify the file
 
         """
-        arguments.FILE = arguments['--file'] or None
+ 
 
         VERBOSE(arguments)
 
-        m = Manager()
-
-        if arguments.FILE:
-            print("option a")
-            m.list(path_expand(arguments.FILE))
-
+        if arguments.create:
+            #volume create [name]
+                  #[--size SIZE]
+                  #[--type VOLUME-TYPE]
+                  #[--image IMAGE | --snapshot SNAPSHOT | --source VOLUME]
+                  #[--description DESCRIPTION]
+            print("create volume")
+            p = ?
+            size = arguments["--size"]
+            p.create(name=name, size=size, voltype=voltype, image=image, snapshot=snapshot, source=source, description=description)
+            
         elif arguments.list:
             print("option b")
-            m.list("just calling list without parameter")
 
         Console.error("This is just a sample")
         return ""

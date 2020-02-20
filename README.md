@@ -110,7 +110,13 @@ Write test cases in the form of reproducable pytests
   * REST: <https://docs.microsoft.com/en-us/rest/api/netapp/volumes>
   
 * AWS - Ashley and Xin
+  * AWS CLI: <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
+  * Amazon EBS: <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-volume.html>
+
 * Google - Ashley and Xin
+  * Gcloud container clusters: <https://cloud.google.com/sdk/gcloud/reference/container/clusters>
+  * Google books API: <https://developers.google.com/books/docs/v1/reference/volumes>
+  
 * Openstack - Ashok and Ashley
 
   * python: <https://docs.openstack.org/python-cinderclient/latest/>

@@ -123,6 +123,8 @@ Write test cases in the form of reproducable pytests
   * REST: <https://docs.openstack.org/api-ref/block-storage/>
   
 * Multipass - Ashok and Ashley 
+
+  * <https://freshbrewed.science/ubuntu-multipass-part-deux/index.html>
      
 ## <https://cloudmesh.github.io/cloudmesh-manual/>
 

@@ -1,11 +1,10 @@
 from __future__ import print_function
 from cloudmesh.shell.command import command
 from cloudmesh.shell.command import PluginCommand
-from cloudmesh.volume.api.manager import Manager
 from cloudmesh.common.console import Console
-from cloudmesh.common.util import path_expand
-from pprint import pprint
+from cloudmesh.shell.command import map_parameters
 from cloudmesh.common.debug import VERBOSE
+from cloudmesh.volume.openstack.Provider import Provider
 
 class VolumeCommand(PluginCommand):
 
@@ -16,22 +15,39 @@ class VolumeCommand(PluginCommand):
         ::
 
           Usage:
-                volume create [name]
-                  [--size SIZE]
-                  [--type <volume-type>]
-                  [--image <image> | --snapshot <snapshot> | --source <volume>]
-                  [--description <description>]
+                volume create [NAME]
+                  [--size=SIZE]
+                  [--type=VOLUME-TYPE]
+                  [--image=IMAGE | --snapshot=SNAPSHOT | --source =VOLUME]
+                  [--description=DESCRIPTION]
 
           This command does some useful things.
 
           Arguments:
-              FILE   a file name
+              NAME   volume name
 
           Options:
-              -f      specify the file
+              --size=SIZE                specify size of volume
+              --type=VOLUME-TYPE         specify type of volume
+              --image=IMAGE              specify source
+              --description=DESCRIPTION  specify description
+
+          Commands:
+            Create volume
+              cms volume create NAME
 
         """
- 
+
+        name = arguments.NAME
+
+        map_parameters(arguments,
+                       "dryrun",
+                       "size",
+                       "type",
+                       "image",
+                       "descripton",
+                       "mem"
+                       )
 
         VERBOSE(arguments)
 
@@ -42,9 +58,10 @@ class VolumeCommand(PluginCommand):
                   #[--image IMAGE | --snapshot SNAPSHOT | --source VOLUME]
                   #[--description DESCRIPTION]
             print("create volume")
-            p = ?
+            provider = Provider()
             size = arguments["--size"]
-            p.create(name=name, size=size, voltype=voltype, image=image, snapshot=snapshot, source=source, description=description)
+            volumetype = arguments["--type"]
+            #provider.create(name=name, size=size, voltype=voltype, image=image, snapshot=snapshot, source=source, description=description)
             
         elif arguments.list:
             print("option b")

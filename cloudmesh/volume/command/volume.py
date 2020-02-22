@@ -4,7 +4,8 @@ from cloudmesh.shell.command import PluginCommand
 from cloudmesh.common.console import Console
 from cloudmesh.shell.command import map_parameters
 from cloudmesh.common.debug import VERBOSE
-from cloudmesh.volume.openstack.Provider import Provider
+
+# from cloudmesh.volume.openstack.Provider import Provider
 
 class VolumeCommand(PluginCommand):
 
@@ -58,7 +59,7 @@ class VolumeCommand(PluginCommand):
                   #[--image IMAGE | --snapshot SNAPSHOT | --source VOLUME]
                   #[--description DESCRIPTION]
             print("create volume")
-            provider = Provider()
+            # provider = Provider()
             size = arguments["--size"]
             volumetype = arguments["--type"]
             #provider.create(name=name, size=size, voltype=voltype, image=image, snapshot=snapshot, source=source, description=description)

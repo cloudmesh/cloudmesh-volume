@@ -69,6 +69,7 @@ In this project we will be developing features related to completing and simplif
 ```
                   
 * Volume set - Set volume properties - Ashley
+Volume set ties a group of storage blocks together. While the data spans multiple drives, volume set sees them as continious.
 ```
     volume set [VOLUME NAME]
                     [--name <name>]
@@ -85,6 +86,7 @@ In this project we will be developing features related to completing and simplif
 ```
 
 * Volume show - Show volume details - Ashley
+Volume show provides informatino about all volumes, including the name, state, type, size, and percentage of space used.
 ```
     volume show [VOLUME NAME]
 ```

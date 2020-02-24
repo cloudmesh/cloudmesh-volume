@@ -61,7 +61,7 @@ In this project we will be developing features related to completing and simplif
                     [--service=SERVICE] 
 ```
 
-* volume sync
+* volume sync - Peter
 ```
     volume sync [VOLUME NAME A] [VOLUME NAME B]
                     [--region=REGION]
@@ -93,7 +93,7 @@ Volume show provides informatino about all volumes, including the name, state, t
     volume show [VOLUME NAME]
 ```
 
-* Volume unset - Unset volume properties - Ashley
+* Volume unset - Unset volume properties - Peter
 ```
     volume unset [VOLUME NAME]
                     [--property <key>]

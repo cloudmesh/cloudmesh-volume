@@ -75,6 +75,8 @@ Description: Migrate volume from one vm to another vm within the same region, se
 ```
                   
 * Volume set - Set volume properties - Ashley
+
+Volume set ties a group of storage blocks together. While the data spans multiple drives, volume set sees them as continious.
 ```
     volume set [VOLUME NAME]
                     [--name <name>]
@@ -91,6 +93,8 @@ Description: Migrate volume from one vm to another vm within the same region, se
 ```
 
 * Volume show - Show volume details - Ashley
+
+Volume show provides informatino about all volumes, including the name, state, type, size, and percentage of space used.
 ```
     volume show [VOLUME NAME]
 ```

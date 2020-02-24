@@ -201,7 +201,7 @@ Write test cases in the form of reproducable pytests
   * Azure CLI: <https://docs.microsoft.com/en-us/cli/azure/netappfiles/volume?view=azure-cli-latest#az-netappfiles-volume-create>
   * REST: <https://docs.microsoft.com/en-us/rest/api/netapp/volumes>
   
-* AWS - Ashley and Xin
+* AWS - Ashley and Xin and Peter
   * AWS CLI: <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
   * Amazon EBS: <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-volume.html>
 
@@ -209,7 +209,11 @@ Write test cases in the form of reproducable pytests
   * Gcloud container clusters: <https://cloud.google.com/sdk/gcloud/reference/container/clusters>
   * Google books API: <https://developers.google.com/books/docs/v1/reference/volumes>
   
-* Openstack - Ashok and Ashley
+* Oracle - Ashok and Peter
+  * API: <https://docs.cloud.oracle.com/en-us/iaas/api/#/en/iaas/20160918/Volume/>
+  * OCI CLI: <https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/2.9.3/oci_cli_docs/cmdref/bv/volume.html>
+
+* Openstack - Ashok and Ashley and Peter
 
   * python: <https://docs.openstack.org/python-cinderclient/latest/>
   * REST: <https://docs.openstack.org/api-ref/block-storage/>

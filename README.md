@@ -40,16 +40,22 @@ In this project we will be developing features related to completing and simplif
 ```
 
 * Volume list - List volumes - Xin
+
+Description: List volume of vm in specified region and provider. Or list all the volumes in certain region or provider. 
+
 ```
-    volume list [VM NAME]
+    volume list [--vm=VM NAME]
                 [--region=REGION]
                 [--cloud=CLOUD]
                 [--refresh]
 ```
     
 * Volume migrate - Migrate volume to a new host - Xin
+
+Description: Migrate volume from one vm to another vm within the same region, service or provider. Or migrate volume from one vm to another vm between different regions, services or providers.
+
 ```
-    volume migrate [VOLUME NAME]
+    volume migrate NAME FVM TVM
                     [--fregion=FROM REGION]
                     [--tregion=TO REGION]
                     [--fservice=FROM SERVICE]

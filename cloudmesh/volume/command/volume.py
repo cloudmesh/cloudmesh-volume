@@ -132,6 +132,7 @@ class VolumeCommand(PluginCommand):
                 #provider = Provider()
                 #provider.create(name=name, size=size, voltype=voltype, image=image, snapshot=snapshot, source=source, description=description)
                 print("create volume is not yet implemented!")
+                
         elif arguments.delete:
             if arguments.dryrun:
                 banner("dryrun delete")
@@ -153,9 +154,25 @@ class VolumeCommand(PluginCommand):
                 banner("dryrun list")
             else:
                 # provider = Provider()
-                # provider.list(name=name, fregion=fregion, tregion=tregion, fservice=fservice, tservice=tservice,
+                # provider.migrate(name=name, fregion=fregion, tregion=tregion, fservice=fservice, tservice=tservice,
                 # fcloud=fcloud, tcloud=tcloud, cloud=cloud, region=region, service=service)
                 print("migrate volume is not yet implemented!")
+                
+        elif arguments.set:
+            if arguments.dryrun:
+                banner("dryrun set")
+            else:
+                # provider = Provider()
+                # provider.set(name=name, size=size, description=description, state=state, voltype=voltype, retype=policy=retype=policy)
+                print("set volume is not yet implemented!")
+                
+        elif arguments.show:
+            if arguments.dryrun:
+                banner("dryrun show")
+            else:
+                # provider = Provider()
+                # provider.show(name=name)                
+                print("show volume is not yet implemented!")
 
         Console.error("This is just a sample")
         return ""

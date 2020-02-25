@@ -50,12 +50,22 @@ class VolumeCommand(PluginCommand):
                               [--bootable | --non-bootable]
                               [--read-only | --read-write]
                               [--dryrun]
-                 volume show NAME [--dryrun]
+                volume show NAME [--dryrun]
+                volume sync NAMEA NAMEB
+                              [--region=REGION]
+                              [--cloud=CLOUD]
+                              [--dryrun]
+                volume unset NAME
+                              [--property=PROPERTY]
+                              [--image-property=IMAGE-PROPERTY]
+                              [--dryrun]
 
           A simple abstraction layer to manage Cloud Volumes for AWS, Azure, Google, Openstack and Multipass
 
           Arguments:
-              NAME   volume name
+              NAME  volume name
+              NAMEA first volume name to sync
+              NAMEB second volume name to sync
 
           Options:
               --size=SIZE                       specify size of volume
@@ -77,6 +87,9 @@ class VolumeCommand(PluginCommand):
               --service=SERVICE                 specify the service where the volume is moving within
               --state=STATE                     specify the state of the volume
               --retype-policy=RETYPE-POLICY     specify the retype-policy
+              --property=PROPERTY               specify key for volume
+              --image-property=IMAGE-PROPERTY   specify image-key for volume
+
 
           Commands:
             Create volume
@@ -94,6 +107,12 @@ class VolumeCommand(PluginCommand):
               Optionally you can provide size, description, state, type, retype policy
             Show volume
               cms volume show NAME
+            Volume sync
+              cms volume sync NAMEA NAMEB
+              Optionally you can provide region, cloud
+            Unset volume
+              cms volume unset NAME
+              Optionally you can provide property, image-property
 
 
         """
@@ -118,7 +137,9 @@ class VolumeCommand(PluginCommand):
                        "tcloud",
                        "service",
                        "state",
-                       "retype-policy"
+                       "retype-policy",
+                       "property",
+                       "image-property"
                        )
 
         VERBOSE(arguments)
@@ -173,6 +194,22 @@ class VolumeCommand(PluginCommand):
                 # provider = Provider()
                 # provider.show(name=name)                
                 print("show volume is not yet implemented!")
+
+        elif arguments.sync:
+            if arguments.dryrun:
+                banner("dryrun sync")
+            else:
+                # provider = Provider()
+                # provider.sync(region=region, cloud=cloud)
+                print("volume sync is not yet implemented!")
+
+        elif arguments.unset:
+            if arguments.dryrun:
+                banner("dryrun unset")
+            else:
+                # provider = Provider()
+                # provider.unset(property=property, image-property=image-property)
+                print("unset is not yet implemented!")
 
         Console.error("This is just a sample")
         return ""

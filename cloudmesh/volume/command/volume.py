@@ -145,6 +145,9 @@ class VolumeCommand(PluginCommand):
         VERBOSE(arguments)
 
         if arguments.create:
+
+
+
             if arguments.dryrun:
                 banner("dryrun create")
             else:
@@ -153,7 +156,22 @@ class VolumeCommand(PluginCommand):
                 #provider = Provider()
                 #provider.create(name=name, size=size, voltype=voltype, image=image, snapshot=snapshot, source=source, description=description)
                 print("create volume is not yet implemented!")
-                
+
+
+                #volume create NAME
+                #             [--size=SIZE]
+                #              [--type=VOLUME-TYPE]
+                #              [--image=IMAGE | --snapshot=SNAPSHOT | --source =VOLUME]
+                #              [--description=DESCRIPTION]
+                #              [--dryrun]
+
+                # top: from ??? import Provider
+                # volume = Provider()
+                # r = volume.create( name = arguments.name, size=argument.ssize, ???????? )
+                #
+                # do somthing with the r
+                # print (r) # is typically json
+
         elif arguments.delete:
             if arguments.dryrun:
                 banner("dryrun delete")

@@ -68,6 +68,8 @@ Description: Migrate volume from one vm to another vm within the same region, se
 ```
 
 * volume sync - Peter
+
+Volume sync alows for data to shared bewteen two volumes.  Sync can be used to backup data to or from file services or other block volumes.
 ```
     volume sync [VOLUME NAME A] [VOLUME NAME B]
                     [--region=REGION]
@@ -94,12 +96,14 @@ Volume set ties a group of storage blocks together. While the data spans multipl
 
 * Volume show - Show volume details - Ashley
 
-Volume show provides informatino about all volumes, including the name, state, type, size, and percentage of space used.
+Volume show provides information about all volumes, including the name, state, type, size, and percentage of space used.
 ```
     volume show [VOLUME NAME]
 ```
 
 * Volume unset - Unset volume properties - Peter
+
+Volume unset separates a volume from a grouping of block volumes.  
 ```
     volume unset [VOLUME NAME]
                     [--property <key>]

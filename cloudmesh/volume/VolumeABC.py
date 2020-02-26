@@ -39,6 +39,7 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     # TODO: add your methods
+    @abstractmethod
     def list(self,
              vm=None,
              region=None,
@@ -54,7 +55,8 @@ class VolumeABC(metaclass=ABCMeta):
         :return: dict
         """
         raise NotImplementedError
-        
+     
+    @abstractmethod   
     def migrate(self,
                 name=None,
                 fvm=None,

@@ -39,4 +39,54 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     # TODO: add your methods
+    def list(self,
+             vm=None,
+             region=None,
+             cloud=None,
+             refresh=False):
+        """
+        List of volume.
+        
+        :param vm: name of vm
+        :param region: name of region
+        :param cloud: name of cloud
+        :param refresh: refresh
+        :return: dict
+        """
+        raise NotImplementedError
+        
+    def migrate(self,
+                name=None,
+                fvm=None,
+                tvm=None,
+                fregion=None,
+                tregion=None,
+                fservice=None,
+                tservice=None,
+                fcloud=None,
+                tcloud=None,
+                cloud=None,
+                region=None,
+                service=None):
+                
+        """
+        Migrate volume from one vm to another vm.
+        
+        :param name: name of volume
+        :param fvm: name of vm where volume will be moved from
+        :param tvm: name of vm where volume will be moved to
+        :param fregion: the region where the volume will be moved from
+        :param tregion: region where the volume will be moved to
+        :param fservice: the service where the volume will be moved from
+        :param tservice: the service where the volume will be moved to
+        :param fcloud: the provider where the volume will be moved from
+        :param tcloud: the provider where the volume will be moved to
+        :param cloud: the provider where the volume will be moved within
+        :param region: the region where the volume will be moved within
+        :param service: the service where the volume will be moved within
+        :return: dict
+        """
+        
+        raise NotImplementedError
+    
 '''

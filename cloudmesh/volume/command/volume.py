@@ -30,7 +30,7 @@ class VolumeCommand(PluginCommand):
                         [--cloud=CLOUD]
                         [--refresh]
                         [--dryrun]
-                volume migrate NAME
+                volume migrate NAME FVM TVM
                         [--fregion=FROM REGION]
                         [--tregion=TO REGION]
                         [--fservice=FROM SERVICE]
@@ -65,6 +65,8 @@ class VolumeCommand(PluginCommand):
 
           Arguments:
               NAME  volume name
+              FVM   name of vm where volume will be moved from
+              TVM   name of vm where volume will be moved to
               NAMEA first volume name to sync
               NAMEB second volume name to sync
 
@@ -78,23 +80,23 @@ class VolumeCommand(PluginCommand):
               --cloud=CLOUD                     specify the provider
               --refresh                         refresh
               --fregion=FROM REGION             specify the region where the
-                                                    volume is moving from
+                                                    volume will be moved from
               --tregion=TO REGION               specify the region where the
-                                                    volume is moving to
+                                                    volume will be moved to
               --fservice=FROM SERVICE           specify the service where the
-                                                    volume is moving from
+                                                    volume will be moved from
               --tservice=TO SERVICE             specify the service where the
-                                                    volume is moving to
+                                                    volume will be moved to
               --fcloud=FROM CLOUD               specify the provider where the
-                                                    volume is moving from
+                                                    volume will be moved from
               --tcloud=TO CLOUD                 specify the provider where the
-                                                    volume is moving to
+                                                    volume will be moved to
               --cloud=CLOUD                     specify the provider where the
-                                                    volume is moving within
+                                                    volume will be moved within
               --region=REGION                   specify the region where the
-                                                    volume is moving within
+                                                    volume will be moved within
               --service=SERVICE                 specify the service where the
-                                                    volume is moving within
+                                                    volume will be moved within
               --state=STATE                     specify the state of the volume
               --retype_policy=RETYPE_POLICY     specify the retype-policy
               --property=PROPERTY               specify key for volume
@@ -110,7 +112,7 @@ class VolumeCommand(PluginCommand):
               cms volume list
               Optionally you can provide vm name, region, provider, refresh
             Migrate volume
-              cms volume migrate NAME
+              cms volume migrate NAME FVM TVM
               Optionally you can provide fregion, tregion, fservice, tservice,
                 fcloud, tcloud, cloud, region, service
             Set volume
@@ -130,6 +132,8 @@ class VolumeCommand(PluginCommand):
         """
 
         name = arguments.NAME
+        fvm = arguments.FVM
+        tvm = arguments.TVM
 
         map_parameters(arguments,
                        "dryrun",
@@ -208,7 +212,7 @@ class VolumeCommand(PluginCommand):
                 banner("dryrun list")
             else:
                 # provider = Provider()
-                # provider.migrate(name=name, fregion=fregion, tregion=tregion,
+                # provider.migrate(name=name, fvm=fvm, tvm=tvm, fregion=fregion, tregion=tregion,
                 #   fservice=fservice, tservice=tservice, fcloud=fcloud,
                 #   tcloud=tcloud, cloud=cloud, region=region, service=service)
                 print("migrate volume is not yet implemented!")

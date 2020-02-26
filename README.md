@@ -41,7 +41,7 @@ In this project we will be developing features related to completing and simplif
 
 * Volume list - List volumes - Xin
 
-Description: List volume of vm in specified region and provider. Or list all the volumes in certain region or provider. 
+List volume of vm in specified region and provider. List all the volumes in certain region or provider. 
 
 ```
     volume list [--vm=VM NAME]
@@ -52,7 +52,7 @@ Description: List volume of vm in specified region and provider. Or list all the
     
 * Volume migrate - Migrate volume to a new host - Xin
 
-Description: Migrate volume from one vm to another vm within the same region, service or provider. Or migrate volume from one vm to another vm between different regions, services or providers.
+Migrate volume from one vm to another vm within the same region, service or provider. Migrate volume from one vm to another vm between different regions, services or providers.
 
 ```
     volume migrate NAME FVM TVM

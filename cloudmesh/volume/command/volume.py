@@ -67,8 +67,8 @@ class VolumeCommand(PluginCommand):
               NAME  volume name
               FVM   name of vm where volume will be moved from
               TVM   name of vm where volume will be moved to
-              VOLA  first volume name to sync
-              VOLB  second volume name to sync
+              VOLA  volume name to sync from
+              VOLB  volume name to sync to
 
           Options:
               --size=SIZE                       specify size of volume
@@ -93,14 +93,13 @@ class VolumeCommand(PluginCommand):
                                                     volume will be moved to
               --cloud=CLOUD                     specify the provider where the
                                                     volume will be moved within
-              --region=REGION                   specify the region where the
-                                                    volume will be moved within
               --service=SERVICE                 specify the service where the
                                                     volume will be moved within
               --state=STATE                     specify the state of the volume
               --retype_policy=RETYPE_POLICY     specify the retype-policy
               --property=PROPERTY               specify key for volume
-              --image_property=IMAGE_PROPERTY   specify image-key for volume
+              --image_property=IMAGE_PROPERTY   specify image of compute
+                                                    instance in volume
 
 
           Commands:
@@ -188,9 +187,9 @@ class VolumeCommand(PluginCommand):
                 # top: from ??? import Provider
                 # volume = Provider()
                 # r = volume.create( name = arguments.name,
-                #   size=argument.ssize, ???????? )
+                #   size=argument.size, ???????? )
                 #
-                # do somthing with the r
+                # do something with the r
                 # print (r) # is typically json
 
         elif arguments.delete:

@@ -91,4 +91,36 @@ class VolumeABC(metaclass=ABCMeta):
         
         raise NotImplementedError
     
+    @abstractmethod
+    def sync(self,
+                vola=None,
+                volb=None,
+                region=None,
+                cloud=None):
+        """
+        sync contents of one volume to another volume
+        
+        :param vola: name of volume A
+        :param volb: name of volume B
+        :param region: region where volumes will be stored
+        :param cloud: the provider where volumes will be hosted
+        :return: str
+        """
+        raise NotImplementedError
+    
+    @abstractmethod
+    def unset(self,
+                name=None,
+                property=None,
+                image_property=None):
+        """
+        Separate a volume from a group of joined volumes
+    
+        :param name: name of volume to separate
+        :param property: key to volume being separated
+        :param image_property: image stored in separated volume
+        :return: str
+        """
+        raise NotImplementedError
+    
 '''

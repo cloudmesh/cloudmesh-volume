@@ -51,7 +51,7 @@ class VolumeCommand(PluginCommand):
                         [--read_only | --read_write]
                         [--dryrun]
                 volume show NAME [--dryrun]
-                volume sync NAMEA NAMEB
+                volume sync VOLA VOLB
                         [--region=REGION]
                         [--cloud=CLOUD]
                         [--dryrun]
@@ -67,8 +67,8 @@ class VolumeCommand(PluginCommand):
               NAME  volume name
               FVM   name of vm where volume will be moved from
               TVM   name of vm where volume will be moved to
-              NAMEA first volume name to sync
-              NAMEB second volume name to sync
+              VOLA  first volume name to sync
+              VOLB  second volume name to sync
 
           Options:
               --size=SIZE                       specify size of volume
@@ -122,7 +122,7 @@ class VolumeCommand(PluginCommand):
             Show volume
               cms volume show NAME
             Volume sync
-              cms volume sync NAMEA NAMEB
+              cms volume sync VOLA VOLB
               Optionally you can provide region, cloud
             Unset volume
               cms volume unset NAME
@@ -134,6 +134,8 @@ class VolumeCommand(PluginCommand):
         name = arguments.NAME
         fvm = arguments.FVM
         tvm = arguments.TVM
+        vola = arguments.VOLA
+        volb = arguments.VOLB
 
         map_parameters(arguments,
                        "dryrun",
@@ -239,7 +241,8 @@ class VolumeCommand(PluginCommand):
                 banner("dryrun sync")
             else:
                 # provider = Provider()
-                # provider.sync(region=region, cloud=cloud)
+                # provider.sync(vola=vola, volb=volb,
+                #   region=region, cloud=cloud)
                 print("volume sync is not yet implemented!")
 
         elif arguments.unset:
@@ -247,7 +250,7 @@ class VolumeCommand(PluginCommand):
                 banner("dryrun unset")
             else:
                 # provider = Provider()
-                # provider.unset(property=property,
+                # provider.unset(name=name, property=property,
                 #   image-property=image-property)
                 print("unset is not yet implemented!")
 

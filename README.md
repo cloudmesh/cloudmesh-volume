@@ -157,6 +157,8 @@ Volume Providers:
 
 * OpenStack
 
+    <https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/volume.html>
+
 * Documentation on how to move volumes from one provider to the next: 
 
     * from Amazon S3

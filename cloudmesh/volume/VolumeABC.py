@@ -39,4 +39,13 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     # TODO: add your methods
+    
+    @abstractmethod
+    def list(
+          vm=None,
+          region=None,
+          cloud=None,
+          refresh,
+          dryrun):
+      raise NotImplementedError
 '''

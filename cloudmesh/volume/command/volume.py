@@ -5,6 +5,8 @@ from cloudmesh.common.console import Console
 from cloudmesh.shell.command import map_parameters
 from cloudmesh.common.debug import VERBOSE
 from cloudmesh.common.util import banner
+from cloudmesh.volume.Volume import Provider
+from cloudmesh.common.variables import Variables
 
 # from cloudmesh.volume.openstack.Provider import Provider
 
@@ -59,6 +61,8 @@ class VolumeCommand(PluginCommand):
                               [--property=PROPERTY]
                               [--image-property=IMAGE-PROPERTY]
                               [--dryrun]
+                volume mount PATH NAME
+                              [--cloud=CLOUD]
 
           A simple abstraction layer to manage Cloud Volumes for AWS, Azure, Google, Openstack and Multipass
 
@@ -66,8 +70,10 @@ class VolumeCommand(PluginCommand):
               NAME  volume name
               NAMEA first volume name to sync
               NAMEB second volume name to sync
+              PATH mount path name
 
           Options:
+              --cloud=CLOUD                     specify cloud name
               --size=SIZE                       specify size of volume
               --type=VOLUME-TYPE                specify type of volume
               --image=IMAGE                     specify source
@@ -113,14 +119,18 @@ class VolumeCommand(PluginCommand):
             Unset volume
               cms volume unset NAME
               Optionally you can provide property, image-property
+            mount path name
+              cms volume mount path name
 
 
         """
 
         name = arguments.NAME
+        path = arguments.PATH
 
         map_parameters(arguments,
                        "dryrun",
+                       "cloud",
                        "size",
                        "type",
                        "image",
@@ -159,7 +169,7 @@ class VolumeCommand(PluginCommand):
 
 
                 #volume create NAME
-                #             [--size=SIZE]
+                #              [--size=SIZE]
                 #              [--type=VOLUME-TYPE]
                 #              [--image=IMAGE | --snapshot=SNAPSHOT | --source =VOLUME]
                 #              [--description=DESCRIPTION]
@@ -228,6 +238,17 @@ class VolumeCommand(PluginCommand):
                 # provider = Provider()
                 # provider.unset(property=property, image-property=image-property)
                 print("unset is not yet implemented!")
+        elif arguments.mount:
+            if arguments.dryrun:
+                banner("dryrun mount")
+            else:
+                if (arguments.cloud):
+                    cloud = arguments.cloud
+                else:
+                    variables = Variables()
+                    cloud = variables['cloud']
+                    print(cloud)
+                p = Provider(name=cloud)
+                p.mount(path=path, name=name)
 
-        Console.error("This is just a sample")
         return ""

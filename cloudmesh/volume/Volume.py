@@ -4,49 +4,39 @@
 # cloudmesh-cloud/cloudmesh/compute/*,
 # cloudmesh-cloud/cloudmesh/vm/command,
 # cloudmesh-storage/cloudmesh/storage/*
+import os
+import json
 
-from abc import ABCMeta, abstractmethod
+from cloudmesh.volume.VolumeABC import VolumeABC
+from cloudmesh.common.util import banner
+from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 
-'''
-from cloudmesh.volume.VolumeABC import VolumeABC
-from cloudmesh.provider import ComputeProviderPlugin
+class Provider(VolumeABC):
+    #kind = "multipass"
+
+    def __init__(self, name=None, configuration="~/.cloudmesh/cloudmesh.yaml"):
+        conf = Config(configuration)["cloudmesh"]
+        # self.user = conf["profile"]
+        #self.spec = conf["cloud"][name]
+        self.cloud = name
+        #cred = self.spec["credentials"]
+        #deft = self.spec["default"]
+        #self.cloudtype = self.spec["cm"]["kind"]
+        super().__init__(name, conf)
+        print(self.cloud)
+        #print(self.cloudtype)
+        if self.cloud == "multipass":
+            from cloudmesh.volume.multipass.Provider import \
+                Provider as MulitpassProvider
+            self.provider = MulitpassProvider(self.cloud)
+
+    def create(self, name=None):
+        banner(f"mount {name}")
+        os.system(f"multipass mount /Users/ashok/multipass-mount  {name}")
+
+    def mount(self, path=None,name=None):
+        self.provider.mount(path,name)
 
 
-class Provider(VolumeABC, ComputeProviderPlugin):
-    kind = 'google'
 
-    def __init__(self, cloud, path):
-        config = Config(config_path=path)["cloudmesh"]
-        self.cm = config["cloud"][cloud]["cm"]
-        self.default = config["cloud"][cloud]["default"]
-        self.credentials = config["cloud"][cloud]["credentials"]
-        self.group = config["default"]["group"]
-        self.experiment = config["default"]["experiment"]
-
-    def create(self,
-               name=None,
-               size=None,
-               voltype=None,
-               image=None,
-               snapshot=None,
-               source=None,
-               description=None):
-        """
-        Create a volume.
-
-        TODO: describe all the parameters
-
-        :param name:
-        :param size:
-        :param voltype:
-        :param image:
-        :param snapshot:
-        :param source:
-        :param description:
-        :return:
-        """
-        raise NotImplementedError
-
-    # TODO: add your methods
-'''

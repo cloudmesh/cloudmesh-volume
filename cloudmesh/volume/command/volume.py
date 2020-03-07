@@ -5,6 +5,8 @@ from cloudmesh.common.console import Console
 from cloudmesh.shell.command import map_parameters
 from cloudmesh.common.debug import VERBOSE
 from cloudmesh.common.util import banner
+from cloudmesh.volume.Volume import Provider
+from cloudmesh.common.variables import Variables
 
 # from cloudmesh.volume.openstack.Provider import Provider
 
@@ -18,88 +20,81 @@ class VolumeCommand(PluginCommand):
 
           Usage:
                 volume create NAME
-                        [--size=SIZE]
-                        [--type=VOLUME_TYPE]
-                        [--image=IMAGE | --snapshot=SNAPSHOT | --source =VOLUME]
-                        [--description=DESCRIPTION]
-                        [--dryrun]
+                              [--size=SIZE]
+                              [--type=VOLUME-TYPE]
+                              [--image=IMAGE | --snapshot=SNAPSHOT | --source =VOLUME]
+                              [--description=DESCRIPTION]
+                              [--dryrun]
                 volume delete NAME [--dryrun]
                 volume list
-                        [--vm=VM_NAME]
-                        [--region=REGION]
-                        [--cloud=CLOUD]
-                        [--refresh]
-                        [--dryrun]
-                volume migrate NAME FVM TVM
-                        [--fregion=FROM REGION]
-                        [--tregion=TO REGION]
-                        [--fservice=FROM SERVICE]
-                        [--tservice=TO SERVICE]
-                        [--fcloud=FROM CLOUD]
-                        [--tcloud=TO CLOUD]
-                        [--cloud=CLOUD]
-                        [--region=REGION]
-                        [--service=SERVICE]
-                        [--dryrun]
+                              [--vm=VM NAME]
+                              [--region=REGION]
+                              [--cloud=CLOUD]
+                              [--refresh]
+                              [--dryrun]
+                volume migrate NAME
+                              [--fregion=FROM REGION]
+                              [--tregion=TO REGION]
+                              [--fservice=FROM SERVICE]
+                              [--tservice=TO SERVICE]
+                              [--fcloud=FROM CLOUD]
+                              [--tcloud=TO CLOUD]
+                              [--cloud=CLOUD]
+                              [--region=REGION]
+                              [--service=SERVICE]
+                              [--dryrun]
                 volume set NAME
-                        [--size=SIZE]
-                        [--description=DESCRIPTION]
-                        [--state=STATE]
-                        [--type=VOLUME-TYPE]
-                        [--retype_policy=RETYPE_POLICY]
-                        [--bootable | --non-bootable]
-                        [--read_only | --read_write]
-                        [--dryrun]
+                              [--size=SIZE]
+                              [--description=DESCRIPTION]
+                              [--state=STATE]
+                              [--type=VOLUME-TYPE]
+                              [--retype-policy=RETYPE-POLICY]
+                              [--bootable | --non-bootable]
+                              [--read-only | --read-write]
+                              [--dryrun]
                 volume show NAME [--dryrun]
-                volume sync VOLA VOLB
-                        [--region=REGION]
-                        [--cloud=CLOUD]
-                        [--dryrun]
+                volume sync NAMEA NAMEB
+                              [--region=REGION]
+                              [--cloud=CLOUD]
+                              [--dryrun]
                 volume unset NAME
-                        [--property=PROPERTY]
-                        [--image_property=IMAGE_PROPERTY]
-                        [--dryrun]
+                              [--property=PROPERTY]
+                              [--image-property=IMAGE-PROPERTY]
+                              [--dryrun]
+                volume mount PATH NAME
+                              [--cloud=CLOUD]
 
-          A simple abstraction layer to manage Cloud Volumes for
-            AWS, Azure, Google, Oracle, OpenStack and Multipass
+          A simple abstraction layer to manage Cloud Volumes for AWS, Azure, Google, Openstack and Multipass
 
           Arguments:
               NAME  volume name
-              FVM   name of vm where volume will be moved from
-              TVM   name of vm where volume will be moved to
-              VOLA  volume name to sync from
-              VOLB  volume name to sync to
+              NAMEA first volume name to sync
+              NAMEB second volume name to sync
+              PATH mount path name
 
           Options:
+              --cloud=CLOUD                     specify cloud name
               --size=SIZE                       specify size of volume
-              --type=VOLUME_TYPE                specify type of volume
+              --type=VOLUME-TYPE                specify type of volume
               --image=IMAGE                     specify source
               --description=DESCRIPTION         specify description
               --vm=VM NAME                      specify the name of vm
               --region=REGION                   specify the region
               --cloud=CLOUD                     specify the provider
               --refresh                         refresh
-              --fregion=FROM REGION             specify the region where the
-                                                    volume will be moved from
-              --tregion=TO REGION               specify the region where the
-                                                    volume will be moved to
-              --fservice=FROM SERVICE           specify the service where the
-                                                    volume will be moved from
-              --tservice=TO SERVICE             specify the service where the
-                                                    volume will be moved to
-              --fcloud=FROM CLOUD               specify the provider where the
-                                                    volume will be moved from
-              --tcloud=TO CLOUD                 specify the provider where the
-                                                    volume will be moved to
-              --cloud=CLOUD                     specify the provider where the
-                                                    volume will be moved within
-              --service=SERVICE                 specify the service where the
-                                                    volume will be moved within
+              --fregion=FROM REGION             specify the region where the volume is moving from
+              --tregion=TO REGION               specify the region where the volume is moving to
+              --fservice=FROM SERVICE           specify the service where the volume is moving from
+              --tservice=TO SERVICE             specify the service where the volume is moving to
+              --fcloud=FROM CLOUD               specify the provider where the volume is moving from
+              --tcloud=TO CLOUD                 specify the provider where the volume is moving to
+              --cloud=CLOUD                     specify the provider where the volume is moving within
+              --region=REGION                   specify the region where the volume is moving within
+              --service=SERVICE                 specify the service where the volume is moving within
               --state=STATE                     specify the state of the volume
-              --retype_policy=RETYPE_POLICY     specify the retype-policy
+              --retype-policy=RETYPE-POLICY     specify the retype-policy
               --property=PROPERTY               specify key for volume
-              --image_property=IMAGE_PROPERTY   specify image of compute
-                                                    instance in volume
+              --image-property=IMAGE-PROPERTY   specify image-key for volume
 
 
           Commands:
@@ -111,33 +106,31 @@ class VolumeCommand(PluginCommand):
               cms volume list
               Optionally you can provide vm name, region, provider, refresh
             Migrate volume
-              cms volume migrate NAME FVM TVM
-              Optionally you can provide fregion, tregion, fservice, tservice,
-                fcloud, tcloud, cloud, region, service
+              cms volume migrate NAME
+              Optionally you can provide fregion, tregion, fservice, tservice, fcloud, tcloud, cloud, region, service
             Set volume
               cms volume set NAME
-              Optionally you can provide size, description, state, type,
-                retype policy
+              Optionally you can provide size, description, state, type, retype policy
             Show volume
               cms volume show NAME
             Volume sync
-              cms volume sync VOLA VOLB
+              cms volume sync NAMEA NAMEB
               Optionally you can provide region, cloud
             Unset volume
               cms volume unset NAME
               Optionally you can provide property, image-property
+            mount path name
+              cms volume mount path name
 
 
         """
 
         name = arguments.NAME
-        fvm = arguments.FVM
-        tvm = arguments.TVM
-        vola = arguments.VOLA
-        volb = arguments.VOLB
+        path = arguments.PATH
 
         map_parameters(arguments,
                        "dryrun",
+                       "cloud",
                        "size",
                        "type",
                        "image",
@@ -154,9 +147,9 @@ class VolumeCommand(PluginCommand):
                        "tcloud",
                        "service",
                        "state",
-                       "retype_policy",
+                       "retype-policy",
                        "property",
-                       "image_property"
+                       "image-property"
                        )
 
         VERBOSE(arguments)
@@ -171,25 +164,22 @@ class VolumeCommand(PluginCommand):
                 size = arguments["--size"]
                 volumetype = arguments["--type"]
                 #provider = Provider()
-                #provider.create(name=name, size=size, voltype=voltype,
-                #   image=image, snapshot=snapshot, source=source,
-                #   description=description)
+                #provider.create(name=name, size=size, voltype=voltype, image=image, snapshot=snapshot, source=source, description=description)
                 print("create volume is not yet implemented!")
 
 
                 #volume create NAME
-                #       [--size=SIZE]
-                #       [--type=VOLUME-TYPE]
-                #       [--image=IMAGE | --snapshot=SNAPSHOT | --source =VOLUME]
-                #       [--description=DESCRIPTION]
-                #       [--dryrun]
+                #              [--size=SIZE]
+                #              [--type=VOLUME-TYPE]
+                #              [--image=IMAGE | --snapshot=SNAPSHOT | --source =VOLUME]
+                #              [--description=DESCRIPTION]
+                #              [--dryrun]
 
                 # top: from ??? import Provider
                 # volume = Provider()
-                # r = volume.create( name = arguments.name,
-                #   size=argument.size, ???????? )
+                # r = volume.create( name = arguments.name, size=argument.ssize, ???????? )
                 #
-                # do something with the r
+                # do somthing with the r
                 # print (r) # is typically json
 
         elif arguments.delete:
@@ -213,9 +203,8 @@ class VolumeCommand(PluginCommand):
                 banner("dryrun list")
             else:
                 # provider = Provider()
-                # provider.migrate(name=name, fvm=fvm, tvm=tvm, fregion=fregion, tregion=tregion,
-                #   fservice=fservice, tservice=tservice, fcloud=fcloud,
-                #   tcloud=tcloud, cloud=cloud, region=region, service=service)
+                # provider.migrate(name=name, fregion=fregion, tregion=tregion, fservice=fservice, tservice=tservice,
+                # fcloud=fcloud, tcloud=tcloud, cloud=cloud, region=region, service=service)
                 print("migrate volume is not yet implemented!")
                 
         elif arguments.set:
@@ -223,8 +212,7 @@ class VolumeCommand(PluginCommand):
                 banner("dryrun set")
             else:
                 # provider = Provider()
-                # provider.set(name=name, size=size, description=description,
-                #   state=state, voltype=voltype, retype=policy=retype=policy)
+                # provider.set(name=name, size=size, description=description, state=state, voltype=voltype, retype=policy=retype=policy)
                 print("set volume is not yet implemented!")
                 
         elif arguments.show:
@@ -240,8 +228,7 @@ class VolumeCommand(PluginCommand):
                 banner("dryrun sync")
             else:
                 # provider = Provider()
-                # provider.sync(vola=vola, volb=volb,
-                #   region=region, cloud=cloud)
+                # provider.sync(region=region, cloud=cloud)
                 print("volume sync is not yet implemented!")
 
         elif arguments.unset:
@@ -249,9 +236,19 @@ class VolumeCommand(PluginCommand):
                 banner("dryrun unset")
             else:
                 # provider = Provider()
-                # provider.unset(name=name, property=property,
-                #   image-property=image-property)
+                # provider.unset(property=property, image-property=image-property)
                 print("unset is not yet implemented!")
+        elif arguments.mount:
+            if arguments.dryrun:
+                banner("dryrun mount")
+            else:
+                if (arguments.cloud):
+                    cloud = arguments.cloud
+                else:
+                    variables = Variables()
+                    cloud = variables['cloud']
+                    print(cloud)
+                p = Provider(name=cloud)
+                p.mount(path=path, name=name)
 
-        Console.error("This is just a sample")
         return ""

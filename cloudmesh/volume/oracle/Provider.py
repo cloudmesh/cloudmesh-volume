@@ -1,19 +1,14 @@
-#
-# class Provider(VolumeABC):
-#
-#   def list( .... ):
-#      raise ImpelentainError
-
+import pprint
 from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 
 class Provider(VolumeABC):
-    kind = "google"
+    kind = "oracle"
 
     sample = """
-    google:
+    oracle:
       volume:
         {name}:
           cm:
@@ -21,7 +16,7 @@ class Provider(VolumeABC):
             heading: {name}
             host: TBD
             label: {name}
-            kind: google
+            kind: oracle
             version: TBD
             service: volume
           credentials:

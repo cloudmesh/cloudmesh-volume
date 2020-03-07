@@ -1,8 +1,5 @@
-#
-# class Provider(VolumeABC):
-#
-#   def list( .... ):
-#      raise ImpelentainError
+import os
+import json
 
 from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
@@ -10,10 +7,10 @@ from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 
 class Provider(VolumeABC):
-    kind = "google"
+    kind = "multipass"
 
     sample = """
-    google:
+    cloudmesh:
       volume:
         {name}:
           cm:
@@ -21,7 +18,7 @@ class Provider(VolumeABC):
             heading: {name}
             host: TBD
             label: {name}
-            kind: google
+            kind: multipass
             version: TBD
             service: volume
           credentials:
@@ -177,3 +174,27 @@ class Provider(VolumeABC):
     }
     def __init__(self,name):
         self.cloud = name
+
+    def mount(self,path=None,name=None):
+        banner(f"mount {path} {name}")
+        os.system(f"multipass mount {path}  {name}")
+        dict_result = self._get_mount_status(name)
+        print(dict_result)
+        return dict_result
+
+    def _get_mount_status(self,name=None):
+        result = Shell.run(f"multipass info {name} --format=json")
+
+        if f'instance "{name}" does not exist' in result:
+            dict_result = {
+                'name': name,
+                'status': "instance does not exist"
+            }
+        else:
+            result = json.loads(result)
+            dict_result = {
+                'name': name,
+                'status': result["info"][name]['state'],
+                'mounts': result["info"][name]['mounts']
+            }
+        return dict_result

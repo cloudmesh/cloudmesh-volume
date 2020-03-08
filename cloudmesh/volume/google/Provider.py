@@ -177,3 +177,66 @@ class Provider(VolumeABC):
     }
     def __init__(self,name):
         self.cloud = name
+
+    def create(self,
+                name=None,
+                csek-key-file=None,
+                description=None,
+                guest-os-features=None,
+                labels=None,
+                licenses=None,
+                replica-zones=None
+                resources-policies=None,
+                require-csek-key=False,
+                size=None,
+                type=None,
+                image-project=None,
+                image=None,
+                image-family=None,
+                source-snapshot=None,
+                kms-key=None,
+                kms-keyring=None,
+                kms-location=None,
+                kms-project=None,
+                region=None,
+                zone=None,
+                dryrun=False):
+
+        """
+        create a disk.
+
+        :param name: Names of the disks to create
+        :param csek-key-file: Path to a Customer-Supplied Encryption Key (CSEK)
+        :param description: An optional, textual description for the disks
+                            being created.
+        :param guest-os-features: This parameter enables one or more features
+                                    for VM instances that use the image for
+                                    their boot disks. Must be one of:
+                                    MULTI_IP_SUBNET, SECURE_BOOT,
+                                    UEFI_COMPATIBLE, VIRTIO_SCSI_MULTIQUEUE,
+                                    WINDOWS
+        :param labels: List of label key-value pairs
+        :param liscences: List of URI's to licence resources
+        :param replica-zones: A comma-separated list of exactly 2 zones that a
+                                regional disk will be replicated to.
+        :param require-csek-key: Refuse to create resources not protected by
+                                    a user managed key in the key file
+        :param resoucrces-policies: A list of resource policy names to be
+                                    added to the disk
+        :param size: Size of the disk. Whole number followed by 'GB' or 'TB'
+                                for gigabyte or terabyte
+        :param type: Type of the disk
+        :param image-project: Project against which all image and image family
+                                references will be resolved.
+        :param image: An image to apply to the disks being created.
+        :param image-family: The image family for the operating system that
+                                the boot disk will be initialized with.
+        :param source-snapshot: Source snapshot used to create the disks.
+        :param kms-key: ID of the key or fully qualified identifier for the key.
+        :param kms-keyring: The KMS keyring of the key
+        :param kms-project: The cloud project for the key
+        :param region: Region of the disks to create.
+        :param zone: Zone of the disks to create.
+        :return:
+        """
+        raise NotImplementedError

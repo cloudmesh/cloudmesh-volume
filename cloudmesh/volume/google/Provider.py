@@ -299,3 +299,19 @@ class Provider(VolumeABC):
         :return:
         """
         raise NotImplementedError
+
+    def move(self,
+             name=None,
+             destination_zone=None,
+             a_sync=False,
+             zone=None):
+        """
+        Move a disk from one zone to another.
+
+        :param name:
+        :param destination_zone:
+        :param async:
+        :param zone:
+        :return:
+        """
+        raise NotImplementedError

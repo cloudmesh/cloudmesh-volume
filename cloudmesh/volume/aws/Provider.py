@@ -5,6 +5,11 @@ from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
+import boto
+import boto.ec2
+
+region = 'us-east-2'
+ec2 = boto.ec2.connect_to_region(region)
 
 class Provider(VolumeABC):
     kind = "aws"
@@ -99,16 +104,17 @@ class Provider(VolumeABC):
         """
         Create a volume.
 
-        :param name: name of volume
-        :param zone: name of availability-zone
-        :param size: size of volume
-        :param voltype: type of volume
-        :param iops: The number of I/O operations per second (IOPS) that the volume supports (from 100 to 64,000 for\
+        :param name (string): name of volume
+        :param zone (string): name of availability-zone
+        :param size (integer): size of volume
+        :param voltype (string): type of volume. This can be gp2 for General Purpose SSD, io1 for Provisioned IOPS SSD,
+                st1 for Throughput Optimized HDD, sc1 for Cold HDD, or standard for Magnetic volumes.
+        :param iops (integer): The number of I/O operations per second (IOPS) that the volume supports (from 100 to 64,000 for\
          io1 type volume).
         :param image:
-        :param snapshot: snapshot id
+        :param snapshot (string): snapshot id
         :param source:
-        :param description: 'ResourceType=volume,Tags=[{Key=purpose,Value=production},{Key=cost-center,Value=cc123}]'
+        :param description (string): 'ResourceType=volume,Tags=[{Key=purpose,Value=production},{Key=cost-center,Value=cc123}]'
         :return:
 
         """
@@ -123,11 +129,13 @@ class Provider(VolumeABC):
                 else:
                     result = Shell.run(
                         f"aws ec2 create-volume --availability-zone {zone} --volume-type {voltype} --iops {iops}/"
-                        f" --size {size} --snapshot-id {snapshot} --encrypted {encrypted} --tag-specifications {description}")
+                        f" --size {size} --snapshot-id {snapshot} --encrypted {encrypted} \
+                        --tag-specifications {description}")
             else:
                 result = Shell.run(
                     f"aws ec2 create-volume --availability-zone {zone} --volume-type {voltype} --iops {iops}/"
-                    f" --size {size} --snapshot-id {snapshot} --encrypted {encrypted} --tag-specifications {description}")
+                    f" --size {size} --snapshot-id {snapshot} --encrypted {encrypted} \
+                    --tag-specifications {description}")
         result = eval(result)['volume']
         return result
 
@@ -142,19 +150,20 @@ class Provider(VolumeABC):
         """
         List of volume.
 
-        :param vm: name of vm
-        :param vm_id: vm id
-        :param region: name of region
-        :param zone: name of availability-zone
-        :param cloud: name of cloud
-        :param refresh: refresh
+        :param vm (string): name of vm
+        :param vm_id (string): vm id
+        :param region (string): name of region
+        :param zone (string): name of availability-zone
+        :param cloud (string): name of cloud
+        :param refresh (boolean): True|False
         :return: dict
         """
         banner(f"list volume")
 
         if cloud == 'aws':
             result = Shell.run(f"aws ec2 describe-volumes --region {region}/"
-                           f" --filters Name=attachment.instance-id,Values={vm_id} Name=availability-zone,Values={zone}")
+                           f" --filters Name=attachment.instance-id,Values={vm_id} \
+                           Name=availability-zone,Values={zone}")
             result = eval(result)['volume']
             return result
 
@@ -199,10 +208,10 @@ class Provider(VolumeABC):
         """
         sync contents of one volume to another volume
 
-        :param volume_id: id of volume A
-        :param zone: zone where new volume will be created
-        :param cloud: the provider where volumes will be hosted
-        :return: str
+        :param volume_id (string): id of volume A
+        :param zone (string): zone where new volume will be created
+        :param cloud (string): the provider where volumes will be hosted
+        :return: dict
         """
         banner(f"sync volume")
         if cloud == 'aws':
@@ -212,47 +221,145 @@ class Provider(VolumeABC):
             result = eval(result)['volume']
             return result
 
-    def mount(self, volume_id, vm_id):
+    def mount(self, volume_id, vm_id, device='dev/sdh', dryrun=False):
         """
         mounts volume
-        :param volume_id: volume id
-        :param vm_id: instance id
+        :param volume_id (string): volume id
+        :param vm_id (string): instance id
+        :param device (string): The device name (for example, /dev/sdh or xvdh )
+        :param dryrun (boolean): True|False
         :return: dict
-        """
+
         banner(f"mount volume")
         if cloud == 'aws':
             result = Shell.run(f"aws ec2 attach-volumes --volume-id {volume_id} --instance-id {vm_id} --device /dev/sdf")
             result = eval(result)['volume']
             return result
+ """
+        banner(f"mount volume")
+        volume = ec2.Volume(volume_id)
+        result = volume.attach_to_instance(
+                    Device=device,
+                    InstanceId=vm_id,
+                    DryRun=dryrun
+                )
+        return result
 
-    def unmount(self, volume_id):
+    def unmount(self, volume_id, vm_id, device='dev/sdh', force=False, dryrun=False):
         """
         unmounts volume
-        :param volume_id: volume id
+        :param volume_id (string): volume id
+        :param device (string): The device name (for example, /dev/sdh or xvdh )
+        :param force (boolean): True|False
+        :param dryrun (boolean): True|False
         :return: dict
-        """
+
         banner(f"unmount volume")
         if cloud == 'aws':
             result = Shell.run((f"aws ec2 dettach-volumes --volume-id {volume_id})
             result = eval(result)['volume']
             return result
-
-    def delete(self, volume_id):
-
-    def unset(self,
-              name=None,
-              property=None,
-              image_property=None):
         """
-        Separate a volume from a group of joined volumes
 
-        :param name: name of volume to separate
-        :param property: key to volume being separated
-        :param image_property: image stored in separated volume
-        :return: str
+        banner(f"unmount volume")
+        volume = ec2.Volume(volume_id)
+        result = volume.detach_from_instance(
+                    Device=device,
+                    Force=force,
+                    InstanceId=vm_id,
+                    DryRun=dryrun
+                )
+        return result
+
+
+    def delete(self, volume_id, dryrun=False):
         """
-        deregister - volume
-        raise NotImplementedError
+                delete volume
+
+                :param volume_id (string): volume id
+                :param dryrun (boolean): True|False
+                :return: dict
+        """
+
+        banner(f"delete volume")
+        volume = ec2.Volume(volume_id)
+        result = volume.delete(
+            DryRun=dryrun
+        )
+        return result
+
+    def set(self, volume_id, attribute=None, tag_key=None, tag_value=None, size=None, voltype=None, iops=None,
+            dryrun=False):
+
+        """
+            modify-volume-attribute: resume I/O access to the volume
+                :param volume_id <(string): volume id
+                :param attribute (sting): can be "auto_enable_io", "no-auto-enable-io", "tag"
+                :param tag_key (string):Tag keys are case-sensitive and accept a maximum of 127 Unicode characters.
+                                        May not begin with aws.
+                :param tag_value (string): Tag values are case-sensitive and accept a maximum of 255 Unicode characters.
+                :param size (integer): The target size of the volume, in GiB.
+                :param voltype (string): Type of volume. This can be 'gp2' for General Purpose SSD,
+                                        'io1' for Provisioned IOPS SSD, 'st1' for Throughput Optimized HDD,
+                                        'sc1' for Cold HDD, or 'standard' for Magnetic volumes.
+                :param iops (integer): The number of I/O operations per second (IOPS) that the volume supports
+                                        (from 100 to 64,000 for io1 type volume).
+                :param dryrun (boolean): True | False
+        """
+
+        volume = ec2.Volume(volume_id)
+        if attribute == "auto_enable_io":
+            result = volume.modify_attribute(
+                AutoEnableIO={
+                    'Value': True
+                },
+                DryRun=dryrun
+            )
+        elif attribute == "no-auto-enable-io":
+            result = volume.modify_attribute(
+                AutoEnableIO={
+                    'Value': False
+                },
+                DryRun=dryrun
+            )
+        elif attribute == "tag":
+            result = volume.create_tags(
+                DryRun=dryrun,
+                Tags=[
+                    {
+                        'Key': tag_key,
+                        'Value': tag_value
+                    },
+                ]
+            )
+        else:
+            result = volume.modify_volume(
+                DryRun=dryrun,
+                VolumeId=volume_id,
+                Size=size,
+                VolumeType=voltype,
+                Iops=iops
+            )
+
+        return result
+
+    def unset(self, volume_id, dryrun):??????????????????????????
+
+        """
+            modify-volume-attribute: suspend I/O access to the volume
+
+                :param volume_id <(string): volume id
+                :param dryrun (boolean): True | False
+        """
+
+        volume = ec2.Volume(volume_id)
+        result = volume.modify_attribute(
+            AutoEnableIO={
+                'Value': False
+            },
+            DryRun=dryrun
+        )
+        return result
 
 
 

@@ -418,3 +418,28 @@ if __name__ == "__main__":
     p.migrate()
     p.delete()
 
+#Ashley's work
+    def mount(self,path=None,name=None):
+        banner(f"mount {path} {name}")
+        os.system(f"aws mount {path}  {name}")
+        dict_result = self._get_mount_status(name)
+        print(dict_result)
+        return dict_result
+
+    def _get_mount_status(self,name=None):
+        result = Shell.run(f"aws info {name} --format=json")
+
+        if f'instance "{name}" does not exist' in result:
+            dict_result = {
+                'name': name,
+                'status': "instance does not exist"
+            }
+        else:
+            result = json.loads(result)
+            dict_result = {
+                'name': name,
+                'status': result["info"][name]['state'],
+                'mounts': result["info"][name]['mounts']
+            }
+        return dict_result
+

@@ -5,11 +5,9 @@ from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
+import boto3
 import boto
-import boto.ec2
 
-region = 'us-east-2'
-ec2 = boto.ec2.connect_to_region(region)
 
 class Provider(VolumeABC):
     kind = "aws"
@@ -89,6 +87,7 @@ class Provider(VolumeABC):
     }
     def __init__(self,name):
         self.cloud = name
+        self.ec2 = boto3.resource('ec2')
 
     def create(self,
                name=None,
@@ -96,76 +95,103 @@ class Provider(VolumeABC):
                size=None,
                voltype=gp2,
                iops=1000,
+               kms_key_id=None,
+               outpost_arn=None,
                image=None,
                snapshot=None,
                encrypted=False,
                source=None,
-               description=None):
+               description=None,
+               tag_key=None,
+               tag_value=None,
+               multi_attach_enabled=True,
+               dryrun=False):
         """
         Create a volume.
 
         :param name (string): name of volume
-        :param zone (string): name of availability-zone
+        :param zone (string): availability-zone
+        :param encrypted (boolean): True|False
         :param size (integer): size of volume
         :param voltype (string): type of volume. This can be gp2 for General Purpose SSD, io1 for Provisioned IOPS SSD,
-                st1 for Throughput Optimized HDD, sc1 for Cold HDD, or standard for Magnetic volumes.
-        :param iops (integer): The number of I/O operations per second (IOPS) that the volume supports (from 100 to 64,000 for\
-         io1 type volume).
+                                st1 for Throughput Optimized HDD, sc1 for Cold HDD, or standard for Magnetic volumes.
+        :param iops (integer): The number of I/O operations per second (IOPS) that the volume supports \
+                                (from 100 to 64,000 for io1 type volume).
+        :param kms_key_id (string): The identifier of the AWS Key Management Service (AWS KMS) customer master key (CMK)\
+                                    to use for Amazon EBS encryption. If KmsKeyId is specified, the encrypted state \
+                                    must be true.
+        :param outpost_arn (string): The Amazon Resource Name (ARN) of the Outpost.
         :param image:
         :param snapshot (string): snapshot id
         :param source:
-        :param description (string): 'ResourceType=volume,Tags=[{Key=purpose,Value=production},{Key=cost-center,Value=cc123}]'
+        :param description (string):
+        :param tag_key (string): Tag keys are case-sensitive and accept a maximum of 127 Unicode characters.
+                                        May not begin with aws.
+        :param tag_value (string): Tag values are case-sensitive and accept a maximum of 255 Unicode characters.
+
+        :param multi_attach_enabled (boolean):
         :return:
 
         """
 
         banner(f"create volume")
-        if zone == False:
-            raise Exception('Must specify zone')
-        else:
-            if voltype == "io1":
-                if iops ==False:
-                    raise Exception('Please specify --iops')
-                else:
-                    result = Shell.run(
-                        f"aws ec2 create-volume --availability-zone {zone} --volume-type {voltype} --iops {iops}/"
-                        f" --size {size} --snapshot-id {snapshot} --encrypted {encrypted} \
-                        --tag-specifications {description}")
-            else:
-                result = Shell.run(
-                    f"aws ec2 create-volume --availability-zone {zone} --volume-type {voltype} --iops {iops}/"
-                    f" --size {size} --snapshot-id {snapshot} --encrypted {encrypted} \
-                    --tag-specifications {description}")
-        result = eval(result)['volume']
+        result = self.ec2.create_volume(
+            AvailabilityZone=zone,
+            Encrypted=encrypted,
+            Iops=iops,
+            KmsKeyId=kms_key_id,
+            OutpostArn=outpost_arn,
+            Size=size,
+            SnapshotId=snapshot,
+            VolumeType=voltype,
+            DryRun=dryrun,
+            TagSpecifications=[
+                {
+                    'ResourceType': 'volume',
+                        'Tags': [
+                        {
+                            'Key': tag_key,
+                            'Value': tag_value
+                        },
+                    ]
+                },
+            ],
+            MultiAttachEnabled= multi_attach_enabled
+        )
         return result
 
 
-    def list(self,
-             vm=None,
-             vm_id=None,
-             region=None,
-             zone=None,
-             cloud=None,
-             refresh=False):
+    def list(self, filter_name, filter_value, volume_ids, dryrun):
         """
-        List of volume.
+        Describes the specified EBS volumes or all of your EBS volumes.
 
-        :param vm (string): name of vm
-        :param vm_id (string): vm id
-        :param region (string): name of region
-        :param zone (string): name of availability-zone
-        :param cloud (string): name of cloud
-        :param refresh (boolean): True|False
+        :param filter_name (string)
+        :param filter_value (string)
+        :param volume_ids (list): The volume IDs
         :return: dict
+
         """
         banner(f"list volume")
 
-        if cloud == 'aws':
-            result = Shell.run(f"aws ec2 describe-volumes --region {region}/"
-                           f" --filters Name=attachment.instance-id,Values={vm_id} \
-                           Name=availability-zone,Values={zone}")
-            result = eval(result)['volume']
-            return result
+        client = boto.client('ec2')
+        result = client.describe_volumes(
+            Filters=[
+                {
+                    'Name': filter_name,
+                    'Values': [
+                        filter_value,
+                    ]
+                },
+            ],
+            VolumeIds=[
+                volume_ids,
+            ],
+            DryRun=dryrun,
+            MaxResults=123,
+            NextToken='string'
+        )
+
+        return result
 
 
     def migrate(self,
@@ -197,47 +223,49 @@ class Provider(VolumeABC):
         :param region: the region where the volume will be moved within
         :param service: the service where the volume will be moved within
         :return: dict
+
         """
 
         raise NotImplementedError
 
     def sync(self,
              volume_id,
-             zone,
-             cloud=None):
+             zone=None,
+             cloud=None,
+             dryrun=False
+             ):
         """
         sync contents of one volume to another volume
 
-        :param volume_id (string): id of volume A
+        :param volume_id (string): list of id of volume
         :param zone (string): zone where new volume will be created
         :param cloud (string): the provider where volumes will be hosted
         :return: dict
+
         """
         banner(f"sync volume")
-        if cloud == 'aws':
-            snapshot = Shell.run(f"aws ec2 create-snapshot --volume-id {volume_id}")
-            snapshot_id = snapshot["SnapshotId"]
-            result = p.create(zone=zone, size=None, voltype = 'gp2', iops=1000, snapshot=snapshot_id, encrypted=False)
-            result = eval(result)['volume']
-            return result
+        volume = self.ec2.Volume(volume_id)
+        snapshot = volume.create_snapshot()
+        if zone == None:
+            availability_zone= self.ec2.describe_volumes(VolumeIds=[volume_id])['Volumes'][0]['availability-zone']
+        else:
+            availability_zone = zone
+        result = self.ec2.create_volume(SnapshotId=snapshot, AvailabilityZone = availability_zone, DryRun=dryrun)
+        return result
 
     def mount(self, volume_id, vm_id, device='dev/sdh', dryrun=False):
         """
         mounts volume
+
         :param volume_id (string): volume id
         :param vm_id (string): instance id
         :param device (string): The device name (for example, /dev/sdh or xvdh )
         :param dryrun (boolean): True|False
         :return: dict
 
+        """
         banner(f"mount volume")
-        if cloud == 'aws':
-            result = Shell.run(f"aws ec2 attach-volumes --volume-id {volume_id} --instance-id {vm_id} --device /dev/sdf")
-            result = eval(result)['volume']
-            return result
- """
-        banner(f"mount volume")
-        volume = ec2.Volume(volume_id)
+        volume = self.ec2.Volume(volume_id)
         result = volume.attach_to_instance(
                     Device=device,
                     InstanceId=vm_id,
@@ -262,7 +290,7 @@ class Provider(VolumeABC):
         """
 
         banner(f"unmount volume")
-        volume = ec2.Volume(volume_id)
+        volume = self.ec2.Volume(volume_id)
         result = volume.detach_from_instance(
                     Device=device,
                     Force=force,
@@ -282,7 +310,7 @@ class Provider(VolumeABC):
         """
 
         banner(f"delete volume")
-        volume = ec2.Volume(volume_id)
+        volume = self.ec2.Volume(volume_id)
         result = volume.delete(
             DryRun=dryrun
         )
@@ -292,9 +320,11 @@ class Provider(VolumeABC):
             dryrun=False):
 
         """
-            modify-volume-attribute: resume I/O access to the volume
+            modify-volume-attribute: resume I/O access to the volume, or add or overwrite the specified tags, \
+                                        or modify volume size, volume type, iops value
+
                 :param volume_id <(string): volume id
-                :param attribute (sting): can be "auto_enable_io", "no-auto-enable-io", "tag"
+                :param attribute (sting): can be "auto_enable_io", "tag"
                 :param tag_key (string):Tag keys are case-sensitive and accept a maximum of 127 Unicode characters.
                                         May not begin with aws.
                 :param tag_value (string): Tag values are case-sensitive and accept a maximum of 255 Unicode characters.
@@ -307,7 +337,7 @@ class Provider(VolumeABC):
                 :param dryrun (boolean): True | False
         """
 
-        volume = ec2.Volume(volume_id)
+        volume = self.ec2.Volume(volume_id)
         if attribute == "auto_enable_io":
             result = volume.modify_attribute(
                 AutoEnableIO={
@@ -315,13 +345,7 @@ class Provider(VolumeABC):
                 },
                 DryRun=dryrun
             )
-        elif attribute == "no-auto-enable-io":
-            result = volume.modify_attribute(
-                AutoEnableIO={
-                    'Value': False
-                },
-                DryRun=dryrun
-            )
+
         elif attribute == "tag":
             result = volume.create_tags(
                 DryRun=dryrun,
@@ -332,6 +356,7 @@ class Provider(VolumeABC):
                     },
                 ]
             )
+
         else:
             result = volume.modify_volume(
                 DryRun=dryrun,
@@ -343,27 +368,50 @@ class Provider(VolumeABC):
 
         return result
 
-    def unset(self, volume_id, dryrun):??????????????????????????
+    def unset(self, volume_id, attribute=None, dryrun):
 
         """
-            modify-volume-attribute: suspend I/O access to the volume
+            modify-volume-attribute: suspend I/O access to the volume, or overwrite tag by an empty string
 
-                :param volume_id <(string): volume id
+                :param volume_id (string): volume id
+                :param attribute (sting): "no_auto_enable_io" | "tag"
                 :param dryrun (boolean): True | False
         """
 
-        volume = ec2.Volume(volume_id)
-        result = volume.modify_attribute(
-            AutoEnableIO={
-                'Value': False
-            },
-            DryRun=dryrun
-        )
+        volume = self.ec2.Volume(volume_id)
+        if attribute == "no_auto_enable_io":
+            result = volume.modify_attribute(
+                AutoEnableIO={
+                    'Value': False
+                },
+                DryRun=dryrun
+            )
+
+        elif attribute =="tag":
+            result = volume.create_tags(
+                DryRun=dryrun,
+                Tags=[
+                    {
+                        'Key': " ",
+                        'Value': " "
+                    },
+                ]
+            )
+
         return result
 
 
 
 if __name__ == "__main__":
+    # region = 'us-east-2'
     p = Provider()
     p.create()
     p.list()
+    p.mount()
+    p.set()
+    p.sync()
+    p.unset()
+    p.unmount()
+    p.migrate()
+    p.delete()
+

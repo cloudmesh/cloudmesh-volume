@@ -199,8 +199,7 @@ class Provider(VolumeABC):
                 kms_location=None,
                 kms_project=None,
                 region=None,
-                zone=None,
-                dryrun=False):
+                zone=None):
 
         """
         Create a disk.
@@ -237,7 +236,6 @@ class Provider(VolumeABC):
         :param kms_project: The cloud project for the key
         :param region: Region of the disks to create.
         :param zone: Zone of the disks to create.
-        :param dryrun:
         :return:
         """
         raise NotImplementedError
@@ -245,15 +243,13 @@ class Provider(VolumeABC):
     def delete(self,
                name=None,
                region=None,
-               zone=None,
-               dryrun=False):
+               zone=None):
         """
         Delete a disk
 
         :param name: Name of the disk
         :param region: Region of the disk
         :param zone: Zone of the disk
-        :param dryrun:
         :return:
         """
         raise NotImplementedError
@@ -261,15 +257,13 @@ class Provider(VolumeABC):
     def describe(self,
                  name=None,
                  region=None,
-                 zone=None,
-                 dryrun=False):
+                 zone=None):
         """
         Displays all data associated with a disk in a project.
 
         :param name: Name of the disk
         :param region: Region of the disk
         :param zone: Zone of the disk
-        :param dryrun:
         :return:
         """
         raise NotImplementedError
@@ -283,8 +277,7 @@ class Provider(VolumeABC):
              limit=None,
              page_size=None,
              sort_by=None,
-             uri=None,
-             dryrun=False):
+             uri=None):
         """
         Displays all disks in a project
 
@@ -303,7 +296,6 @@ class Provider(VolumeABC):
         :param sort_by: Comma-separated list of resource field key names
                         to sort by.
         :param uri: Print a list of resource URIs instead of the default output.
-        :param dryrun:
         :return:
         """
         raise NotImplementedError

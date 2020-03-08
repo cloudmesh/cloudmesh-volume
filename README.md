@@ -204,12 +204,12 @@ Write test cases in the form of reproducable pytests
 
 ## Distribution of clouds between team memebers
 
-Azure - Ashley & Xin
-AWS - Ashley & Xin
-Google - Peter & Xin
-Oracle - Ashok & Peter
-Openstack - Peter & Ashok
-Multipass - Ashok & Ashley
+* Azure - Ashley & Xin
+* AWS - Ashley & Xin
+* Google - Peter & Xin
+* Oracle - Ashok & Peter
+* Openstack - Peter & Ashok
+* Multipass - Ashok & Ashley
 
 * Azure
   * Azure CLI: <https://docs.microsoft.com/en-us/cli/azure/netappfiles/volume?view=azure-cli-latest#az-netappfiles-volume-create>

@@ -371,7 +371,7 @@ class Provider(VolumeABC):
 
         return result
 
-    def unset(self, volume_id, attribute=None, dryrun):
+    def unset(self, volume_id, attribute=None, dryrun=False):
 
         """
             modify-volume-attribute: suspend I/O access to the volume, or overwrite tag by an empty string

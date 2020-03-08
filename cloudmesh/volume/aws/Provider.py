@@ -116,22 +116,28 @@ class Provider(VolumeABC):
         :param zone (string): availability-zone
         :param encrypted (boolean): True|False
         :param size (integer): size of volume
-        :param voltype (string): type of volume. This can be gp2 for General Purpose SSD, io1 for Provisioned IOPS SSD,
-                                st1 for Throughput Optimized HDD, sc1 for Cold HDD, or standard for Magnetic volumes.
-        :param iops (integer): The number of I/O operations per second (IOPS) that the volume supports \
+        :param voltype (string): type of volume. This can be gp2 for General
+                                 Purpose SSD, io1 for Provisioned IOPS SSD,
+                                st1 for Throughput Optimized HDD, sc1 for Cold
+                                HDD, or standard for Magnetic volumes.
+        :param iops (integer): The number of I/O operations per second (IOPS)
+                               that the volume supports \
                                 (from 100 to 64,000 for io1 type volume).
-        :param kms_key_id (string): The identifier of the AWS Key Management Service (AWS KMS) customer master key (CMK)\
-                                    to use for Amazon EBS encryption. If KmsKeyId is specified, the encrypted state \
+        :param kms_key_id (string): The identifier of the AWS Key Management
+                                    Service (AWS KMS) customer master key (CMK)\
+                                    to use for Amazon EBS encryption. If
+                                    KmsKeyId is specified, the encrypted state \
                                     must be true.
         :param outpost_arn (string): The Amazon Resource Name (ARN) of the Outpost.
         :param image:
         :param snapshot (string): snapshot id
         :param source:
         :param description (string):
-        :param tag_key (string): Tag keys are case-sensitive and accept a maximum of 127 Unicode characters.
-                                        May not begin with aws.
-        :param tag_value (string): Tag values are case-sensitive and accept a maximum of 255 Unicode characters.
-
+        :param tag_key (string): Tag keys are case-sensitive and accept a
+                                 maximum of 127 Unicode characters.
+                                 May not begin with aws.
+        :param tag_value (string): Tag values are case-sensitive and accept a
+                                   maximum of 255 Unicode characters.
         :param multi_attach_enabled (boolean):
         :return:
 
@@ -250,10 +256,13 @@ class Provider(VolumeABC):
         volume = self.ec2.Volume(volume_id)
         snapshot = volume.create_snapshot()
         if zone == None:
-            availability_zone= self.ec2.describe_volumes(VolumeIds=[volume_id])['Volumes'][0]['availability-zone']
+            availability_zone= self.ec2.describe_volumes(
+                VolumeIds=[volume_id])['Volumes'][0]['availability-zone']
         else:
             availability_zone = zone
-        result = self.ec2.create_volume(SnapshotId=snapshot, AvailabilityZone = availability_zone, DryRun=dryrun)
+        result = self.ec2.create_volume(SnapshotId=snapshot,
+                                        AvailabilityZone=availability_zone,
+                                        DryRun=dryrun)
         return result
 
     def mount(self, volume_id, vm_id, device='dev/sdh', dryrun=False):
@@ -262,7 +271,7 @@ class Provider(VolumeABC):
 
         :param volume_id (string): volume id
         :param vm_id (string): instance id
-        :param device (string): The device name (for example, /dev/sdh or xvdh )
+        :param device (string): The device name (for example, /dev/sdh or xvdh)
         :param dryrun (boolean): True|False
         :return: dict
 
@@ -276,11 +285,15 @@ class Provider(VolumeABC):
                 )
         return result
 
-    def unmount(self, volume_id, vm_id, device='dev/sdh', force=False, dryrun=False):
+    def unmount(self,
+                volume_id, vm_id,
+                device='dev/sdh',
+                force=False,
+                dryrun=False):
         """
         unmounts volume
         :param volume_id (string): volume id
-        :param device (string): The device name (for example, /dev/sdh or xvdh )
+        :param device (string): The device name (for example, /dev/sdh or xvdh)
         :param force (boolean): True|False
         :param dryrun (boolean): True|False
         :return: dict
@@ -305,11 +318,11 @@ class Provider(VolumeABC):
 
     def delete(self, volume_id, dryrun=False):
         """
-                delete volume
+        delete volume
 
-                :param volume_id (string): volume id
-                :param dryrun (boolean): True|False
-                :return: dict
+        :param volume_id (string): volume id
+        :param dryrun (boolean): True|False
+        :return: dict
         """
 
         banner(f"delete volume")
@@ -319,25 +332,39 @@ class Provider(VolumeABC):
         )
         return result
 
-    def set(self, volume_id, attribute=None, tag_key=None, tag_value=None, size=None, voltype=None, iops=None,
+    def set(self,
+            volume_id,
+            attribute=None,
+            tag_key=None,
+            tag_value=None,
+            size=None,
+            voltype=None,
+            iops=None,
             dryrun=False):
 
         """
-            modify-volume-attribute: resume I/O access to the volume, or add or overwrite the specified tags, \
-                                        or modify volume size, volume type, iops value
+            modify-volume-attribute: resume I/O access to the volume, or add or
+                                     overwrite the specified tags, \
+                                     or modify volume size, volume type, iops value
 
-                :param volume_id <(string): volume id
-                :param attribute (sting): can be "auto_enable_io", "tag"
-                :param tag_key (string):Tag keys are case-sensitive and accept a maximum of 127 Unicode characters.
-                                        May not begin with aws.
-                :param tag_value (string): Tag values are case-sensitive and accept a maximum of 255 Unicode characters.
-                :param size (integer): The target size of the volume, in GiB.
-                :param voltype (string): Type of volume. This can be 'gp2' for General Purpose SSD,
-                                        'io1' for Provisioned IOPS SSD, 'st1' for Throughput Optimized HDD,
-                                        'sc1' for Cold HDD, or 'standard' for Magnetic volumes.
-                :param iops (integer): The number of I/O operations per second (IOPS) that the volume supports
-                                        (from 100 to 64,000 for io1 type volume).
-                :param dryrun (boolean): True | False
+            :param volume_id <(string): volume id
+            :param attribute (sting): can be "auto_enable_io", "tag"
+            :param tag_key (string): Tag keys are case-sensitive and accept a
+                                     maximum of 127 Unicode characters.
+                                     May not begin with aws.
+            :param tag_value (string): Tag values are case-sensitive and accept
+                                       a maximum of 255 Unicode characters.
+            :param size (integer): The target size of the volume, in GiB.
+            :param voltype (string): Type of volume. This can be 'gp2' for
+                                     General Purpose SSD,
+                                    'io1' for Provisioned IOPS SSD, 'st1'
+                                    for Throughput Optimized HDD,
+                                    'sc1' for Cold HDD, or 'standard' for
+                                    Magnetic volumes.
+            :param iops (integer): The number of I/O operations per second
+                                   (IOPS) that the volume supports
+                                   (from 100 to 64,000 for io1 type volume).
+            :param dryrun (boolean): True | False
         """
 
         volume = self.ec2.Volume(volume_id)
@@ -374,11 +401,12 @@ class Provider(VolumeABC):
     def unset(self, volume_id, attribute=None, dryrun=False):
 
         """
-            modify-volume-attribute: suspend I/O access to the volume, or overwrite tag by an empty string
+        modify-volume-attribute: suspend I/O access to the volume, or
+        overwrite tag by an empty string
 
-                :param volume_id (string): volume id
-                :param attribute (sting): "no_auto_enable_io" | "tag"
-                :param dryrun (boolean): True | False
+        :param volume_id (string): volume id
+        :param attribute (sting): "no_auto_enable_io" | "tag"
+        :param dryrun (boolean): True | False
         """
 
         volume = self.ec2.Volume(volume_id)

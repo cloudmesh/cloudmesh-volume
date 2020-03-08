@@ -24,6 +24,7 @@ class VolumeABC(metaclass=ABCMeta):
                name=None,
                size=None,
                voltype=None,
+               iops=None,
                image=None,
                snapshot=None,
                source=None,
@@ -34,8 +35,11 @@ class VolumeABC(metaclass=ABCMeta):
         TODO: describe all the parameters
 
         :param name:
+        :param zone: name of availability-zone
         :param size:
         :param voltype:
+        :param iops: The number of I/O operations per second (IOPS) that the volume supports (from 100 to 64,000 for\
+         io1 type volume).
         :param image:
         :param snapshot:
         :param source:
@@ -47,13 +51,16 @@ class VolumeABC(metaclass=ABCMeta):
     @abstractmethod
     def list(self,
              vm=None,
+             vm_id=None,
              region=None,
+             zone=None,
              cloud=None,
              refresh=False):
         """
         List of volume.
 
         :param vm: name of vm
+        :param vm_id: vm id
         :param region: name of region
         :param cloud: name of cloud
         :param refresh: refresh
@@ -98,16 +105,14 @@ class VolumeABC(metaclass=ABCMeta):
 
     @abstractmethod
     def sync(self,
-             vola=None,
-             volb=None,
-             region=None,
+             volume_id=None,
+             zone=None,
              cloud=None):
         """
         sync contents of one volume to another volume
 
-        :param vola: name of volume A
-        :param volb: name of volume B
-        :param region: region where volumes will be stored
+        :param volume_id: id of volume A
+        :param zone: zone where new volume will be created
         :param cloud: the provider where volumes will be hosted
         :return: str
         """
@@ -129,11 +134,13 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def mount(self, path=None,name=None):
+    def mount(self, path=None,name=None,volume_id=None, vm_id=None):
         """
         mounts volume
         :param path: path of the mount
         :param name: the name of the instance
+        :param volume_id: volume id
+        :param vm_id: instance id
         :return: dict
         """
         raise NotImplementedError

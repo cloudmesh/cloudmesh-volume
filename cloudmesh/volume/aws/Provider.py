@@ -14,23 +14,26 @@ class Provider(VolumeABC):
 
     sample = """
     cloudmesh:
-      volume:
+      cloud:
         {name}:
           cm:
             active: true
-            heading: {name}
+            heading: AWS
             host: TBD
             label: {name}
             kind: aws
             version: TBD
-            service: volume
-          credentials:
-            auth:
-              username: $USER
-            key_path: ~/.ssh/id_rsa.pub
+            service: compute
           default:
-            size: m1.medium
-            image: lts
+            image: ami-0c929bde1796e1484
+            size: t2.medium
+          credentials:
+            region: {region}
+            EC2_SECURITY_GROUP: cloudmesh
+            EC2_ACCESS_ID: {EC2_ACCESS_ID}
+            EC2_SECRET_KEY: {EC2_SECRET_KEY}
+            EC2_PRIVATE_KEY_FILE_PATH: ~/.cloudmesh/aws_cert.pem
+            EC2_PRIVATE_KEY_FILE_NAME: aws_cert
     """
 
     vm_state = [

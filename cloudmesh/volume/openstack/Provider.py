@@ -1,4 +1,5 @@
 import pprint
+import openstack
 from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
@@ -170,5 +171,24 @@ class Provider(VolumeABC):
             "header": ["Name", 'Floating', 'Fixed']
         },
     }
+    
     def __init__(self,name):
         self.cloud = name
+        
+    def credentials(self):
+        config = Config()["cloudmesh.cloud.chameleon.credentials"]
+        return config
+
+    def create(self, name=None,size=None,voltype=None):
+        config = self.credentials()
+        con = openstack.connect(**config)
+        con.create_volume(name=name,size=size,volume_type=voltype)
+
+    def delete(self, name=None):
+        config = self.credentials()
+        con = openstack.connect(**config)
+        con.delete_volume(name=name)
+
+    def mount(self,path=None,name=None):
+        return ''
+    

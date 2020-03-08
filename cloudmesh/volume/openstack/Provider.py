@@ -9,7 +9,7 @@ class Provider(VolumeABC):
     kind = "multipass"
 
     sample = """
-    openstack:
+    cloudmesh:
       volume:
         {name}:
           cm:

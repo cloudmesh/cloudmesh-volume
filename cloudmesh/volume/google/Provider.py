@@ -13,7 +13,7 @@ class Provider(VolumeABC):
     kind = "google"
 
     sample = """
-    google:
+    cloudmesh:
       volume:
         {name}:
           cm:

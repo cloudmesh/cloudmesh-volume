@@ -165,13 +165,13 @@ Volume Providers:
     
         * Migrating from Amazon S3 to Cloud Storage
         
-        https://cloud.google.com/storage/docs/migrating#storage-list-buckets-s3-python
+        <https://cloud.google.com/storage/docs/migrating#storage-list-buckets-s3-python>
         
-        https://github.com/adzerk/s3-to-google-cloud-storage-connector
+        <https://github.com/adzerk/s3-to-google-cloud-storage-connector>
         
         * Migrating from Amazon S3 to Azure Blob Storage
         
-        https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/master/README.md
+        <https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/master/README.md>
         
         * Migrating from Amazon S3 to OpenStack
         
@@ -179,11 +179,11 @@ Volume Providers:
     
         * Migrating from Cloud Storage to Amazon S3
         
-        https://www.quora.com/How-can-I-migrate-data-from-Google-cloud-storage-into-AWS-S3-buckets
+        <https://www.quora.com/How-can-I-migrate-data-from-Google-cloud-storage-into-AWS-S3-buckets>
         
         * Migrating from Cloud Storage to Azure Blob Storage
         
-        https://blog.bitscry.com/2019/12/30/data-transfer-google-cloud-storage-to-azure-blob-storage/
+        <https://blog.bitscry.com/2019/12/30/data-transfer-google-cloud-storage-to-azure-blob-storage/>
         
         * Migrating from Cloud Storage to OpenStack
         

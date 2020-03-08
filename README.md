@@ -204,29 +204,34 @@ Write test cases in the form of reproducable pytests
 
 ## Distribution of clouds between team memebers
 
-* Azure - Ashok and Xin
+Azure - Ashley & Xin
+AWS - Ashley & Xin
+Google - Peter & Xin
+Oracle - Ashok & Peter
+Openstack - Peter & Ashok
+Multipass - Ashok & Ashley
+
+* Azure
   * Azure CLI: <https://docs.microsoft.com/en-us/cli/azure/netappfiles/volume?view=azure-cli-latest#az-netappfiles-volume-create>
   * REST: <https://docs.microsoft.com/en-us/rest/api/netapp/volumes>
   
-* AWS - Ashley and Xin and Peter
+* AWS
   * AWS CLI: <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
   * Amazon EBS: <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-volume.html>
 
-* Google - Ashley and Xin
+* Google
   * Gcloud container clusters: <https://cloud.google.com/sdk/gcloud/reference/container/clusters>
   * Google books API: <https://developers.google.com/books/docs/v1/reference/volumes>
   
-* Oracle - Ashok and Peter
+* Oracle
   * API: <https://docs.cloud.oracle.com/en-us/iaas/api/#/en/iaas/20160918/Volume/>
   * OCI CLI: <https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/2.9.3/oci_cli_docs/cmdref/bv/volume.html>
 
-* Openstack - Ashok and Ashley and Peter
-
+* Openstack
   * python: <https://docs.openstack.org/python-cinderclient/latest/>
   * REST: <https://docs.openstack.org/api-ref/block-storage/>
   
-* Multipass - Ashok and Ashley 
-
+* Multipass
   * <https://freshbrewed.science/ubuntu-multipass-part-deux/index.html>
      
 ## <https://cloudmesh.github.io/cloudmesh-manual/>

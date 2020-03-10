@@ -7,6 +7,7 @@ from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 import boto3
 import boto
+from cloudmesh.common.DateTime import DateTime
 
 
 class Provider(VolumeABC):
@@ -69,6 +70,55 @@ class Provider(VolumeABC):
                        "VolumeType"],
         }
     }
+
+    def update_dict(self, elements, kind=None):
+        """
+        This function adds a cloudmesh cm dict to each dict in the list
+        elements.
+        Libcloud
+        returns an object or list of objects With the dict method
+        this object is converted to a dict. Typically this method is used
+        internally.
+
+        :param elements: the list of original dicts. If elements is a single
+                         dict a list with a single element is returned.
+        :param kind: for some kinds special attributes are added. This includes
+                     key, vm, image, flavor.
+        :return: The list with the modified dicts
+        """
+
+        if elements is None:
+            return None
+        elif type(elements) == list:
+            _elements = elements
+        else:
+            _elements = [elements]
+        d = []
+        for entry in _elements:
+
+            if "cm" not in entry:
+                entry['cm'] = {}
+
+            if kind == 'ip':
+                entry['name'] = entry['floating_ip_address']
+
+            entry["cm"].update({
+                "kind": kind,
+                "driver": self.cloudtype,
+                "cloud": self.cloud,
+                "name": entry['name']
+            })
+
+            if kind == 'volume':
+
+                entry["cm"]["created"] = entry["updated"] = str(
+                    DateTime.now())
+
+
+            d.append(entry)
+        return d
+
+
 
     def __init__(self, name):
         self.cloud = name

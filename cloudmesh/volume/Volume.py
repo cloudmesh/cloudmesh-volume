@@ -43,5 +43,7 @@ class Provider(VolumeABC):
     def mount(self, path=None,name=None):
         self.provider.mount(path,name)
 
-
-
+    # @DatabaseUpdate
+    # def list(self, name=None):
+    #    #(...)
+    #    # list of dicts

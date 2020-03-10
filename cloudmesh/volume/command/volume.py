@@ -93,8 +93,9 @@ class VolumeCommand(PluginCommand):
               --service=SERVICE                 specify the service where the volume is moving within
               --state=STATE                     specify the state of the volume
               --retype-policy=RETYPE-POLICY     specify the retype-policy
-              --property=PROPERTY               specify key for volume
-              --image-property=IMAGE-PROPERTY   specify image-key for volume
+              --property=PROPERTY               specify property for the volume
+              --image-property=IMAGE-PROPERTY   specify property of the image
+                                                    for the volume
 
 
           Commands:

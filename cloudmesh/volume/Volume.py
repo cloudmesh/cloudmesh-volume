@@ -15,6 +15,30 @@ from cloudmesh.configuration.Config import Config
 class Provider(VolumeABC):
     #kind = "multipass"
 
+    @staticmethod
+    def get_provider(kind):
+
+        if kind == "multipass":
+            from cloudmesh.volume.multipass.Provider import Provider as P
+
+        elif kind == "aws":
+            from cloudmesh.volume.aws.Provider import Provider as P
+
+        elif kind == "azure":
+            from cloudmesh.volume.azure.Provider import Provider as P
+
+        elif kind == "google":
+            from cloudmesh.volume.google.Provider import Provider as P
+
+        elif kind == "openstack":
+            from cloudmesh.volume.openstack.Provider import Provider as P
+
+        elif kind == "oracle":
+            from cloudmesh.volume.oracle.Provider import Provider as P
+
+        return P
+
+
     def __init__(self, name=None, configuration="~/.cloudmesh/cloudmesh.yaml"):
         conf = Config(configuration)["cloudmesh"]
         # self.user = conf["profile"]
@@ -32,42 +56,9 @@ class Provider(VolumeABC):
         # BUG: the test must be self.kind and not self.cloud
         #
 
-        self.provider = self.get_provider(self.kind)
+        P = Provider.get_provider(self.kind)
 
-    def get_provider(self, kind):
-
-        if self.kind == "multipass":
-            from cloudmesh.volume.multipass.Provider import \
-                Provider as MulitpassProvider
-            self.provider = MulitpassProvider(self.cloud)
-
-        elif self.kind == "aws":
-            from cloudmesh.volume.aws.Provider import \
-                Provider as AwsProvider
-            self.provider = AwsProvider(self.cloud)
-
-        elif self.kind == "azure":
-            from cloudmesh.volume.azure.Provider import \
-                Provider as AzureProvider
-            self.provider = AzureProvider(self.cloud)
-
-        elif self.kind == "google":
-            from cloudmesh.volume.google.Provider import \
-                Provider as GoogleProvider
-            self.provider = GoogleProvider(self.cloud)
-
-        elif self.kind == "openstack":
-            from cloudmesh.volume.openstack.Provider import \
-                Provider as OpenstackProvider
-            self.provider = OpenstackProvider(self.cloud)
-
-        elif self.kind == "oracle":
-            from cloudmesh.volume.oracle.Provider import \
-                Provider as OracleProvider
-            self.provider = OracleProvider(self.cloud)
-
-        return self.provider
-
+        self.provider = P(self.cloud)
 
     def create(self, name=None):  #, **args):
         #banner(f"mount {name}")

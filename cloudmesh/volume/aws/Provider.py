@@ -75,31 +75,6 @@ class Provider(VolumeABC):
     }
 
     def __init__(self,name):
-        """
-                Initializes the provider. The default parameters are read from the
-                configuration file that is defined in yaml format.
-                :param name: The name of the provider as defined in the yaml file
-                :param configuration: The location of the yaml configuration file
-
-        configuration = configuration if configuration is not None \
-            else CLOUDMESH_YAML_PATH
-
-        conf = Config(configuration)["cloudmesh"]
-
-        self.user = Config()["cloudmesh"]["profile"]["user"]
-
-        self.spec = conf["cloud"][name]
-        self.cloud = name
-
-        cred = self.spec["credentials"]
-        self.default = self.spec["default"]
-        self.cloudtype = self.spec["cm"]["kind"]
-        super().__init__(name, configuration)
-
-        # update credentials with the passed dict
-        if credentials is not None:
-            cred.update(credentials)
-        """
         self.cloud = name
         self.ec2 = boto3.resource('ec2')
 

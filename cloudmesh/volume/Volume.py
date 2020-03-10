@@ -16,6 +16,16 @@ class Provider(VolumeABC):
     #kind = "multipass"
 
     @staticmethod
+    def get_kind():
+        kind = ["multipass",
+                "aws",
+                "azure",
+                "google",
+                "openstack",
+                "oracle"]
+        return kind
+
+    @staticmethod
     def get_provider(kind):
 
         if kind == "multipass":

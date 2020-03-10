@@ -25,8 +25,10 @@ class Provider(VolumeABC):
             version: TBD
             service: compute
           default:
-            image: ami-0c929bde1796e1484
-            size: t2.medium
+            size: ??
+            name: {name}
+            image: WRONG
+            size: WRONG
           credentials:
             region: {region}
             EC2_SECURITY_GROUP: cloudmesh
@@ -36,30 +38,9 @@ class Provider(VolumeABC):
             EC2_PRIVATE_KEY_FILE_NAME: aws_cert
     """
 
-    vm_state = [
-        'ACTIVE',
-        'BUILDING',
-        'DELETED',
-        'ERROR',
-        'HARD_REBOOT',
-        'PASSWORD',
-        'PAUSED',
-        'REBOOT',
-        'REBUILD',
-        'RESCUED',
-        'RESIZED',
-        'REVERT_RESIZE',
-        'SHUTOFF',
-        'SOFT_DELETED',
-        'STOPPED',
-        'SUSPENDED',
-        'UNKNOWN',
-        'VERIFY_RESIZE'
-    ]
-
     output = {
 
-       "volume": {
+        "volume": {
             "sort_keys": ["cm.name"],
             "order": ["cm.name",
                       "cm.cloud",
@@ -88,7 +69,8 @@ class Provider(VolumeABC):
                        "VolumeType"],
         }
     }
-    def __init__(self,name):
+
+    def __init__(self, name):
         self.cloud = name
         self.ec2 = boto3.resource('ec2')
 
@@ -96,7 +78,7 @@ class Provider(VolumeABC):
                name=None,
                zone=None,
                size=None,
-               voltype=gp2,
+               voltype="gp2",
                iops=1000,
                kms_key_id=None,
                outpost_arn=None,
@@ -157,7 +139,7 @@ class Provider(VolumeABC):
             TagSpecifications=[
                 {
                     'ResourceType': 'volume',
-                        'Tags': [
+                    'Tags': [
                         {
                             'Key': tag_key,
                             'Value': tag_value
@@ -165,10 +147,9 @@ class Provider(VolumeABC):
                     ]
                 },
             ],
-            MultiAttachEnabled= multi_attach_enabled
+            MultiAttachEnabled=multi_attach_enabled
         )
         return result
-
 
     def list(self, filter_name, filter_value, volume_ids, dryrun):
         """
@@ -201,7 +182,6 @@ class Provider(VolumeABC):
         )
 
         return result
-
 
     def migrate(self,
                 name=None,
@@ -255,8 +235,8 @@ class Provider(VolumeABC):
         banner(f"sync volume")
         volume = self.ec2.Volume(volume_id)
         snapshot = volume.create_snapshot()
-        if zone == None:
-            availability_zone= self.ec2.describe_volumes(
+        if zone is None:
+            availability_zone = self.ec2.describe_volumes(
                 VolumeIds=[volume_id])['Volumes'][0]['availability-zone']
         else:
             availability_zone = zone
@@ -279,10 +259,10 @@ class Provider(VolumeABC):
         banner(f"mount volume")
         volume = self.ec2.Volume(volume_id)
         result = volume.attach_to_instance(
-                    Device=device,
-                    InstanceId=vm_id,
-                    DryRun=dryrun
-                )
+            Device=device,
+            InstanceId=vm_id,
+            DryRun=dryrun
+        )
         return result
 
     def unmount(self,
@@ -308,13 +288,12 @@ class Provider(VolumeABC):
         banner(f"unmount volume")
         volume = self.ec2.Volume(volume_id)
         result = volume.detach_from_instance(
-                    Device=device,
-                    Force=force,
-                    InstanceId=vm_id,
-                    DryRun=dryrun
-                )
+            Device=device,
+            Force=force,
+            InstanceId=vm_id,
+            DryRun=dryrun
+        )
         return result
-
 
     def delete(self, volume_id, dryrun=False):
         """
@@ -418,7 +397,7 @@ class Provider(VolumeABC):
                 DryRun=dryrun
             )
 
-        elif attribute =="tag":
+        elif attribute == "tag":
             result = volume.create_tags(
                 DryRun=dryrun,
                 Tags=[
@@ -430,7 +409,6 @@ class Provider(VolumeABC):
             )
 
         return result
-
 
 
 if __name__ == "__main__":
@@ -446,15 +424,16 @@ if __name__ == "__main__":
     p.migrate()
     p.delete()
 
-#Ashley's work
-    def mount(self,path=None,name=None):
+    # Ashley's work
+    def mount(self, path=None, name=None):
         banner(f"mount {path} {name}")
         os.system(f"aws mount {path}  {name}")
         dict_result = self._get_mount_status(name)
         print(dict_result)
         return dict_result
 
-    def _get_mount_status(self,name=None):
+
+    def _get_mount_status(self, name=None):
         result = Shell.run(f"aws info {name} --format=json")
 
         if f'instance "{name}" does not exist' in result:
@@ -470,4 +449,3 @@ if __name__ == "__main__":
                 'mounts': result["info"][name]['mounts']
             }
         return dict_result
-

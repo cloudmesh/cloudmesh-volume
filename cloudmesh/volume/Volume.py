@@ -32,9 +32,9 @@ class Provider(VolumeABC):
         # BUG: the test must be self.kind and not self.cloud
         #
 
-        self.provider = self.get(self.kind)
+        self.provider = self.get_provider(self.kind)
 
-    def get(self, kind):
+    def get_provider(self, kind):
 
         if self.kind == "multipass":
             from cloudmesh.volume.multipass.Provider import \

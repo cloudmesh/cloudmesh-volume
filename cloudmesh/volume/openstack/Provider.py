@@ -6,7 +6,7 @@ from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 
 class Provider(VolumeABC):
-    kind = "multipass"
+    kind = "opensatck"
 
     sample = """
     cloudmesh:

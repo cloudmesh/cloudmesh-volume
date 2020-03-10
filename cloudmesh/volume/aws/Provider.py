@@ -9,8 +9,6 @@ from cloudmesh.configuration.Config import Config
 import boto3
 import boto
 
-CLOUDMESH_YAML_PATH = "~/.cloudmesh/cloudmesh.yaml"
-
 class Provider(VolumeABC):
     kind = "aws"
 
@@ -80,7 +78,12 @@ class Provider(VolumeABC):
 
     def update_dict(self, elements, kind=None):
         """
-        converts the dict into a list
+        This function adds a cloudmesh cm dict to each dict in the list
+        elements.
+        Libcloud
+        returns an object or list of objects With the dict method
+        this object is converted to a dict. Typically this method is used
+        internally.
 
         :param elements: the list of original dicts. If elements is a single
                          dict a list with a single element is returned.
@@ -91,48 +94,29 @@ class Provider(VolumeABC):
 
         if elements is None:
             return None
-
+        elif type(elements) == list:
+            _elements = elements
+        else:
+            _elements = [elements]
         d = []
-        for key, entry in elements.items():
-
-            entry['name'] = key
+        for entry in _elements:
 
             if "cm" not in entry:
                 entry['cm'] = {}
 
-            # if kind == 'ip':
-            #    entry['name'] = entry['floating_ip_address']
+            if kind == 'ip':
+                entry['name'] = entry['floating_ip_address']
 
             entry["cm"].update({
                 "kind": kind,
                 "driver": self.cloudtype,
                 "cloud": self.cloud,
-                "name": key
+                "name": entry['name']
             })
 
-            if kind == 'vm':
-
-                entry["cm"]["updated"] = str(DateTime.now())
-
-                # if 'public_v4' in entry:
-                #    entry['ip_public'] = entry['public_v4']
-
-                # if "created_at" in entry:
-                #    entry["cm"]["created"] = str(entry["created_at"])
-                # del entry["created_at"]
-                #    if 'status' in entry:
-                #        entry["cm"]["status"] = str(entry["status"])
-                # else:
-                #    entry["cm"]["created"] = entry["modified"]
-
-            elif kind == 'image':
-
+            if kind == 'volume':
                 entry["cm"]["created"] = entry["updated"] = str(
                     DateTime.now())
-
-            # elif kind == 'version':
-
-            #    entry["cm"]["created"] = str(DateTime.now())
 
             d.append(entry)
         return d

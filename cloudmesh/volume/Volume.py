@@ -44,7 +44,27 @@ class Provider(VolumeABC):
         elif self.kind == "aws":
             from cloudmesh.volume.aws.Provider import \
                 Provider as AwsProvider
-            self.provider = AwsProvider(self.cloud) #
+            self.provider = AwsProvider(self.cloud)
+
+        elif self.kind == "azure":
+            from cloudmesh.volume.azure.Provider import \
+                Provider as AzureProvider
+            self.provider = AzureProvider(self.cloud)
+
+        elif self.kind == "google":
+            from cloudmesh.volume.google.Provider import \
+                Provider as GoogleProvider
+            self.provider = GoogleProvider(self.cloud)
+
+        elif self.kind == "openstack":
+            from cloudmesh.volume.openstack.Provider import \
+                Provider as OpenstackProvider
+            self.provider = OpenstackProvider(self.cloud)
+
+        elif self.kind == "oracle":
+            from cloudmesh.volume.oracle.Provider import \
+                Provider as OracleProvider
+            self.provider = OracleProvider(self.cloud)
 
         return self.provider
 

@@ -116,7 +116,7 @@ class Provider(VolumeABC):
 
             if kind == 'volume':
                 entry["cm"]["created"] = entry["updated"] = str(
-                    DateTime.now())
+                    datetime.now())
 
             d.append(entry)
         return d

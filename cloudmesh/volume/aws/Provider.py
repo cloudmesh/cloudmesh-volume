@@ -3,11 +3,13 @@ import json
 
 from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
+from datetime import datetime
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 import boto3
 import boto
 
+CLOUDMESH_YAML_PATH = "~/.cloudmesh/cloudmesh.yaml"
 
 class Provider(VolumeABC):
     kind = "aws"
@@ -25,8 +27,12 @@ class Provider(VolumeABC):
             version: TBD
             service: compute
           default:
-            image: ami-0c929bde1796e1484
-            size: t2.medium
+            volume_type: "gp2"
+            size: 2
+            iops: 1000
+            encrypted: False
+            multi_attach_enabled: True
+            tag_key: "volume"
           credentials:
             region: {region}
             EC2_SECURITY_GROUP: cloudmesh
@@ -35,27 +41,6 @@ class Provider(VolumeABC):
             EC2_PRIVATE_KEY_FILE_PATH: ~/.cloudmesh/aws_cert.pem
             EC2_PRIVATE_KEY_FILE_NAME: aws_cert
     """
-
-    vm_state = [
-        'ACTIVE',
-        'BUILDING',
-        'DELETED',
-        'ERROR',
-        'HARD_REBOOT',
-        'PASSWORD',
-        'PAUSED',
-        'REBOOT',
-        'REBUILD',
-        'RESCUED',
-        'RESIZED',
-        'REVERT_RESIZE',
-        'SHUTOFF',
-        'SOFT_DELETED',
-        'STOPPED',
-        'SUSPENDED',
-        'UNKNOWN',
-        'VERIFY_RESIZE'
-    ]
 
     output = {
 
@@ -88,15 +73,100 @@ class Provider(VolumeABC):
                        "VolumeType"],
         }
     }
+
     def __init__(self,name):
+        """
+                Initializes the provider. The default parameters are read from the
+                configuration file that is defined in yaml format.
+                :param name: The name of the provider as defined in the yaml file
+                :param configuration: The location of the yaml configuration file
+
+        configuration = configuration if configuration is not None \
+            else CLOUDMESH_YAML_PATH
+
+        conf = Config(configuration)["cloudmesh"]
+
+        self.user = Config()["cloudmesh"]["profile"]["user"]
+
+        self.spec = conf["cloud"][name]
+        self.cloud = name
+
+        cred = self.spec["credentials"]
+        self.default = self.spec["default"]
+        self.cloudtype = self.spec["cm"]["kind"]
+        super().__init__(name, configuration)
+
+        # update credentials with the passed dict
+        if credentials is not None:
+            cred.update(credentials)
+        """
         self.cloud = name
         self.ec2 = boto3.resource('ec2')
+
+    def update_dict(self, elements, kind=None):
+        """
+        converts the dict into a list
+
+        :param elements: the list of original dicts. If elements is a single
+                         dict a list with a single element is returned.
+        :param kind: for some kinds special attributes are added. This includes
+                     key, vm, image, flavor.
+        :return: The list with the modified dicts
+        """
+
+        if elements is None:
+            return None
+
+        d = []
+        for key, entry in elements.items():
+
+            entry['name'] = key
+
+            if "cm" not in entry:
+                entry['cm'] = {}
+
+            # if kind == 'ip':
+            #    entry['name'] = entry['floating_ip_address']
+
+            entry["cm"].update({
+                "kind": kind,
+                "driver": self.cloudtype,
+                "cloud": self.cloud,
+                "name": key
+            })
+
+            if kind == 'vm':
+
+                entry["cm"]["updated"] = str(DateTime.now())
+
+                # if 'public_v4' in entry:
+                #    entry['ip_public'] = entry['public_v4']
+
+                # if "created_at" in entry:
+                #    entry["cm"]["created"] = str(entry["created_at"])
+                # del entry["created_at"]
+                #    if 'status' in entry:
+                #        entry["cm"]["status"] = str(entry["status"])
+                # else:
+                #    entry["cm"]["created"] = entry["modified"]
+
+            elif kind == 'image':
+
+                entry["cm"]["created"] = entry["updated"] = str(
+                    DateTime.now())
+
+            # elif kind == 'version':
+
+            #    entry["cm"]["created"] = str(DateTime.now())
+
+            d.append(entry)
+        return d
 
     def create(self,
                name=None,
                zone=None,
-               size=None,
-               voltype=gp2,
+               size=2,
+               volume_type="gp2",
                iops=1000,
                kms_key_id=None,
                outpost_arn=None,
@@ -105,8 +175,8 @@ class Provider(VolumeABC):
                encrypted=False,
                source=None,
                description=None,
-               tag_key=None,
-               tag_value=None,
+               tag_key="volume",
+               #tag_value=None,
                multi_attach_enabled=True,
                dryrun=False):
         """
@@ -116,7 +186,7 @@ class Provider(VolumeABC):
         :param zone (string): availability-zone
         :param encrypted (boolean): True|False
         :param size (integer): size of volume
-        :param voltype (string): type of volume. This can be gp2 for General Purpose SSD, io1 for Provisioned IOPS SSD,
+        :param volume_type (string): type of volume. This can be gp2 for General Purpose SSD, io1 for Provisioned IOPS SSD,
                                 st1 for Throughput Optimized HDD, sc1 for Cold HDD, or standard for Magnetic volumes.
         :param iops (integer): The number of I/O operations per second (IOPS) that the volume supports \
                                 (from 100 to 64,000 for io1 type volume).
@@ -146,7 +216,7 @@ class Provider(VolumeABC):
             OutpostArn=outpost_arn,
             Size=size,
             SnapshotId=snapshot,
-            VolumeType=voltype,
+            VolumeType=volume_type,
             DryRun=dryrun,
             TagSpecifications=[
                 {
@@ -154,7 +224,7 @@ class Provider(VolumeABC):
                         'Tags': [
                         {
                             'Key': tag_key,
-                            'Value': tag_value
+                            'Value': description
                         },
                     ]
                 },
@@ -319,7 +389,7 @@ class Provider(VolumeABC):
         )
         return result
 
-    def set(self, volume_id, attribute=None, tag_key=None, tag_value=None, size=None, voltype=None, iops=None,
+    def set(self, volume_id, attribute=None, tag_key=None, tag_value=None, size=None, volume_type=None, iops=None,
             dryrun=False):
 
         """
@@ -332,7 +402,7 @@ class Provider(VolumeABC):
                                         May not begin with aws.
                 :param tag_value (string): Tag values are case-sensitive and accept a maximum of 255 Unicode characters.
                 :param size (integer): The target size of the volume, in GiB.
-                :param voltype (string): Type of volume. This can be 'gp2' for General Purpose SSD,
+                :param volume_type (string): Type of volume. This can be 'gp2' for General Purpose SSD,
                                         'io1' for Provisioned IOPS SSD, 'st1' for Throughput Optimized HDD,
                                         'sc1' for Cold HDD, or 'standard' for Magnetic volumes.
                 :param iops (integer): The number of I/O operations per second (IOPS) that the volume supports
@@ -365,13 +435,13 @@ class Provider(VolumeABC):
                 DryRun=dryrun,
                 VolumeId=volume_id,
                 Size=size,
-                VolumeType=voltype,
+                VolumeType=volume_type,
                 Iops=iops
             )
 
         return result
 
-    def unset(self, volume_id, attribute=None, dryrun):
+    def unset(self, volume_id, attribute=None, dryrun=False):
 
         """
             modify-volume-attribute: suspend I/O access to the volume, or overwrite tag by an empty string

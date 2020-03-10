@@ -8,7 +8,7 @@ class Provider(VolumeABC):
     kind = "oracle"
 
     sample = """
-    oracle:
+    cloudmesh:
       volume:
         {name}:
           cm:

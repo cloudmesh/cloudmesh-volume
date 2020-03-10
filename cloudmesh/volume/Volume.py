@@ -24,8 +24,13 @@ class Provider(VolumeABC):
         #deft = self.spec["default"]
         #self.cloudtype = self.spec["cm"]["kind"]
         super().__init__(name, conf)
+
         print(self.cloud)
         #print(self.cloudtype)
+
+        #
+        # BUG: the test must be self.kind and not self.cloud
+        #
         if self.cloud == "multipass":
             from cloudmesh.volume.multipass.Provider import \
                 Provider as MulitpassProvider
@@ -38,5 +43,7 @@ class Provider(VolumeABC):
     def mount(self, path=None,name=None):
         self.provider.mount(path,name)
 
-
-
+    # @DatabaseUpdate
+    # def list(self, name=None):
+    #    #(...)
+    #    # list of dicts

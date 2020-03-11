@@ -51,30 +51,19 @@ class Provider(VolumeABC):
 
     def __init__(self, name=None, configuration="~/.cloudmesh/cloudmesh.yaml"):
         conf = Config(configuration)["cloudmesh"]
-        # self.user = conf["profile"]
-        #self.spec = conf["cloud"][name]
+        self.spec = conf["volume"][name]
         self.cloud = name
-        #cred = self.spec["credentials"]
-        #deft = self.spec["default"]
         self.kind = self.spec["cm"]["kind"]
         super().__init__(name, conf)
 
-        print(self.cloud)
-        #print(self.cloudtype)
-
-        #
-        # BUG: the test must be self.kind and not self.cloud
-        #
-
         P = Provider.get_provider(self.kind)
-
         self.provider = P(self.cloud)
 
-    def create(self, name=None):  #, **args):
+    def create(self, **kwargs):  #, **args):
         #banner(f"mount {name}")
         # #os.system(f"multipass mount /Users/ashok/multipass-mount  {name}")
 
-        self.provider.create(name)
+        self.provider.create(**kwargs)
         """
         name = args["name"]
         def create(self,
@@ -95,6 +84,9 @@ class Provider(VolumeABC):
                    multi_attach_enabled=True,
                    dryrun=False):
         """
+        
+    def delete(self,name=None):
+        self.provider.delete(name)
 
     def mount(self, path=None,name=None):
         self.provider.mount(path,name)

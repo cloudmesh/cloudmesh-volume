@@ -20,15 +20,7 @@ class VolumeABC(metaclass=ABCMeta):
             print(e)
 
     @abstractmethod
-    def create(self,
-               name=None,
-               size=None,
-               voltype=None,
-               iops=None,
-               image=None,
-               snapshot=None,
-               source=None,
-               description=None):
+    def create(self,**kwargs):
         """
         Create a volume.
 
@@ -142,5 +134,14 @@ class VolumeABC(metaclass=ABCMeta):
         :param volume_id: volume id
         :param vm_id: instance id
         :return: dict
+        """
+        raise NotImplementedError
+        
+    @abstractmethod
+    def delete(self,name=None):
+        """
+        Delete volume
+        :param name:
+        :return:
         """
         raise NotImplementedError

@@ -190,6 +190,13 @@ class Provider(VolumeABC):
         config = self.credentials()
         con = openstack.connect(**config)
         con.delete_volume(name_or_id=name)
+        
+    def list(self):
+        config = self.credentials()
+        con = openstack.connect(**config)
+        result = con.list_volumes()
+        print(result)
+
 
     def mount(self,path=None,name=None):
         return ''

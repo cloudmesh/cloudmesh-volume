@@ -32,7 +32,6 @@ class VolumeCommand(PluginCommand):
                               [--region=REGION]
                               [--cloud=CLOUD]
                               [--refresh]
-                              [--dryrun]
                 volume migrate NAME
                               [--fregion=FROM REGION]
                               [--tregion=TO REGION]
@@ -213,23 +212,19 @@ class VolumeCommand(PluginCommand):
                 p.delete(name=name)
 
         elif arguments.list:
-            if arguments.dryrun:
-                banner("dryrun list")
-            else:
-                # provider = Provider()
-                # provider.list(vm=vm, region=region, cloud=cloud, refresh=TRUE)
-                print("list volume is not yet implemented!")
 
-            if arguments.dryrun:
-                banner("dryrun list")
+            variables = Variables()
+
+            name = arguments.NAME or variables['volume']
+
+            if name is None:
+                Console.error("No volume specified")
             else:
-                provider = Provider()
-                list = provider.list()
+                provider = Provider(name=name)
 
                 print(provider.Print(list,
                                      kind='volume',
                                      output=arguments.output))
-
             return ""
 
         elif arguments.migrate:

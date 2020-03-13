@@ -11,7 +11,7 @@ from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
-
+from cloudmesh.mongo.DataBaseDecorator import DatabaseUpdate
 
 class Provider(VolumeABC):
     # kind = "multipass"
@@ -90,7 +90,7 @@ class Provider(VolumeABC):
     def mount(self, path=None, name=None):
         self.provider.mount(path, name)
 
-    # @DatabaseUpdate
-    # def list(self, name=None):
-    #    #(...)
-    #    # list of dicts
+    @DatabaseUpdate()
+    def list(self, **kwargs):
+        data = self.provider.list(kwargs)
+        return data

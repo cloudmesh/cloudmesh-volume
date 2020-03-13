@@ -197,7 +197,11 @@ class Provider(VolumeABC):
 
         return result
 
-    def list(self, filter_name, filter_value, volume_ids, dryrun):
+    def list(self,
+             filter_name=None,
+             filter_value=None,
+             volume_ids=None,
+             dryrun=False):
         """
         Describes the specified EBS volumes or all of your EBS volumes.
 

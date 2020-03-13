@@ -23,7 +23,7 @@ class VolumeCommand(PluginCommand):
           Usage:
                 volume create NAME
                               [--size=SIZE]
-                              [--voltype=VOLUME-TYPE]
+                              [--voltype=VOLUME_TYPE]
                               [--image=IMAGE | --snapshot=SNAPSHOT | --source=VOLUME]
                               [--description=DESCRIPTION]
                               [--dryrun]
@@ -33,12 +33,12 @@ class VolumeCommand(PluginCommand):
                               [--cloud=CLOUD]
                               [--refresh]
                 volume migrate NAME
-                              [--fregion=FROM REGION]
-                              [--tregion=TO REGION]
-                              [--fservice=FROM SERVICE]
-                              [--tservice=TO SERVICE]
-                              [--fcloud=FROM CLOUD]
-                              [--tcloud=TO CLOUD]
+                              [--fregion=FROM_REGION]
+                              [--tregion=TO_REGION]
+                              [--fservice=FROM_SERVICE]
+                              [--tservice=TO_SERVICE]
+                              [--fcloud=FROM_CLOUD]
+                              [--tcloud=TO_CLOUD]
                               [--cloud=CLOUD]
                               [--region=REGION]
                               [--service=SERVICE]
@@ -47,8 +47,8 @@ class VolumeCommand(PluginCommand):
                               [--size=SIZE]
                               [--description=DESCRIPTION]
                               [--state=STATE]
-                              [--voltype=VOLUME-TYPE]
-                              [--retype-policy=RETYPE-POLICY]
+                              [--voltype=VOLUME_TYPE]
+                              [--retype-policy=RETYPE_POLICY]
                               [--bootable | --non-bootable]
                               [--read-only | --read-write]
                               [--dryrun]
@@ -59,7 +59,7 @@ class VolumeCommand(PluginCommand):
                               [--dryrun]
                 volume unset NAME
                               [--property=PROPERTY]
-                              [--image-property=IMAGE-PROPERTY]
+                              [--image-property=IMAGE_PROPERTY]
                               [--dryrun]
                 volume mount PATH NAME
                               [--dryrun]
@@ -75,26 +75,23 @@ class VolumeCommand(PluginCommand):
           Options:
               --cloud=CLOUD                     specify cloud name
               --size=SIZE                       specify size of volume
-              --voltype=VOLUME-TYPE                specify type of volume
+              --voltype=VOLUME_TYPE                specify type of volume
               --image=IMAGE                     specify source
               --description=DESCRIPTION         specify description
-              --vm=VM NAME                      specify the name of vm
+              --vm=VM_NAME                      specify the name of vm
               --region=REGION                   specify the region
-              --cloud=CLOUD                     specify the provider
               --refresh                         refresh
-              --fregion=FROM REGION             specify the region where the volume is moving from
-              --tregion=TO REGION               specify the region where the volume is moving to
-              --fservice=FROM SERVICE           specify the service where the volume is moving from
-              --tservice=TO SERVICE             specify the service where the volume is moving to
-              --fcloud=FROM CLOUD               specify the provider where the volume is moving from
-              --tcloud=TO CLOUD                 specify the provider where the volume is moving to
-              --cloud=CLOUD                     specify the provider where the volume is moving within
-              --region=REGION                   specify the region where the volume is moving within
+              --fregion=FROM_REGION             specify the region where the volume is moving from
+              --tregion=TO_REGION               specify the region where the volume is moving to
+              --fservice=FROM_SERVICE           specify the service where the volume is moving from
+              --tservice=TO_SERVICE             specify the service where the volume is moving to
+              --fcloud=FROM_CLOUD               specify the provider where the volume is moving from
+              --tcloud=TO_CLOUD                 specify the provider where the volume is moving to
               --service=SERVICE                 specify the service where the volume is moving within
               --state=STATE                     specify the state of the volume
-              --retype-policy=RETYPE-POLICY     specify the retype-policy
+              --retype-policy=RETYPE_POLICY     specify the retype-policy
               --property=PROPERTY               specify property for the volume
-              --image-property=IMAGE-PROPERTY   specify property of the image
+              --image-property=IMAGE_PROPERTY   specify property of the image
                                                     for the volume
 
 

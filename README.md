@@ -139,8 +139,7 @@ Volume Providers:
 
     python api: 
     
-    <https://cloud.google.com/sdk>
-    <https://cloud.google.com/sdk/gcloud/reference/compute/disks>
+    <http://googleapis.github.io/google-api-python-client/docs/dyn/compute_v1.html>
     
     REST api: 
     
@@ -220,8 +219,9 @@ Write test cases in the form of reproducable pytests
   * Amazon EBS: <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-volume.html>
 
 * Google
-  * Gcloud container clusters: <https://cloud.google.com/sdk/gcloud/reference/container/clusters>
-  * Google books API: <https://developers.google.com/books/docs/v1/reference/volumes>
+  * Google SDK for CLI: <https://cloud.google.com/sdk>
+  * GCP refers to volumes as 'disks'
+    <https://cloud.google.com/sdk/gcloud/reference/compute/disks>
   
 * Oracle
   * API: <https://docs.cloud.oracle.com/en-us/iaas/api/#/en/iaas/20160918/Volume/>

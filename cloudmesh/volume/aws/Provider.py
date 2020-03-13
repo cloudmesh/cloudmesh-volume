@@ -12,7 +12,7 @@ from cloudmesh.common.DateTime import DateTime
 
 
 class Provider(VolumeABC):
-    kind = "aws"
+    kind = "volume"
 
     sample = """
     cloudmesh:
@@ -72,11 +72,12 @@ class Provider(VolumeABC):
         }
     }
 
-    def __init__(self, name):
-        self.cloud = name
+    def __init__(self, name=None):
+        self.cloud = "aws"
+        self.name = name
         self.ec2 = boto3.resource('ec2')
 
-    def update_dict(self, elements, kind=None):
+    def update_dict(self, elements):
         """
         This function adds a cloudmesh cm dict to each dict in the list
         elements.
@@ -104,19 +105,15 @@ class Provider(VolumeABC):
             if "cm" not in entry:
                 entry['cm'] = {}
 
-            if kind == 'ip':
-                entry['name'] = entry['floating_ip_address']
-
             entry["cm"].update({
-                "kind": kind,
+                "kind": "volume",
                 "driver": self.cloudtype,
                 "cloud": self.cloud,
-                "name": entry['name']
+                "name": self.name
             })
 
-            if kind == 'volume':
-                entry["cm"]["created"] = entry["updated"] = str(
-                    datetime.now())
+            entry["cm"]["created"] = entry["updated"] = str(
+                datetime.now())
 
             d.append(entry)
         return d
@@ -195,6 +192,9 @@ class Provider(VolumeABC):
             ],
             MultiAttachEnabled=multi_attach_enabled
         )
+        result = [result]
+        result = self.update_dict(result)
+
         return result
 
     def list(self, filter_name, filter_value, volume_ids, dryrun):
@@ -226,6 +226,8 @@ class Provider(VolumeABC):
             MaxResults=123,
             NextToken='string'
         )
+
+        result = self.update_dict(result)
 
         return result
 
@@ -289,6 +291,7 @@ class Provider(VolumeABC):
         result = self.ec2.create_volume(SnapshotId=snapshot,
                                         AvailabilityZone=availability_zone,
                                         DryRun=dryrun)
+        # This is wrong not updated
         return result
 
     def mount(self, volume_id, vm_id, device='dev/sdh', dryrun=False):
@@ -309,6 +312,7 @@ class Provider(VolumeABC):
             InstanceId=vm_id,
             DryRun=dryrun
         )
+        # This is wrong not updated
         return result
 
     def unmount(self,
@@ -339,6 +343,7 @@ class Provider(VolumeABC):
             InstanceId=vm_id,
             DryRun=dryrun
         )
+        # This is wrong not updated
         return result
 
     def delete(self, volume_id, dryrun=False):
@@ -355,6 +360,7 @@ class Provider(VolumeABC):
         result = volume.delete(
             DryRun=dryrun
         )
+        # This is wrong not updated
         return result
 
     def set(self,
@@ -417,10 +423,11 @@ class Provider(VolumeABC):
                 DryRun=dryrun,
                 VolumeId=volume_id,
                 Size=size,
-                VolumeType=volume_type,
+                VolumeType=volume_type, # BUG
                 Iops=iops
             )
 
+        # This is wrong not updated
         return result
 
     def unset(self, volume_id, attribute=None, dryrun=False):
@@ -453,7 +460,7 @@ class Provider(VolumeABC):
                     },
                 ]
             )
-
+        # This is wrong not updated
         return result
 
 

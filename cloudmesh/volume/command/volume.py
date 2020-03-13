@@ -9,12 +9,13 @@ from cloudmesh.volume.Volume import Provider
 from cloudmesh.common.variables import Variables
 
 # from cloudmesh.volume.openstack.Provider import Provider
+from cloudmesh.volume.aws.Provider import Provider
 
 class VolumeCommand(PluginCommand):
 
     # noinspection PyUnusedLocal
     @command
-    def do_volume(self, args, arguments):
+    def do_volume(self, arguments, **kwargs):
         """
         ::
 
@@ -133,10 +134,17 @@ class VolumeCommand(PluginCommand):
         map_parameters(arguments,
                        "dryrun",
                        "cloud",
+                       "name",
                        "size",
-                       "voltype",
+                       "volume_type",
+                       "iops",
+                       "kms_key_id",
+                       "outpost_arn",
+                       "snapshot",
+                       "encrypted",
+                       "description",
+                       "multi_attach_enabled",
                        "image",
-                       "descripton",
                        "vm",
                        "region"
                        "cloud",
@@ -157,46 +165,40 @@ class VolumeCommand(PluginCommand):
         VERBOSE(arguments)
 
         if arguments.create:
+            # volume create NAME
+            #              [--size=SIZE]
+            #              [--type=VOLUME-TYPE]
+            #              [--image=IMAGE | --snapshot=SNAPSHOT | --source =VOLUME]
+            #              [--description=DESCRIPTION]
+            #              [--dryrun]
 
-
-
+            # top: from ??? import Provider
+            # volume = Provider()
+            # r = volume.create( name = arguments.name, size=argument.ssize, ???????? )
+            #
+            # do somthing with the r
+            # print (r) # is typically json
             if arguments.dryrun:
                 banner("dryrun create")
             else:
-                size = arguments["--size"]
-                volumetype = arguments["--type"]
-                #provider = Provider()
-                #provider.create(name=name, size=size, voltype=voltype, image=image, snapshot=snapshot, source=source, description=description)
-                print("create volume is not yet implemented!")
-
-
-                #volume create NAME
-                #              [--size=SIZE]
-                #              [--type=VOLUME-TYPE]
-                #              [--image=IMAGE | --snapshot=SNAPSHOT | --source =VOLUME]
-                #              [--description=DESCRIPTION]
-                #              [--dryrun]
-
-                # top: from ??? import Provider
-                # volume = Provider()
-                # r = volume.create( name = arguments.name, size=argument.ssize, ???????? )
-                #
-                # do somthing with the r
-                # print (r) # is typically json
-                if (arguments.cloud):
-                    cloud = arguments.cloud
-                else:
-                    variables = Variables()
-                    cloud = variables['cloud']
-                    p = Provider(name=cloud)
-                    size = arguments.size;
-                    voltype=arguments.voltype
-                    kwargs = {
-                        "name": name,
-                        "size": arguments.size,
-                        "voltype": arguments.voltype
-                    }
-                    p.create(**kwargs)
+                variables = Variables()
+                kind = variables['kind']
+                p = Provider(name=kind)
+                kwargs = {
+                    "name": name,
+                    "size": arguments.size,
+                    "volume_type": arguments.volume_type,
+                    "iops": arguments.iops,
+                    "kms_key_id": arguments.kms_key_id,
+                    "outpost_arn": arguments.outpost_arn,
+                    "snapshot": arguments.snapshot,
+                    "encrypted": arguments.encrypted,
+                    "description": arguments.description,
+                    "multi_attach_enabled": arguments.multi_attach_enabled
+                }
+                p.create(**kwargs)
+                result = p.create(**kwargs)
+                print(result)
 
         elif arguments.delete:
             if arguments.dryrun:
@@ -216,6 +218,18 @@ class VolumeCommand(PluginCommand):
                 # provider = Provider()
                 # provider.list(vm=vm, region=region, cloud=cloud, refresh=TRUE)
                 print("list volume is not yet implemented!")
+
+            if arguments.dryrun:
+                banner("dryrun list")
+            else:
+                provider = Provider()
+                list = provider.list()
+
+                print(provider.Print(list,
+                                     kind='volume',
+                                     output=arguments.output))
+
+            return ""
 
         elif arguments.migrate:
             if arguments.dryrun:

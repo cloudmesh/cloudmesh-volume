@@ -59,13 +59,10 @@ class Provider(VolumeABC):
         P = Provider.get_provider(self.kind)
         self.provider = P(self.cloud)
 
-    def create(self, **kwargs):  #, **args):
-        #banner(f"mount {name}")
-        # #os.system(f"multipass mount /Users/ashok/multipass-mount  {name}")
-
+    def create(self, **kwargs):
         self.provider.create(**kwargs)
         """
-        name = args["name"]
+        name = kwargs["name"]
         def create(self,
                    name=None,
                    zone=None,

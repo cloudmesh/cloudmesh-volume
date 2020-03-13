@@ -31,7 +31,6 @@ class Provider(VolumeABC):
             iops: 1000
             encrypted: False
             multi_attach_enabled: True
-            tag_key: "volume"
           credentials:
             region: {region}
             EC2_SECURITY_GROUP: cloudmesh
@@ -136,8 +135,6 @@ class Provider(VolumeABC):
                encrypted=False,
                source=None,
                description=None,
-               tag_key="volume",
-               #tag_value=None,
                multi_attach_enabled=True,
                dryrun=False):
         """
@@ -190,7 +187,7 @@ class Provider(VolumeABC):
                     'ResourceType': 'volume',
                     'Tags': [
                         {
-                            'Key': tag_key,
+                            'Key': "volume",
                             'Value': description
                         },
                     ]

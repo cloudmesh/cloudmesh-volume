@@ -26,6 +26,8 @@ def readfile(filename):
 
 requiers = """
 psutil
+boto
+boto3
 """.splitlines()
 
 requiers_cloudmesh = """

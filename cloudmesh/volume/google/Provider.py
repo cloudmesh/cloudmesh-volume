@@ -9,6 +9,7 @@ from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 
+
 class Provider(VolumeABC):
     kind = "google"
 
@@ -175,32 +176,32 @@ class Provider(VolumeABC):
             "header": ["Name", 'Floating', 'Fixed']
         },
     }
-    def __init__(self,name):
+
+    def __init__(self, name):
         self.cloud = name
 
     def create(self,
-                name=None,
-                csek_key_file=None,
-                description=None,
-                guest_os_features=None,
-                labels=None,
-                licenses=None,
-                replica_zones=None,
-                resources_policies=None,
-                require_csek_key=False,
-                size=None,
-                type=None,
-                image_project=None,
-                image=None,
-                image_family=None,
-                source_snapshot=None,
-                kms_key=None,
-                kms_keyring=None,
-                kms_location=None,
-                kms_project=None,
-                region=None,
-                zone=None):
-
+               name=None,
+               csek_key_file=None,
+               description=None,
+               guest_os_features=None,
+               labels=None,
+               licenses=None,
+               replica_zones=None,
+               resources_policies=None,
+               require_csek_key=False,
+               size=None,
+               type=None,
+               image_project=None,
+               image=None,
+               image_family=None,
+               source_snapshot=None,
+               kms_key=None,
+               kms_keyring=None,
+               kms_location=None,
+               kms_project=None,
+               region=None,
+               zone=None):
         """
         Create a disk.
 

@@ -6,6 +6,7 @@ from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 
+
 class Provider(VolumeABC):
     kind = "multipass"
 
@@ -172,17 +173,18 @@ class Provider(VolumeABC):
             "header": ["Name", 'Floating', 'Fixed']
         },
     }
-    def __init__(self,name):
+
+    def __init__(self, name):
         self.cloud = name
 
-    def mount(self,path=None,name=None):
+    def mount(self, path=None, name=None):
         banner(f"mount {path} {name}")
         os.system(f"multipass mount {path}  {name}")
         dict_result = self._get_mount_status(name)
         print(dict_result)
         return dict_result
 
-    def _get_mount_status(self,name=None):
+    def _get_mount_status(self, name=None):
         result = Shell.run(f"multipass info {name} --format=json")
 
         if f'instance "{name}" does not exist' in result:

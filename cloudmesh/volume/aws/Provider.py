@@ -10,6 +10,7 @@ import boto3
 import boto
 from cloudmesh.common.DateTime import DateTime
 
+
 class Provider(VolumeABC):
     kind = "aws"
 
@@ -56,7 +57,6 @@ class Provider(VolumeABC):
                       "Iops",
                       "Tags",
                       "VolumeType"],
-
             "header": ["Name",
                        "Cloud",
                        "AvailabilityZone",
@@ -72,8 +72,7 @@ class Provider(VolumeABC):
         }
     }
 
-
-    def __init__(self,name):
+    def __init__(self, name):
         self.cloud = name
         self.ec2 = boto3.resource('ec2')
 
@@ -145,16 +144,17 @@ class Provider(VolumeABC):
         :param encrypted (boolean): True|False
         :param size (integer): size of volume
 
-        :param volume_type (string): type of volume. This can be gp2 for General Purpose SSD, io1 for Provisioned IOPS SSD,
-                                st1 for Throughput Optimized HDD, sc1 for Cold HDD, or standard for Magnetic volumes.
-        :param iops (integer): The number of I/O operations per second (IOPS) that the volume supports \
+        :param volume_type (string): type of volume. This can be gp2 for General
+                                     Purpose SSD, io1 for Provisioned IOPS SSD,
+                                    st1 for Throughput Optimized HDD, sc1 for
+                                    Cold HDD, or standard for Magnetic volumes.
         :param iops (integer): The number of I/O operations per second (IOPS)
-                               that the volume supports \
-                                (from 100 to 64,000 for io1 type volume).
+                               that the volume supports
+                               (from 100 to 64,000 for io1 type volume).
         :param kms_key_id (string): The identifier of the AWS Key Management
-                                    Service (AWS KMS) customer master key (CMK)\
+                                    Service (AWS KMS) customer master key (CMK)
                                     to use for Amazon EBS encryption. If
-                                    KmsKeyId is specified, the encrypted state \
+                                    KmsKeyId is specified, the encrypted state
                                     must be true.
         :param outpost_arn (string): The Amazon Resource Name (ARN) of the Outpost.
         :param image:
@@ -469,6 +469,7 @@ if __name__ == "__main__":
     p.unmount()
     p.migrate()
     p.delete()
+
 
     # Ashley's work
     def mount(self, path=None, name=None):

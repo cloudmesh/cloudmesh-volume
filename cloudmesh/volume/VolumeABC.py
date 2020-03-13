@@ -1,9 +1,10 @@
-from abc import ABCMeta,abstractmethod
+from abc import ABCMeta, abstractmethod
 from cloudmesh.configuration.Config import Config
+
 
 class VolumeABC(metaclass=ABCMeta):
 
-    #def __init__(self, cloud):
+    # def __init__(self, cloud):
     #    raise NotImplementedError
 
     def __init__(self, cloud, path):
@@ -16,11 +17,11 @@ class VolumeABC(metaclass=ABCMeta):
             self.experiment = config["default"]["experiment"]
 
         except Exception as e:
-            #raise ValueError(f"storage service {service} not specified")
+            # raise ValueError(f"storage service {service} not specified")
             print(e)
 
     @abstractmethod
-    def create(self,**kwargs):
+    def create(self, **kwargs):
         """
         Create a volume.
 
@@ -126,7 +127,7 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def mount(self, path=None,name=None,volume_id=None, vm_id=None):
+    def mount(self, path=None, name=None, volume_id=None, vm_id=None):
         """
         mounts volume
         :param path: path of the mount
@@ -136,9 +137,9 @@ class VolumeABC(metaclass=ABCMeta):
         :return: dict
         """
         raise NotImplementedError
-        
+
     @abstractmethod
-    def delete(self,name=None):
+    def delete(self, name=None):
         """
         Delete volume
         :param name:

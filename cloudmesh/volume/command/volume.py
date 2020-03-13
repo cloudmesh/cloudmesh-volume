@@ -11,6 +11,7 @@ from cloudmesh.common.variables import Variables
 # from cloudmesh.volume.openstack.Provider import Provider
 from cloudmesh.volume.aws.Provider import Provider
 
+
 class VolumeCommand(PluginCommand):
 
     # noinspection PyUnusedLocal
@@ -178,7 +179,6 @@ class VolumeCommand(PluginCommand):
             # do somthing with the r
             # print (r) # is typically json
 
-
             if arguments.dryrun:
                 banner("dryrun create")
             else:
@@ -240,7 +240,7 @@ class VolumeCommand(PluginCommand):
                 # provider.migrate(name=name, fregion=fregion, tregion=tregion, fservice=fservice, tservice=tservice,
                 # fcloud=fcloud, tcloud=tcloud, cloud=cloud, region=region, service=service)
                 print("migrate volume is not yet implemented!")
-                
+
         elif arguments.set:
             if arguments.dryrun:
                 banner("dryrun set")
@@ -248,7 +248,7 @@ class VolumeCommand(PluginCommand):
                 # provider = Provider()
                 # provider.set(name=name, size=size, description=description, state=state, voltype=voltype, retype=policy=retype=policy)
                 print("set volume is not yet implemented!")
-                
+
         elif arguments.show:
             if arguments.dryrun:
                 banner("dryrun show")

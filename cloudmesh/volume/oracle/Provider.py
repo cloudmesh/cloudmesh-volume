@@ -4,6 +4,7 @@ from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 
+
 class Provider(VolumeABC):
     kind = "oracle"
 
@@ -170,5 +171,6 @@ class Provider(VolumeABC):
             "header": ["Name", 'Floating', 'Fixed']
         },
     }
-    def __init__(self,name):
+
+    def __init__(self, name):
         self.cloud = name

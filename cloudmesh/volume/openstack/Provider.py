@@ -6,6 +6,7 @@ from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 from cloudmesh.common.dotdict import dotdict
 
+
 class Provider(VolumeABC):
     kind = "opensatck"
 
@@ -172,8 +173,8 @@ class Provider(VolumeABC):
             "header": ["Name", 'Floating', 'Fixed']
         },
     }
-    
-    def __init__(self,name):
+
+    def __init__(self, name):
         self.cloud = name
 
     def credentials(self):
@@ -184,20 +185,19 @@ class Provider(VolumeABC):
         config = self.credentials()
         con = openstack.connect(**config)
         arguments = dotdict(kwargs)
-        con.create_volume(name=arguments.name,size=arguments.size,volume_type=arguments.voltype)
+        con.create_volume(name=arguments.name, size=arguments.size,
+                          volume_type=arguments.voltype)
 
     def delete(self, name=None):
         config = self.credentials()
         con = openstack.connect(**config)
         con.delete_volume(name_or_id=name)
-        
+
     def list(self):
         config = self.credentials()
         con = openstack.connect(**config)
         result = con.list_volumes()
         print(result)
 
-
-    def mount(self,path=None,name=None):
+    def mount(self, path=None, name=None):
         return ''
-    

@@ -12,8 +12,9 @@ from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 
+
 class Provider(VolumeABC):
-    #kind = "multipass"
+    # kind = "multipass"
 
     @staticmethod
     def get_kind():
@@ -47,7 +48,6 @@ class Provider(VolumeABC):
             from cloudmesh.volume.oracle.Provider import Provider as P
 
         return P
-
 
     def __init__(self,
                  name=None,
@@ -84,11 +84,11 @@ class Provider(VolumeABC):
                    dryrun=False):
         """
 
-    def delete(self,name=None):
+    def delete(self, name=None):
         self.provider.delete(name)
 
-    def mount(self, path=None,name=None):
-        self.provider.mount(path,name)
+    def mount(self, path=None, name=None):
+        self.provider.mount(path, name)
 
     # @DatabaseUpdate
     # def list(self, name=None):

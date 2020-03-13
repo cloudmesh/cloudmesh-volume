@@ -23,7 +23,7 @@ class VolumeCommand(PluginCommand):
                 volume create NAME
                               [--size=SIZE]
                               [--voltype=VOLUME-TYPE]
-                              [--image=IMAGE | --snapshot=SNAPSHOT | --source =VOLUME]
+                              [--image=IMAGE | --snapshot=SNAPSHOT | --source=VOLUME]
                               [--description=DESCRIPTION]
                               [--dryrun]
                 volume delete NAME [--dryrun]

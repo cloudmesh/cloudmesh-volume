@@ -49,7 +49,9 @@ class Provider(VolumeABC):
         return P
 
 
-    def __init__(self, name=None, configuration="~/.cloudmesh/cloudmesh.yaml"):
+    def __init__(self,
+                 name=None,
+                 configuration="~/.cloudmesh/cloudmesh.yaml"):
         conf = Config(configuration)["cloudmesh"]
         self.spec = conf["volume"][name]
         self.cloud = name

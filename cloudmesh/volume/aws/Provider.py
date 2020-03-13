@@ -24,7 +24,7 @@ class Provider(VolumeABC):
             label: {name}
             kind: aws
             version: TBD
-            service: compute
+            service: volume
           default:
             volume_type: "gp2"
             size: 2

@@ -168,7 +168,7 @@ class VolumeCommand(PluginCommand):
             # volume create NAME
             #              [--size=SIZE]
             #              [--type=VOLUME-TYPE]
-            #              [--image=IMAGE | --snapshot=SNAPSHOT | --source =VOLUME]
+            #              [--image=IMAGE | --snapshot=SNAPSHOT | --source=VOLUME]
             #              [--description=DESCRIPTION]
             #              [--dryrun]
 
@@ -178,6 +178,8 @@ class VolumeCommand(PluginCommand):
             #
             # do somthing with the r
             # print (r) # is typically json
+
+
             if arguments.dryrun:
                 banner("dryrun create")
             else:

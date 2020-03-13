@@ -13,8 +13,9 @@ from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 from cloudmesh.mongo.DataBaseDecorator import DatabaseUpdate
 
-class Provider(VolumeABC):
-    # kind = "multipass"
+#class Provider(VolumeABC): # correct
+class Provider(object): #broken
+# kind = "multipass"
 
     @staticmethod
     def get_kind():

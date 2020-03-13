@@ -11,30 +11,58 @@ from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
+import datatime
 
 class Provider(VolumeABC):
     #kind = "multipass"
 
-    def __init__(self, name=None, configuration="~/.cloudmesh/cloudmesh.yaml"):
-        conf = Config(configuration)["cloudmesh"]
-        # self.user = conf["profile"]
-        #self.spec = conf["cloud"][name]
-        self.cloud = name
-        #cred = self.spec["credentials"]
-        #deft = self.spec["default"]
-        #self.cloudtype = self.spec["cm"]["kind"]
-        super().__init__(name, conf)
 
-        print(self.cloud)
-        #print(self.cloudtype)
+    def __init__(self,
+                 name=None,
+                 configuration="~/.cloudmesh/cloudmesh.yaml"):
+        try:
+            super().__init__(name, configuration)
+            self.kind = Config(configuration)[f"cloudmesh.cloud.{name}.cm.kind"]
+            self.credentials = Config(configuration)[
+                f"cloudmesh.cloud.{name}.credentials"]
+            self.name = name
+        except:
+            Console.error(f"provider {name} not found in {configuration}")
+            raise ValueError(f"provider {name} not found in {configuration}")
 
-        #
-        # BUG: the test must be self.kind and not self.cloud
-        #
-        if self.cloud == "multipass":
-            from cloudmesh.volume.multipass.Provider import \
-                Provider as MulitpassProvider
-            self.provider = MulitpassProvider(self.cloud)
+        provider = None
+
+        providers = ProviderList()
+
+        if self.kind in ['openstack']:
+            from cloudmesh.openstack.compute.Provider import \
+                Provider as OpenStackComputeProvider
+            provider = OpenStackComputeProvider
+
+        elif self.kind in ['google']:
+            from cloudmesh.google.compute.Provider import \
+                Provider as GoogleComputeProvider
+            provider = GoogleComputeProvider
+
+        elif self.kind in ['azure']:
+            from cloudmesh.azure.compute.Provider import \
+                Provider as AzureComputeProvider
+            provider = AzureComputeProvider
+
+        elif self.kind in ['aws']:
+            from cloudmesh.aws.compute.Provider import \
+                Provider as AWSComputeProvider
+            provider = AWSComputeProvider
+
+        if provider is None:
+            Console.error(f"provider {name} not supported")
+            raise ValueError(f"provider {name} not supported")
+
+        self.p = provider(name=name, configuration=configuration)
+
+    @DatabaseUpdate()
+    def list(self, **kwargs):
+        return self.p.list(**kwargs)
 
     def create(self, name=None):
         banner(f"mount {name}")

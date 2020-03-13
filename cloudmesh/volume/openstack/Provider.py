@@ -4,9 +4,10 @@ from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
+from cloudmesh.common.dotdict import dotdict
 
 class Provider(VolumeABC):
-    kind = "multipass"
+    kind = "opensatck"
 
     sample = """
     cloudmesh:
@@ -174,20 +175,28 @@ class Provider(VolumeABC):
     
     def __init__(self,name):
         self.cloud = name
-        
+
     def credentials(self):
-        config = Config()["cloudmesh.cloud.chameleon.credentials"]
+        config = Config()["cloudmesh.volume.openstack.credentials"]
         return config
 
-    def create(self, name=None,size=None,voltype=None):
+    def create(self, **kwargs):
         config = self.credentials()
         con = openstack.connect(**config)
-        con.create_volume(name=name,size=size,volume_type=voltype)
+        arguments = dotdict(kwargs)
+        con.create_volume(name=arguments.name,size=arguments.size,volume_type=arguments.voltype)
 
     def delete(self, name=None):
         config = self.credentials()
         con = openstack.connect(**config)
-        con.delete_volume(name=name)
+        con.delete_volume(name_or_id=name)
+        
+    def list(self):
+        config = self.credentials()
+        con = openstack.connect(**config)
+        result = con.list_volumes()
+        print(result)
+
 
     def mount(self,path=None,name=None):
         return ''

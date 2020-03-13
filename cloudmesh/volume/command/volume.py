@@ -21,7 +21,7 @@ class VolumeCommand(PluginCommand):
           Usage:
                 volume create NAME
                               [--size=SIZE]
-                              [--type=VOLUME-TYPE]
+                              [--voltype=VOLUME-TYPE]
                               [--image=IMAGE | --snapshot=SNAPSHOT | --source =VOLUME]
                               [--description=DESCRIPTION]
                               [--dryrun]
@@ -47,7 +47,7 @@ class VolumeCommand(PluginCommand):
                               [--size=SIZE]
                               [--description=DESCRIPTION]
                               [--state=STATE]
-                              [--type=VOLUME-TYPE]
+                              [--voltype=VOLUME-TYPE]
                               [--retype-policy=RETYPE-POLICY]
                               [--bootable | --non-bootable]
                               [--read-only | --read-write]
@@ -62,7 +62,7 @@ class VolumeCommand(PluginCommand):
                               [--image-property=IMAGE-PROPERTY]
                               [--dryrun]
                 volume mount PATH NAME
-                              [--cloud=CLOUD]
+                              [--dryrun]
 
           A simple abstraction layer to manage Cloud Volumes for AWS, Azure, Google, Openstack and Multipass
 
@@ -75,7 +75,7 @@ class VolumeCommand(PluginCommand):
           Options:
               --cloud=CLOUD                     specify cloud name
               --size=SIZE                       specify size of volume
-              --type=VOLUME-TYPE                specify type of volume
+              --voltype=VOLUME-TYPE                specify type of volume
               --image=IMAGE                     specify source
               --description=DESCRIPTION         specify description
               --vm=VM NAME                      specify the name of vm
@@ -98,11 +98,12 @@ class VolumeCommand(PluginCommand):
                                                     for the volume
 
 
-          Commands:
+          Description:
             Create volume
               cms volume create NAME
               Optionally you can provide size, volume type, image or description
             Delete volume NAME
+              cms volume delete NAME
             List volume
               cms volume list
               Optionally you can provide vm name, region, provider, refresh
@@ -120,7 +121,7 @@ class VolumeCommand(PluginCommand):
             Unset volume
               cms volume unset NAME
               Optionally you can provide property, image-property
-            mount path name
+            Mount path name
               cms volume mount path name
 
 
@@ -133,7 +134,7 @@ class VolumeCommand(PluginCommand):
                        "dryrun",
                        "cloud",
                        "size",
-                       "type",
+                       "voltype",
                        "image",
                        "descripton",
                        "vm",
@@ -182,14 +183,31 @@ class VolumeCommand(PluginCommand):
                 #
                 # do somthing with the r
                 # print (r) # is typically json
+                if (arguments.cloud):
+                    cloud = arguments.cloud
+                else:
+                    variables = Variables()
+                    cloud = variables['cloud']
+                    p = Provider(name=cloud)
+                    size = arguments.size;
+                    voltype=arguments.voltype
+                    kwargs = {
+                        "name": name,
+                        "size": arguments.size,
+                        "voltype": arguments.voltype
+                    }
+                    p.create(**kwargs)
 
         elif arguments.delete:
             if arguments.dryrun:
                 banner("dryrun delete")
+            if (arguments.cloud):
+                cloud = arguments.cloud
             else:
-                # provider = Provider()
-                # provider.delete(name=name)
-                print("delete volume is not yet implemented!")
+                variables = Variables()
+                cloud = variables['cloud']
+                p = Provider(name=cloud)
+                p.delete(name=name)
 
         elif arguments.list:
             if arguments.dryrun:
@@ -249,7 +267,7 @@ class VolumeCommand(PluginCommand):
                     variables = Variables()
                     cloud = variables['cloud']
                     print(cloud)
-                p = Provider(name=cloud)
-                p.mount(path=path, name=name)
+                    p = Provider(name=cloud)
+                    p.mount(path=path, name=name)
 
         return ""

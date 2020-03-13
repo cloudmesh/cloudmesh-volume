@@ -11,62 +11,82 @@ from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
-import datatime
 
 class Provider(VolumeABC):
     #kind = "multipass"
 
+    @staticmethod
+    def get_kind():
+        kind = ["multipass",
+                "aws",
+                "azure",
+                "google",
+                "openstack",
+                "oracle"]
+        return kind
 
-    def __init__(self,
-                 name=None,
-                 configuration="~/.cloudmesh/cloudmesh.yaml"):
-        try:
-            super().__init__(name, configuration)
-            self.kind = Config(configuration)[f"cloudmesh.cloud.{name}.cm.kind"]
-            self.credentials = Config(configuration)[
-                f"cloudmesh.cloud.{name}.credentials"]
-            self.name = name
-        except:
-            Console.error(f"provider {name} not found in {configuration}")
-            raise ValueError(f"provider {name} not found in {configuration}")
+    @staticmethod
+    def get_provider(kind):
 
-        provider = None
+        if kind == "multipass":
+            from cloudmesh.volume.multipass.Provider import Provider as P
 
-        providers = ProviderList()
+        elif kind == "aws":
+            from cloudmesh.volume.aws.Provider import Provider as P
 
-        if self.kind in ['openstack']:
-            from cloudmesh.openstack.compute.Provider import \
-                Provider as OpenStackComputeProvider
-            provider = OpenStackComputeProvider
+        elif kind == "azure":
+            from cloudmesh.volume.azure.Provider import Provider as P
 
-        elif self.kind in ['google']:
-            from cloudmesh.google.compute.Provider import \
-                Provider as GoogleComputeProvider
-            provider = GoogleComputeProvider
+        elif kind == "google":
+            from cloudmesh.volume.google.Provider import Provider as P
 
-        elif self.kind in ['azure']:
-            from cloudmesh.azure.compute.Provider import \
-                Provider as AzureComputeProvider
-            provider = AzureComputeProvider
+        elif kind == "openstack":
+            from cloudmesh.volume.openstack.Provider import Provider as P
 
-        elif self.kind in ['aws']:
-            from cloudmesh.aws.compute.Provider import \
-                Provider as AWSComputeProvider
-            provider = AWSComputeProvider
+        elif kind == "oracle":
+            from cloudmesh.volume.oracle.Provider import Provider as P
 
-        if provider is None:
-            Console.error(f"provider {name} not supported")
-            raise ValueError(f"provider {name} not supported")
+        return P
 
-        self.p = provider(name=name, configuration=configuration)
 
-    @DatabaseUpdate()
-    def list(self, **kwargs):
-        return self.p.list(**kwargs)
+    def __init__(self, name=None, configuration="~/.cloudmesh/cloudmesh.yaml"):
+        conf = Config(configuration)["cloudmesh"]
+        self.spec = conf["volume"][name]
+        self.cloud = name
+        self.kind = self.spec["cm"]["kind"]
+        super().__init__(name, conf)
 
-    def create(self, name=None):
-        banner(f"mount {name}")
-        os.system(f"multipass mount /Users/ashok/multipass-mount  {name}")
+        P = Provider.get_provider(self.kind)
+        self.provider = P(self.cloud)
+
+    def create(self, **kwargs):  #, **args):
+        #banner(f"mount {name}")
+        # #os.system(f"multipass mount /Users/ashok/multipass-mount  {name}")
+
+        self.provider.create(**kwargs)
+        """
+        name = args["name"]
+        def create(self,
+                   name=None,
+                   zone=None,
+                   size=None,
+                   voltype="gp2",
+                   iops=1000,
+                   kms_key_id=None,
+                   outpost_arn=None,
+                   image=None,
+                   snapshot=None,
+                   encrypted=False,
+                   source=None,
+                   description=None,
+                   tag_key=None,
+                   tag_value=None,
+                   multi_attach_enabled=True,
+                   dryrun=False):
+        """
+
+    def delete(self,name=None):
+        self.provider.delete(name)
 
     def mount(self, path=None,name=None):
         self.provider.mount(path,name)

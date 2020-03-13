@@ -3,12 +3,12 @@ import json
 
 from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
+from datetime import datetime
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 import boto3
 import boto
 from cloudmesh.common.DateTime import DateTime
-
 
 class Provider(VolumeABC):
     kind = "aws"
@@ -26,10 +26,12 @@ class Provider(VolumeABC):
             version: TBD
             service: compute
           default:
-            size: ??
-            name: {name}
-            image: WRONG
-            size: WRONG
+            volume_type: "gp2"
+            size: 2
+            iops: 1000
+            encrypted: False
+            multi_attach_enabled: True
+            tag_key: "volume"
           credentials:
             region: {region}
             EC2_SECURITY_GROUP: cloudmesh
@@ -71,6 +73,11 @@ class Provider(VolumeABC):
         }
     }
 
+
+    def __init__(self,name):
+        self.cloud = name
+        self.ec2 = boto3.resource('ec2')
+
     def update_dict(self, elements, kind=None):
         """
         This function adds a cloudmesh cm dict to each dict in the list
@@ -110,25 +117,17 @@ class Provider(VolumeABC):
             })
 
             if kind == 'volume':
-
                 entry["cm"]["created"] = entry["updated"] = str(
-                    DateTime.now())
-
+                    datetime.now())
 
             d.append(entry)
         return d
 
-
-
-    def __init__(self, name):
-        self.cloud = name
-        self.ec2 = boto3.resource('ec2')
-
     def create(self,
                name=None,
                zone=None,
-               size=None,
-               voltype="gp2",
+               size=2,
+               volume_type="gp2",
                iops=1000,
                kms_key_id=None,
                outpost_arn=None,
@@ -137,8 +136,8 @@ class Provider(VolumeABC):
                encrypted=False,
                source=None,
                description=None,
-               tag_key=None,
-               tag_value=None,
+               tag_key="volume",
+               #tag_value=None,
                multi_attach_enabled=True,
                dryrun=False):
         """
@@ -148,10 +147,10 @@ class Provider(VolumeABC):
         :param zone (string): availability-zone
         :param encrypted (boolean): True|False
         :param size (integer): size of volume
-        :param voltype (string): type of volume. This can be gp2 for General
-                                 Purpose SSD, io1 for Provisioned IOPS SSD,
-                                st1 for Throughput Optimized HDD, sc1 for Cold
-                                HDD, or standard for Magnetic volumes.
+
+        :param volume_type (string): type of volume. This can be gp2 for General Purpose SSD, io1 for Provisioned IOPS SSD,
+                                st1 for Throughput Optimized HDD, sc1 for Cold HDD, or standard for Magnetic volumes.
+        :param iops (integer): The number of I/O operations per second (IOPS) that the volume supports \
         :param iops (integer): The number of I/O operations per second (IOPS)
                                that the volume supports \
                                 (from 100 to 64,000 for io1 type volume).
@@ -184,7 +183,7 @@ class Provider(VolumeABC):
             OutpostArn=outpost_arn,
             Size=size,
             SnapshotId=snapshot,
-            VolumeType=voltype,
+            VolumeType=volume_type,
             DryRun=dryrun,
             TagSpecifications=[
                 {
@@ -192,7 +191,7 @@ class Provider(VolumeABC):
                     'Tags': [
                         {
                             'Key': tag_key,
-                            'Value': tag_value
+                            'Value': description
                         },
                     ]
                 },
@@ -421,7 +420,7 @@ class Provider(VolumeABC):
                 DryRun=dryrun,
                 VolumeId=volume_id,
                 Size=size,
-                VolumeType=voltype,
+                VolumeType=volume_type,
                 Iops=iops
             )
 

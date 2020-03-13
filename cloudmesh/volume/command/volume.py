@@ -27,8 +27,7 @@ class VolumeCommand(PluginCommand):
                               [--description=DESCRIPTION]
                               [--dryrun]
                 volume delete NAME [--dryrun]
-                volume list
-                              [--vm=VM NAME]
+                volume list   [--vm=VM NAME]
                               [--region=REGION]
                               [--cloud=CLOUD]
                               [--refresh]

@@ -52,13 +52,17 @@ class VolumeCommand(PluginCommand):
 
             variables = Variables()
 
+            #
+            # this is not what the command needs as you implemented something different
+            #
             name = arguments.NAME or variables['volume']
 
             if name is None:
                 Console.error("No volume specified")
             else:
                 provider = Provider(name=name)
-                result = provider.list(???)
+                # result = provider.list(???)
+                result = provider.list()
                 print(provider.Print(result,
                                      kind='volume',
                                      output=arguments.output))

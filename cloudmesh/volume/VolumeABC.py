@@ -44,10 +44,6 @@ class VolumeABC(metaclass=ABCMeta):
     @abstractmethod
     def list(self,
              vm=None,
-             vm_id=None,
-             region=None,
-             zone=None,
-             cloud=None,
              refresh=False):
         """
         List of volume.

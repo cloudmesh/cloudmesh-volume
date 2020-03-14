@@ -16,7 +16,7 @@ class VolumeCommand(PluginCommand):
         ::
 
           Usage:
-            volume list [--vm=VM NAME]
+            volume list [--vm=VMNAME]
                         [--region=REGION]
                         [--cloud=CLOUD]
                         [--refresh]
@@ -27,7 +27,7 @@ class VolumeCommand(PluginCommand):
               FILE   a file name
 
           Options:
-              --vm=VM_NAME                      specify the name of vm
+              --vm=VMNAME                      specify the name of vm
               --region=REGION                   specify the region
               --cloud=CLOUD                     specify cloud name
               --refresh                         refresh
@@ -58,8 +58,8 @@ class VolumeCommand(PluginCommand):
                 Console.error("No volume specified")
             else:
                 provider = Provider(name=name)
-
-                print(provider.Print(list,
+                result = provider.list(???)
+                print(provider.Print(result,
                                      kind='volume',
                                      output=arguments.output))
             return ""

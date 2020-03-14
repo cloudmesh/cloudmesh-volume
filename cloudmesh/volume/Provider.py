@@ -62,8 +62,9 @@ class Provider(object): #broken
         P = Provider.get_provider(self.kind)
         self.provider = P(self.cloud)
 
+    @DatabaseUpdate()
     def create(self, **kwargs):
-        self.provider.create(**kwargs)
+        d = self.provider.create(**kwargs)
         """
         name = kwargs["name"]
         def create(self,
@@ -84,14 +85,18 @@ class Provider(object): #broken
                    multi_attach_enabled=True,
                    dryrun=False):
         """
+        return d
 
+    @DatabaseUpdate
     def delete(self, name=None):
-        self.provider.delete(name)
+        d = self.provider.delete(name)
+        return d
 
-    def mount(self, path=None, name=None):
-        self.provider.mount(path, name)
 
     @DatabaseUpdate()
     def list(self, **kwargs):
         data = self.provider.list(kwargs)
         return data
+
+    def mount(self, path=None, name=None):
+        self.provider.mount(path, name)

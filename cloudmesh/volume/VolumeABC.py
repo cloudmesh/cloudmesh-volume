@@ -20,29 +20,8 @@ class VolumeABC(metaclass=ABCMeta):
             # raise ValueError(f"storage service {service} not specified")
             print(e)
 
-    @abstractmethod
-    def create(self, **kwargs):
-        """
-        Create a volume.
+        # PROPOSAL 2
 
-        TODO: describe all the parameters
-
-        :param name:
-        :param zone: name of availability-zone
-        :param size:
-        :param voltype:
-        :param iops: The number of I/O operations per second (IOPS) that the volume supports (from 100 to 64,000 for\
-         io1 type volume).
-        :param image:
-        :param snapshot:
-        :param source:
-        :param description:
-        :return:
-        """
-        raise NotImplementedError
-
-
-    # PROPOSAL 2
     @abstractmethod
     def list(self,
              vm=None,
@@ -70,6 +49,37 @@ class VolumeABC(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
+    @abstractmethod
+    def create(self, **kwargs):
+        """
+        Create a volume.
+
+        TODO: describe all the parameters
+
+        :param name:
+        :param zone: name of availability-zone
+        :param size:
+        :param voltype:
+        :param iops: The number of I/O operations per second (IOPS) that the volume supports (from 100 to 64,000 for\
+         io1 type volume).
+        :param image:
+        :param snapshot:
+        :param source:
+        :param description:
+        :return:
+        """
+        raise NotImplementedError
+
+
+
+    @abstractmethod
+    def delete(self, name=None):
+        """
+        Delete volume
+        :param name:
+        :return:
+        """
+        raise NotImplementedError
 
     @abstractmethod
     def migrate(self,
@@ -148,11 +158,4 @@ class VolumeABC(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-    @abstractmethod
-    def delete(self, name=None):
-        """
-        Delete volume
-        :param name:
-        :return:
-        """
-        raise NotImplementedError
+

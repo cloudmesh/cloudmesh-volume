@@ -20,6 +20,13 @@ class VolumeCommand(PluginCommand):
                         [--region=REGION]
                         [--cloud=CLOUD]
                         [--refresh]
+                        [--dryrun]
+            volume create NAME
+                      [--size=SIZE]
+                      [--volumetype=VOLUME_TYPE]
+                      [--description=DESCRIPTION]
+                      [--dryrun]
+                      [ARGUMENTS...]
 
           This command does some useful things.
 
@@ -67,6 +74,18 @@ class VolumeCommand(PluginCommand):
                                      kind='volume',
                                      output=arguments.output))
             return ""
+
+        elif arguments.create:
+
+            params = arguments.ARGUMENTS
+            print (params)
+
+            parameters = {}
+            for p in params:
+                key, value = p.split("=", 1)
+                parameters[key] = value
+
+            print (parameters)
 
         Console.error("This is just a sample")
         return ""

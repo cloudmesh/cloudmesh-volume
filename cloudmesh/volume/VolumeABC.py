@@ -41,21 +41,35 @@ class VolumeABC(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
+
+    # PROPOSAL 2
     @abstractmethod
     def list(self,
              vm=None,
+             region=None,
+             cloud=None,
+             filter=None,
+             dryrun=None,
              refresh=False):
         """
-        List of volume.
+        THis command list all volumes as follows
 
-        :param vm: name of vm
-        :param vm_id: vm id
-        :param region: name of region
-        :param cloud: name of cloud
-        :param refresh: refresh
-        :return: dict
+        If vm is defined, all vloumes of teh vm are returned.
+        If region is defined all volumes of the vms in that region are returned.
+        ....
+
+        The filter allows us to specify cloud specific filter option
+        a filter for this cloud looks like ....????
+
+        :param vm:
+        :param region:
+        :param cloud:
+        :param filter:
+        :param refresh:
+        :return:
         """
         raise NotImplementedError
+
 
     @abstractmethod
     def migrate(self,

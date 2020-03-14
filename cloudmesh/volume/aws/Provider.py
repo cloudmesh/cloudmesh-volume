@@ -197,32 +197,67 @@ class Provider(VolumeABC):
 
         return result
 
+
+    # PROPOSAL 2
     def list(self,
-             filter_name=None,
-             filter_value=None,
-             volume_ids=None,
-             dryrun=False):
+             vm=None,
+             region=None,
+             cloud=None,
+             filter=None,
+             dryrun=None,
+             refresh=False):
         """
-        Describes the specified EBS volumes or all of your EBS volumes.
+        THis command list all volumes as follows
 
-        :param filter_name (string)
-        :param filter_value (string)
-        :param volume_ids (list): The volume IDs
-        :return: dict
+        If vm is defined, all vloumes of teh vm are returned.
+        If region is defined all volumes of the vms in that region are returned.
+        ....
 
+        The filter allows us to specify cloud specific filter option
+        a filter for this cloud looks like ....????
+
+        :param vm:
+        :param region:
+        :param cloud:
+        :param filter:
+        :param refresh:
+        :return:
         """
+
+        # dont    filter_name=None,
+        # dont    filter_value=None,
+        #     dryrun=False):
+
+        #:param filter_name (string)
+        #:param filter_value (string)
+        #:param volume_ids (list): The volume IDs
+
         banner(f"list volume")
 
+
         client = boto.client('ec2')
+
+        # filter = "[[
+        #                 {
+        #                     'Name': 'xyz',
+        #                     'Values': [
+        #                         'abc',
+        #                     ]
+        #                 },
+        #             ]"
+
+        # filter = eval(filter)
+
         result = client.describe_volumes(
-            Filters=[
-                {
-                    'Name': filter_name,
-                    'Values': [
-                        filter_value,
-                    ]
-                },
-            ],
+            Filters=filter,
+            #Filters=[
+            #    {
+            #        'Name': filter_name,
+            #        'Values': [
+            #            filter_value,
+            #        ]
+            #    },
+            #],
             VolumeIds=[
                 volume_ids,
             ],

@@ -20,8 +20,7 @@ class VolumeABC(metaclass=ABCMeta):
             # raise ValueError(f"storage service {service} not specified")
             print(e)
 
-        # PROPOSAL 2
-
+    # PROPOSAL 2
     @abstractmethod
     def list(self,
              vm=None,
@@ -31,7 +30,7 @@ class VolumeABC(metaclass=ABCMeta):
              dryrun=None,
              refresh=False):
         """
-        THis command list all volumes as follows
+        This command list all volumes as follows
 
         If vm is defined, all vloumes of teh vm are returned.
         If region is defined all volumes of the vms in that region are returned.
@@ -50,7 +49,7 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def create(self, **kwargs):
+    def create(self, name=None, **kwargs):
         """
         Create a volume.
 

@@ -118,7 +118,17 @@ class Provider(VolumeABC):
             d.append(entry)
         return d
 
-    def create(self,
+    def create(self, name=None, **kwargs):
+        config = Config()
+        default = config[f"cloudmesh.volume.{name}.default"]
+        self._create(name=name, **default)
+
+            #size: 2
+            #iops: 1000
+            #encrypted: False
+            #multi_attach_enabled: True
+
+    def _create(self,
                name=None,
                zone=None,
                size=2,

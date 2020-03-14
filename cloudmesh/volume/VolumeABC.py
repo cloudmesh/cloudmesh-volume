@@ -80,6 +80,10 @@ class VolumeABC(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
+    #
+    # BUG NO GENERAL DEFINITIONS OF MIGRATE
+    # BUG THE PARAMETER NAMES ARE REALY NOT GOOD
+    #
     @abstractmethod
     def migrate(self,
                 name=None,
@@ -115,6 +119,11 @@ class VolumeABC(metaclass=ABCMeta):
 
         raise NotImplementedError
 
+    #
+    # BUG NO GENERAL DEFINITION OF WHAT SYNC IS DOING
+    # DEFINITION OF SYNC MAY BE WRONG
+    # ARCHITECTURE DOCUMENT IS MISSING
+    #
     @abstractmethod
     def sync(self,
              volume_id=None,
@@ -130,6 +139,9 @@ class VolumeABC(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
+    #
+    # BUG NO DEFINITION OF WAHT UNSET IS. ARCHITECTURE DOCUMENT IS MISSING
+    #
     @abstractmethod
     def unset(self,
               name=None,
@@ -144,6 +156,12 @@ class VolumeABC(metaclass=ABCMeta):
         :return: str
         """
         raise NotImplementedError
+
+    #
+    # BUG: two different definitiosn of mount IN DIFFERENT PROVIDERS
+    #
+    # def mount(self, path=None, name=None):
+    #    self.provider.mount(path, name)
 
     @abstractmethod
     def mount(self, path=None, name=None, volume_id=None, vm_id=None):

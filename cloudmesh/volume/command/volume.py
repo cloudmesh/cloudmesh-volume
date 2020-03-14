@@ -31,6 +31,8 @@ class VolumeCommand(PluginCommand):
                       [--description=DESCRIPTION]
                       [--dryrun]
                       [ARGUMENTS...]
+            volume add VM NAME
+            volume remove VM NAME
             volume delete [NAME]
             volume migrate NAME FROM_VM TO_VM
             volume sync FROM_VOLUME TO_VOLUME
@@ -134,6 +136,24 @@ class VolumeCommand(PluginCommand):
 
             print(arguments.FROM_VOLUME)
             print(arguments.TO_VOLUME)
+
+            raise NotImplementedError
+
+        elif arguments.add:
+
+            Console.info("Add a volume to a vm")
+
+            print(arguments.NAME)
+            print(arguments.VM)
+
+            raise NotImplementedError
+
+        elif arguments.remove:
+
+            Console.info("Remove a volume from a vm")
+
+            print(arguments.NAME)
+            print(arguments.VM)
 
             raise NotImplementedError
 

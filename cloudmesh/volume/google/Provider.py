@@ -9,6 +9,7 @@ from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 
+
 class Provider(VolumeABC):
     kind = "google"
 
@@ -32,7 +33,42 @@ class Provider(VolumeABC):
             size: m1.medium
             image: lts
     """
+
+    vm_state = [
+        'ACTIVE',
+        'BUILDING',
+        'DELETED',
+        'ERROR',
+        'HARD_REBOOT',
+        'PASSWORD',
+        'PAUSED',
+        'REBOOT',
+        'REBUILD',
+        'RESCUED',
+        'RESIZED',
+        'REVERT_RESIZE',
+        'SHUTOFF',
+        'SOFT_DELETED',
+        'STOPPED',
+        'SUSPENDED',
+        'UNKNOWN',
+        'VERIFY_RESIZE'
+    ]
+
     output = {
+        "status": {
+            "sort_keys": ["cm.name"],
+            "order": ["cm.name",
+                      "cm.cloud",
+                      "vm_state",
+                      "status",
+                      "task_state"],
+            "header": ["Name",
+                       "Cloud",
+                       "State",
+                       "Status",
+                       "Task"]
+        },
         "volume": {
             "sort_keys": ["cm.name"],
             "order": ["cm.name",
@@ -57,37 +93,35 @@ class Provider(VolumeABC):
                        "Private IPs",
                        "Creation time",
                        "Started at"],
-            "humanize": ["launched_at"],
-        }
+            "humanize": ["launched_at"]
+        },
     }
 
-
-    def __init__(self,name):
+    def __init__(self, name):
         self.cloud = name
 
     def create(self,
-                name=None,
-                csek_key_file=None,
-                description=None,
-                guest_os_features=None,
-                labels=None,
-                licenses=None,
-                replica_zones=None,
-                resources_policies=None,
-                require_csek_key=False,
-                size=None,
-                type=None,
-                image_project=None,
-                image=None,
-                image_family=None,
-                source_snapshot=None,
-                kms_key=None,
-                kms_keyring=None,
-                kms_location=None,
-                kms_project=None,
-                region=None,
-                zone=None):
-
+               name=None,
+               csek_key_file=None,
+               description=None,
+               guest_os_features=None,
+               labels=None,
+               licenses=None,
+               replica_zones=None,
+               resources_policies=None,
+               require_csek_key=False,
+               size=None,
+               type=None,
+               image_project=None,
+               image=None,
+               image_family=None,
+               source_snapshot=None,
+               kms_key=None,
+               kms_keyring=None,
+               kms_location=None,
+               kms_project=None,
+               region=None,
+               zone=None):
         """
         Create a disk.
 

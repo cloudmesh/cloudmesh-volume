@@ -19,7 +19,7 @@ class VolumeCommand(PluginCommand):
 
           Usage:
             volume register which
-            volume register [NAME] --cloud=CLOUD [ARGUMENTS...]
+            volume register [NAME] [--cloud=CLOUD] [ARGUMENTS...]
             volume list [--vm=VM]
                         [--region=REGION]
                         [--cloud=CLOUD]
@@ -32,8 +32,10 @@ class VolumeCommand(PluginCommand):
                       [--dryrun]
                       [ARGUMENTS...]
             volume delete [NAME]
+            volume migrate NAME FROM_VM TO_VM
+            volume sync FROM_VOLUME TO_VOLUME
 
-          This command manages volumes accrodss different clouds
+          This command manages volumes accross different clouds
 
           Arguments:
               NAME   the name of the volume
@@ -45,7 +47,9 @@ class VolumeCommand(PluginCommand):
               --refresh          If refresh the information is taken from the cloud
               --volumetype=TYPE  The type of the volume
 
-          Description
+          Description:
+
+             TBD
         """
 
         def get_last_volume():
@@ -117,5 +121,20 @@ class VolumeCommand(PluginCommand):
 
             provider = Provider(name=name)
             provider.delete(name=name)
+
+        elif arguments.migrate:
+
+            print(arguments.name)
+            print(arguments.FROM_VM)
+            print(arguments.TO_VM)
+
+            raise NotImplementedError
+
+        elif arguments.sync:
+
+            print(arguments.FROM_VOLUME)
+            print(arguments.TO_VOLUME)
+
+            raise NotImplementedError
 
         return ""

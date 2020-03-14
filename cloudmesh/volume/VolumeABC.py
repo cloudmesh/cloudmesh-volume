@@ -20,7 +20,6 @@ class VolumeABC(metaclass=ABCMeta):
             # raise ValueError(f"storage service {service} not specified")
             print(e)
 
-    # PROPOSAL 2
     @abstractmethod
     def list(self,
              vm=None,
@@ -48,28 +47,16 @@ class VolumeABC(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
+    #
+    # BUG ARCHOTECTURE DOCUMENT MISSING. EG what is create in each provider
+    #
     @abstractmethod
     def create(self, name=None, **kwargs):
         """
         Create a volume.
-
-        TODO: describe all the parameters
-
-        :param name:
-        :param zone: name of availability-zone
-        :param size:
-        :param voltype:
-        :param iops: The number of I/O operations per second (IOPS) that the volume supports (from 100 to 64,000 for\
-         io1 type volume).
-        :param image:
-        :param snapshot:
-        :param source:
-        :param description:
-        :return:
         """
+
         raise NotImplementedError
-
-
 
     @abstractmethod
     def delete(self, name=None):
@@ -80,67 +67,40 @@ class VolumeABC(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-    #
-    # BUG NO GENERAL DEFINITIONS OF MIGRATE
-    # BUG THE PARAMETER NAMES ARE REALY NOT GOOD
-    #
     @abstractmethod
     def migrate(self,
                 name=None,
-                fvm=None,
-                tvm=None,
-                fregion=None,
-                tregion=None,
-                fservice=None,
-                tservice=None,
-                fcloud=None,
-                tcloud=None,
-                cloud=None,
-                region=None,
-                service=None):
+                from_vm=None,
+                to_vm=None):
 
         """
         Migrate volume from one vm to another vm.
 
         :param name: name of volume
-        :param fvm: name of vm where volume will be moved from
-        :param tvm: name of vm where volume will be moved to
-        :param fregion: the region where the volume will be moved from
-        :param tregion: region where the volume will be moved to
-        :param fservice: the service where the volume will be moved from
-        :param tservice: the service where the volume will be moved to
-        :param fcloud: the provider where the volume will be moved from
-        :param tcloud: the provider where the volume will be moved to
-        :param cloud: the provider where the volume will be moved within
-        :param region: the region where the volume will be moved within
-        :param service: the service where the volume will be moved within
+        :param from_vm: name of vm where volume will be moved from
+        :param to_vm: name of vm where volume will be moved to
         :return: dict
         """
-
         raise NotImplementedError
 
-    #
-    # BUG NO GENERAL DEFINITION OF WHAT SYNC IS DOING
-    # DEFINITION OF SYNC MAY BE WRONG
-    # ARCHITECTURE DOCUMENT IS MISSING
-    #
     @abstractmethod
     def sync(self,
-             volume_id=None,
-             zone=None,
-             cloud=None):
+             from_volume=None,
+             to_volume=None):
         """
-        sync contents of one volume to another volume
+        Sync contents of one volume to another volume. It is  a copy of all
+        changed content from one volume to the other.
 
-        :param volume_id: id of volume A
-        :param zone: zone where new volume will be created
-        :param cloud: the provider where volumes will be hosted
+        :param from_volume: name of the from volume
+        :param to_volume: name of the to volume
+
         :return: str
         """
         raise NotImplementedError
 
     #
-    # BUG NO DEFINITION OF WAHT UNSET IS. ARCHITECTURE DOCUMENT IS MISSING
+    # BUG NO PROPER DEFINITION OF WAHT UNSET IS.
+    # ARCHITECTURE DOCUMENT IS MISSING
     #
     @abstractmethod
     def unset(self,
@@ -158,21 +118,22 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     #
+    # BUG NO PROPER DEFINITION OF WHAT A MONUT IS. ARCHOTECTURE DOCUMENT MISSING
+    #
+    #
     # BUG: two different definitiosn of mount IN DIFFERENT PROVIDERS
     #
     # def mount(self, path=None, name=None):
     #    self.provider.mount(path, name)
-
+    #
+    # path will be in yaml
+    #
     @abstractmethod
-    def mount(self, path=None, name=None, volume_id=None, vm_id=None):
+    def mount(self, volume=None, vm=None):
         """
         mounts volume
-        :param path: path of the mount
-        :param name: the name of the instance
-        :param volume_id: volume id
-        :param vm_id: instance id
+        :param name: the name of the volume
+        :param volume: volume id
         :return: dict
         """
         raise NotImplementedError
-
-

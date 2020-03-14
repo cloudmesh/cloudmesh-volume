@@ -193,13 +193,13 @@ class Provider(VolumeABC):
         con = openstack.connect(**config)
         con.delete_volume(name_or_id=name)
 
-    #volume
-    def list (self, vm=None,
-              region=None,
-              cloud=None,
-              filter=None,
-              dryrun=None,
-              refresh=False):
+    # volume
+    def list(self, vm=None,
+             region=None,
+             cloud=None,
+             filter=None,
+             dryrun=None,
+             refresh=False):
         """
         THis command list all volumes as follows
 
@@ -219,15 +219,16 @@ class Provider(VolumeABC):
         """
 
         if dryrun:
-            raise NotImplementedError("Dryrun parameter is not supported for openstack")
+            raise NotImplementedError(
+                "Dryrun parameter is not supported for openstack")
 
         config = self.credentials()
         con = openstack.connect(**config)
         result = con.list_volumes()
         print(result)
 
-    #AWS
-    #def list(self,
+    # AWS
+    # def list(self,
     #         filter_name=None,
     #         filter_value=None,
     #         volume_ids=None,
@@ -235,4 +236,3 @@ class Provider(VolumeABC):
 
     def mount(self, path=None, name=None):
         return ''
-

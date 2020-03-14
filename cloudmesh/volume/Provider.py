@@ -13,9 +13,10 @@ from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 from cloudmesh.mongo.DataBaseDecorator import DatabaseUpdate
 
-#class Provider(VolumeABC): # correct
-class Provider(object): #broken
-# kind = "multipass"
+
+# class Provider(VolumeABC): # correct
+class Provider(object):  # broken
+    # kind = "multipass"
 
     @staticmethod
     def get_kind():
@@ -67,11 +68,10 @@ class Provider(object): #broken
         d = self.provider.create(**kwargs)
         return d
 
-    @DatabaseUpdate
+    @DatabaseUpdate()
     def delete(self, name=None):
         d = self.provider.delete(name)
         return d
-
 
     @DatabaseUpdate()
     def list(self, **kwargs):
@@ -168,4 +168,3 @@ class Provider(object): #broken
         :return: str
         """
         raise NotImplementedError
-

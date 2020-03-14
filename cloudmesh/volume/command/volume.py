@@ -5,6 +5,8 @@ from cloudmesh.shell.command import PluginCommand
 from cloudmesh.shell.command import command
 from cloudmesh.shell.command import map_parameters
 from cloudmesh.volume.Provider import Provider
+from cloudmesh.common.parameter import Parameter
+import textwrap
 
 
 class VolumeCommand(PluginCommand):
@@ -16,37 +18,49 @@ class VolumeCommand(PluginCommand):
         ::
 
           Usage:
-            volume list [--vm=VMNAME]
+            volume register which
+            volume register [NAME] --cloud=CLOUD [ARGUMENTS...]
+            volume list [--vm=VM]
                         [--region=REGION]
                         [--cloud=CLOUD]
                         [--refresh]
                         [--dryrun]
-            volume create NAME
+            volume create [NAME]
                       [--size=SIZE]
-                      [--volumetype=VOLUME_TYPE]
+                      [--volumetype=TYPE]
                       [--description=DESCRIPTION]
                       [--dryrun]
                       [ARGUMENTS...]
+            volume delete [NAME]
 
-          This command does some useful things.
+          This command manages volumes accrodss different clouds
 
           Arguments:
-              FILE   a file name
+              NAME   the name of the volume
 
           Options:
-              --vm=VMNAME                      specify the name of vm
-              --region=REGION                   specify the region
-              --cloud=CLOUD                     specify cloud name
-              --refresh                         refresh
+              --vm=VMNAME        The name of the virtual machine
+              --region=REGION    The name of the region
+              --cloud=CLOUD      The name of the cloud
+              --refresh          If refresh the information is taken from the cloud
+              --volumetype=TYPE  The type of the volume
 
+          Description
         """
+
+        def get_last_volume():
+            Console.error("Get last volume not yet implemented")
+            raise NotImplementedError
 
         VERBOSE(arguments)
 
-        name = arguments.NAME
+        variables = Variables()
+        name = arguments.NAME or variables["volume"] or get_last_volume()
+
         path = arguments.PATH
 
         map_parameters(arguments,
+                       "volumetype",
                        "cloud",
                        "vm",
                        "region"
@@ -54,38 +68,54 @@ class VolumeCommand(PluginCommand):
                        "refresh"
                        )
 
+        if arguments.register and arguments.which:
 
-        if arguments.list:
+            providers = Provider.get_kind()
 
-            variables = Variables()
+            Console.info("Available Volume Cloud Providers")
+            print()
+            print("    " + "\n    ".join(providers))
+            print()
 
-            #
-            # this is not what the command needs as you implemented something different
-            #
-            name = arguments.NAME or variables['volume']
+        elif arguments.register:
 
-            if name is None:
-                Console.error("No volume specified")
-            else:
-                provider = Provider(name=name)
-                # result = provider.list(???)
-                result = provider.list()
-                print(provider.Print(result,
-                                     kind='volume',
-                                     output=arguments.output))
+            Console.info("Registering a volume to cloudmesh yaml")
+
+            parameters = Parameter.arguments_to_dict(arguments.ARGUMENTS)
+
+            print()
+            print("    Name:", name)
+            print("    Cloud:", arguments.cloud)
+            print("    Arguments:", parameters)
+            print()
+
+            raise NotImplementedError
+
+        elif arguments.list:
+
+            provider = Provider(name=name)
+            # result = provider.list(???)
+            result = provider.list()
+            print(provider.Print(result,
+                                 kind='volume',
+                                 output=arguments.output))
             return ""
 
         elif arguments.create:
 
-            params = arguments.ARGUMENTS
-            print (params)
+            parameters = Parameter.arguments_to_dict(arguments.ARGUMENTS)
 
-            parameters = {}
-            for p in params:
-                key, value = p.split("=", 1)
-                parameters[key] = value
+            print(parameters)
 
-            print (parameters)
+        elif arguments.delete:
 
-        Console.error("This is just a sample")
+            name = arguments.NAME
+
+            if name is None:
+                # get name form last created volume
+                raise NotImplementedError
+
+            provider = Provider(name=name)
+            provider.delete(name=name)
+
         return ""

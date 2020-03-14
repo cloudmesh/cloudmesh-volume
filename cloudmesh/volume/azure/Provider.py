@@ -66,8 +66,6 @@ class VolumeABC(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-
-
     def delete(self, name=None):
         """
         Delete volume
@@ -148,5 +146,3 @@ class VolumeABC(metaclass=ABCMeta):
         :return: dict
         """
         raise NotImplementedError
-
-

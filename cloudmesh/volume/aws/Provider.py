@@ -123,26 +123,26 @@ class Provider(VolumeABC):
         default = config[f"cloudmesh.volume.{name}.default"]
         self._create(name=name, **default)
 
-            #size: 2
-            #iops: 1000
-            #encrypted: False
-            #multi_attach_enabled: True
+        # size: 2
+        # iops: 1000
+        # encrypted: False
+        # multi_attach_enabled: True
 
     def _create(self,
-               name=None,
-               zone=None,
-               size=2,
-               volume_type="gp2",
-               iops=1000,
-               kms_key_id=None,
-               outpost_arn=None,
-               image=None,
-               snapshot=None,
-               encrypted=False,
-               source=None,
-               description=None,
-               multi_attach_enabled=True,
-               dryrun=False):
+                name=None,
+                zone=None,
+                size=2,
+                volume_type="gp2",
+                iops=1000,
+                kms_key_id=None,
+                outpost_arn=None,
+                image=None,
+                snapshot=None,
+                encrypted=False,
+                source=None,
+                description=None,
+                multi_attach_enabled=True,
+                dryrun=False):
         """
         Create a volume.
 
@@ -207,7 +207,6 @@ class Provider(VolumeABC):
 
         return result
 
-
     # PROPOSAL 2
     def list(self,
              vm=None,
@@ -244,7 +243,6 @@ class Provider(VolumeABC):
 
         banner(f"list volume")
 
-
         client = boto.client('ec2')
 
         # filter = "[[
@@ -260,14 +258,14 @@ class Provider(VolumeABC):
 
         result = client.describe_volumes(
             Filters=filter,
-            #Filters=[
+            # Filters=[
             #    {
             #        'Name': filter_name,
             #        'Values': [
             #            filter_value,
             #        ]
             #    },
-            #],
+            # ],
             VolumeIds=[
                 volume_ids,
             ],
@@ -472,7 +470,7 @@ class Provider(VolumeABC):
                 DryRun=dryrun,
                 VolumeId=volume_id,
                 Size=size,
-                VolumeType=volume_type, # BUG
+                VolumeType=volume_type,  # BUG
                 Iops=iops
             )
 

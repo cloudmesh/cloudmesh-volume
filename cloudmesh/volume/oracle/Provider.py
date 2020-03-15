@@ -29,27 +29,6 @@ class Provider(VolumeABC):
             image: lts
     """
 
-    vm_state = [
-        'ACTIVE',
-        'BUILDING',
-        'DELETED',
-        'ERROR',
-        'HARD_REBOOT',
-        'PASSWORD',
-        'PAUSED',
-        'REBOOT',
-        'REBUILD',
-        'RESCUED',
-        'RESIZED',
-        'REVERT_RESIZE',
-        'SHUTOFF',
-        'SOFT_DELETED',
-        'STOPPED',
-        'SUSPENDED',
-        'UNKNOWN',
-        'VERIFY_RESIZE'
-    ]
-
     output = {
         "status": {
             "sort_keys": ["cm.name"],
@@ -89,86 +68,6 @@ class Provider(VolumeABC):
                        "Creation time",
                        "Started at"],
             "humanize": ["launched_at"]
-        },
-        "image": {
-            "sort_keys": ["cm.name",
-                          "extra.minDisk"],
-            "order": ["cm.name",
-                      "size",
-                      "min_disk",
-                      "min_ram",
-                      "status",
-                      "cm.driver"],
-            "header": ["Name",
-                       "Size (Bytes)",
-                       "MinDisk (GB)",
-                       "MinRam (MB)",
-                       "Status",
-                       "Driver"]
-        },
-        "flavor": {
-            "sort_keys": ["cm.name",
-                          "vcpus",
-                          "disk"],
-            "order": ["cm.name",
-                      "vcpus",
-                      "ram",
-                      "disk"],
-            "header": ["Name",
-                       "VCPUS",
-                       "RAM",
-                       "Disk"]
-        },
-        "key": {
-            "sort_keys": ["name"],
-            "order": ["name",
-                      "type",
-                      "format",
-                      "fingerprint",
-                      "comment"],
-            "header": ["Name",
-                       "Type",
-                       "Format",
-                       "Fingerprint",
-                       "Comment"]
-        },
-        "secrule": {
-            "sort_keys": ["name"],
-            "order": ["name",
-                      "tags",
-                      "direction",
-                      "ethertype",
-                      "port_range_max",
-                      "port_range_min",
-                      "protocol",
-                      "remote_ip_prefix",
-                      "remote_group_id"
-                      ],
-            "header": ["Name",
-                       "Tags",
-                       "Direction",
-                       "Ethertype",
-                       "Port range max",
-                       "Port range min",
-                       "Protocol",
-                       "Range",
-                       "Remote group id"]
-        },
-        "secgroup": {
-            "sort_keys": ["name"],
-            "order": ["name",
-                      "tags",
-                      "description",
-                      "rules"
-                      ],
-            "header": ["Name",
-                       "Tags",
-                       "Description",
-                       "Rules"]
-        },
-        "ip": {
-            "order": ["name", 'floating_ip_address', 'fixed_ip_address'],
-            "header": ["Name", 'Floating', 'Fixed']
         },
     }
 

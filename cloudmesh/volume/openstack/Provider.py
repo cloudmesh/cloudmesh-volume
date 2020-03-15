@@ -6,7 +6,6 @@ from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 from cloudmesh.common.dotdict import dotdict
 
-
 class Provider(VolumeABC):
     kind = "opensatck"
 
@@ -173,8 +172,8 @@ class Provider(VolumeABC):
             "header": ["Name", 'Floating', 'Fixed']
         },
     }
-
-    def __init__(self, name):
+    
+    def __init__(self,name):
         self.cloud = name
 
     def credentials(self):
@@ -185,54 +184,20 @@ class Provider(VolumeABC):
         config = self.credentials()
         con = openstack.connect(**config)
         arguments = dotdict(kwargs)
-        con.create_volume(name=arguments.name, size=arguments.size,
-                          volume_type=arguments.voltype)
+        con.create_volume(name=arguments.name,size=arguments.size,volume_type=arguments.voltype)
 
     def delete(self, name=None):
         config = self.credentials()
         con = openstack.connect(**config)
         con.delete_volume(name_or_id=name)
-
-    # volume
-    def list(self, vm=None,
-             region=None,
-             cloud=None,
-             filter=None,
-             dryrun=None,
-             refresh=False):
-        """
-        THis command list all volumes as follows
-
-        If vm is defined, all vloumes of teh vm are returned.
-        If region is defined all volumes of the vms in that region are returned.
-        ....
-
-        The filter allows us to specify cloud specific filter option
-        a filter for this cloud looks like ....????
-
-        :param vm:
-        :param region:
-        :param cloud:
-        :param filter:
-        :param refresh:
-        :return:
-        """
-
-        if dryrun:
-            raise NotImplementedError(
-                "Dryrun parameter is not supported for openstack")
-
+        
+    def list(self):
         config = self.credentials()
         con = openstack.connect(**config)
         result = con.list_volumes()
         print(result)
 
-    # AWS
-    # def list(self,
-    #         filter_name=None,
-    #         filter_value=None,
-    #         volume_ids=None,
-    #         dryrun=False):
 
-    def mount(self, path=None, name=None):
+    def mount(self,path=None,name=None):
         return ''
+    

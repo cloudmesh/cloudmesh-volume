@@ -10,9 +10,8 @@ import boto3
 import boto
 from cloudmesh.common.DateTime import DateTime
 
-
 class Provider(VolumeABC):
-    kind = "volume"
+    kind = "aws"
 
     sample = """
     cloudmesh:
@@ -25,13 +24,14 @@ class Provider(VolumeABC):
             label: {name}
             kind: aws
             version: TBD
-            service: volume
+            service: compute
           default:
             volume_type: "gp2"
             size: 2
             iops: 1000
             encrypted: False
             multi_attach_enabled: True
+            tag_key: "volume"
           credentials:
             region: {region}
             EC2_SECURITY_GROUP: cloudmesh
@@ -57,6 +57,7 @@ class Provider(VolumeABC):
                       "Iops",
                       "Tags",
                       "VolumeType"],
+
             "header": ["Name",
                        "Cloud",
                        "AvailabilityZone",
@@ -72,12 +73,12 @@ class Provider(VolumeABC):
         }
     }
 
-    def __init__(self, name=None):
-        self.cloud = "aws"
-        self.name = name
+
+    def __init__(self,name):
+        self.cloud = name
         self.ec2 = boto3.resource('ec2')
 
-    def update_dict(self, elements):
+    def update_dict(self, elements, kind=None):
         """
         This function adds a cloudmesh cm dict to each dict in the list
         elements.
@@ -105,44 +106,40 @@ class Provider(VolumeABC):
             if "cm" not in entry:
                 entry['cm'] = {}
 
+            if kind == 'ip':
+                entry['name'] = entry['floating_ip_address']
+
             entry["cm"].update({
-                "kind": "volume",
+                "kind": kind,
                 "driver": self.cloudtype,
                 "cloud": self.cloud,
-                "name": self.name
+                "name": entry['name']
             })
 
-            entry["cm"]["created"] = entry["updated"] = str(
-                datetime.now())
+            if kind == 'volume':
+                entry["cm"]["created"] = entry["updated"] = str(
+                    datetime.now())
 
             d.append(entry)
         return d
 
-    def create(self, name=None, **kwargs):
-        config = Config()
-        default = config[f"cloudmesh.volume.{name}.default"]
-        self._create(name=name, **default)
-
-        # size: 2
-        # iops: 1000
-        # encrypted: False
-        # multi_attach_enabled: True
-
-    def _create(self,
-                name=None,
-                zone=None,
-                size=2,
-                volume_type="gp2",
-                iops=1000,
-                kms_key_id=None,
-                outpost_arn=None,
-                image=None,
-                snapshot=None,
-                encrypted=False,
-                source=None,
-                description=None,
-                multi_attach_enabled=True,
-                dryrun=False):
+    def create(self,
+               name=None,
+               zone=None,
+               size=2,
+               volume_type="gp2",
+               iops=1000,
+               kms_key_id=None,
+               outpost_arn=None,
+               image=None,
+               snapshot=None,
+               encrypted=False,
+               source=None,
+               description=None,
+               tag_key="volume",
+               #tag_value=None,
+               multi_attach_enabled=True,
+               dryrun=False):
         """
         Create a volume.
 
@@ -151,17 +148,16 @@ class Provider(VolumeABC):
         :param encrypted (boolean): True|False
         :param size (integer): size of volume
 
-        :param volume_type (string): type of volume. This can be gp2 for General
-                                     Purpose SSD, io1 for Provisioned IOPS SSD,
-                                    st1 for Throughput Optimized HDD, sc1 for
-                                    Cold HDD, or standard for Magnetic volumes.
+        :param volume_type (string): type of volume. This can be gp2 for General Purpose SSD, io1 for Provisioned IOPS SSD,
+                                st1 for Throughput Optimized HDD, sc1 for Cold HDD, or standard for Magnetic volumes.
+        :param iops (integer): The number of I/O operations per second (IOPS) that the volume supports \
         :param iops (integer): The number of I/O operations per second (IOPS)
-                               that the volume supports
-                               (from 100 to 64,000 for io1 type volume).
+                               that the volume supports \
+                                (from 100 to 64,000 for io1 type volume).
         :param kms_key_id (string): The identifier of the AWS Key Management
-                                    Service (AWS KMS) customer master key (CMK)
+                                    Service (AWS KMS) customer master key (CMK)\
                                     to use for Amazon EBS encryption. If
-                                    KmsKeyId is specified, the encrypted state
+                                    KmsKeyId is specified, the encrypted state \
                                     must be true.
         :param outpost_arn (string): The Amazon Resource Name (ARN) of the Outpost.
         :param image:
@@ -194,7 +190,7 @@ class Provider(VolumeABC):
                     'ResourceType': 'volume',
                     'Tags': [
                         {
-                            'Key': "volume",
+                            'Key': tag_key,
                             'Value': description
                         },
                     ]
@@ -202,70 +198,30 @@ class Provider(VolumeABC):
             ],
             MultiAttachEnabled=multi_attach_enabled
         )
-        result = [result]
-        result = self.update_dict(result)
-
         return result
 
-    # PROPOSAL 2
-    def list(self,
-             vm=None,
-             region=None,
-             cloud=None,
-             filter=None,
-             dryrun=None,
-             refresh=False):
+    def list(self, filter_name, filter_value, volume_ids, dryrun):
         """
-        THis command list all volumes as follows
+        Describes the specified EBS volumes or all of your EBS volumes.
 
-        If vm is defined, all vloumes of teh vm are returned.
-        If region is defined all volumes of the vms in that region are returned.
-        ....
+        :param filter_name (string)
+        :param filter_value (string)
+        :param volume_ids (list): The volume IDs
+        :return: dict
 
-        The filter allows us to specify cloud specific filter option
-        a filter for this cloud looks like ....????
-
-        :param vm:
-        :param region:
-        :param cloud:
-        :param filter:
-        :param refresh:
-        :return:
         """
-
-        # dont    filter_name=None,
-        # dont    filter_value=None,
-        #     dryrun=False):
-
-        #:param filter_name (string)
-        #:param filter_value (string)
-        #:param volume_ids (list): The volume IDs
-
         banner(f"list volume")
 
         client = boto.client('ec2')
-
-        # filter = "[[
-        #                 {
-        #                     'Name': 'xyz',
-        #                     'Values': [
-        #                         'abc',
-        #                     ]
-        #                 },
-        #             ]"
-
-        # filter = eval(filter)
-
         result = client.describe_volumes(
-            Filters=filter,
-            # Filters=[
-            #    {
-            #        'Name': filter_name,
-            #        'Values': [
-            #            filter_value,
-            #        ]
-            #    },
-            # ],
+            Filters=[
+                {
+                    'Name': filter_name,
+                    'Values': [
+                        filter_value,
+                    ]
+                },
+            ],
             VolumeIds=[
                 volume_ids,
             ],
@@ -273,8 +229,6 @@ class Provider(VolumeABC):
             MaxResults=123,
             NextToken='string'
         )
-
-        result = self.update_dict(result)
 
         return result
 
@@ -338,7 +292,6 @@ class Provider(VolumeABC):
         result = self.ec2.create_volume(SnapshotId=snapshot,
                                         AvailabilityZone=availability_zone,
                                         DryRun=dryrun)
-        # This is wrong not updated
         return result
 
     def mount(self, volume_id, vm_id, device='dev/sdh', dryrun=False):
@@ -359,7 +312,6 @@ class Provider(VolumeABC):
             InstanceId=vm_id,
             DryRun=dryrun
         )
-        # This is wrong not updated
         return result
 
     def unmount(self,
@@ -390,7 +342,6 @@ class Provider(VolumeABC):
             InstanceId=vm_id,
             DryRun=dryrun
         )
-        # This is wrong not updated
         return result
 
     def delete(self, volume_id, dryrun=False):
@@ -407,7 +358,6 @@ class Provider(VolumeABC):
         result = volume.delete(
             DryRun=dryrun
         )
-        # This is wrong not updated
         return result
 
     def set(self,
@@ -470,11 +420,10 @@ class Provider(VolumeABC):
                 DryRun=dryrun,
                 VolumeId=volume_id,
                 Size=size,
-                VolumeType=volume_type,  # BUG
+                VolumeType=volume_type,
                 Iops=iops
             )
 
-        # This is wrong not updated
         return result
 
     def unset(self, volume_id, attribute=None, dryrun=False):
@@ -507,7 +456,7 @@ class Provider(VolumeABC):
                     },
                 ]
             )
-        # This is wrong not updated
+
         return result
 
 
@@ -523,7 +472,6 @@ if __name__ == "__main__":
     p.unmount()
     p.migrate()
     p.delete()
-
 
     # Ashley's work
     def mount(self, path=None, name=None):

@@ -26,49 +26,12 @@ class Provider(VolumeABC):
             version: TBD
             service: volume
           credentials:
-            auth:
-              username: $USER
-            key_path: ~/.ssh/id_rsa.pub
+            GOOGLE_APPLICATION_CREDENTIALS: ~\.cloudmesh\google_service_account.json
           default:
-            size: m1.medium
-            image: lts
+            size: 500
     """
 
-    vm_state = [
-        'ACTIVE',
-        'BUILDING',
-        'DELETED',
-        'ERROR',
-        'HARD_REBOOT',
-        'PASSWORD',
-        'PAUSED',
-        'REBOOT',
-        'REBUILD',
-        'RESCUED',
-        'RESIZED',
-        'REVERT_RESIZE',
-        'SHUTOFF',
-        'SOFT_DELETED',
-        'STOPPED',
-        'SUSPENDED',
-        'UNKNOWN',
-        'VERIFY_RESIZE'
-    ]
-
     output = {
-        "status": {
-            "sort_keys": ["cm.name"],
-            "order": ["cm.name",
-                      "cm.cloud",
-                      "vm_state",
-                      "status",
-                      "task_state"],
-            "header": ["Name",
-                       "Cloud",
-                       "State",
-                       "Status",
-                       "Task"]
-        },
         "volume": {
             "sort_keys": ["cm.name"],
             "order": ["cm.name",
@@ -93,8 +56,7 @@ class Provider(VolumeABC):
                        "Private IPs",
                        "Creation time",
                        "Started at"],
-            "humanize": ["launched_at"]
-        },
+        }
     }
 
     def __init__(self, name):

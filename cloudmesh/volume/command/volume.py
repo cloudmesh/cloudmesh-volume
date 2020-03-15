@@ -20,12 +20,14 @@ class VolumeCommand(PluginCommand):
           Usage:
             volume register which
             volume register [NAME] [--cloud=CLOUD] [ARGUMENTS...]
-            volume list [--vm=VM]
+            volume list [NAMES]
+                        [--vm=VM]
                         [--region=REGION]
                         [--cloud=CLOUD]
                         [--refresh]
                         [--dryrun]
             volume create [NAME]
+                      [--label=LABEL]
                       [--size=SIZE]
                       [--volumetype=TYPE]
                       [--description=DESCRIPTION]
@@ -99,9 +101,23 @@ class VolumeCommand(PluginCommand):
 
         elif arguments.list:
 
-            provider = Provider(name=name)
-            # result = provider.list(???)
-            result = provider.list()
+            if arguments.NAMES:
+
+                raise NotImplementedError
+                names = Parameter.expand(arguments.NAMES)
+
+                for name in names:
+                    # kind = cm.kind
+                    provider = Provider(name=name)
+                    # result = provider.list(???)
+                    result = provider.list()
+
+            elif arguments.cloud:
+
+                provider = Provider(name=arguments.cloud)
+                result = provider.list()
+
+
             print(provider.Print(result,
                                  kind='volume',
                                  output=arguments.output))

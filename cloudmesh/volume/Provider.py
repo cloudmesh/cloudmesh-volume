@@ -12,7 +12,7 @@ from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 from cloudmesh.mongo.DataBaseDecorator import DatabaseUpdate
-
+from cloudmesh.management.configuration.arguments import Arguments
 
 # class Provider(VolumeABC): # correct
 class Provider(object):  # broken
@@ -20,6 +20,7 @@ class Provider(object):  # broken
 
     @staticmethod
     def get_kind():
+        banner("get in def get_kind()")
         kind = ["multipass",
                 "aws",
                 "azure",
@@ -30,6 +31,7 @@ class Provider(object):  # broken
 
     @staticmethod
     def get_provider(kind):
+        banner("get in def get_provider(kind)")
 
         if kind == "multipass":
             from cloudmesh.volume.multipass.Provider import Provider as P
@@ -49,19 +51,44 @@ class Provider(object):  # broken
         elif kind == "oracle":
             from cloudmesh.volume.oracle.Provider import Provider as P
 
+        else:
+            Console.error(f"Compute provider {kind} not supported")
+
+            raise ValueError(f"Compute provider {kind} not supported")
+
         return P
 
     def __init__(self,
                  name=None,
                  configuration="~/.cloudmesh/cloudmesh.yaml"):
-        conf = Config(configuration)["cloudmesh"]
-        self.spec = conf["volume"][name]
-        self.cloud = name
-#        print('self.cloud = ', self.cloud)
-        self.kind = self.spec["cm"]["kind"]
-        super().__init__()
+        try:
+            banner("initializing")
+            conf = Config(configuration)["cloudmesh"]
+            self.spec = conf["volume"][name]
+            self.cloud = name
+    #        print('self.cloud = ', self.cloud)
+            self.kind = self.spec["cm"]["kind"]
+            super().__init__()
 
-        P = Provider.get_provider(self.kind)
+        except:
+            Console.error(f"provider {name} not found in {configuration}")
+            raise ValueError(f"provider {name} not found in {configuration}")
+
+        P = None
+
+        if self.kind in ["multipass",
+                "aws",
+                "azure",
+                "google",
+                "openstack",
+                "oracle"]:
+
+            P = Provider.get_provider(self.kind)
+
+        if P is None:
+            Console.error(f"provider {name} not supported")
+            raise ValueError(f"provider {name} not supported")
+
         self.provider = P(self.cloud)
 
     @DatabaseUpdate()
@@ -76,6 +103,7 @@ class Provider(object):  # broken
 
     @DatabaseUpdate()
     def list(self, **kwargs):
+        banner('goes in def list(self, **kwargs):')
         data = self.provider.list(**kwargs)
         return data
 

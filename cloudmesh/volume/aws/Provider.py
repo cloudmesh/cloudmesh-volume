@@ -48,7 +48,7 @@ class Provider(VolumeABC):
             "order": ["cm.name",
                       "cm.cloud",
                       "cm.kind",
-#                      "cm.driver",
+                      "cm.region",
                       "AvailabilityZone",
                       "CreateTime",
                       "Encrypted",
@@ -64,7 +64,7 @@ class Provider(VolumeABC):
             "header": ["Name",
                        "Cloud",
                        "Kind",
-#                       "Driver",
+                       "Region",
                        "AvailabilityZone",
                        "CreateTime",
                        "Encrypted",
@@ -135,6 +135,8 @@ class Provider(VolumeABC):
                 "cloud": self.cloud,
                 "kind": "volume",
                 "name": volume_name,
+                "region": entry["AvailabilityZone"], # for aws region = AvailabilityZone
+                "vm name":
             })
 
 #            entry["cm"]["created"] = str(DateTime.now())
@@ -283,17 +285,25 @@ class Provider(VolumeABC):
             refresh = kwargs["--refresh"]
             result = client.describe_volumes(
                 DryRun=dryrun,
+                Filters=[
+                    {
+                        'Name': {},
+                        'Values': [
+                            filter_value,
+                        ]
+                    },
+                ],
             )
-#            banner("raw results")
-#            print(result)
-#           banner("raw results end")
-        else:
+            banner("raw results")
+            print(result)
+            banner("raw results end")
+ #       else:
             #read record from mongoDB
-            refresh = False
+ #           refresh = False
 
         result = self.update_dict(result)
 
-        print(self.Print(result, kind='volume', output=kwargs['output']))
+#        print(self.Print(result, kind='volume', output=kwargs['output']))
 
         return result
 

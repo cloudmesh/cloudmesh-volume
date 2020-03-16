@@ -8,6 +8,8 @@ from cloudmesh.volume.Provider import Provider
 from cloudmesh.common.parameter import Parameter
 import textwrap
 from cloudmesh.common.util import banner
+from cloudmesh.management.configuration.arguments import Arguments
+from cloudmesh.mongo.CmDatabase import CmDatabase
 
 
 class VolumeCommand(PluginCommand):
@@ -62,7 +64,6 @@ class VolumeCommand(PluginCommand):
         # path = arguments.PATH
 
         map_parameters(arguments,
-                       "NAMES",
                        "cloud",
                        "vm",
                        "region",
@@ -75,27 +76,76 @@ class VolumeCommand(PluginCommand):
                                           arguments,
                                           variables,
                                           "table")
+        cm = CmDatabase()
 
-        if arguments.list:
-#            banner(f'get in arguments.list {arguments.list}')
+        if arguments.list and arguments.refresh:
+            banner(f'get in if arguments.list, arguments.list={arguments.list}')
+            print("arguments.NAMES",arguments)
+
             if arguments.NAMES:
-#                banner('get in arguments.NAMES')
-                raise NotImplementedError
-                names = Parameter.expand(arguments.NAMES)
+                arguments.NAMES = list(arguments.NAMES.split(","))
+                #find record in mondoDB through volume names
 
-                for name in names:
-                    # kind = cm.kind
+                for name in arguments.NAMES:
+                    entry = cm.find_name(name)[0]['cm']
+                    name = entry['cloud']
                     provider = Provider(name=name)
-                    # result = provider.list(???)
-                    result = provider.list()
-            elif arguments.cloud:
-#                    banner(f'get in arguments.cloud {arguments.cloud}')
-                    provider = Provider(name=arguments.cloud)
-                    # result = provider.list(???)
                     result = provider.list(**arguments)
-                    # print(provider.Print(result,
-                    #                      kind='volume',
-                    #                      output=arguments.output))
+                    print(provider.Print(result,
+                                         kind='volume',
+                                         output=arguments.output))
+
+
+            elif arguments.cloud:
+                banner(f'get in arguments.cloud, arguments.cloud = {arguments.cloud}')
+                provider = Provider(name=arguments.cloud)
+                result = provider.list(**arguments)
+                print(provider.Print(result,
+                                      kind='volume',
+                                      output=arguments.output))
+
+            elif arguments.vm:
+                #get record from mongoDB through vm name --> volume names--> same as arguments.Names is true
+                raise NotImplementedError
+
+
+            elif arguments.region:
+                #find mongoDB record through region --> volume names--> same as arguments.Names is true
+
+                raise NotImplementedError
+
+
+            if arguments.list and arguments.refresh == False:
+                #print out results in mongoDB
+                if arguments.NAMES:
+                    arguments.NAMES = list(arguments.NAMES.split(","))
+                    # find record in mondoDB through volume names
+
+                    for name in arguments.NAMES:
+                        result = cm.find_name(name)
+                        print(provider.Print(result,
+                                             kind='volume',
+                                             output=arguments.output))
+
+                elif arguments.cloud:
+                    result = cm.find(cloud=arguments.cloud, kind="volume")
+                    print(provider.Print(result,
+                                         kind='volume',
+                                         output=arguments.output))
+
+                elif arguments.vm:
+                    #need to add vm name to volume when doing volume add
+                    raise NotImplementedError
+                    result = cm.find(vm=arguments.vm, kind='volume')
+                    print(provider.Print(result,
+                                         kind='volume',
+                                         output=arguments.output))
+
+                elif arguments.region:
+                    result = cm.find(region=arguments.region, kind='volume')
+                    print(provider.Print(result,
+                                         kind='volume',
+                                         output=arguments.output))
 
             return ""
 

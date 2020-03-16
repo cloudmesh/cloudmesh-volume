@@ -22,7 +22,7 @@ class VolumeABC(metaclass=ABCMeta):
 
     @abstractmethod
     def list(self,
-#             NAMES=[],
+             NAMES=None,
              vm=None,
              region=None,
              cloud=None,

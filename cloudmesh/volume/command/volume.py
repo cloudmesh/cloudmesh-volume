@@ -7,6 +7,7 @@ from cloudmesh.shell.command import map_parameters
 from cloudmesh.volume.Provider import Provider
 from cloudmesh.common.parameter import Parameter
 import textwrap
+from cloudmesh.common.util import banner
 
 
 class VolumeCommand(PluginCommand):
@@ -55,7 +56,51 @@ class VolumeCommand(PluginCommand):
 
              TBD
         """
+        VERBOSE(arguments)
 
+        # name = arguments.NAME
+        # path = arguments.PATH
+
+        map_parameters(arguments,
+                       "NAMES",
+                       "cloud",
+                       "vm",
+                       "region",
+                       "refresh",
+                       "dryrun"
+                       )
+
+        variables = Variables()
+        arguments.output = Parameter.find("output",
+                                          arguments,
+                                          variables,
+                                          "table")
+
+        print(arguments.cloud)
+        if arguments.list:
+            banner(f'get in arguments.list {arguments.list}')
+            if arguments.NAMES:
+                banner('get in arguments.NAMES')
+                raise NotImplementedError
+                names = Parameter.expand(arguments.NAMES)
+
+                for name in names:
+                    # kind = cm.kind
+                    provider = Provider(name=name)
+                    # result = provider.list(???)
+                    result = provider.list()
+            elif arguments.cloud:
+                    banner(f'get in arguments.cloud {arguments.cloud}')
+                    provider = Provider(name=arguments.cloud)
+                    # result = provider.list(???)
+                    result = provider.list(**arguments)
+                    # print(provider.Print(result,
+                    #                      kind='volume',
+                    #                      output=arguments.output))
+
+            return ""
+
+'''
         def get_last_volume():
             Console.error("Get last volume not yet implemented")
             raise NotImplementedError
@@ -98,6 +143,7 @@ class VolumeCommand(PluginCommand):
             print()
 
             raise NotImplementedError
+
 
         elif arguments.list:
 
@@ -174,3 +220,4 @@ class VolumeCommand(PluginCommand):
             raise NotImplementedError
 
         return ""
+'''

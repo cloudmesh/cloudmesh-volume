@@ -57,8 +57,9 @@ class Provider(object):  # broken
         conf = Config(configuration)["cloudmesh"]
         self.spec = conf["volume"][name]
         self.cloud = name
+        print('self.cloud = ', self.cloud)
         self.kind = self.spec["cm"]["kind"]
-        super().__init__(name, conf)
+        super().__init__()
 
         P = Provider.get_provider(self.kind)
         self.provider = P(self.cloud)
@@ -75,7 +76,7 @@ class Provider(object):  # broken
 
     @DatabaseUpdate()
     def list(self, **kwargs):
-        data = self.provider.list(kwargs)
+        data = self.provider.list(**kwargs)
         return data
 
     #

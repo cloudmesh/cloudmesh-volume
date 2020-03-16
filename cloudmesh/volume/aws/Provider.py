@@ -7,8 +7,8 @@ from datetime import datetime
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 import boto3
-import boto
 from cloudmesh.common.DateTime import DateTime
+from cloudmesh.common.Printer import Printer
 
 
 class Provider(VolumeABC):
@@ -37,8 +37,8 @@ class Provider(VolumeABC):
             EC2_SECURITY_GROUP: cloudmesh
             EC2_ACCESS_ID: {EC2_ACCESS_ID}
             EC2_SECRET_KEY: {EC2_SECRET_KEY}
-            EC2_PRIVATE_KEY_FILE_PATH: ~/.cloudmesh/aws_cert.pem
-            EC2_PRIVATE_KEY_FILE_NAME: aws_cert
+            EC2_PRIVATE_KEY_FILE_PATH: 
+            EC2_PRIVATE_KEY_FILE_NAME: 
     """
 
     output = {
@@ -47,37 +47,57 @@ class Provider(VolumeABC):
             "sort_keys": ["cm.name"],
             "order": ["cm.name",
                       "cm.cloud",
+                      "cm.kind",
+#                      "cm.driver",
                       "AvailabilityZone",
                       "CreateTime",
                       "Encrypted",
                       "Size",
-                      "SnapshotId",
+                      #"SnapshotId",
                       "State",
                       "VolumeId",
                       "Iops",
-                      "Tags",
-                      "VolumeType"],
+                      #"Tags",
+                      "VolumeType",
+#                      "created"
+                      ],
             "header": ["Name",
                        "Cloud",
+                       "Kind",
+#                       "Driver",
                        "AvailabilityZone",
                        "CreateTime",
                        "Encrypted",
                        "Size",
-                       "SnapshotId",
+                       #"SnapshotId",
                        "State",
                        "VolumeId",
                        "Iops",
-                       "Tags",
-                       "VolumeType"],
+                       #"Tags",
+                       "VolumeType",
+#                       "Created"
+                       ],
         }
     }
 
     def __init__(self, name=None):
-        self.cloud = "aws"
-        self.name = name
+        self.cloud = name
         self.ec2 = boto3.resource('ec2')
 
-    def update_dict(self, elements):
+    def Print(self, data, output=None, kind=None):
+        order = self.output["volume"]['order']
+        header = self.output["volume"]['header']
+        print(Printer.flatwrite(data,
+                                sort_keys=["name"],
+                                order=order,
+                                header=header,
+                                output=output,
+              )
+              )
+
+        #print(Printer.write(data, output=output))
+
+    def update_dict(self, results):
         """
         This function adds a cloudmesh cm dict to each dict in the list
         elements.
@@ -86,34 +106,41 @@ class Provider(VolumeABC):
         this object is converted to a dict. Typically this method is used
         internally.
 
-        :param elements: the list of original dicts. If elements is a single
-                         dict a list with a single element is returned.
+        :param results: the original dicts.
         :param kind: for some kinds special attributes are added. This includes
                      key, vm, image, flavor.
         :return: The list with the modified dicts
         """
 
-        if elements is None:
+        if results is None:
             return None
-        elif type(elements) == list:
-            _elements = elements
-        else:
-            _elements = [elements]
+        # elif type(elements) == list:
+        #     _elements = elements
+        # else:
+        #     _elements = [elements]
         d = []
-        for entry in _elements:
 
+        elements = results['Volumes']
+        print(type(elements))
+        for entry in elements:
+            print("entry['Tags']", entry['Tags'])
+            print(type(entry['Tags']))
+            for item in entry['Tags']:
+                print("item", item)
+                if item['Key'] == 'Name':
+                    volume_name = item['Value']
+                else:
+                    volume_name =" "
             if "cm" not in entry:
                 entry['cm'] = {}
 
             entry["cm"].update({
-                "kind": "volume",
-                "driver": self.cloudtype,
                 "cloud": self.cloud,
-                "name": self.name
+                "kind": "volume",
+                "name": volume_name,
             })
 
-            entry["cm"]["created"] = entry["updated"] = str(
-                datetime.now())
+#            entry["cm"]["created"] = str(DateTime.now())
 
             d.append(entry)
         return d
@@ -123,26 +150,26 @@ class Provider(VolumeABC):
         default = config[f"cloudmesh.volume.{name}.default"]
         self._create(name=name, **default)
 
-        # size: 2
-        # iops: 1000
-        # encrypted: False
-        # multi_attach_enabled: True
+            #size: 2
+            #iops: 1000
+            #encrypted: False
+            #multi_attach_enabled: True
 
     def _create(self,
-                name=None,
-                zone=None,
-                size=2,
-                volume_type="gp2",
-                iops=1000,
-                kms_key_id=None,
-                outpost_arn=None,
-                image=None,
-                snapshot=None,
-                encrypted=False,
-                source=None,
-                description=None,
-                multi_attach_enabled=True,
-                dryrun=False):
+               name=None,
+               zone=None,
+               size=2,
+               volume_type="gp2",
+               iops=1000,
+               kms_key_id=None,
+               outpost_arn=None,
+               image=None,
+               snapshot=None,
+               encrypted=False,
+               source=None,
+               description=None,
+               multi_attach_enabled=True,
+               dryrun=False):
         """
         Create a volume.
 
@@ -178,7 +205,7 @@ class Provider(VolumeABC):
 
         """
 
-        banner(f"create volume")
+        banner(f"create volume {name}")
         result = self.ec2.create_volume(
             AvailabilityZone=zone,
             Encrypted=encrypted,
@@ -207,14 +234,12 @@ class Provider(VolumeABC):
 
         return result
 
+
     # PROPOSAL 2
     def list(self,
-             vm=None,
-             region=None,
-             cloud=None,
-             filter=None,
-             dryrun=None,
-             refresh=False):
+             **kwargs
+             ):
+
         """
         THis command list all volumes as follows
 
@@ -222,13 +247,10 @@ class Provider(VolumeABC):
         If region is defined all volumes of the vms in that region are returned.
         ....
 
-        The filter allows us to specify cloud specific filter option
-        a filter for this cloud looks like ....????
+        #The filter allows us to specify cloud specific filter option
+        #a filter for this cloud looks like ....????
 
-        :param vm:
-        :param region:
-        :param cloud:
-        :param filter:
+        :param dryrun:
         :param refresh:
         :return:
         """
@@ -240,10 +262,11 @@ class Provider(VolumeABC):
         #:param filter_name (string)
         #:param filter_value (string)
         #:param volume_ids (list): The volume IDs
+        print("called aws.provider:")
+        banner(f"list volume arguments")
+        print(kwargs)
 
-        banner(f"list volume")
-
-        client = boto.client('ec2')
+        client = boto3.client('ec2')
 
         # filter = "[[
         #                 {
@@ -255,26 +278,29 @@ class Provider(VolumeABC):
         #             ]"
 
         # filter = eval(filter)
+        banner('print kwargs')
+        print(kwargs)
+        print(kwargs['output'])
 
-        result = client.describe_volumes(
-            Filters=filter,
-            # Filters=[
-            #    {
-            #        'Name': filter_name,
-            #        'Values': [
-            #            filter_value,
-            #        ]
-            #    },
-            # ],
-            VolumeIds=[
-                volume_ids,
-            ],
-            DryRun=dryrun,
-            MaxResults=123,
-            NextToken='string'
-        )
+        #if "--dryrun" in kwargs.keys():
+        if kwargs["--dryrun"]:
+            dryrun = kwargs["--dryrun"]
+        else: dryrun = False
+        if kwargs["--refresh"]:
+            refresh = kwargs["--refresh"]
+            result = client.describe_volumes(
+                DryRun=dryrun,
+            )
+            banner("raw results")
+            print(result)
+            banner("raw results end")
+        else:
+            #read record from mongoDB
+            refresh = False
 
         result = self.update_dict(result)
+
+        print(self.Print(result, kind='volume', output=kwargs['output']))
 
         return result
 
@@ -470,7 +496,7 @@ class Provider(VolumeABC):
                 DryRun=dryrun,
                 VolumeId=volume_id,
                 Size=size,
-                VolumeType=volume_type,  # BUG
+                VolumeType=volume_type, # BUG
                 Iops=iops
             )
 
@@ -514,39 +540,5 @@ class Provider(VolumeABC):
 if __name__ == "__main__":
     # region = 'us-east-2'
     p = Provider()
-    p.create()
+
     p.list()
-    p.mount()
-    p.set()
-    p.sync()
-    p.unset()
-    p.unmount()
-    p.migrate()
-    p.delete()
-
-
-    # Ashley's work
-    def mount(self, path=None, name=None):
-        banner(f"mount {path} {name}")
-        os.system(f"aws mount {path}  {name}")
-        dict_result = self._get_mount_status(name)
-        print(dict_result)
-        return dict_result
-
-
-    def _get_mount_status(self, name=None):
-        result = Shell.run(f"aws info {name} --format=json")
-
-        if f'instance "{name}" does not exist' in result:
-            dict_result = {
-                'name': name,
-                'status': "instance does not exist"
-            }
-        else:
-            result = json.loads(result)
-            dict_result = {
-                'name': name,
-                'status': result["info"][name]['state'],
-                'mounts': result["info"][name]['mounts']
-            }
-        return dict_result

@@ -76,11 +76,10 @@ class VolumeCommand(PluginCommand):
                                           variables,
                                           "table")
 
-        print(arguments.cloud)
         if arguments.list:
-            banner(f'get in arguments.list {arguments.list}')
+#            banner(f'get in arguments.list {arguments.list}')
             if arguments.NAMES:
-                banner('get in arguments.NAMES')
+#                banner('get in arguments.NAMES')
                 raise NotImplementedError
                 names = Parameter.expand(arguments.NAMES)
 
@@ -90,7 +89,7 @@ class VolumeCommand(PluginCommand):
                     # result = provider.list(???)
                     result = provider.list()
             elif arguments.cloud:
-                    banner(f'get in arguments.cloud {arguments.cloud}')
+#                    banner(f'get in arguments.cloud {arguments.cloud}')
                     provider = Provider(name=arguments.cloud)
                     # result = provider.list(???)
                     result = provider.list(**arguments)

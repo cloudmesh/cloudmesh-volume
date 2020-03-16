@@ -57,7 +57,7 @@ class Provider(object):  # broken
         conf = Config(configuration)["cloudmesh"]
         self.spec = conf["volume"][name]
         self.cloud = name
-        print('self.cloud = ', self.cloud)
+#        print('self.cloud = ', self.cloud)
         self.kind = self.spec["cm"]["kind"]
         super().__init__()
 

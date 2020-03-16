@@ -95,8 +95,6 @@ class Provider(VolumeABC):
               )
               )
 
-        #print(Printer.write(data, output=output))
-
     def update_dict(self, results):
         """
         This function adds a cloudmesh cm dict to each dict in the list
@@ -121,12 +119,11 @@ class Provider(VolumeABC):
         d = []
 
         elements = results['Volumes']
-        print(type(elements))
+#        print(type(elements))
         for entry in elements:
-            print("entry['Tags']", entry['Tags'])
-            print(type(entry['Tags']))
+#            print("entry['Tags']", entry['Tags'])
+#            print(type(entry['Tags']))
             for item in entry['Tags']:
-                print("item", item)
                 if item['Key'] == 'Name':
                     volume_name = item['Value']
                 else:
@@ -262,11 +259,6 @@ class Provider(VolumeABC):
         #:param filter_name (string)
         #:param filter_value (string)
         #:param volume_ids (list): The volume IDs
-        print("called aws.provider:")
-        banner(f"list volume arguments")
-        print(kwargs)
-
-        client = boto3.client('ec2')
 
         # filter = "[[
         #                 {
@@ -278,11 +270,12 @@ class Provider(VolumeABC):
         #             ]"
 
         # filter = eval(filter)
-        banner('print kwargs')
-        print(kwargs)
-        print(kwargs['output'])
 
-        #if "--dryrun" in kwargs.keys():
+#        banner('print kwargs')
+#        print(kwargs)
+#        print(kwargs['output'])
+
+        client = boto3.client('ec2')
         if kwargs["--dryrun"]:
             dryrun = kwargs["--dryrun"]
         else: dryrun = False
@@ -291,9 +284,9 @@ class Provider(VolumeABC):
             result = client.describe_volumes(
                 DryRun=dryrun,
             )
-            banner("raw results")
-            print(result)
-            banner("raw results end")
+#            banner("raw results")
+#            print(result)
+#           banner("raw results end")
         else:
             #read record from mongoDB
             refresh = False

@@ -24,12 +24,15 @@ class Provider(VolumeABC):
             version: TBD
             service: volume
           credentials:
-            auth:
-              username: $USER
-            key_path: ~/.ssh/id_rsa.pub
+            version: TBD
+            user: TBD
+            fingerprint: TBD
+            key_file: oci_api_key.pem
+            pass_phrase: TBD
+            tenancy: TBD
+            compartment_id: TBD
+            region: TBD
           default:
-            size: m1.medium
-            image: lts
     """
 
     output = {

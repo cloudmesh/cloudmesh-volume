@@ -103,51 +103,78 @@ In this project we will be developing features related to completing and simplif
 
 * <https://freshbrewed.science/ubuntu-multipass-part-deux/index.html>
 
+#### Multipass volume management functions
+
+:o2: Add functions from provider with descriptions of required parameters
+
 ### AWS
 
-* AWS CLI: <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
-* Amazon EBS: <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-volume.html>
-* Amazon python api: <https://boto3.amazonaws.com/v1/documentation/api/latest/index.html>
-* REST api: <https://docs.aws.amazon.com/apigateway/api-reference/>
-    
-    Documentation about volume cost: 
-    
-    <https://aws.amazon.com/ebs/pricing/>
-    
-    <https://medium.com/@stefanroman/calculate-price-of-ebs-volumes-with-python-76687bb24530>
-    
-    manual: 
-    
-    <https://docs.aws.amazon.com/>
+* AWS CLI:   
+  <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
+* Amazon EBS:   
+  <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-volume.html>
+* Amazon python api:   
+  <https://boto3.amazonaws.com/v1/documentation/api/latest/index.html>
+* REST api:   
+  <https://docs.aws.amazon.com/apigateway/api-reference/>
+* Documentation about volume cost:   
+  <https://aws.amazon.com/ebs/pricing/>  
+  <https://medium.com/@stefanroman/calculate-price-of-ebs-volumes-with-python-76687bb24530>
+* manual:   
+  <https://docs.aws.amazon.com/>
+
+#### AWS volume management functions
+
+:o2: Add functions from provider with descriptions of required parameters
 
 ### Google
 
-* python api: <http://googleapis.github.io/google-api-python-client/docs/dyn/compute_v1.html>
-* REST api: <https://cloud.google.com/apis/docs/overview>
-    
-    Documentation about volume cost: 
-    
-    <https://cloud.google.com/compute/disks-image-pricing>
-    
-    manual: 
-    
-    <https://cloud.google.com/docs>
+* python api:   
+  <http://googleapis.github.io/google-api-python-client/docs/dyn/compute_v1.html>
+* REST api:   
+  <https://cloud.google.com/apis/docs/overview>
+* Documentation about volume cost:   
+  <https://cloud.google.com/compute/disks-image-pricing>
+* manual:   
+  <https://cloud.google.com/docs>
+
+#### Google volume management functions
+
+:o2: Add functions from provider with descriptions of required parameters
 
 ### Azure
 
-* Azure CLI: <https://docs.microsoft.com/en-us/cli/azure/netappfiles/volume?view=azure-cli-latest#az-netappfiles-volume-create>
-* REST: <https://docs.microsoft.com/en-us/rest/api/netapp/volumes>
+* Azure CLI:   
+  <https://docs.microsoft.com/en-us/cli/azure/netappfiles/volume?view=azure-cli-latest#az-netappfiles-volume-create>
+* REST:   
+  <https://docs.microsoft.com/en-us/rest/api/netapp/volumes>
+
+#### Azure volume management functions
+
+:o2: Add functions from provider with descriptions of required parameters
 
 ### OpenStack
 
-* python: <https://docs.openstack.org/python-cinderclient/latest/>
-* REST: <https://docs.openstack.org/api-ref/block-storage/>
+* python:   
+  <https://docs.openstack.org/python-cinderclient/latest/>
+* REST:   
+  <https://docs.openstack.org/api-ref/block-storage/>
 * <https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/volume.html>
+
+#### OpenStack volume management functions
+
+:o2: Add functions from provider with descriptions of required parameters
 
 ### Oracle
 
-* API: <https://docs.cloud.oracle.com/en-us/iaas/api/#/en/iaas/20160918/Volume/>
-* OCI CLI: <https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/2.9.3/oci_cli_docs/cmdref/bv/volume.html>
+* API:   
+  <https://docs.cloud.oracle.com/en-us/iaas/api/#/en/iaas/20160918/Volume/>
+* OCI CLI:   
+  <https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/2.9.3/oci_cli_docs/cmdref/bv/volume.html>
+
+#### Oracle volume management functions
+
+:o2: Add functions from provider with descriptions of required parameters
 
 
 ## Documentation on how to move volumes from one provider to the next 

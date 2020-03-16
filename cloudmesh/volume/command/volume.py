@@ -105,49 +105,51 @@ class VolumeCommand(PluginCommand):
                                       output=arguments.output))
 
             elif arguments.vm:
-                #get record from mongoDB through vm name --> volume names--> same as arguments.Names is true
+                #need to add vm name to volume when doing volume add
+                #get record from mongoDB through vm name --> get cloud --> Provider(name=cloud)
                 raise NotImplementedError
 
 
             elif arguments.region:
-                #find mongoDB record through region --> volume names--> same as arguments.Names is true
+                #find mongoDB record through region --> get cloud --> Provider(name=cloud)
 
                 raise NotImplementedError
 
 
-            if arguments.list and arguments.refresh == False:
-                #print out results in mongoDB
-                if arguments.NAMES:
-                    arguments.NAMES = list(arguments.NAMES.split(","))
-                    # find record in mondoDB through volume names
+        elif arguments.list and arguments.refresh == False:
+            #print out results in mongoDB
+            if arguments.NAMES:
+                arguments.NAMES = list(arguments.NAMES.split(","))
+                # find record in mondoDB through volume names
 
-                    for name in arguments.NAMES:
-                        result = cm.find_name(name)
-                        print(provider.Print(result,
-                                             kind='volume',
-                                             output=arguments.output))
-
-                elif arguments.cloud:
-                    result = cm.find(cloud=arguments.cloud, kind="volume")
+                for name in arguments.NAMES:
+                    result = cm.find_name(name)
                     print(provider.Print(result,
                                          kind='volume',
                                          output=arguments.output))
 
-                elif arguments.vm:
-                    #need to add vm name to volume when doing volume add
-                    raise NotImplementedError
-                    result = cm.find(vm=arguments.vm, kind='volume')
-                    print(provider.Print(result,
-                                         kind='volume',
-                                         output=arguments.output))
+            elif arguments.cloud:
+                result = cm.find(cloud=arguments.cloud, kind="volume")
+                print(provider.Print(result,
+                                     kind='volume',
+                                     output=arguments.output))
 
-                elif arguments.region:
-                    result = cm.find(region=arguments.region, kind='volume')
-                    print(provider.Print(result,
-                                         kind='volume',
-                                         output=arguments.output))
+            elif arguments.vm:
+                #need to add vm name to volume when doing volume add
+                raise NotImplementedError
+                result = cm.find(vm=arguments.vm, kind='volume')
+                print(provider.Print(result,
+                                     kind='volume',
+                                     output=arguments.output))
 
-            return ""
+            elif arguments.region:
+                raise NotImplementedError
+                result = cm.find(region=arguments.region, kind='volume')
+                print(provider.Print(result,
+                                     kind='volume',
+                                     output=arguments.output))
+
+        return ""
 
 '''
         def get_last_volume():

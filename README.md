@@ -23,107 +23,92 @@ In this project we will be developing features related to completing and simplif
 * Ashley Thornton sp20-516-230
 * Ashok Singam sp20-516-232
 
+## Distribution of clouds between team memebers
+
+* Azure - Ashley & Xin
+* AWS - Ashley & Xin
+* Google - Peter & Xin
+* Oracle - Ashok & Peter
+* Openstack - Peter & Ashok
+* Multipass - Ashok & Ashley
+
 ## Volume Management functions
 
-* Volume create - Create new volume - Ashok
+* volume register which
 ```
-    volume create [name]
-                  [--size <size>]
-                  [--type <volume-type>]
-                  [--image <image> | --snapshot <snapshot> | --source <volume>]
-                  [--description <description>]
+    volume register which
 ```
 
-* Volume delete - Delete volume - Ashok
+* volume register
 ```
-     volume delete [volume] 
+    volume register [NAME]
+                    [--cloud=CLOUD]
 ```
 
-* Volume list - List volumes - Xin
-
-List volume of vm in specified region and provider. List all the volumes in certain region or provider. 
-
+* volume list
+  
+  List all the volumes for certain vm, region, or cloud. 
 ```
-    volume list [--vm=VM NAME]
+    volume list NAMES
+                [--vm=VM]
                 [--region=REGION]
                 [--cloud=CLOUD]
                 [--refresh]
+                [--dryrun]
+```
+
+* volume create
+```
+    volume create [NAME]
+                  [--size=SIZE]
+                  [--volumetype=TYPE]
+                  [--description=DESCRIPTION]
+                  [--dryrun]
+```
+* volume add
+```
+    volume add VM NAME
+```
+
+* volume remove
+``` 
+    volume remove VM NAME
+```
+
+* volume delete
+```
+    volume delete [NAME] 
 ```
     
-* Volume migrate - Migrate volume to a new host - Xin
-
-Migrate volume from one vm to another vm within the same region, service or provider. Migrate volume from one vm to another vm between different regions, services or providers.
-
+* volume migrate
+  
+  Migrate volume from one vm to another vm between different regions, services or providers.
 ```
-    volume migrate NAME FVM TVM
-                    [--fregion=FROM REGION]
-                    [--tregion=TO REGION]
-                    [--fservice=FROM SERVICE]
-                    [--tservice=TO SERVICE]
-                    [--fcloud=FROM CLOUD]
-                    [--tcloud=TO CLOUD]
-                    [--cloud=CLOUD]
-                    [--region=REGION]
-                    [--service=SERVICE] 
+    volume migrate NAME FROM_VM TO_VM
 ```
 
-* volume sync - Peter
-
-Volume sync alows for data to shared bewteen two volumes.  Sync can be used to backup data to or from file services or other block volumes.
+* volume sync
+  
+  Volume sync alows for data to shared bewteen two volumes.
 ```
-    volume sync [VOLUME NAME A] [VOLUME NAME B]
-                    [--region=REGION]
-                    [--cloud=CLOUD]
-```
-                  
-* Volume set - Set volume properties - Ashley
-
-Volume set ties a group of storage blocks together. While the data spans multiple drives, volume set sees them as continious.
-```
-    volume set [VOLUME NAME]
-                    [--name <name>]
-                    [--size <size>]
-                    [--description <description>]
-                    [--no-property]
-                    [--property <key=value> [...] ]
-                    [--image-property <key=value> [...] ]
-                    [--state <state>]
-                    [--type <volume-type>]
-                    [--retype-policy <retype-policy>]
-                    [--bootable | --non-bootable]
-                    [--read-only | --read-write]
-```
-
-* Volume show - Show volume details - Ashley
-
-Volume show provides information about all volumes, including the name, state, type, size, and percentage of space used.
-```
-    volume show [VOLUME NAME]
-```
-
-* Volume unset - Unset volume properties - Peter
-
-Volume unset separates a volume from a grouping of block volumes.  
-```
-    volume unset [VOLUME NAME]
-                    [--property <key>]
-                    [--image-property <key>]
+    volume sync FROM_VOLUME TO_VOLUME
 ```
 
 * volume cost
-    * Multicloud enhanced function including cost estimates and the actual cost accured - All
+    * Multicloud enhanced function including cost estimates and the actual cost accured
 
-Volume Providers:
+## Volume Providers
 
-* AWS:
+### Multipass
 
-    python api: 
-    
-    <https://boto3.amazonaws.com/v1/documentation/api/latest/index.html>
-    
-    REST api: 
-    
-    <https://docs.aws.amazon.com/apigateway/api-reference/>
+* <https://freshbrewed.science/ubuntu-multipass-part-deux/index.html>
+
+### AWS
+
+* AWS CLI: <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
+* Amazon EBS: <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-volume.html>
+* Amazon python api: <https://boto3.amazonaws.com/v1/documentation/api/latest/index.html>
+* REST api: <https://docs.aws.amazon.com/apigateway/api-reference/>
     
     Documentation about volume cost: 
     
@@ -135,15 +120,10 @@ Volume Providers:
     
     <https://docs.aws.amazon.com/>
 
-* Google:
+### Google
 
-    python api: 
-    
-    <http://googleapis.github.io/google-api-python-client/docs/dyn/compute_v1.html>
-    
-    REST api: 
-    
-    <https://cloud.google.com/apis/docs/overview>
+* python api: <http://googleapis.github.io/google-api-python-client/docs/dyn/compute_v1.html>
+* REST api: <https://cloud.google.com/apis/docs/overview>
     
     Documentation about volume cost: 
     
@@ -153,86 +133,65 @@ Volume Providers:
     
     <https://cloud.google.com/docs>
 
-* Azure:
+### Azure
 
-* OpenStack
+* Azure CLI: <https://docs.microsoft.com/en-us/cli/azure/netappfiles/volume?view=azure-cli-latest#az-netappfiles-volume-create>
+* REST: <https://docs.microsoft.com/en-us/rest/api/netapp/volumes>
 
-    <https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/volume.html>
+### OpenStack
 
-* Documentation on how to move volumes from one provider to the next: 
+* python: <https://docs.openstack.org/python-cinderclient/latest/>
+* REST: <https://docs.openstack.org/api-ref/block-storage/>
+* <https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/volume.html>
 
-    * from Amazon S3
-    
-        * Migrating from Amazon S3 to Cloud Storage
-        
-        <https://cloud.google.com/storage/docs/migrating#storage-list-buckets-s3-python>
-        
-        <https://github.com/adzerk/s3-to-google-cloud-storage-connector>
-        
-        * Migrating from Amazon S3 to Azure Blob Storage
-        
-        <https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/master/README.md>
-        
-        * Migrating from Amazon S3 to OpenStack
-        
-    * from Cloud Storage
-    
-        * Migrating from Cloud Storage to Amazon S3
-        
-        <https://www.quora.com/How-can-I-migrate-data-from-Google-cloud-storage-into-AWS-S3-buckets>
-        
-        * Migrating from Cloud Storage to Azure Blob Storage
-        
-        <https://blog.bitscry.com/2019/12/30/data-transfer-google-cloud-storage-to-azure-blob-storage/>
-        
-        * Migrating from Cloud Storage to OpenStack
-        
-    * from Azure Blob Storage
-        
-        * Migrating from Azure Blob Storage to Amazon S3
-        
-        * Migrating from Azure Blob Storage to Cloud Storage
-        
-        * Migrating from Azure Blob Storage to OpenStack
-        
-    * from OpenStack
+### Oracle
+
+* API: <https://docs.cloud.oracle.com/en-us/iaas/api/#/en/iaas/20160918/Volume/>
+* OCI CLI: <https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/2.9.3/oci_cli_docs/cmdref/bv/volume.html>
+
+
+## Documentation on how to move volumes from one provider to the next 
+
+* from Amazon S3
+
+  * Migrating from Amazon S3 to Cloud Storage
+
+    <https://cloud.google.com/storage/docs/migrating#storage-list-buckets-s3-python>
+
+    <https://github.com/adzerk/s3-to-google-cloud-storage-connector>
+
+  * Migrating from Amazon S3 to Azure Blob Storage
+
+    <https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/master/README.md>
+
+  * Migrating from Amazon S3 to OpenStack
+
+* from Cloud Storage
+
+  * Migrating from Cloud Storage to Amazon S3
+
+    <https://www.quora.com/How-can-I-migrate-data-from-Google-cloud-storage-into-AWS-S3-buckets>
+
+  * Migrating from Cloud Storage to Azure Blob Storage
+
+    <https://blog.bitscry.com/2019/12/30/data-transfer-google-cloud-storage-to-azure-blob-storage/>
+
+  * Migrating from Cloud Storage to OpenStack
+
+* from Azure Blob Storage
+
+  * Migrating from Azure Blob Storage to Amazon S3
+
+  * Migrating from Azure Blob Storage to Cloud Storage
+
+  * Migrating from Azure Blob Storage to OpenStack
+
+* from OpenStack
 
 ## Test cases
 
 Write test cases in the form of reproducable pytests
 
-## Distribution of clouds between team memebers
 
-* Azure - Ashley & Xin
-* AWS - Ashley & Xin
-* Google - Peter & Xin
-* Oracle - Ashok & Peter
-* Openstack - Peter & Ashok
-* Multipass - Ashok & Ashley
-
-* Azure
-  * Azure CLI: <https://docs.microsoft.com/en-us/cli/azure/netappfiles/volume?view=azure-cli-latest#az-netappfiles-volume-create>
-  * REST: <https://docs.microsoft.com/en-us/rest/api/netapp/volumes>
-  
-* AWS
-  * AWS CLI: <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
-  * Amazon EBS: <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-volume.html>
-
-* Google
-  * Google SDK for CLI: <https://cloud.google.com/sdk>
-  * GCP refers to volumes as 'disks'
-    <https://cloud.google.com/sdk/gcloud/reference/compute/disks>
-  
-* Oracle
-  * API: <https://docs.cloud.oracle.com/en-us/iaas/api/#/en/iaas/20160918/Volume/>
-  * OCI CLI: <https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/2.9.3/oci_cli_docs/cmdref/bv/volume.html>
-
-* Openstack
-  * python: <https://docs.openstack.org/python-cinderclient/latest/>
-  * REST: <https://docs.openstack.org/api-ref/block-storage/>
-  
-* Multipass
-  * <https://freshbrewed.science/ubuntu-multipass-part-deux/index.html>
-     
 ## <https://cloudmesh.github.io/cloudmesh-manual/>
 

@@ -7,6 +7,7 @@
 import os
 import json
 
+from cloudmesh.common.Printer import Printer
 from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
@@ -50,6 +51,33 @@ class Provider(object):  # broken
             from cloudmesh.volume.oracle.Provider import Provider as P
 
         return P
+
+        # noinspection PyPep8Naming
+
+    def Print(self, data, output='table', kind=None):
+
+        if kind is None and len(data) > 0:
+            kind = data[0]["cm"]["kind"]
+
+        if output == "table":
+
+            order = self.p.output[kind]['order']  # not pretty
+            header = self.p.output[kind]['header']  # not pretty
+
+            if 'humanize' in self.p.output[kind]:
+                humanize = self.p.output[kind]['humanize']
+            else:
+                humanize = None
+
+            print(Printer.flatwrite(data,
+                                    sort_keys=["name"],
+                                    order=order,
+                                    header=header,
+                                    output=output,
+                                    humanize=humanize)
+                  )
+        else:
+            print(Printer.write(data, output=output))
 
     def __init__(self,
                  name=None,

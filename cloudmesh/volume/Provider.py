@@ -68,11 +68,11 @@ class Provider(object):  # broken
 
         if output == "table":
 
-            order = self.p.output[kind]['order']  # not pretty
-            header = self.p.output[kind]['header']  # not pretty
+            order = self.provider.output[kind]['order']  # not pretty
+            header = self.provider.output[kind]['header']  # not pretty
 
-            if 'humanize' in self.p.output[kind]:
-                humanize = self.p.output[kind]['humanize']
+            if 'humanize' in self.provider.output[kind]:
+                humanize = self.provider.output[kind]['humanize']
             else:
                 humanize = None
 

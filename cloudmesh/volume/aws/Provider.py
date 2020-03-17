@@ -49,34 +49,34 @@ class Provider(VolumeABC):
                       "cm.cloud",
                       "cm.kind",
                       "cm.region",
-#                      "AvailabilityZone",
+                      #                      "AvailabilityZone",
                       "CreateTime",
                       "Encrypted",
                       "Size",
                       #"SnapshotId",
                       "State",
-                      "VolumeId",
+                      #                      "VolumeId",
                       "Iops",
                       #"Tags",
                       "VolumeType",
-#                      "created",
+                      #                      "created",
                       "vm"
                       ],
             "header": ["Name",
                        "Cloud",
                        "Kind",
                        "Region",
-#                       "AvailabilityZone",
+                       #                       "AvailabilityZone",
                        "CreateTime",
                        "Encrypted",
                        "Size",
                        #"SnapshotId",
                        "State",
-                       "VolumeId",
+                        #                       "VolumeId",
                        "Iops",
                        #"Tags",
                        "VolumeType",
-#                       "Created",
+                       #                       "Created",
                        "vm"
                        ],
         }
@@ -153,11 +153,14 @@ class Provider(VolumeABC):
         for entry in elements:
 #            print("entry['Tags']", entry['Tags'])
 #            print(type(entry['Tags']))
-            for item in entry['Tags']:
-                if item['Key'] == 'Name':
-                    volume_name = item['Value']
-                else:
-                    volume_name =" "
+            try:
+                for item in entry['Tags']:
+                    if item['Key'] == 'Name':
+                        volume_name = item['Value']
+                    else:
+                        volume_name =" "
+            except:
+                pass
             if "cm" not in entry:
                 entry['cm'] = {}
 
@@ -327,7 +330,7 @@ class Provider(VolumeABC):
         banner("raw results end")
         result = self.update_dict(result)
 
-        print(self.Print(result, kind='volume', output=kwargs['output']))
+#        print(self.Print(result, kind='volume', output=kwargs['output']))
 
         return result
 

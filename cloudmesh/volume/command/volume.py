@@ -29,6 +29,7 @@ class VolumeCommand(PluginCommand):
                         [--cloud=CLOUD]
                         [--refresh]
                         [--dryrun]
+                        [--output=FORMAT]
             volume create [NAME]
                       [--label=LABEL]
                       [--size=SIZE]
@@ -53,6 +54,7 @@ class VolumeCommand(PluginCommand):
               --cloud=CLOUD      The name of the cloud
               --refresh          If refresh the information is taken from the cloud
               --volumetype=TYPE  The type of the volume
+              --output=FORMAT    Output format [default: table]
 
           Description:
 
@@ -95,11 +97,16 @@ class VolumeCommand(PluginCommand):
                     result = provider.list()
             elif arguments.cloud:
                 # banner(f'get in arguments.cloud {arguments.cloud}')
+                print (arguments.cloud)
                 provider = Provider(name=arguments.cloud)
+
                 result = provider.list(**arguments)
                 # print(provider.Print(result,
                 #                      kind='volume',
                 #                      output=arguments.output))
+                print(provider.Print(result, kind='volume', output=arguments.output))
+                #from pprint import pprint
+                #pprint (result)
 
             return ""
 

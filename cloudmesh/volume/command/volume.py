@@ -58,10 +58,15 @@ class VolumeCommand(PluginCommand):
 
              TBD
         """
-        VERBOSE(arguments)
 
-        # name = arguments.NAME
-        # path = arguments.PATH
+        def get_last_volume():
+            Console.error("Get last volume not yet implemented")
+            raise NotImplementedError
+
+        VERBOSE(arguments)
+        variables = Variables()
+        #name = arguments.NAME or variables["volume"] or get_last_volume()
+        #path = arguments.PATH
 
         map_parameters(arguments,
                        "cloud",
@@ -71,11 +76,119 @@ class VolumeCommand(PluginCommand):
                        "dryrun"
                        )
 
-        variables = Variables()
         arguments.output = Parameter.find("output",
                                           arguments,
                                           variables,
                                           "table")
+
+        if arguments.list:
+            #            banner(f'get in arguments.list {arguments.list}')
+            if arguments.NAMES:
+                #                banner('get in arguments.NAMES')
+                raise NotImplementedError
+                names = Parameter.expand(arguments.NAMES)
+
+                for name in names:
+                    # kind = cm.kind
+                    provider = Provider(name=name)
+                    # result = provider.list(???)
+                    result = provider.list()
+            elif arguments.cloud:
+                # banner(f'get in arguments.cloud {arguments.cloud}')
+                provider = Provider(name=arguments.cloud)
+                result = provider.list(**arguments)
+                # print(provider.Print(result,
+                #                      kind='volume',
+                #                      output=arguments.output))
+
+            return ""
+
+
+
+
+    '''
+        def get_last_volume():
+            Console.error("Get last volume not yet implemented")
+            raise NotImplementedError
+        VERBOSE(arguments)
+        variables = Variables()
+        name = arguments.NAME or variables["volume"] or get_last_volume()
+        path = arguments.PATH
+        map_parameters(arguments,
+                       "volumetype",
+                       "cloud",
+                       "vm",
+                       "region"
+                       "cloud",
+                       "refresh"
+                       )
+        if arguments.register and arguments.which:
+            providers = Provider.get_kind()
+            Console.info("Available Volume Cloud Providers")
+            print()
+            print("    " + "\n    ".join(providers))
+            print()
+        elif arguments.register:
+            Console.info("Registering a volume to cloudmesh yaml")
+            parameters = Parameter.arguments_to_dict(arguments.ARGUMENTS)
+            print()
+            print("    Name:", name)
+            print("    Cloud:", arguments.cloud)
+            print("    Arguments:", parameters)
+            print()
+            raise NotImplementedError
+        elif arguments.list:
+            if arguments.NAMES:
+                raise NotImplementedError
+                names = Parameter.expand(arguments.NAMES)
+                for name in names:
+                    # kind = cm.kind
+                    provider = Provider(name=name)
+                    # result = provider.list(???)
+                    result = provider.list()
+            elif arguments.cloud:
+                provider = Provider(name=arguments.cloud)
+                result = provider.list()
+            print(provider.Print(result,
+                                 kind='volume',
+                                 output=arguments.output))
+            return ""
+        elif arguments.create:
+            parameters = Parameter.arguments_to_dict(arguments.ARGUMENTS)
+            print(parameters)
+        elif arguments.delete:
+            name = arguments.NAME
+            if name is None:
+                # get name form last created volume
+                raise NotImplementedError
+            provider = Provider(name=name)
+            provider.delete(name=name)
+        elif arguments.migrate:
+            print(arguments.name)
+            print(arguments.FROM_VM)
+            print(arguments.TO_VM)
+            raise NotImplementedError
+        elif arguments.sync:
+            print(arguments.FROM_VOLUME)
+            print(arguments.TO_VOLUME)
+            raise NotImplementedError
+        elif arguments.add:
+            Console.info("Add a volume to a vm")
+            print(arguments.NAME)
+            print(arguments.VM)
+            raise NotImplementedError
+        elif arguments.remove:
+            Console.info("Remove a volume from a vm")
+            print(arguments.NAME)
+            print(arguments.VM)
+            raise NotImplementedError
+        return ""
+    
+        
+'''
+
+
+'''    
         cm = CmDatabase()
 
         if arguments.list and arguments.refresh:
@@ -152,123 +265,5 @@ class VolumeCommand(PluginCommand):
         return ""
 
 '''
-        def get_last_volume():
-            Console.error("Get last volume not yet implemented")
-            raise NotImplementedError
-
-        VERBOSE(arguments)
-
-        variables = Variables()
-        name = arguments.NAME or variables["volume"] or get_last_volume()
-
-        path = arguments.PATH
-
-        map_parameters(arguments,
-                       "volumetype",
-                       "cloud",
-                       "vm",
-                       "region"
-                       "cloud",
-                       "refresh"
-                       )
-
-        if arguments.register and arguments.which:
-
-            providers = Provider.get_kind()
-
-            Console.info("Available Volume Cloud Providers")
-            print()
-            print("    " + "\n    ".join(providers))
-            print()
-
-        elif arguments.register:
-
-            Console.info("Registering a volume to cloudmesh yaml")
-
-            parameters = Parameter.arguments_to_dict(arguments.ARGUMENTS)
-
-            print()
-            print("    Name:", name)
-            print("    Cloud:", arguments.cloud)
-            print("    Arguments:", parameters)
-            print()
-
-            raise NotImplementedError
 
 
-        elif arguments.list:
-
-            if arguments.NAMES:
-
-                raise NotImplementedError
-                names = Parameter.expand(arguments.NAMES)
-
-                for name in names:
-                    # kind = cm.kind
-                    provider = Provider(name=name)
-                    # result = provider.list(???)
-                    result = provider.list()
-
-            elif arguments.cloud:
-
-                provider = Provider(name=arguments.cloud)
-                result = provider.list()
-
-
-            print(provider.Print(result,
-                                 kind='volume',
-                                 output=arguments.output))
-            return ""
-
-        elif arguments.create:
-
-            parameters = Parameter.arguments_to_dict(arguments.ARGUMENTS)
-
-            print(parameters)
-
-        elif arguments.delete:
-
-            name = arguments.NAME
-
-            if name is None:
-                # get name form last created volume
-                raise NotImplementedError
-
-            provider = Provider(name=name)
-            provider.delete(name=name)
-
-        elif arguments.migrate:
-
-            print(arguments.name)
-            print(arguments.FROM_VM)
-            print(arguments.TO_VM)
-
-            raise NotImplementedError
-
-        elif arguments.sync:
-
-            print(arguments.FROM_VOLUME)
-            print(arguments.TO_VOLUME)
-
-            raise NotImplementedError
-
-        elif arguments.add:
-
-            Console.info("Add a volume to a vm")
-
-            print(arguments.NAME)
-            print(arguments.VM)
-
-            raise NotImplementedError
-
-        elif arguments.remove:
-
-            Console.info("Remove a volume from a vm")
-
-            print(arguments.NAME)
-            print(arguments.VM)
-
-            raise NotImplementedError
-
-        return ""
-'''

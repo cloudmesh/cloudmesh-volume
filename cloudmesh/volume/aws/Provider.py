@@ -49,7 +49,7 @@ class Provider(VolumeABC):
                       "cm.cloud",
                       "cm.kind",
                       "cm.region",
-                      "AvailabilityZone",
+#                      "AvailabilityZone",
                       "CreateTime",
                       "Encrypted",
                       "Size",
@@ -59,13 +59,14 @@ class Provider(VolumeABC):
                       "Iops",
                       #"Tags",
                       "VolumeType",
-#                      "created"
+#                      "created",
+                      "vm"
                       ],
             "header": ["Name",
                        "Cloud",
                        "Kind",
                        "Region",
-                       "AvailabilityZone",
+#                       "AvailabilityZone",
                        "CreateTime",
                        "Encrypted",
                        "Size",
@@ -75,7 +76,8 @@ class Provider(VolumeABC):
                        "Iops",
                        #"Tags",
                        "VolumeType",
-#                       "Created"
+#                       "Created",
+                       "vm"
                        ],
         }
     }
@@ -110,6 +112,34 @@ class Provider(VolumeABC):
         :return: The list with the modified dicts
         """
 
+        # {'Volumes':
+        #     [
+        #         {'Attachments':
+        #             [
+        #                 {'AttachTime': datetime.datetime(2020, 3, 16, 20, 0, 35, tzinfo=tzutc()),
+        #                  'Device': '/dev/sda1',
+        #                  'InstanceId': 'i-0765529fec90ba56b',
+        #                  'State': 'attached',
+        #                  'VolumeId': 'vol-09db404935694e941',
+        #                  'DeleteOnTermination': True}
+        #             ],
+        #         'AvailabilityZone': 'us-east-2c',
+        #         'CreateTime': datetime.datetime(2020, 3, 16, 20, 0, 35, 257000, tzinfo=tzutc()),
+        #         'Encrypted': False,
+        #         'Size': 8,
+        #         'SnapshotId': 'snap-085c8383cc8833286',
+        #         'State': 'in-use',
+        #         'VolumeId': 'vol-09db404935694e941',
+        #         'Iops': 100,
+        #         'Tags':
+        #             [{'Key': 'Name',
+        #               'Value': 'xin-vol-3'}],
+        #         'VolumeType': 'gp2'},
+        #         {...}
+        #     ]
+        # }
+
+
         if results is None:
             return None
         # elif type(elements) == list:
@@ -136,7 +166,7 @@ class Provider(VolumeABC):
                 "kind": "volume",
                 "name": volume_name,
                 "region": entry["AvailabilityZone"], # for aws region = AvailabilityZone
-                "vm name":
+                "vm name":" "
             })
 
 #            entry["cm"]["created"] = str(DateTime.now())
@@ -278,32 +308,26 @@ class Provider(VolumeABC):
 #        print(kwargs['output'])
 
         client = boto3.client('ec2')
-        if kwargs["--dryrun"]:
-            dryrun = kwargs["--dryrun"]
-        else: dryrun = False
-        if kwargs["--refresh"]:
-            refresh = kwargs["--refresh"]
-            result = client.describe_volumes(
-                DryRun=dryrun,
-                Filters=[
-                    {
-                        'Name': {},
-                        'Values': [
-                            filter_value,
-                        ]
-                    },
-                ],
-            )
-            banner("raw results")
-            print(result)
-            banner("raw results end")
- #       else:
-            #read record from mongoDB
- #           refresh = False
-
+        dryrun = kwargs['--dryrun']
+#        region = kwargs['--region']
+#        vm = kwargs['--vm']# will need vm id from mongo records
+        result = client.describe_volumes(
+            DryRun=dryrun,
+            # Filters=[
+            #     {
+            #         'Name': {},
+            #         'Values': [
+            #             filter_value,
+            #         ]
+            #     },
+            # ],
+        )
+        banner("raw results")
+        print(result)
+        banner("raw results end")
         result = self.update_dict(result)
 
-#        print(self.Print(result, kind='volume', output=kwargs['output']))
+        print(self.Print(result, kind='volume', output=kwargs['output']))
 
         return result
 

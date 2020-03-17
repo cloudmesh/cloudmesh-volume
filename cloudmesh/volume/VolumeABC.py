@@ -22,12 +22,12 @@ class VolumeABC(metaclass=ABCMeta):
 
     @abstractmethod
     def list(self,
+             NAMES=None,
              vm=None,
              region=None,
              cloud=None,
-             filter=None,
-             dryrun=None,
-             refresh=False):
+             refresh=None,
+             dryrun=None):
         """
         This command list all volumes as follows
 
@@ -38,11 +38,11 @@ class VolumeABC(metaclass=ABCMeta):
         The filter allows us to specify cloud specific filter option
         a filter for this cloud looks like ....????
 
-        :param vm:
-        :param region:
-        :param cloud:
-        :param filter:
-        :param refresh:
+        :param NAMES: List of volume names
+        :param vm: The name of the virtual machine
+        :param region:  The name of the region
+        :param cloud: The name of the cloud
+        :param refresh: If refresh the information is taken from the cloud
         :return:
         """
         raise NotImplementedError

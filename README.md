@@ -62,7 +62,6 @@ In this project we will be developing features related to completing and simplif
     Create a volume.
 ```
     volume create [NAME]
-                  [--cloud=CLOUD]
                   [--size=SIZE]
                   [--volume_type=TYPE]
                   [--description=DESCRIPTION]

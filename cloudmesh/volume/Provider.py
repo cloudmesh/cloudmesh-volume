@@ -32,7 +32,6 @@ class Provider(object):  # broken
 
     @staticmethod
     def get_provider(kind):
-        banner("get in def get_provider(kind)")
 
         if kind == "multipass":
             from cloudmesh.volume.multipass.Provider import Provider as P
@@ -61,15 +60,15 @@ class Provider(object):  # broken
 
         # noinspection PyPep8Naming
 
-    def Print(self, data, output='table', kind=None):
+    def Print(self, data, kind=None, output="table"):
 
         if kind is None and len(data) > 0:
             kind = data[0]["cm"]["kind"]
 
         if output == "table":
 
-            order = self.provider.output[kind]['order']  # not pretty
-            header = self.provider.output[kind]['header']  # not pretty
+            order = self.provider.output[kind]['order']
+            header = self.provider.output[kind]['header']
 
             if 'humanize' in self.provider.output[kind]:
                 humanize = self.provider.output[kind]['humanize']
@@ -90,7 +89,6 @@ class Provider(object):  # broken
                  name=None,
                  configuration="~/.cloudmesh/cloudmesh.yaml"):
         try:
-            banner("initializing")
             conf = Config(configuration)["cloudmesh"]
             self.spec = conf["volume"][name]
             self.cloud = name
@@ -121,8 +119,8 @@ class Provider(object):  # broken
 
     @DatabaseUpdate()
     def create(self, **kwargs):
-        d = self.provider.create(**kwargs)
-        return d
+        data = self.provider.create(**kwargs)
+        return data
 
     @DatabaseUpdate()
     def delete(self, name=None):
@@ -131,7 +129,6 @@ class Provider(object):  # broken
 
     @DatabaseUpdate()
     def list(self, **kwargs):
-        banner('goes in def list(self, **kwargs):')
         data = self.provider.list(**kwargs)
         return data
 

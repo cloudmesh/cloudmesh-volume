@@ -11,6 +11,7 @@ from cloudmesh.common.DateTime import DateTime
 from cloudmesh.common.Printer import Printer
 
 
+
 class Provider(VolumeABC):
     kind = "volume"
 
@@ -32,8 +33,8 @@ class Provider(VolumeABC):
             iops: 1000
             encrypted: False
             multi_attach_enabled: True
+            region: 'us-east-2'
           credentials:
-            region: {region}
             EC2_SECURITY_GROUP: cloudmesh
             EC2_ACCESS_ID: {EC2_ACCESS_ID}
             EC2_SECRET_KEY: {EC2_SECRET_KEY}
@@ -54,34 +55,34 @@ class Provider(VolumeABC):
                       "cm.cloud",
                       "cm.kind",
                       "cm.region",
-                      #                      "AvailabilityZone",
+                      #"AvailabilityZone",
                       "CreateTime",
                       "Encrypted",
                       "Size",
                       #"SnapshotId",
                       "State",
-                      #                      "VolumeId",
+                      #"VolumeId",
                       "Iops",
                       #"Tags",
                       "VolumeType",
-                      #                      "created",
+                      #"created",
                       "vm"
                       ],
             "header": ["Name",
                        "Cloud",
                        "Kind",
                        "Region",
-                       #                       "AvailabilityZone",
+                       #"AvailabilityZone",
                        "CreateTime",
                        "Encrypted",
                        "Size",
                        #"SnapshotId",
                        "State",
-                        #                       "VolumeId",
+                        #"VolumeId",
                        "Iops",
                        #"Tags",
                        "VolumeType",
-                       #                       "Created",
+                       #"Created",
                        "vm"
                        ],
         }
@@ -89,18 +90,18 @@ class Provider(VolumeABC):
 
     def __init__(self, name=None):
         self.cloud = name
-        self.ec2 = boto3.resource('ec2')
+        #self.ec2 = boto3.resource('ec2')
 
-    def Print(self, data, output=None, kind=None):
-        order = self.output["volume"]['order']
-        header = self.output["volume"]['header']
-        print(Printer.flatwrite(data,
-                                sort_keys=["name"],
-                                order=order,
-                                header=header,
-                                output=output,
-              )
-              )
+    # def Print(self, data, output=None, kind=None):
+    #     order = self.output["volume"]['order']
+    #     header = self.output["volume"]['header']
+    #     print(Printer.flatwrite(data,
+    #                             sort_keys=["name"],
+    #                             order=order,
+    #                             header=header,
+    #                             output=output,
+    #           )
+    #           )
 
     def update_dict(self, results):
         """
@@ -154,10 +155,10 @@ class Provider(VolumeABC):
         d = []
 
         elements = results['Volumes']
-#        print(type(elements))
+        #print(type(elements))
         for entry in elements:
-#            print("entry['Tags']", entry['Tags'])
-#            print(type(entry['Tags']))
+            #print("entry", entry)
+            #print(type(entry))
             try:
                 for item in entry['Tags']:
                     if item['Key'] == 'Name':
@@ -174,7 +175,7 @@ class Provider(VolumeABC):
                 "kind": "volume",
                 "name": volume_name,
                 "region": entry["AvailabilityZone"], # for aws region = AvailabilityZone
-                "vm name":" "
+                "vms": None
             })
 
 #            entry["cm"]["created"] = str(DateTime.now())
@@ -182,31 +183,31 @@ class Provider(VolumeABC):
             d.append(entry)
         return d
 
-    def create(self, name=None, **kwargs):
+    def create(self, name=None, **kwargs): #name is volume name
+        cloud = kwargs['cloud']
         config = Config()
-        default = config[f"cloudmesh.volume.{name}.default"]
-        self._create(name=name, **default)
+        default = config[f"cloudmesh.volume.{cloud}.default"]
+        #banner(f"print default {default}")
+        #banner(f"print kwargs {kwargs}")
+        for key in default.keys():
+            if key not in kwargs.keys():
+                kwargs[key] = default[key]
+            elif kwargs[key] == None:
+                kwargs[key] = default[key]
+
+        #default.update(kwargs)
+        #banner(f"print kwargs after update {kwargs}")
+        result = self._create(name=name, **kwargs)
 
             #size: 2
             #iops: 1000
             #encrypted: False
             #multi_attach_enabled: True
+        result = self.update_dict(result)
+        return result
 
     def _create(self,
-               name=None,
-               zone=None,
-               size=2,
-               volume_type="gp2",
-               iops=1000,
-               kms_key_id=None,
-               outpost_arn=None,
-               image=None,
-               snapshot=None,
-               encrypted=False,
-               source=None,
-               description=None,
-               multi_attach_enabled=True,
-               dryrun=False):
+               **kwargs):
         """
         Create a volume.
 
@@ -242,32 +243,42 @@ class Provider(VolumeABC):
 
         """
 
-        banner(f"create volume {name}")
-        result = self.ec2.create_volume(
-            AvailabilityZone=zone,
-            Encrypted=encrypted,
-            Iops=iops,
-            KmsKeyId=kms_key_id,
-            OutpostArn=outpost_arn,
-            Size=size,
-            SnapshotId=snapshot,
-            VolumeType=volume_type,
-            DryRun=dryrun,
+        #banner(f"create volume {kwargs}")
+        client = boto3.client('ec2')
+
+        if kwargs['volume_type']=='io1':
+            raise NotImplementedError
+
+        r = client.create_volume(
+            AvailabilityZone=kwargs['region'],
+            Encrypted=kwargs['encrypted'],
+            #Iops=kwargs['iops'],
+            #KmsKeyId=None,
+            #OutpostArn=None,
+            Size=kwargs['size'],
+            #SnapshotId=None,
+            VolumeType=kwargs['volume_type'],
+            DryRun=kwargs['dryrun'],
             TagSpecifications=[
                 {
                     'ResourceType': 'volume',
                     'Tags': [
                         {
-                            'Key': "volume",
-                            'Value': description
+                            'Key': "Name",
+                            'Value': 'xin'
                         },
                     ]
                 },
             ],
-            MultiAttachEnabled=multi_attach_enabled
+            #MultiAttachEnabled=kwargs['multi_attach_enabled']
         )
-        result = [result]
-        result = self.update_dict(result)
+        r = [r]
+        result = {}
+        result['Volumes']= r
+
+        #banner("raw results")
+        #print(result)
+        #banner("raw results end")
 
         return result
 

@@ -67,26 +67,28 @@ class VolumeCommand(PluginCommand):
 
         VERBOSE(arguments)
         variables = Variables()
-        #name = arguments.NAME or variables["volume"] or get_last_volume()
+        name = arguments.NAME or variables["volume"] #or get_last_volume()
         #path = arguments.PATH
-
+        cloud = variables['cloud']
         map_parameters(arguments,
                        "cloud",
                        "vm",
                        "region",
                        "refresh",
-                       "dryrun"
+                       "dryrun",
+                       "output",
+                       "size",
+                       "volume_type",
+                       "description",
                        )
 
         arguments.output = Parameter.find("output",
                                           arguments,
                                           variables,
-                                          "table")
+                                          )
 
         if arguments.list:
-            #            banner(f'get in arguments.list {arguments.list}')
             if arguments.NAMES:
-                #                banner('get in arguments.NAMES')
                 raise NotImplementedError
                 names = Parameter.expand(arguments.NAMES)
 
@@ -101,14 +103,25 @@ class VolumeCommand(PluginCommand):
                 provider = Provider(name=arguments.cloud)
 
                 result = provider.list(**arguments)
-                # print(provider.Print(result,
-                #                      kind='volume',
-                #                      output=arguments.output))
-                print(provider.Print(result, kind='volume', output=arguments.output))
+                print(provider.Print(result,
+                                     kind='volume',
+                                     output=arguments.output))
+
                 #from pprint import pprint
                 #pprint (result)
-
             return ""
+
+        elif arguments.create:
+            #parameters = Parameter.arguments_to_dict(arguments.ARGUMENTS)
+            #print("parameters",parameters)
+
+            if arguments.cloud == None:
+                arguments['cloud'] = cloud
+
+            provider = Provider(name=arguments.cloud)
+            result = provider.create(**arguments)
+            print(provider.Print(result, kind='volume', output=arguments.output))
+
 
 
 

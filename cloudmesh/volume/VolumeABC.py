@@ -52,6 +52,14 @@ class VolumeABC(metaclass=ABCMeta):
     #
     @abstractmethod
     def create(self, name=None, **kwargs):
+    # def create(self,
+    #            NAME=None,
+    #            cloud=None,
+    #            size=None,
+    #            volumetype=None,
+    #            description=None,
+    #            dryrun=None
+    #            ):
         """
         Create a volume.
         """

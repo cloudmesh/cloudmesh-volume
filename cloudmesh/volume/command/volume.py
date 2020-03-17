@@ -9,7 +9,10 @@ from cloudmesh.common.parameter import Parameter
 import textwrap
 from cloudmesh.common.util import banner
 from cloudmesh.management.configuration.arguments import Arguments
+from cloudmesh.management.configuration.name import Name
 from cloudmesh.mongo.CmDatabase import CmDatabase
+import yaml
+
 
 
 class VolumeCommand(PluginCommand):
@@ -31,12 +34,13 @@ class VolumeCommand(PluginCommand):
                         [--dryrun]
                         [--output=FORMAT]
             volume create [NAME]
-                      [--label=LABEL]
                       [--size=SIZE]
-                      [--volumetype=TYPE]
+                      [--volume_type=TYPE]
                       [--description=DESCRIPTION]
                       [--dryrun]
                       [ARGUMENTS...]
+            volume status [NAMES]
+                      [--cloud=CLOUD]
             volume add VM NAME
             volume remove VM NAME
             volume delete [NAME]
@@ -53,7 +57,7 @@ class VolumeCommand(PluginCommand):
               --region=REGION    The name of the region
               --cloud=CLOUD      The name of the cloud
               --refresh          If refresh the information is taken from the cloud
-              --volumetype=TYPE  The type of the volume
+              --volume_type=TYPE  The type of the volume
               --output=FORMAT    Output format [default: table]
 
           Description:
@@ -61,15 +65,33 @@ class VolumeCommand(PluginCommand):
              TBD
         """
 
-        def get_last_volume():
-            Console.error("Get last volume not yet implemented")
-            raise NotImplementedError
-
         VERBOSE(arguments)
         variables = Variables()
-        name = arguments.NAME or variables["volume"] #or get_last_volume()
-        #path = arguments.PATH
-        cloud = variables['cloud']
+
+        def get_last_volume():
+            cm = CmDatabase()
+            cloud = arguments['--cloud'] or variables["cloud"]
+             #how to get updated cloud names? or only search the last volume in --cloud?
+            last_entry = cm.find(cloud=cloud, kind='volume')[-1]
+            cm.close_client()
+            for tag in last_entry['Tags']:
+                if tag['key'] == 'Name':
+                    name = tag['Value']
+                else:
+                    raise ("Please name the volume!")
+            return name
+
+        def create_name():
+            with open("/Users/xingu/.cloudmesh/names.yaml") as file:
+                dic = yaml.load(file, Loader=yaml.FullLoader)
+            counter = dic["counter"]
+            user = dic["user"]
+            created_name = f"{user}-{cloud}-{counter}"
+            dic["counter"] += 1
+            with open("/Users/xingu/.cloudmesh/names.yaml", 'w') as file:
+                documents = yaml.dump(dic, file)
+            return created_name
+
         map_parameters(arguments,
                        "cloud",
                        "vm",
@@ -86,6 +108,10 @@ class VolumeCommand(PluginCommand):
                                           arguments,
                                           variables,
                                           )
+
+        arguments.NAME = arguments.NAME or variables["volume"] #or get_last_volume()
+        #path = arguments.PATH
+        cloud = variables['cloud']
 
         if arguments.list:
             if arguments.NAMES:
@@ -116,17 +142,41 @@ class VolumeCommand(PluginCommand):
             #print("parameters",parameters)
 
             if arguments.cloud == None:
-                arguments['cloud'] = cloud
-
+                arguments['cloud'] = cloud #cloud from variable['volume']
+            if arguments.NAME ==None:
+                arguments.NAME = str(create_name())
             provider = Provider(name=arguments.cloud)
             result = provider.create(**arguments)
             print(provider.Print(result, kind='volume', output=arguments.output))
 
+'''
+        elif arguments.status:
+            cm = CmDatabase()
+            banner(arguments)
+            if arguments.NAMES:
+                variables['volume'] = arguments.NAMES
+                print("arguments.NAMES",arguments.NAMES)
+            if arguments['--cloud']:
+                variables['cloud'] = arguments['--cloud']
+            #clouds, names = Arguments.get_cloud_and_names("status", arguments,
+            #                                              variables)
+            # gets status from database
+            #provider = Provider(name=cloud)
+            cursor = cm.db[f'{cloud}-volume']
+            print(cloud)
+            status = []
+            for name in arguments.NAMES:
+                for node in cursor.find({'Name': name}):
+                    status.append(node)
+            print(status)
+            #provider.Print(status, output=arguments.output, kind="status")
+            return ""
+'''
 
 
 
 
-    '''
+'''
         def get_last_volume():
             Console.error("Get last volume not yet implemented")
             raise NotImplementedError
@@ -249,9 +299,11 @@ class VolumeCommand(PluginCommand):
                 raise NotImplementedError
 
 
-        elif arguments.list and arguments.refresh == False:
+        elif arguments.list and arguments.refresh == None:
+            
             #print out results in mongoDB
             if arguments.NAMES:
+
                 arguments.NAMES = list(arguments.NAMES.split(","))
                 # find record in mondoDB through volume names
 

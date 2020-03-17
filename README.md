@@ -67,6 +67,13 @@ In this project we will be developing features related to completing and simplif
                   [--description=DESCRIPTION]
                   [--dryrun]
 ```
+* volume status
+
+    Retrieves status of last volume created on cloud and displays it.
+```
+    volume status [NAMES]
+                  [--cloud=CLOUD]
+```
 * volume add
 ```
     volume add VM NAME

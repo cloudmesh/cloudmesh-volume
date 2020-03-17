@@ -10,7 +10,7 @@ import boto3
 from cloudmesh.common.DateTime import DateTime
 from cloudmesh.common.Printer import Printer
 
-
+import collections
 
 class Provider(VolumeABC):
     kind = "volume"
@@ -42,9 +42,14 @@ class Provider(VolumeABC):
             EC2_PRIVATE_KEY_FILE_NAME: 
     """
 
-    volume_state = [
+    volume_states = [
         'in-use',
         'available',
+        'creating',
+        'deleted',
+        'deleting',
+        'error',
+        'inuse'
     ]
 
     output = {
@@ -60,7 +65,7 @@ class Provider(VolumeABC):
                       "Encrypted",
                       "Size",
                       #"SnapshotId",
-                      "State",
+                      "States",
                       #"VolumeId",
                       "Iops",
                       #"Tags",
@@ -77,7 +82,7 @@ class Provider(VolumeABC):
                        "Encrypted",
                        "Size",
                        #"SnapshotId",
-                       "State",
+                       "Status",
                         #"VolumeId",
                        "Iops",
                        #"Tags",
@@ -222,7 +227,8 @@ class Provider(VolumeABC):
                                     Cold HDD, or standard for Magnetic volumes.
         :param iops (integer): The number of I/O operations per second (IOPS)
                                that the volume supports
-                               (from 100 to 64,000 for io1 type volume).
+                               (from 100 to 64,000 for io1 type volume). If iops
+                               is specified, the volume_type must be io1.
         :param kms_key_id (string): The identifier of the AWS Key Management
                                     Service (AWS KMS) customer master key (CMK)
                                     to use for Amazon EBS encryption. If
@@ -247,6 +253,7 @@ class Provider(VolumeABC):
         client = boto3.client('ec2')
 
         if kwargs['volume_type']=='io1':
+
             raise NotImplementedError
 
         r = client.create_volume(
@@ -265,7 +272,7 @@ class Provider(VolumeABC):
                     'Tags': [
                         {
                             'Key': "Name",
-                            'Value': 'xin'
+                            'Value': kwargs['NAME']
                         },
                     ]
                 },

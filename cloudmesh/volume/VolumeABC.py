@@ -54,9 +54,8 @@ class VolumeABC(metaclass=ABCMeta):
     def create(self, name=None, **kwargs):
     # def create(self,
     #            NAME=None,
-    #            cloud=None,
     #            size=None,
-    #            volumetype=None,
+    #            volume_type=None,
     #            description=None,
     #            dryrun=None
     #            ):

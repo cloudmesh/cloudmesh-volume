@@ -41,6 +41,11 @@ class Provider(VolumeABC):
             EC2_PRIVATE_KEY_FILE_NAME: 
     """
 
+    volume_state = [
+        'in-use',
+        'available',
+    ]
+
     output = {
 
         "volume": {

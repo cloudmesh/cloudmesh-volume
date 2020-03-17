@@ -58,10 +58,13 @@ In this project we will be developing features related to completing and simplif
 ```
 
 * volume create
+
+    Create a volume.
 ```
     volume create [NAME]
+                  [--cloud=CLOUD]
                   [--size=SIZE]
-                  [--volumetype=TYPE]
+                  [--volume_type=TYPE]
                   [--description=DESCRIPTION]
                   [--dryrun]
 ```

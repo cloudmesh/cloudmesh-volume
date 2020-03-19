@@ -140,8 +140,8 @@ In this project we will be developing features related to completing and simplif
 
 * python api:   
   <http://googleapis.github.io/google-api-python-client/docs/dyn/compute_v1.html>
-* REST api:   
-  <https://cloud.google.com/apis/docs/overview>
+* REST api for cumpute disks documentation:   
+  <https://cloud.google.com/compute/docs/reference/rest/v1/disks?hl=en_US>
 * Documentation about volume cost:   
   <https://cloud.google.com/compute/disks-image-pricing>
 * manual:   

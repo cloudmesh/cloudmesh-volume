@@ -1,11 +1,17 @@
-import os
 import json
-from cloudmesh.volume.VolumeABC import VolumeABC
+import time
+from pprint import pprint
+
+import yaml
+from cloudmesh.abstract.ComputeNodeABC import ComputeNodeABC
+from cloudmesh.common.console import Console
 from cloudmesh.common.util import banner
-from cloudmesh.common.Shell import Shell
+from cloudmesh.common.util import path_expand
 from cloudmesh.configuration.Config import Config
-from datetime import datetime
-import googleapiclient.discovery
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from cloudmesh.common.DateTime import DateTime
 
 
 class Provider(VolumeABC):
@@ -18,47 +24,50 @@ class Provider(VolumeABC):
           cm:
             active: true
             heading: {name}
-            host: TBD
+            host: https://console.cloud.google.com/compute/instances?project={project_id}
             label: {name}
             kind: google
-            version: TBD
-            service: volume
-          credentials:
-            GOOGLE_APPLICATION_CREDENTIALS: ~\.cloudmesh\google_service_account.json
+            version: v1
+            service: compute
           default:
-            size: 500
+            zone: us-central1-a
+            type: projects/{project_id}/zones/{zone}/diskTypes/pd-standard
+            sizeGB: 200
+          credentials:
+            type: {type}
+            auth:
+              json_file: {filename}
+              project_id: {project_id}
+              client_email: {client_email}
     """
 
     output = {
         "volume": {
             "sort_keys": ["cm.name"],
             "order": ["cm.name",
-                      "cm.cloud",
-                      "vm_state",
+                      "cm.kind",
                       "status",
-                      "task_state",
-                      "metadata.image",
-                      "metadata.flavor",
-                      "ip_public",
-                      "ip_private",
-                      "cm.creation_time",
-                      "launched_at"],
+                      "id"
+                      "zone"],
             "header": ["Name",
                        "Cloud",
-                       "State",
                        "Status",
-                       "Task",
-                       "Image",
-                       "Flavor",
-                       "Public IPs",
-                       "Private IPs",
-                       "Creation time",
-                       "Started at"],
+                       "ID",
+                       "Zone"]
         }
     }
 
-    def __init__(self, name):
-        self.cloud = name
+    def __init__(self, name, configuration):
+        cloud = name
+        path = configuration
+        config = Config(config_path=path)["cloudmesh"]
+        self.cm = config["cloud"][cloud]["cm"]
+        self.default = config["cloud"][cloud]["default"]
+        self.credentials = config["cloud"][cloud]["credentials"]
+        self.auth = self.credentials['auth']
+        self.compute_scopes = ['https://www.googleapis.com/auth/compute',
+                               'https://www.googleapis.com/auth/cloud-platform',
+                               'https://www.googleapis.com/auth/compute.readonly']
 
     def update_dict(self, elements):
         """
@@ -96,9 +105,61 @@ class Provider(VolumeABC):
             })
 
             entry["cm"]["created"] = entry["updated"] = str(
-                datetime.now())
+                DateTime.now())
 
             d.append(entry)
         return d
 
+    def _get_credentials(self, client_secret_file, scopes):
+        """
+        Method to get the credentials using the Service Account JSON file.
+        :param client_secret_file: Service Account JSON File path.
+        :param scopes: Scopes needed to provision.
+        :return:
+        """
+        # Authenticate using service account.
+        _credentials = service_account.Credentials.from_service_account_file(
+            filename=client_secret_file,
+            scopes=scopes)
+        return _credentials
+
+    def _get_compute_service(self):
+        """
+            Method to get compute service.
+        """
+        service_account_credentials = self._get_credentials(
+            self.auth['json_file'],
+            self.compute_scopes)
+        # Authenticate using service account.
+        if service_account_credentials is None:
+            print('Credentials are required')
+            raise ValueError('Cannot Authenticate without Credentials')
+        else:
+            compute_service = build(self.cm["service"],
+                                    self.cm["version"],
+                                    credentials=service_account_credentials)
+
+        return compute_service
+
+    def list(self, **kwargs):
+        """
+        Retrieves an aggregated list of persistent disks.
+        Currently, only sorting by "name" or "creationTimestamp desc"
+        is supported.
+        :return: an array of dicts representing the disks
+        """
+        if kwargs["--refresh"]:
+            result = None
+            try:
+                compute_service = self._get_compute_service()
+                disk_list = compute_service.disks().aggregatedList(
+                    project=self.auth["project_id"],
+                    orderBy="name").execute()
+                result = self.update_dict(disk_list)
+            except Exception as se:
+                print(se)
+            return result
+        else:
+            # read record from mongoDB
+            refresh = False
 

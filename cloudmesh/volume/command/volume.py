@@ -82,6 +82,14 @@ class VolumeCommand(PluginCommand):
             return name
 
         def create_name():
+
+            # please edit ~ /.cloudmesh / name.yaml as following:
+            # counter: 3
+            # user: xin
+            # kind: volume
+            # schema: '{user}-{cloud}-{counter}'
+            # path: ~ /.cloudmesh / name.yaml
+
             with open("/Users/xingu/.cloudmesh/names.yaml") as file:
                 dic = yaml.load(file, Loader=yaml.FullLoader)
             counter = dic["counter"]
@@ -125,7 +133,7 @@ class VolumeCommand(PluginCommand):
                     result = provider.list()
             elif arguments.cloud:
                 # banner(f'get in arguments.cloud {arguments.cloud}')
-                print (arguments.cloud)
+                #print (arguments.cloud)
                 provider = Provider(name=arguments.cloud)
 
                 result = provider.list(**arguments)

@@ -97,17 +97,6 @@ class Provider(VolumeABC):
         self.cloud = name
         #self.ec2 = boto3.resource('ec2')
 
-    # def Print(self, data, output=None, kind=None):
-    #     order = self.output["volume"]['order']
-    #     header = self.output["volume"]['header']
-    #     print(Printer.flatwrite(data,
-    #                             sort_keys=["name"],
-    #                             order=order,
-    #                             header=header,
-    #                             output=output,
-    #           )
-    #           )
-
     def update_dict(self, results):
         """
         This function adds a cloudmesh cm dict to each dict in the list
@@ -262,7 +251,7 @@ class Provider(VolumeABC):
             #Iops=kwargs['iops'],
             #KmsKeyId=None,
             #OutpostArn=None,
-            Size=kwargs['size'],
+            Size=int(kwargs['size']),
             #SnapshotId=None,
             VolumeType=kwargs['volume_type'],
             DryRun=kwargs['dryrun'],
@@ -329,14 +318,14 @@ class Provider(VolumeABC):
 
         # filter = eval(filter)
 
-#        banner('print kwargs')
-#        print(kwargs)
-#        print(kwargs['output'])
+       #banner('print kwargs')
+       #print(kwargs)
+       #print(kwargs['output'])
 
         client = boto3.client('ec2')
         dryrun = kwargs['--dryrun']
-#        region = kwargs['--region']
-#        vm = kwargs['--vm']# will need vm id from mongo records
+        #region = kwargs['--region']
+        #vm = kwargs['--vm']# will need vm id from mongo records
         result = client.describe_volumes(
             DryRun=dryrun,
             # Filters=[
@@ -348,12 +337,12 @@ class Provider(VolumeABC):
             #     },
             # ],
         )
-        banner("raw results")
-        print(result)
-        banner("raw results end")
+        #banner("raw results")
+        #print(result)
+        #banner("raw results end")
         result = self.update_dict(result)
 
-#        print(self.Print(result, kind='volume', output=kwargs['output']))
+        #print(self.Print(result, kind='volume', output=kwargs['output']))
 
         return result
 

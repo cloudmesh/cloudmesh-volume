@@ -91,7 +91,7 @@ class VolumeCommand(PluginCommand):
                     user=config["cloudmesh.profile.username"],
                     kind="volume",
                     path=f"{config.location}/volume.yaml",
-                    schema="volume-{user}-{counter}"
+                    schema="{user}-volume-{counter}"
                     counter=1)
             n.incr()
             counter = n.get()

@@ -11,8 +11,7 @@ from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
-
-
+from cloudmesh.common.Printer import Printer
 
 
 class Provider(VolumeABC):
@@ -61,7 +60,7 @@ class Provider(VolumeABC):
     def __init__(self, name):
         cloud = name
         config = Config()
-        self.default = config["cloudmesh.volume.{cloud}.default"]
+        self.default = config["cloudmesh.volume.google.default"]
         self.credentials = config["cloudmesh.volume.google.credentials"]
         self.auth = self.credentials['auth']
         self.compute_scopes = ['https://www.googleapis.com/auth/compute',
@@ -139,6 +138,56 @@ class Provider(VolumeABC):
 
         return compute_service
 
+    def _process_disk(self, disk):
+        """
+        Method to convert the disk json to dict.
+        :param disk: JSON with disk details
+        :return:
+        """
+        disk_dict = {}
+        disk_dict["name"] = disk["name"]
+        disk_dict["zone"] = disk["zone"]
+        disk_dict["type"] = disk["type"]
+        disk_dict["SizeGb"] = disk["sizeGb"]
+        disk_dict["status"] = disk["status"]
+        disk_dict["created"] = disk["creationTimestamp"]
+        disk_dict["id"] = disk["id"]
+        disk_dict["cm.cloud"] = self.kind
+        disk_dict["cm.kind"] = disk["kind"]
+        disk_dict["cm.name"] = disk["name"]
+
+        return disk_dict
+
+    def _format_aggregate_list(self, disk_list):
+        """
+        Method to format the instance list to flat dict format.
+        :param disk_list:
+        :return: dict
+        """
+        result = []
+        if disk_list is not None:
+            if "items" in disk_list:
+                items = disk_list["items"]
+                for item in items:
+                    if "disks" in items[item]:
+                        disks = items[item]["disks"]
+                        for disk in disks:
+                            # Extract the disk details.
+                            result.append(self._process_disk(disk))
+
+        return result
+
+    def Print(self, data, output=None, kind=None):
+        order = self.output["volume"]['order']
+        header = self.output["volume"]['header']
+        print(Printer.flatwrite(data,
+                                sort_keys=["name"],
+                                order=order,
+                                header=header,
+                                output=output,
+                                )
+              )
+
     def list(self, **kwargs):
         """
         Retrieves an aggregated list of persistent disks.
@@ -146,20 +195,17 @@ class Provider(VolumeABC):
         is supported.
         :return: an array of dicts representing the disks
         """
-        if kwargs["--refresh"]:
-            result = None
-            try:
-                compute_service = self._get_compute_service()
-                disk_list = compute_service.disks().aggregatedList(
-                    project=self.auth["project_id"],
-                    orderBy="name").execute()
-                result = self.update_dict(disk_list)
-            except Exception as se:
-                print(se)
-            return result
-        else:
-            # read record from mongoDB
-            refresh = False
+        result = None
+        try:
+            compute_service = self._get_compute_service()
+            disk_list = compute_service.disks().aggregatedList(
+                project=self.auth["project_id"],
+                orderBy="name").execute()
+            result = self._format_aggregate_list(disk_list)
+            print(self.Print(result, kind='volume', output=kwargs['output']))
+        except Exception as se:
+            print(se)
+        return result
 
     def create(self, name=None, **kwargs):
         # def create(self,

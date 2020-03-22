@@ -13,23 +13,52 @@ class Provider(VolumeABC):
     sample = """
     cloudmesh:
       volume:
-        {name}:
+        openstack:
           cm:
             active: true
-            heading: {name}
-            host: TBD
-            label: {name}
+            heading: Chameleon
+            host: chameleoncloud.org
+            label: chameleon
             kind: openstack
-            version: TBD
-            service: volume
+            version: train
+            service: compute
           credentials:
             auth:
-              username: $USER
-            key_path: ~/.ssh/id_rsa.pub
+              username: TBD
+              password: TBD
+              auth_url: https://kvm.tacc.chameleoncloud.org:5000/v3
+              project_id: TBD
+              project_name: cloudmesh
+              user_domain_name: Default
+            region_name: KVM@TACC
+            interface: public
+            identity_api_version: '3'
+            key_path: TBD/id_rsa.pub
           default:
-            size: m1.medium
-            image: lts
+            size: 1
+            volume_type: __DEFAULT__
+            
     """
+    vm_state = [
+        'ACTIVE',
+        'BUILDING',
+        'DELETED',
+        'ERROR',
+        'HARD_REBOOT',
+        'PASSWORD',
+        'PAUSED',
+        'REBOOT',
+        'REBUILD',
+        'RESCUED',
+        'RESIZED',
+        'REVERT_RESIZE',
+        'SHUTOFF',
+        'SOFT_DELETED',
+        'STOPPED',
+        'SUSPENDED',
+        'UNKNOWN',
+        'VERIFY_RESIZE'
+    ]
 
     output = {
 
@@ -41,18 +70,19 @@ class Provider(VolumeABC):
                       "availability_zone",
                       "created_at",
                       "size",
+                      "status",
                       "id",
                       "volume_type"
-
                       ],
             "header": ["Name",
                        "Cloud",
                        "Kind",
-                       "availability_zone",
-                       "created_at",
-                       "size",
-                       "id",
-                       "volume_type"
+                       "Availability Zone",
+                       "Created At",
+                       "Size",
+                       "Status",
+                       "Id",
+                       "Volume Type"
                        ],
         }
     }
@@ -103,16 +133,22 @@ class Provider(VolumeABC):
 
     def __init__(self,name):
         self.cloud = name
-
-    def credentials(self):
-        config = Config()["cloudmesh.volume.openstack.credentials"]
-        return config
+        self.config = Config()["cloudmesh.volume.openstack.credentials"]
+        self.defaults = Config()["cloudmesh.volume.openstack.default"]
 
     def create(self, **kwargs):
-        config = self.credentials()
-        con = openstack.connect(**config)
+        con = openstack.connect(**self.config)
         arguments = dotdict(kwargs)
-        con.create_volume(name=arguments.name,size=arguments.size,volume_type=arguments.voltype)
+        if arguments.volume_type == None:
+            arguments.volume_type=self.defaults["volume_type"]
+        if arguments.size == None:
+            arguments.size=self.defaults["size"]
+        print(arguments.NAME)
+        con.create_volume(name=arguments.NAME,size=arguments.size,volume_type=arguments.volume_type)
+        #print list after create
+        results = con.list_volumes()
+        result = self.update_dict(results)
+        print(self.Print(result, kind='volume', output=kwargs['output']))
 
     def delete(self, name=None):
         config = self.credentials()
@@ -120,9 +156,8 @@ class Provider(VolumeABC):
         con.delete_volume(name_or_id=name)
         
     def list(self,**kwargs):
-        config = self.credentials()
         if kwargs["--refresh"]:
-            con = openstack.connect(**config)
+            con = openstack.connect(**self.config)
             results = con.list_volumes()
             result = self.update_dict(results)
             print(self.Print(result, kind='volume', output=kwargs['output']))

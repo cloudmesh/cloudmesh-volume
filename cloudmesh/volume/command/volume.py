@@ -83,20 +83,17 @@ class VolumeCommand(PluginCommand):
 
         def create_name():
 
-            # please edit ~ /.cloudmesh / name.yaml as following:
-            # counter: 3
-            # user: xin
+            # please edit ~ /.cloudmesh / volume.yaml as following:
+            # counter: 1
             # kind: volume
-            # schema: '{user}-{cloud}-{counter}'
-            # path: ~ /.cloudmesh / name.yaml
 
-            with open("/Users/xingu/.cloudmesh/names.yaml") as file:
+            with open("/Users/xingu/.cloudmesh/volume.yaml") as file:
                 dic = yaml.load(file, Loader=yaml.FullLoader)
             counter = dic["counter"]
             user = dic["user"]
             created_name = f"{user}-{cloud}-{counter}"
             dic["counter"] += 1
-            with open("/Users/xingu/.cloudmesh/names.yaml", 'w') as file:
+            with open("/Users/xingu/.cloudmesh/volume.yaml", 'w') as file:
                 documents = yaml.dump(dic, file)
             return created_name
 

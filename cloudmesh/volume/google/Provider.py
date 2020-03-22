@@ -46,12 +46,20 @@ class Provider(VolumeABC):
             "sort_keys": ["cm.name"],
             "order": ["cm.name",
                       "cm.kind",
+                      "cm.cloud",
                       "status",
-                      "id"
+                      "sizeGb",
+                      "type",
+                      "creationTimestamp",
+                      "id",
                       "zone"],
             "header": ["Name",
+                       "Kind",
                        "Cloud",
                        "Status",
+                       "SizeGb",
+                       "Type",
+                       "Created",
                        "ID",
                        "Zone"]
         }
@@ -67,15 +75,13 @@ class Provider(VolumeABC):
                                'https://www.googleapis.com/auth/cloud-platform',
                                'https://www.googleapis.com/auth/compute.readonly']
 
-    def update_dict(self, elements):
+    def update_dict(self, elements, kind=None):
         """
         This function adds a cloudmesh cm dict to each dict in the list
         elements.
-        Libcloud
         returns an object or list of objects With the dict method
         this object is converted to a dict. Typically this method is used
         internally.
-
         :param elements: the list of original dicts. If elements is a single
                          dict a list with a single element is returned.
         :param kind: for some kinds special attributes are added. This includes
@@ -95,15 +101,15 @@ class Provider(VolumeABC):
             if "cm" not in entry:
                 entry['cm'] = {}
 
+            if kind == 'ip':
+                entry['name'] = entry['floating_ip_address']
+
             entry["cm"].update({
-                "kind": "volume",
+                "kind": kind,
+                "driver": self.cloudtype,
                 "cloud": self.cloud,
-                "name": self.name,
-
+                "name": entry['name']
             })
-
-            entry["cm"]["created"] = entry["updated"] = str(
-                DateTime.now())
 
             d.append(entry)
         return d

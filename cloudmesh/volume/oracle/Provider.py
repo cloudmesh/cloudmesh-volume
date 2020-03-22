@@ -32,6 +32,7 @@ class Provider(VolumeABC):
             tenancy: TBD
             compartment_id: TBD
             region: TBD
+            availability_domain: TBD
           default:
     """
 
@@ -45,15 +46,17 @@ class Provider(VolumeABC):
                       "availability_domain",
                       "time_created",
                       "size_in_gbs",
+                      "lifecycle_state",
                       "id"
                       ],
             "header": ["Name",
                        "Cloud",
                        "Kind",
-                       "availability_domain",
-                       "time_created",
-                       "size_in_gbs",
-                       "id"
+                       "Availability Zone",
+                       "Created At",
+                       "Size(Gb)",
+                       "Status",
+                       "Id"
                        ],
         }
     }
@@ -94,13 +97,15 @@ class Provider(VolumeABC):
             availability_domain = entry.__getattribute__("availability_domain")
             time_created = entry.__getattribute__("time_created")
             size_in_gbs = entry.__getattribute__("size_in_gbs")
+            lifecycle_state = entry.__getattribute__("lifecycle_state")
             id = entry.__getattribute__("id")
 
             entry = {
                 "availability_domain": availability_domain,
                 "time_created": time_created,
                 "size_in_gbs": size_in_gbs,
-                "id": id
+                "id": id,
+                "lifecycle_state": lifecycle_state
             }
 
             if "cm" not in entry:
@@ -111,30 +116,37 @@ class Provider(VolumeABC):
                 "kind": "volume",
                 "name": display_name,
             })
-
             d.append(entry)
 
         return d
 
     def __init__(self, name):
         self.cloud = name
-
-    def credentials(self):
-        config = Config()
-        credential =  config["cloudmesh.volume.oracle.credentials"]
-        return credential
+        self.config = Config()["cloudmesh.volume.oracle.credentials"]
+        self.defaults = Config()["cloudmesh.volume.oracle.default"]
 
     def create(self, **kwargs):
-        raise NotImplementedError
+        arguments = dotdict(kwargs)
+        block_storage = oci.core.BlockstorageClient(self.config)
+        block_storage.create_volume(oci.core.models.CreateVolumeDetails(
+                                        compartment_id=self.config['compartment_id'],
+                                        availability_domain=self.config['availability_domain'],
+                                        display_name=arguments.NAME
+                                    ))
+        # print list after create
+        block_storage = oci.core.BlockstorageClient(self.config)
+        v = block_storage.list_volumes(self.config['compartment_id'])
+        results = v.data
+        result = self.update_dict(results)
+        print(self.Print(result, kind='volume', output=kwargs['output']))
 
     def delete(self, name=None):
         raise NotImplementedError
 
     def list(self, **kwargs):
         if kwargs["--refresh"]:
-            credentials = self.credentials()
-            block_storage = oci.core.BlockstorageClient(credentials)
-            v = block_storage.list_volumes(credentials['compartment_id'])
+            block_storage = oci.core.BlockstorageClient(self.config)
+            v = block_storage.list_volumes(self.config['compartment_id'])
             results = v.data
             result = self.update_dict(results)
             print(self.Print(result, kind='volume', output=kwargs['output']))

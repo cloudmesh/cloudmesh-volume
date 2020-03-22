@@ -245,6 +245,11 @@ class Provider(VolumeABC):
 
             raise NotImplementedError
 
+        if kwargs['volume_type']=='sc1':
+            if int(kwargs['size']) < 500:
+                raise Exception("minimum volume size for sc1 is 500 GB")
+
+
         r = client.create_volume(
             AvailabilityZone=kwargs['region'],
             Encrypted=kwargs['encrypted'],

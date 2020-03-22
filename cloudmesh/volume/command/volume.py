@@ -86,13 +86,11 @@ class VolumeCommand(PluginCommand):
             from cloudmesh.management.configuration.Name import Name as VolumeName
 
             config = Config()
-            directory = config.location
-            user = config["cloudmesh.profile.username"]
-            path=f"{directory}/volume.yaml",
+
             n = VolumeName(
-                    user=user,
+                    user=config["cloudmesh.profile.username"],
                     kind="volume",
-                    path=path,
+                    path=f"{config.location}/volume.yaml",
                     schema="volume-{user}-{counter}"
                     counter=1)
             n.incr()

@@ -151,7 +151,7 @@ class Test_provider_volume:
         pprint(data)
 
         result = provider.info(name=name)
-        assert resukt is NOne
+        assert result is None
 
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)

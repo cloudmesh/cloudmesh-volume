@@ -89,14 +89,16 @@ class VolumeCommand(PluginCommand):
             directory = config.location
             user = config["cloudmesh.profile.username"]
             path=f"{directory}/volume.yaml",
-            n = VolumeName(user=user,
-                             kind="volume",
-                             path=path
-                             counter=1)
+            n = VolumeName(
+                    user=user,
+                    kind="volume",
+                    path=path,
+                    schema="volume-{user}-{counter}"
+                    counter=1)
             n.incr()
             counter = n.get()
 
-            :return: 
+            :return:
             """
 
             # please edit ~ /.cloudmesh / volume.yaml as following:

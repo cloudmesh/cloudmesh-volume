@@ -57,11 +57,6 @@ current_vms = 0
 @pytest.mark.incremental
 class Test_provider_volume:
 
-    def test_key_upload(self):
-        os.system("cms key add")
-        os.system("cms key list")
-        os.system(f"cms key upload {key} --cloud={cloud}")
-        os.system(f"cms key list --cloud={cloud}")
 
     def find_counter(self):
         name = str(Name())
@@ -86,13 +81,15 @@ class Test_provider_volume:
         else:
             name.assign(counter)
 
-    def test_provider_vm_create(self):
+    def test_provider_volume_create(self):
         HEADING()
-        os.system(f"cms vm list --cloud={cloud}")
+        os.system(f"cms volume list --cloud={cloud}")
         name_generator.incr()
+
         Benchmark.Start()
         data = provider.create(key=key)
         Benchmark.Stop()
+
         # print(data)
         VERBOSE(data)
         name = str(Name())
@@ -105,7 +102,7 @@ class Test_provider_volume:
             assert status["cm.status"] in ['ACTIVE', 'BOOTING', 'TERMINATED',
                                            'STOPPED']
 
-    def test_provider_vmprovider_vm_list(self):
+    def test_provider_volumeprovider_volume_list(self):
         # list should be after create() since it would return empty and
         # len(data) would be 0
         HEADING()
@@ -115,28 +112,8 @@ class Test_provider_volume:
         Benchmark.Stop()
         Print(data)
 
-    def test_provider_vm_wait(self):
-        HEADING()
-        name = str(Name())
-        Benchmark.Start()
-        cm = CmDatabase()
-        vm = cm.find_name(name, kind="vm")[0]
-        assert provider.wait(vm=vm), "cms wait timed out ..."
-        Benchmark.Stop()
 
-    def test_provider_vm_ssh(self):
-        HEADING()
-        name = str(Name())
-        Benchmark.Start()
-        cm = CmDatabase()
-        vm = cm.find_name(name, kind="vm")[0]
-        data = provider.ssh(vm=vm, command='\"echo IAmAlive\"')
-        print(data)
-        assert 'IAmAlive' in data
-        Benchmark.Stop()
-        VERBOSE(data)
-
-    def test_provider_vm_info(self):
+    def test_provider_volume_info(self):
         # This is just a dry run, status test actually uses info() in all
         # provider
         HEADING()
@@ -147,7 +124,7 @@ class Test_provider_volume:
         pprint(data)
         Benchmark.Stop()
 
-    def test_vm_status(self):
+    def test_volume_status(self):
         HEADING()
         name = str(Name())
         Benchmark.Start()
@@ -163,11 +140,15 @@ class Test_provider_volume:
             assert data["cm.status"] in ['ACTIVE', 'BOOTING', 'TERMINATED',
                                          'STOPPED']
 
-    def test_provider_vm_stop(self):
+    #
+    # start a vm also so we do attach but do this ins a different test file
+    #
+    #
+    def test_provider_volume_detach(self):
         HEADING()
         name = str(Name())
         Benchmark.Start()
-        data = provider.stop(name=name)
+        data = provider.detach(name=name)
         Benchmark.Stop()
         stop_timeout = 360
         time = 0
@@ -181,7 +162,7 @@ class Test_provider_volume:
         print(status)
         assert status["cm.status"] in ['STOPPED', 'SHUTOFF']
 
-    def test_provider_vm_start(self):
+    def test_provider_vm_atatch(self):
         HEADING()
         name = str(Name())
         Benchmark.Start()

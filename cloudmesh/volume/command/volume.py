@@ -1,18 +1,14 @@
-from cloudmesh.common.console import Console
+import oyaml as yaml
 from cloudmesh.common.debug import VERBOSE
+from cloudmesh.common.parameter import Parameter
+from cloudmesh.common.util import path_expand
 from cloudmesh.common.variables import Variables
+from cloudmesh.configuration.Config import Config
+from cloudmesh.mongo.CmDatabase import CmDatabase
 from cloudmesh.shell.command import PluginCommand
 from cloudmesh.shell.command import command
 from cloudmesh.shell.command import map_parameters
 from cloudmesh.volume.Provider import Provider
-from cloudmesh.common.parameter import Parameter
-import textwrap
-from cloudmesh.common.util import banner
-from cloudmesh.management.configuration.arguments import Arguments
-from cloudmesh.management.configuration.name import Name
-from cloudmesh.mongo.CmDatabase import CmDatabase
-import yaml
-
 
 
 class VolumeCommand(PluginCommand):
@@ -87,13 +83,18 @@ class VolumeCommand(PluginCommand):
             # counter: 1
             # kind: volume
 
-            with open("/Users/xingu/.cloudmesh/volume.yaml") as file:
+            config = Config()
+            directory = f"{config.location}"
+            volume_yaml = path_expand(f"{directory}/volume.yaml)")
+
+
+            with open(volume_yaml) as file:
                 dic = yaml.load(file, Loader=yaml.FullLoader)
             counter = dic["counter"]
             user = dic["user"]
             created_name = f"{user}-{cloud}-{counter}"
             dic["counter"] += 1
-            with open("/Users/xingu/.cloudmesh/volume.yaml", 'w') as file:
+            with open(volume_yaml, 'w') as file:
                 documents = yaml.dump(dic, file)
             return created_name
 

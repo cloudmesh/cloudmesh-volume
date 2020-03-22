@@ -101,12 +101,8 @@ class Provider(VolumeABC):
             if "cm" not in entry:
                 entry['cm'] = {}
 
-            if kind == 'ip':
-                entry['name'] = entry['floating_ip_address']
-
             entry["cm"].update({
                 "kind": kind,
-                "driver": self.cloudtype,
                 "cloud": self.cloud,
                 "name": entry['name']
             })
@@ -207,10 +203,12 @@ class Provider(VolumeABC):
             disk_list = compute_service.disks().aggregatedList(
                 project=self.auth["project_id"],
                 orderBy="name").execute()
-            result = self._format_aggregate_list(disk_list)
+            result = self.update_dict(disk_list)
             print(self.Print(result, kind='volume', output=kwargs['output']))
+
         except Exception as se:
             print(se)
+
         return result
 
     def create(self, name=None, **kwargs):

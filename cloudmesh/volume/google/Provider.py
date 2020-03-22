@@ -3,15 +3,16 @@ import time
 from pprint import pprint
 
 import yaml
-from cloudmesh.abstract.ComputeNodeABC import ComputeNodeABC
-from cloudmesh.common.console import Console
-from cloudmesh.common.util import banner
-from cloudmesh.common.util import path_expand
-from cloudmesh.configuration.Config import Config
+
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from cloudmesh.common.DateTime import DateTime
+from cloudmesh.volume.VolumeABC import VolumeABC
+from cloudmesh.common.util import banner
+from cloudmesh.common.Shell import Shell
+from cloudmesh.configuration.Config import Config
+
+
 
 
 class Provider(VolumeABC):
@@ -57,13 +58,11 @@ class Provider(VolumeABC):
         }
     }
 
-    def __init__(self, name, configuration):
+    def __init__(self, name):
         cloud = name
-        path = configuration
-        config = Config(config_path=path)["cloudmesh"]
-        self.cm = config["cloud"][cloud]["cm"]
-        self.default = config["cloud"][cloud]["default"]
-        self.credentials = config["cloud"][cloud]["credentials"]
+        config = Config()
+        self.default = config["cloudmesh.volume.{cloud}.default"]
+        self.credentials = config["cloudmesh.volume.google.credentials"]
         self.auth = self.credentials['auth']
         self.compute_scopes = ['https://www.googleapis.com/auth/compute',
                                'https://www.googleapis.com/auth/cloud-platform',
@@ -99,9 +98,9 @@ class Provider(VolumeABC):
 
             entry["cm"].update({
                 "kind": "volume",
-                "driver": self.cloudtype,
                 "cloud": self.cloud,
-                "name": self.name
+                "name": self.name,
+
             })
 
             entry["cm"]["created"] = entry["updated"] = str(
@@ -128,15 +127,14 @@ class Provider(VolumeABC):
             Method to get compute service.
         """
         service_account_credentials = self._get_credentials(
-            self.auth['json_file'],
+            self.auth['path_to_json_file'],
             self.compute_scopes)
         # Authenticate using service account.
         if service_account_credentials is None:
             print('Credentials are required')
             raise ValueError('Cannot Authenticate without Credentials')
         else:
-            compute_service = build(self.cm["service"],
-                                    self.cm["version"],
+            compute_service = build('compute', 'v1',
                                     credentials=service_account_credentials)
 
         return compute_service
@@ -163,3 +161,76 @@ class Provider(VolumeABC):
             # read record from mongoDB
             refresh = False
 
+    def create(self, name=None, **kwargs):
+        # def create(self,
+        #            NAME=None,
+        #            size=None,
+        #            volume_type=None,
+        #            description=None,
+        #            dryrun=None
+        #            ):
+        """
+        Create a volume.
+        """
+
+        raise NotImplementedError
+
+    def delete(self, name=None):
+        """
+        Delete volume
+        :param name:
+        :return:
+        """
+        raise NotImplementedError
+
+    def migrate(self,
+                name=None,
+                from_vm=None,
+                to_vm=None):
+
+        """
+        Migrate volume from one vm to another vm.
+
+        :param name: name of volume
+        :param from_vm: name of vm where volume will be moved from
+        :param to_vm: name of vm where volume will be moved to
+        :return: dict
+        """
+        raise NotImplementedError
+
+    def sync(self,
+             from_volume=None,
+             to_volume=None):
+        """
+        Sync contents of one volume to another volume. It is  a copy of all
+        changed content from one volume to the other.
+
+        :param from_volume: name of the from volume
+        :param to_volume: name of the to volume
+
+        :return: str
+        """
+        raise NotImplementedError
+
+    def unset(self,
+              name=None,
+              property=None,
+              image_property=None):
+        """
+        Separate a volume from a group of joined volumes
+
+        :param name: name of volume to separate
+        :param property: key to volume being separated
+        :param image_property: image stored in separated volume
+        :return: str
+        """
+        raise NotImplementedError
+
+    def mount(self, volume=None, vm=None):
+        """
+        mounts volume
+        :param name: the name of the volume
+        :param volume: volume id
+        :return: dict
+        """
+        raise NotImplementedError

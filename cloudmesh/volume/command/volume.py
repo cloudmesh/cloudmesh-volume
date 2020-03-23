@@ -38,9 +38,9 @@ class VolumeCommand(PluginCommand):
                       [ARGUMENTS...]
             volume status [NAMES]
                       [--cloud=CLOUD]
-            volume add VM NAME
-            volume remove VM NAME
-            volume delete [NAME]
+            volume add VM NAMES
+            volume remove VM NAMES
+            volume delete [NAMES]
             volume migrate NAME FROM_VM TO_VM
             volume sync FROM_VOLUME TO_VOLUME
 
@@ -181,6 +181,38 @@ class VolumeCommand(PluginCommand):
             provider = Provider(name=arguments.cloud)
             result = provider.create(**arguments)
             print(provider.Print(result, kind='volume', output=arguments.output))
+
+        elif arguments.delete:
+
+            """
+            2 spaces not fout !
+
+            cloudmesh:
+                volume:
+                    aws1:                    
+                        cm:
+                            active: cloudmesh.cloud.aws.cm.active
+
+            names = Parametrs.expnad(arguments.NAMES)
+
+
+
+            config = Config()
+            clouds = list(config["cloudmesh.volume"].keys())
+
+            for cloud in clouds : 
+                active = config[f"cloudmesh.volume.{cloud}.cm.active"]
+
+                if active:
+                    found = []
+                    # from cloudmesh.volume.Provider import Provider
+                    p = Provider(name=cloud)
+                    for name in names:
+                        volume = p.list(name=name)
+                            found = found.append(name)
+                    p.destroy(','.join(found)
+                    # delete all found volumes in the cloud
+            """
 
 '''
         elif arguments.status:

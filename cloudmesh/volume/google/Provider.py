@@ -66,7 +66,7 @@ class Provider(VolumeABC):
     }
 
     def __init__(self, name):
-        cloud = name
+        self.cloud = name
         config = Config()
         self.default = config["cloudmesh.volume.google.default"]
         self.credentials = config["cloudmesh.volume.google.credentials"]
@@ -88,7 +88,7 @@ class Provider(VolumeABC):
                      key, vm, image, flavor.
         :return: The list with the modified dicts
         """
-
+        pprint(elements)
         if elements is None:
             return None
         elif type(elements) == list:
@@ -104,7 +104,8 @@ class Provider(VolumeABC):
             entry["cm"].update({
                 "kind": kind,
                 "cloud": self.cloud,
-                "name": entry['name']
+                "name": entry["pmccand-test-disk-1"],
+                "driver": kind
             })
 
             d.append(entry)
@@ -147,7 +148,7 @@ class Provider(VolumeABC):
         :return:
         """
         disk_dict = {}
-        disk_dict["name"] = disk["name"]
+        disk_dict["cm.name"] = disk["name"]
         disk_dict["zone"] = disk["zone"]
         disk_dict["type"] = disk["type"]
         disk_dict["SizeGb"] = disk["sizeGb"]
@@ -156,7 +157,7 @@ class Provider(VolumeABC):
         disk_dict["id"] = disk["id"]
         disk_dict["cm.cloud"] = self.kind
         disk_dict["cm.kind"] = disk["kind"]
-        disk_dict["cm.name"] = disk["name"]
+
 
         return disk_dict
 
@@ -198,16 +199,19 @@ class Provider(VolumeABC):
         :return: an array of dicts representing the disks
         """
         result = None
-        try:
-            compute_service = self._get_compute_service()
-            disk_list = compute_service.disks().aggregatedList(
-                project=self.auth["project_id"],
-                orderBy="name").execute()
-            result = self.update_dict(disk_list)
-            print(self.Print(result, kind='volume', output=kwargs['output']))
 
-        except Exception as se:
-            print(se)
+        compute_service = self._get_compute_service()
+        disk_list = compute_service.disks().aggregatedList(
+            project=self.auth["project_id"]).execute()
+        # look thought all disk list zones and find w/o warning
+        # get details and add to found
+        if found:
+
+            result = self.update_dict(found)
+        else:
+            return None
+
+        print(self.Print(result, kind='volume', output=kwargs['output']))
 
         return result
 

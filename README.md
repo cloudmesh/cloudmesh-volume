@@ -87,8 +87,7 @@ In this project we will be developing features related to completing and simplif
 
     detatch volume from a vm
 ``` 
-    volume detach [NAME]
-                  [vm]  
+    volume detach [NAME]  
 ```
 
 * volume delete

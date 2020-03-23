@@ -89,17 +89,17 @@ class VolumeABC(metaclass=ABCMeta):
 
         raise NotImplementedError
 
-    # @abstractmethod
-    # def detach(self,
-    #           NAME=None):
-    #
-    #     """
-    #     Dettach a volume from vm
-    #
-    #     :param NAME: name of volume to dettach
-    #     :return: str
-    #     """
-    #     raise NotImplementedError
+    @abstractmethod
+    def detach(self,
+              NAME=None):
+
+        """
+        Dettach a volume from vm
+
+        :param NAME: name of volume to dettach
+        :return: str
+        """
+        raise NotImplementedError
 
     @abstractmethod
     def migrate(self,

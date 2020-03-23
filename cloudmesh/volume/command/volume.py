@@ -42,7 +42,6 @@ class VolumeCommand(PluginCommand):
                       [--cloud=CLOUD]
             volume attach [NAME] [--vm=VM]
             volume detach [NAME]
-                          [vm]
             volume delete [NAMES]
             volume migrate NAME FROM_VM TO_VM
             volume sync FROM_VOLUME TO_VOLUME

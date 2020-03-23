@@ -117,8 +117,10 @@ class Provider(VolumeABC):
             return None
 
         d = []
+        print("results", results)
 
         for entry in results:
+            print("entry",entry)
             volume_name = entry['name']
             if "cm" not in entry:
                 entry['cm'] = {}
@@ -165,7 +167,12 @@ class Provider(VolumeABC):
             # read record from mongoDB
             refresh = False
 
-    def mount(self,path=None,name=None):
+    def attach(self, NAME=None, vm=None):
+        con = openstack.connect(**self.config)
+        server = con.get_server(vm)
+        volume = con.list_volumes(NAME)[0]
+        results = con.attach_volume(server, volume, device=None, wait=True, timeout=None)
+        result = self.update_dict(results)
         return ''
 
     def migrate(self,

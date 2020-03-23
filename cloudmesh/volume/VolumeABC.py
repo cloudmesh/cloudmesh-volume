@@ -43,7 +43,7 @@ class VolumeABC(metaclass=ABCMeta):
         :param region:  The name of the region
         :param cloud: The name of the cloud
         :param refresh: If refresh the information is taken from the cloud
-        :return:
+        :return: dict
         """
         raise NotImplementedError
 
@@ -51,7 +51,7 @@ class VolumeABC(metaclass=ABCMeta):
     # BUG ARCHOTECTURE DOCUMENT MISSING. EG what is create in each provider
     #
     @abstractmethod
-    def create(self, name=None, **kwargs):
+    def create(self, NAME=None, **kwargs):
     # def create(self,
     #            NAME=None,
     #            size=None,
@@ -61,18 +61,45 @@ class VolumeABC(metaclass=ABCMeta):
     #            ):
         """
         Create a volume.
+        :param NAME: Volume name
+        :return: dict
         """
 
         raise NotImplementedError
 
     @abstractmethod
-    def delete(self, name=None):
+    def delete(self, NAMES=None):
         """
         Delete volume
-        :param name:
+        :param NAMES: List of volume names
         :return:
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def attach(self, NAME=None, vm=None):
+
+        """
+        attatch volume to a vm
+
+        :param NAME: volume name
+        :param vm: vm name which the volume will be attached to
+        :return: dict
+        """
+
+        raise NotImplementedError
+
+    # @abstractmethod
+    # def detach(self,
+    #           NAME=None):
+    #
+    #     """
+    #     Dettach a volume from vm
+    #
+    #     :param NAME: name of volume to dettach
+    #     :return: str
+    #     """
+    #     raise NotImplementedError
 
     @abstractmethod
     def migrate(self,
@@ -102,45 +129,5 @@ class VolumeABC(metaclass=ABCMeta):
         :param to_volume: name of the to volume
 
         :return: str
-        """
-        raise NotImplementedError
-
-    #
-    # BUG NO PROPER DEFINITION OF WAHT UNSET IS.
-    # ARCHITECTURE DOCUMENT IS MISSING
-    #
-    @abstractmethod
-    def unset(self,
-              name=None,
-              property=None,
-              image_property=None):
-        """
-        Separate a volume from a group of joined volumes
-
-        :param name: name of volume to separate
-        :param property: key to volume being separated
-        :param image_property: image stored in separated volume
-        :return: str
-        """
-        raise NotImplementedError
-
-    #
-    # BUG NO PROPER DEFINITION OF WHAT A MONUT IS. ARCHOTECTURE DOCUMENT MISSING
-    #
-    #
-    # BUG: two different definitiosn of mount IN DIFFERENT PROVIDERS
-    #
-    # def mount(self, path=None, name=None):
-    #    self.provider.mount(path, name)
-    #
-    # path will be in yaml
-    #
-    @abstractmethod
-    def mount(self, volume=None, vm=None):
-        """
-        mounts volume
-        :param name: the name of the volume
-        :param volume: volume id
-        :return: dict
         """
         raise NotImplementedError

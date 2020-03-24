@@ -10,6 +10,8 @@ from cloudmesh.shell.command import PluginCommand
 from cloudmesh.shell.command import command
 from cloudmesh.shell.command import map_parameters
 from cloudmesh.volume.Provider import Provider
+from cloudmesh.common.util import banner
+#from cloudmesh.management.configuration.Name import Name as VolumeName
 
 
 
@@ -39,8 +41,8 @@ class VolumeCommand(PluginCommand):
                       [ARGUMENTS...]
             volume status [NAMES]
                       [--cloud=CLOUD]
-            volume add VM NAMES
-            volume remove VM NAMES
+            volume attach [NAME] [--vm=VM]
+            volume detach [NAME]
             volume delete [NAMES]
             volume migrate NAME FROM_VM TO_VM
             volume sync FROM_VOLUME TO_VOLUME
@@ -49,6 +51,7 @@ class VolumeCommand(PluginCommand):
 
           Arguments:
               NAME   the name of the volume
+              vm     the name of the vm
 
           Options:
               --vm=VMNAME        The name of the virtual machine
@@ -106,7 +109,7 @@ class VolumeCommand(PluginCommand):
 
             config = Config()
             directory = f"{config.location}"
-            volume_yaml = path_expand(f"{directory}/volume.yaml)")
+            volume_yaml = path_expand(f"{directory}/volume.yaml")
 
 
             try:
@@ -223,6 +226,45 @@ class VolumeCommand(PluginCommand):
                     # delete all found volumes in the cloud
             """
 
+        elif arguments.attach:
+            if arguments.cloud == None:
+                arguments['cloud'] = cloud #cloud from variable['volume']
+            if arguments.NAME == None:
+                Console.error("Please input volume name")
+            if arguments.vm == None:
+                # how to get the most recent vm name? mongo find( is it sorted by time)? when vm not given
+                Console.error("Please input vm name")
+            banner(f"Attach {arguments.NAME} to {arguments.vm}")
+            provider = Provider(name=arguments.cloud)
+            result = provider.attach(arguments.NAME, arguments.vm)
+            print(provider.Print(result, kind='volume', output=arguments.output))
+
+        elif arguments.detach:
+            print(arguments.NAME)
+            print(arguments.VM)
+            banner(f"Detach {arguments.NAME} to {arguments.vm}")
+            if arguments.cloud == None:
+                arguments['cloud'] = cloud  # cloud from variable['volume']
+            if arguments.NAME == None:
+                Console.error("Please input volume name")
+            # if arguments.vm == None:
+            #     Console.error("Please input vm name")
+            # banner(f"Detach {arguments.NAME} to {arguments.vm}")
+            provider = Provider(name=arguments.cloud)
+            result = provider.detach(arguments.NAME)
+            print(provider.Print(result, kind='volume', output=arguments.output))
+
+
+
+
+
+
+
+
+
+
+
+
 '''
         elif arguments.status:
             cm = CmDatabase()
@@ -266,21 +308,7 @@ class VolumeCommand(PluginCommand):
                        "cloud",
                        "refresh"
                        )
-        if arguments.register and arguments.which:
-            providers = Provider.get_kind()
-            Console.info("Available Volume Cloud Providers")
-            print()
-            print("    " + "\n    ".join(providers))
-            print()
-        elif arguments.register:
-            Console.info("Registering a volume to cloudmesh yaml")
-            parameters = Parameter.arguments_to_dict(arguments.ARGUMENTS)
-            print()
-            print("    Name:", name)
-            print("    Cloud:", arguments.cloud)
-            print("    Arguments:", parameters)
-            print()
-            raise NotImplementedError
+        
         elif arguments.list:
             if arguments.NAMES:
                 raise NotImplementedError
@@ -316,16 +344,7 @@ class VolumeCommand(PluginCommand):
             print(arguments.FROM_VOLUME)
             print(arguments.TO_VOLUME)
             raise NotImplementedError
-        elif arguments.add:
-            Console.info("Add a volume to a vm")
-            print(arguments.NAME)
-            print(arguments.VM)
-            raise NotImplementedError
-        elif arguments.remove:
-            Console.info("Remove a volume from a vm")
-            print(arguments.NAME)
-            print(arguments.VM)
-            raise NotImplementedError
+
         return ""
     
         

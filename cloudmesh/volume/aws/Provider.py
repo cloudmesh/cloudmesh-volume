@@ -71,7 +71,7 @@ class Provider(VolumeABC):
                       #"Tags",
                       "VolumeType",
                       #"created",
-                      "vm"
+                      "AttachedToVm"
                       ],
             "header": ["Name",
                        "Cloud",
@@ -88,7 +88,7 @@ class Provider(VolumeABC):
                        #"Tags",
                        "VolumeType",
                        #"Created",
-                       "vm"
+                       "AttachedToVm"
                        ],
         }
     }
@@ -169,7 +169,6 @@ class Provider(VolumeABC):
                 "kind": "volume",
                 "name": volume_name,
                 "region": entry["AvailabilityZone"], # for aws region = AvailabilityZone
-                "vms": None
             })
 
 #            entry["cm"]["created"] = str(DateTime.now())
@@ -351,6 +350,115 @@ class Provider(VolumeABC):
 
         return result
 
+    def delete(self, volume_id, dryrun=False):
+        """
+        delete volume
+
+        :param volume_id (string): volume id
+        :param dryrun (boolean): True|False
+        :return: dict
+        """
+
+        banner(f"delete volume")
+        volume = self.ec2.Volume(volume_id)
+        result = volume.delete(
+            DryRun=dryrun
+        )
+        # This is wrong not updated
+        return result
+
+    def attach(self,
+               NAME,
+               vm,
+               device="/dev/sdh",
+               dryrun=False):
+        """
+        mounts volume
+
+        :param volume_id (string): volume id
+        :param vm_id (string): instance id
+        :param device (string): The device name (for example, /dev/sdh or xvdh)
+        :param dryrun (boolean): True|False
+        :return: dict
+
+        """
+        client = boto3.client('ec2')
+        volume = client.describe_volumes(
+            DryRun=dryrun,
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': [NAME,]
+                },
+            ],
+        )
+        volume_id = volume['Volumes'][0]['VolumeId']
+        instance = client.describe_instances(
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': [vm,]
+                },
+            ],
+            DryRun=dryrun
+        )
+        vm_id = instance['Reservations'][0]['Instances'][0]['InstanceId']
+        response = client.attach_volume(
+                                        Device=device,
+                                        InstanceId=vm_id,
+                                        VolumeId=volume_id,
+                                        DryRun=dryrun
+                                    )
+        result = client.describe_volumes(
+            DryRun=dryrun,
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': [NAME]
+                },
+            ],
+        )
+        result['Volumes'][0]['AttachedToVm']=[vm]
+
+        result = self.update_dict(result)
+        return result
+
+    def detach(self,
+                NAME):
+        """
+        Detach a volume from vm
+
+        :param NAME: name of volume to dettach
+        :return: str
+        """
+
+        client = boto3.client('ec2')
+        volume = client.describe_volumes(
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': [NAME, ]
+                },
+            ],
+        )
+        volume_id = volume['Volumes'][0]['VolumeId']
+        rresponse = client.detach_volume(
+            VolumeId=volume_id,
+        )
+        result = client.describe_volumes(
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': [NAME]
+                },
+            ],
+        )
+        result['Volumes'][0]['AttachedToVm'] = " "
+
+        result = self.update_dict(result)
+        return result
+
+
     def migrate(self,
                 name=None,
                 fvm=None,
@@ -412,76 +520,10 @@ class Provider(VolumeABC):
                                         AvailabilityZone=availability_zone,
                                         DryRun=dryrun)
         # This is wrong not updated
-        return result
+        raise NotImplementedError
 
-    def mount(self, volume_id, vm_id, device='dev/sdh', dryrun=False):
-        """
-        mounts volume
 
-        :param volume_id (string): volume id
-        :param vm_id (string): instance id
-        :param device (string): The device name (for example, /dev/sdh or xvdh)
-        :param dryrun (boolean): True|False
-        :return: dict
 
-        """
-        banner(f"mount volume")
-        volume = self.ec2.Volume(volume_id)
-        result = volume.attach_to_instance(
-            Device=device,
-            InstanceId=vm_id,
-            DryRun=dryrun
-        )
-        # This is wrong not updated
-        return result
-
-    def unmount(self,
-                volume_id, vm_id,
-                device='dev/sdh',
-                force=False,
-                dryrun=False):
-        """
-        unmounts volume
-        :param volume_id (string): volume id
-        :param device (string): The device name (for example, /dev/sdh or xvdh)
-        :param force (boolean): True|False
-        :param dryrun (boolean): True|False
-        :return: dict
-
-        banner(f"unmount volume")
-        if cloud == 'aws':
-            result = Shell.run((f"aws ec2 dettach-volumes --volume-id {volume_id})
-            result = eval(result)['volume']
-            return result
-        """
-
-        banner(f"unmount volume")
-        volume = self.ec2.Volume(volume_id)
-        result = volume.detach_from_instance(
-            Device=device,
-            Force=force,
-            InstanceId=vm_id,
-            DryRun=dryrun
-        )
-        # This is wrong not updated
-        return result
-
-    def delete(self, volume_id, dryrun=False):
-        """
-        delete volume
-
-        :param volume_id (string): volume id
-        :param dryrun (boolean): True|False
-        :return: dict
-        """
-
-        banner(f"delete volume")
-        volume = self.ec2.Volume(volume_id)
-        result = volume.delete(
-            DryRun=dryrun
-        )
-        # This is wrong not updated
-        return result
 
     def set(self,
             volume_id,

@@ -14,6 +14,8 @@ from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 from cloudmesh.mongo.DataBaseDecorator import DatabaseUpdate
 from cloudmesh.management.configuration.arguments import Arguments
+from cloudmesh.common.console import Console
+from cloudmesh.common.variables import Variables
 
 # class Provider(VolumeABC): # correct
 class Provider(object):  # broken
@@ -119,7 +121,13 @@ class Provider(object):  # broken
 
     @DatabaseUpdate()
     def create(self, **kwargs):
-        data = self.provider.create(**kwargs)
+        try:
+            data = self.provider.create(**kwargs)
+            variables = Variables()
+            # make sure this is how it is returned or fix it
+            # variables["volume"] = data["cm"]["name"]
+        except:
+            raise ValueError("Volume could not be created")
         return data
 
     @DatabaseUpdate()

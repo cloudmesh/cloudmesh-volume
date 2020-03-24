@@ -187,16 +187,24 @@ class VolumeCommand(PluginCommand):
             print(provider.Print(result, kind='volume', output=arguments.output))
 
         elif arguments.delete:
+            names = Parameter.expand(arguments["NAMES"])
+
             config = Config()
             clouds = list(config["cloudmesh.volume"].keys())
             for cloud in clouds:
                 active = config[f"cloudmesh.volume.{cloud}.cm.active"]
                 if active:
                     p = Provider(name=cloud)
-                    names = Parameter.expand(arguments["NAMES"])
+                    deleted = []
                     for name in names:
-                        p.delete(name)
-        """
+                        result = p.delete(name) # returns None if it is not in the cloud
+                        if result:
+                            deleted.append(name)
+                        if len(deleted) > 0:
+                            for name in deleted:
+                                del names[name]
+
+            """
             2 spaces not fout !
 
             cloudmesh:

@@ -74,19 +74,27 @@ In this project we will be developing features related to completing and simplif
     volume status [NAMES]
                   [--cloud=CLOUD]
 ```
-* volume add
+* volume attach
+
+    attatch volume to a vm
 ```
-    volume add VM NAME
+    volume attach [NAME]
+                  [--vm=VM]
+
 ```
 
-* volume remove
+* volume detach
+
+    detatch volume from a vm
 ``` 
-    volume remove VM NAME
+    volume detach [NAME]  
 ```
 
 * volume delete
+
+    delete volumes
 ```
-    volume delete [NAME] 
+    volume delete [NAMES] 
 ```
     
 * volume migrate

@@ -139,6 +139,17 @@ class Provider(object):  # broken
         data = self.provider.list(**kwargs)
         return data
 
+    def info(self, name=None):
+        volumes = self.provider.list()
+        for volume in volumes:
+            if volume["cm"]["name"] == name:
+                return volume
+        return None
+
+    @staticmethod
+    def search(self, name=None):
+        raise NotImplementedError
+
     #
     # BUG: two different definitiosn of mount
     #

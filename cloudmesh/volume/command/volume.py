@@ -246,9 +246,12 @@ class VolumeCommand(PluginCommand):
                 Console.error("No Volume specified or found")
                 return ""
 
+
             if vm is None:
                 Console.error("No vm specified or found")
                 return ""
+
+            names = Parameter.expand(names)
 
             banner(f"Attach {arguments.NAMES} to {arguments.vm}")
             provider = Provider(name=arguments.cloud)
@@ -272,22 +275,22 @@ class VolumeCommand(PluginCommand):
             # or something similar dependent on how you defined the datastructure
             # cm. for a volume
             #
-            print(arguments.NAMES)
-            print(arguments.VM)
-            banner(f"Detach {arguments.NAMES} from {arguments.vm}")
-            if arguments.cloud is None:
-                arguments['cloud'] = cloud  # cloud from variable['volume']
-            if arguments.NAMES is None:
-                # BUG: if names is none the last volume should be used
-                # variables["volume"]
-                Console.error("Please input volume name")
-            # if arguments.vm == None:
-            #     Console.error("Please input vm name")
-            # banner(f"Detach {arguments.NAME} to {arguments.vm}")
 
-            provider = Provider(name=arguments.cloud)
-            for name in arguments.NAMES:
-                result = provider.detach(name)
+            volumes = arguments.NAMES or variables["volume"]
+            if volumes is None:
+                Console.error ("No volumes specified or found")
+                return ""
+
+            volumes = Parameter.expand(volumes)
+
+            banner(f"Detach {volumes}")
+
+            for name in volumes:
+                volume = Provider.search(name=name)
+                cloud = volume["cm"]["cloud"]
+                provider = Provider(name=cloud)
+                result = provider.detach(name=name)
+
                 print(provider.Print(result,
                                      kind='volume',
                                      output=arguments.output))

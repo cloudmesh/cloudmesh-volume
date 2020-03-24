@@ -12,6 +12,7 @@ from cloudmesh.shell.command import map_parameters
 from cloudmesh.volume.Provider import Provider
 
 
+
 class VolumeCommand(PluginCommand):
 
     # noinspection PyUnusedLocal
@@ -183,8 +184,16 @@ class VolumeCommand(PluginCommand):
             print(provider.Print(result, kind='volume', output=arguments.output))
 
         elif arguments.delete:
-
-            """
+            config = Config()
+            clouds = list(config["cloudmesh.volume"].keys())
+            for cloud in clouds:
+                active = config[f"cloudmesh.volume.{cloud}.cm.active"]
+                if active:
+                    p = Provider(name=cloud)
+                    names = Parameter.expand(arguments["NAMES"])
+                    for name in names:
+                        p.delete(name)
+        """
             2 spaces not fout !
 
             cloudmesh:

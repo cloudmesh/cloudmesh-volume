@@ -28,6 +28,39 @@ from azure.mgmt.compute import ComputeManagementClient
 
 client = get_client_from_auth_file(ComputeManagementClient, auth_path=C:\Users\plj2861\Documents\AshleyPersonal\School\IndianaUniversity\CloudComputing\azure_credentials.json)
 
+def __init__(self, name):
+    self.cloud = name
+    self.config = Config()["cloudmesh.volume.azure.credentials"]
+    self.defaults = Config()["cloudmesh.volume.azure.default"]
+
+def list(self, **kwargs):
+    if kwargs["--refresh"]:
+        block_storage = oci.core.BlockstorageClient(self.config)
+        v = block_storage.list_volumes(self.config['compartment_id'])
+        results = v.data
+        result = self.update_dict(results)
+        print(self.Print(result, kind='volume', output=kwargs['output']))
+    else:
+        # read record from mongoDB
+        refresh = False
+
+def create(self, **kwargs):
+    arguments = dotdict(kwargs)
+    block_storage = oci.core.BlockstorageClient(self.config)
+    block_storage.create_volume(oci.core.models.CreateVolumeDetails(
+        compartment_id=self.config['compartment_id'],
+        availability_domain=self.config['availability_domain'],
+        display_name=arguments.NAME
+    ))
+    # print list after create
+    block_storage = oci.core.BlockstorageClient(self.config)
+    v = block_storage.list_volumes(self.config['compartment_id'])
+    results = v.data
+    result = self.update_dict(results)
+    print(self.Print(result, kind='volume', output=kwargs['output']))
+
+
+
 
 def _remove_mongo_id_obj(dict_list):
     for i in dict_list:

@@ -10,6 +10,9 @@ from cloudmesh.shell.command import PluginCommand
 from cloudmesh.shell.command import command
 from cloudmesh.shell.command import map_parameters
 from cloudmesh.volume.Provider import Provider
+from cloudmesh.common.util import banner
+#from cloudmesh.management.configuration.Name import Name as VolumeName
+
 
 
 class VolumeCommand(PluginCommand):
@@ -38,9 +41,9 @@ class VolumeCommand(PluginCommand):
                       [ARGUMENTS...]
             volume status [NAMES]
                       [--cloud=CLOUD]
-            volume add VM NAME
-            volume remove VM NAME
-            volume delete [NAME]
+            volume attach [NAMES] [--vm=VM]
+            volume detach [NAMES]
+            volume delete NAMES
             volume migrate NAME FROM_VM TO_VM
             volume sync FROM_VOLUME TO_VOLUME
 
@@ -48,6 +51,7 @@ class VolumeCommand(PluginCommand):
 
           Arguments:
               NAME   the name of the volume
+              vm     the name of the vm
 
           Options:
               --vm=VMNAME        The name of the virtual machine
@@ -105,7 +109,7 @@ class VolumeCommand(PluginCommand):
 
             config = Config()
             directory = f"{config.location}"
-            volume_yaml = path_expand(f"{directory}/volume.yaml)")
+            volume_yaml = path_expand(f"{directory}/volume.yaml")
 
 
             try:
@@ -182,6 +186,126 @@ class VolumeCommand(PluginCommand):
             result = provider.create(**arguments)
             print(provider.Print(result, kind='volume', output=arguments.output))
 
+        elif arguments.delete:
+            names = Parameter.expand(arguments["NAMES"])
+
+            config = Config()
+            clouds = list(config["cloudmesh.volume"].keys())
+            for cloud in clouds:
+                active = config[f"cloudmesh.volume.{cloud}.cm.active"]
+                if active:
+                    p = Provider(name=cloud)
+                    deleted = []
+                    for name in names:
+                        result = p.delete(name) # returns None if it is not in the cloud
+                        if result:
+                            deleted.append(name)
+                        if len(deleted) > 0:
+                            for name in deleted:
+                                del names[name]
+
+            """
+            2 spaces not fout !
+
+            cloudmesh:
+                volume:
+                    aws1:                    
+                        cm:
+                            active: cloudmesh.cloud.aws.cm.active
+
+            names = Parametrs.expnad(arguments.NAMES)
+
+
+
+            config = Config()
+            clouds = list(config["cloudmesh.volume"].keys())
+
+            for cloud in clouds : 
+                active = config[f"cloudmesh.volume.{cloud}.cm.active"]
+
+                if active:
+                    found = []
+                    # from cloudmesh.volume.Provider import Provider
+                    p = Provider(name=cloud)
+                    for name in names:
+                        volume = p.list(name=name)
+                            found = found.append(name)
+                    p.destroy(','.join(found)
+                    # delete all found volumes in the cloud
+            """
+
+        elif arguments.attach:
+
+            # cloud from variable['volume']
+            arguments.cloud = arguments.cloud or cloud
+
+            names = arguments.NAMES or variables["volume"]
+            vm = arguments.vm or variables["vm"]
+
+            if names is None:
+                Console.error("No Volume specified or found")
+                return ""
+
+
+            if vm is None:
+                Console.error("No vm specified or found")
+                return ""
+
+            names = Parameter.expand(names)
+
+            banner(f"Attach {arguments.NAMES} to {arguments.vm}")
+            provider = Provider(name=arguments.cloud)
+            for name in names:
+                result = provider.attach(name, vm)
+                print(provider.Print(result,
+                                     kind='volume',
+                                     output=arguments.output))
+
+        elif arguments.detach:
+            #
+            # this has a bug as the general provider needs a serach that finds
+            # the vm given a volume name to find the vm it is attached to
+            # this way you can write just a loop such as
+            #
+            # for volume in volumes:
+            #    v = provider.serach(volume)
+            #    if v['vm'] and v['cm.cloud'] == v['cm.cloud']:
+            #        result = provider.detach(name)
+            #
+            # or something similar dependent on how you defined the datastructure
+            # cm. for a volume
+            #
+
+            volumes = arguments.NAMES or variables["volume"]
+            if volumes is None:
+                Console.error ("No volumes specified or found")
+                return ""
+
+            volumes = Parameter.expand(volumes)
+
+            banner(f"Detach {volumes}")
+
+            for name in volumes:
+                volume = Provider.search(name=name)
+                cloud = volume["cm"]["cloud"]
+                provider = Provider(name=cloud)
+                result = provider.detach(name=name)
+
+                print(provider.Print(result,
+                                     kind='volume',
+                                     output=arguments.output))
+
+
+
+
+
+
+
+
+
+
+
+
 '''
         elif arguments.status:
             cm = CmDatabase()
@@ -225,21 +349,7 @@ class VolumeCommand(PluginCommand):
                        "cloud",
                        "refresh"
                        )
-        if arguments.register and arguments.which:
-            providers = Provider.get_kind()
-            Console.info("Available Volume Cloud Providers")
-            print()
-            print("    " + "\n    ".join(providers))
-            print()
-        elif arguments.register:
-            Console.info("Registering a volume to cloudmesh yaml")
-            parameters = Parameter.arguments_to_dict(arguments.ARGUMENTS)
-            print()
-            print("    Name:", name)
-            print("    Cloud:", arguments.cloud)
-            print("    Arguments:", parameters)
-            print()
-            raise NotImplementedError
+        
         elif arguments.list:
             if arguments.NAMES:
                 raise NotImplementedError
@@ -275,16 +385,7 @@ class VolumeCommand(PluginCommand):
             print(arguments.FROM_VOLUME)
             print(arguments.TO_VOLUME)
             raise NotImplementedError
-        elif arguments.add:
-            Console.info("Add a volume to a vm")
-            print(arguments.NAME)
-            print(arguments.VM)
-            raise NotImplementedError
-        elif arguments.remove:
-            Console.info("Remove a volume from a vm")
-            print(arguments.NAME)
-            print(arguments.VM)
-            raise NotImplementedError
+
         return ""
     
         

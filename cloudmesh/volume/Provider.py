@@ -14,6 +14,8 @@ from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
 from cloudmesh.mongo.DataBaseDecorator import DatabaseUpdate
 from cloudmesh.management.configuration.arguments import Arguments
+from cloudmesh.common.console import Console
+from cloudmesh.common.variables import Variables
 
 # class Provider(VolumeABC): # correct
 class Provider(object):  # broken
@@ -119,7 +121,12 @@ class Provider(object):  # broken
 
     @DatabaseUpdate()
     def create(self, **kwargs):
-        data = self.provider.create(**kwargs)
+        try:
+            data = self.provider.create(**kwargs)
+            variables = Variables()
+            variables["volume"] = data["cm"]["name"]
+        except:
+            raise ValueError("Volume could not be created")
         return data
 
     @DatabaseUpdate()
@@ -132,24 +139,48 @@ class Provider(object):  # broken
         data = self.provider.list(**kwargs)
         return data
 
+    def info(self, name=None):
+        volumes = self.provider.list()
+        for volume in volumes:
+            if volume["cm"]["name"] == name:
+                return volume
+        return None
+
+    @staticmethod
+    def search(self, name=None):
+        raise NotImplementedError
+
     #
     # BUG: two different definitiosn of mount
     #
     # def mount(self, path=None, name=None):
     #    self.provider.mount(path, name)
 
-    def mount(self, path=None, name=None, volume_id=None, vm_id=None):
+    @DatabaseUpdate()
+    def attach(self, NAME=None, vm=None):
+
         """
-        mounts volume
-        :param path: path of the mount
-        :param name: the name of the instance
-        :param volume_id: volume id
-        :param vm_id: instance id
+        Attatch volume to a vm
+
+        :param NAME: volume name
+        :param vm: vm name which the volume will be attached to
         :return: dict
         """
-        raise NotImplementedError
+        result = self.provider.attach(NAME, vm)
+        return result
 
-    #
+    @DatabaseUpdate()
+    def detach(self, NAME=None):
+
+        """
+        Detach a volume from vm
+
+        :param NAME: name of volume to detach
+        :return: str
+        """
+        result = self.provider.detach(NAME)
+        return result
+
     # BUG NO GENERAL DEFINITIONS OF MIGRATE
     # BUG THE PARAMETER NAMES ARE REALY NOT GOOD
     #
@@ -206,19 +237,4 @@ class Provider(object):  # broken
         """
         raise NotImplementedError
 
-    #
-    # BUG NO DEFINITION OF WAHT UNSET IS. ARCHITECTURE DOCUMENT IS MISSING
-    #
-    def unset(self,
-              name=None,
-              property=None,
-              image_property=None):
-        """
-        Separate a volume from a group of joined volumes
 
-        :param name: name of volume to separate
-        :param property: key to volume being separated
-        :param image_property: image stored in separated volume
-        :return: str
-        """
-        raise NotImplementedError

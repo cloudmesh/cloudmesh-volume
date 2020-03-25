@@ -11,8 +11,7 @@ from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
-
-
+from cloudmesh.common.Printer import Printer
 
 
 class Provider(VolumeABC):
@@ -47,43 +46,49 @@ class Provider(VolumeABC):
             "sort_keys": ["cm.name"],
             "order": ["cm.name",
                       "cm.kind",
+                      "cm.cloud",
                       "status",
-                      "id"
+                      "sizeGb",
+                      "type",
+                      "creationTimestamp",
+                      "id",
                       "zone"],
             "header": ["Name",
+                       "Kind",
                        "Cloud",
                        "Status",
+                       "SizeGb",
+                       "Type",
+                       "Created",
                        "ID",
                        "Zone"]
         }
     }
 
     def __init__(self, name):
-        cloud = name
+        self.cloud = name
         config = Config()
-        self.default = config["cloudmesh.volume.{cloud}.default"]
+        self.default = config["cloudmesh.volume.google.default"]
         self.credentials = config["cloudmesh.volume.google.credentials"]
         self.auth = self.credentials['auth']
         self.compute_scopes = ['https://www.googleapis.com/auth/compute',
                                'https://www.googleapis.com/auth/cloud-platform',
                                'https://www.googleapis.com/auth/compute.readonly']
 
-    def update_dict(self, elements):
+    def update_dict(self, elements, kind=None):
         """
         This function adds a cloudmesh cm dict to each dict in the list
         elements.
-        Libcloud
         returns an object or list of objects With the dict method
         this object is converted to a dict. Typically this method is used
         internally.
-
         :param elements: the list of original dicts. If elements is a single
                          dict a list with a single element is returned.
         :param kind: for some kinds special attributes are added. This includes
                      key, vm, image, flavor.
         :return: The list with the modified dicts
         """
-
+        pprint(elements)
         if elements is None:
             return None
         elif type(elements) == list:
@@ -97,14 +102,11 @@ class Provider(VolumeABC):
                 entry['cm'] = {}
 
             entry["cm"].update({
-                "kind": "volume",
+                "kind": kind,
                 "cloud": self.cloud,
-                "name": self.name,
-
+                "name": entry["pmccand-test-disk-1"],
+                "driver": kind
             })
-
-            entry["cm"]["created"] = entry["updated"] = str(
-                DateTime.now())
 
             d.append(entry)
         return d
@@ -139,6 +141,56 @@ class Provider(VolumeABC):
 
         return compute_service
 
+    def _process_disk(self, disk):
+        """
+        Method to convert the disk json to dict.
+        :param disk: JSON with disk details
+        :return:
+        """
+        disk_dict = {}
+        disk_dict["cm.name"] = disk["name"]
+        disk_dict["zone"] = disk["zone"]
+        disk_dict["type"] = disk["type"]
+        disk_dict["SizeGb"] = disk["sizeGb"]
+        disk_dict["status"] = disk["status"]
+        disk_dict["created"] = disk["creationTimestamp"]
+        disk_dict["id"] = disk["id"]
+        disk_dict["cm.cloud"] = self.kind
+        disk_dict["cm.kind"] = disk["kind"]
+
+
+        return disk_dict
+
+    def _format_aggregate_list(self, disk_list):
+        """
+        Method to format the instance list to flat dict format.
+        :param disk_list:
+        :return: dict
+        """
+        result = []
+        if disk_list is not None:
+            if "items" in disk_list:
+                items = disk_list["items"]
+                for item in items:
+                    if "disks" in items[item]:
+                        disks = items[item]["disks"]
+                        for disk in disks:
+                            # Extract the disk details.
+                            result.append(self._process_disk(disk))
+
+        return result
+
+    def Print(self, data, output=None, kind=None):
+        order = self.output["volume"]['order']
+        header = self.output["volume"]['header']
+        print(Printer.flatwrite(data,
+                                sort_keys=["name"],
+                                order=order,
+                                header=header,
+                                output=output,
+                                )
+              )
+
     def list(self, **kwargs):
         """
         Retrieves an aggregated list of persistent disks.
@@ -146,20 +198,22 @@ class Provider(VolumeABC):
         is supported.
         :return: an array of dicts representing the disks
         """
-        if kwargs["--refresh"]:
-            result = None
-            try:
-                compute_service = self._get_compute_service()
-                disk_list = compute_service.disks().aggregatedList(
-                    project=self.auth["project_id"],
-                    orderBy="name").execute()
-                result = self.update_dict(disk_list)
-            except Exception as se:
-                print(se)
-            return result
+        result = None
+
+        compute_service = self._get_compute_service()
+        disk_list = compute_service.disks().aggregatedList(
+            project=self.auth["project_id"]).execute()
+        # look thought all disk list zones and find w/o warning
+        # get details and add to found
+        if found:
+
+            result = self.update_dict(found)
         else:
-            # read record from mongoDB
-            refresh = False
+            return None
+
+        print(self.Print(result, kind='volume', output=kwargs['output']))
+
+        return result
 
     def create(self, name=None, **kwargs):
         # def create(self,

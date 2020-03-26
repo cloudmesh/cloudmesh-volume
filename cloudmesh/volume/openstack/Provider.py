@@ -153,9 +153,12 @@ class Provider(VolumeABC):
         print(self.Print(result, kind='volume', output=kwargs['output']))
 
     def delete(self, name=None):
-        config = self.credentials()
-        con = openstack.connect(**config)
+        con = openstack.connect(**self.config)
         con.delete_volume(name_or_id=name)
+        # print list after delete
+        results = con.list_volumes()
+        result = self.update_dict(results)
+        print(self.Print(result, kind='volume', output='table'))
         
     def list(self,**kwargs):
         if kwargs["--refresh"]:
@@ -174,6 +177,9 @@ class Provider(VolumeABC):
         results = con.attach_volume(server, volume, device=None, wait=True, timeout=None)
         result = self.update_dict(results)
         return ''
+
+    def detach(self, NAME=None, vm=None):
+        raise NotImplementedError
 
     def migrate(self,
                 name=None,

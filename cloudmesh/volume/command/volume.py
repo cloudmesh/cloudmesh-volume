@@ -14,6 +14,7 @@ from cloudmesh.common.util import banner
 #from cloudmesh.management.configuration.Name import Name as VolumeName
 
 
+
 class VolumeCommand(PluginCommand):
 
     # noinspection PyUnusedLocal
@@ -40,9 +41,9 @@ class VolumeCommand(PluginCommand):
                       [ARGUMENTS...]
             volume status [NAMES]
                       [--cloud=CLOUD]
-            volume attach [NAME] [--vm=VM]
-            volume detach [NAME]
-            volume delete [NAMES]
+            volume attach [NAMES] [--vm=VM]
+            volume detach [NAMES]
+            volume delete NAMES
             volume migrate NAME FROM_VM TO_VM
             volume sync FROM_VOLUME TO_VOLUME
 
@@ -186,6 +187,22 @@ class VolumeCommand(PluginCommand):
             print(provider.Print(result, kind='volume', output=arguments.output))
 
         elif arguments.delete:
+            names = Parameter.expand(arguments["NAMES"])
+
+            config = Config()
+            clouds = list(config["cloudmesh.volume"].keys())
+            for cloud in clouds:
+                active = config[f"cloudmesh.volume.{cloud}.cm.active"]
+                if active:
+                    p = Provider(name=cloud)
+                    deleted = []
+                    for name in names:
+                        result = p.delete(name) # returns None if it is not in the cloud
+                        if result:
+                            deleted.append(name)
+                        if len(deleted) > 0:
+                            for name in deleted:
+                                del names[name]
 
             """
             2 spaces not fout !
@@ -218,32 +235,65 @@ class VolumeCommand(PluginCommand):
             """
 
         elif arguments.attach:
-            if arguments.cloud == None:
-                arguments['cloud'] = cloud #cloud from variable['volume']
-            if arguments.NAME == None:
-                Console.error("Please input volume name")
-            if arguments.vm == None:
-                # how to get the most recent vm name? mongo find( is it sorted by time)? when vm not given
-                Console.error("Please input vm name")
-            banner(f"Attach {arguments.NAME} to {arguments.vm}")
+
+            # cloud from variable['volume']
+            arguments.cloud = arguments.cloud or cloud
+
+            names = arguments.NAMES or variables["volume"]
+            vm = arguments.vm or variables["vm"]
+
+            if names is None:
+                Console.error("No Volume specified or found")
+                return ""
+
+
+            if vm is None:
+                Console.error("No vm specified or found")
+                return ""
+
+            names = Parameter.expand(names)
+
+            banner(f"Attach {arguments.NAMES} to {arguments.vm}")
             provider = Provider(name=arguments.cloud)
-            result = provider.attach(arguments.NAME, arguments.vm)
-            print(provider.Print(result, kind='volume', output=arguments.output))
+            for name in names:
+                result = provider.attach(name, vm)
+                print(provider.Print(result,
+                                     kind='volume',
+                                     output=arguments.output))
 
         elif arguments.detach:
-            print(arguments.NAME)
-            print(arguments.VM)
-            banner(f"Detach {arguments.NAME} to {arguments.vm}")
-            if arguments.cloud == None:
-                arguments['cloud'] = cloud  # cloud from variable['volume']
-            if arguments.NAME == None:
-                Console.error("Please input volume name")
-            # if arguments.vm == None:
-            #     Console.error("Please input vm name")
-            # banner(f"Detach {arguments.NAME} to {arguments.vm}")
-            provider = Provider(name=arguments.cloud)
-            result = provider.detach(arguments.NAME)
-            print(provider.Print(result, kind='volume', output=arguments.output))
+            #
+            # this has a bug as the general provider needs a serach that finds
+            # the vm given a volume name to find the vm it is attached to
+            # this way you can write just a loop such as
+            #
+            # for volume in volumes:
+            #    v = provider.serach(volume)
+            #    if v['vm'] and v['cm.cloud'] == v['cm.cloud']:
+            #        result = provider.detach(name)
+            #
+            # or something similar dependent on how you defined the datastructure
+            # cm. for a volume
+            #
+
+            volumes = arguments.NAMES or variables["volume"]
+            if volumes is None:
+                Console.error ("No volumes specified or found")
+                return ""
+
+            volumes = Parameter.expand(volumes)
+
+            banner(f"Detach {volumes}")
+
+            for name in volumes:
+                volume = Provider.search(name=name)
+                cloud = volume["cm"]["cloud"]
+                provider = Provider(name=cloud)
+                result = provider.detach(name=name)
+
+                print(provider.Print(result,
+                                     kind='volume',
+                                     output=arguments.output))
 
 
 

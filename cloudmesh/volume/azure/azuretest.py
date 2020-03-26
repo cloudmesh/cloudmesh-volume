@@ -22,74 +22,138 @@ class Provider(VolumeABC):
     kind = "volume"
 
     sample = """
-    cloudmesh:
-      cloud:
-        {name}:
-          cm:
-            active: true
-            heading: azure
-            host: TBD
-            label: {name}
-            kind: azure
-            version: TBD
-            service: volume
-          credentials:
-            client_id: AZURE_APPLICATION_ID
-            secret: AZURE_SECRET_KEY
-            tenant: AZURE_TENANT_ID
-            subscription: AZURE_SUBSCRIPTION_ID
+        cloudmesh:
+          cloud:
+            {name}:
+              cm:
+                active: true
+                heading: {name}
+                host: TBD
+                label: {name}
+                kind: azure
+                version: latest
+                service: compute
+              default:
+                image: Canonical:UbuntuServer:16.04.0-LTS:latest
+                size: Basic_A0
+                resource_group: cloudmesh
+                storage_account: cmdrive
+                network: cmnetwork
+                subnet: cmsubnet
+                blob_container: vhds
+                AZURE_VM_IP_CONFIG: cloudmesh-ip-config
+                AZURE_VM_NIC: cloudmesh-nic
+                AZURE_VM_DISK_NAME: cloudmesh-os-disk
+                AZURE_VM_USER: TBD
+                AZURE_VM_PASSWORD: TBD
+                AZURE_VM_NAME: cloudmeshVM
+              credentials:
+                AZURE_TENANT_ID: {tenantid}
+                AZURE_SUBSCRIPTION_ID: {subscriptionid}
+                AZURE_APPLICATION_ID: {applicationid}
+                AZURE_SECRET_KEY: {secretkey}
+                AZURE_REGION: eastus
     """
 
     volume_states = [
-        'in-use',
-        'available',
-        'creating',
-        'deleted',
-        'deleting',
-        'error',
-        'inuse'
+        'ACTIVE',
+        'BUILDING',
+        'DELETED',
+        'ERROR',
+        'HARD_REBOOT',
+        'PASSWORD',
+        'PAUSED',
+        'REBOOT',
+        'REBUILD',
+        'RESCUED',
+        'RESIZED',
+        'REVERT_RESIZE',
+        'SHUTOFF',
+        'SOFT_DELETED',
+        'STOPPED',
+        'SUSPENDED',
+        'UNKNOWN',
+        'VERIFY_RESIZE'
     ]
 
     output = {
-
-        "volume": {
+        "status": {
             "sort_keys": ["cm.name"],
             "order": ["cm.name",
                       "cm.cloud",
-                      "cm.kind",
-                      "cm.region",
-                      #"AvailabilityZone",
-                      "CreateTime",
-                      "Encrypted",
-                      "Size",
-                      #"SnapshotId",
-                      "States",
-                      #"VolumeId",
-                      "Iops",
-                      #"Tags",
-                      "VolumeType",
-                      #"created",
-                      "AttachedToVm"
-                      ],
+                      "vm_state",
+                      "status",
+                      "task_state"],
             "header": ["Name",
                        "Cloud",
-                       "Kind",
-                       "Region",
-                       #"AvailabilityZone",
-                       "CreateTime",
-                       "Encrypted",
-                       "Size",
-                       #"SnapshotId",
+                       "State",
                        "Status",
-                        #"VolumeId",
-                       "Iops",
-                       #"Tags",
-                       "VolumeType",
-                       #"Created",
-                       "AttachedToVm"
-                       ],
-        }
+                       "Task"]
+        },
+        "vm": {
+            "sort_keys": ["cm.name"],
+            "order": [
+                "cm.name",
+                "cm.cloud",
+                "id",
+                "type",
+                "location",
+                "hardware_profile.vm_size",
+                "storage_profile.image_reference.offer",
+                "storage_profile.image_reference.sku",
+                "storage_profile.os_disk.disk_size_gb",
+                "provisioning_state",
+                "vm_id",
+                "cm.kind"],
+            "header": [
+                "Name",
+                "Cloud",
+                "Id",
+                "Type",
+                "Location",
+                "VM Size",
+                "OS Name",
+                "OS Version",
+                "OS Disk Size",
+                "Provisioning State",
+                "VM ID",
+                "Kind"]
+        },
+        "image": {
+            "sort_keys": ["cm.name",
+                          "plan.publisher"],
+            "order": ["cm.name",
+                      "location",
+                      "plan.publisher",
+                      "plan.name",
+                      "plan.product",
+                      "operating_system"],
+            "header": ["Name",
+                       "Location",
+                       "Publisher",
+                       "Plan Name",
+                       "Product",
+                       "Operating System",
+                       ]
+        },
+        "flavor": {
+            "sort_keys": ["name",
+                          "number_of_cores",
+                          "os_disk_size_in_mb"],
+            "order": ["name",
+                      "number_of_cores",
+                      "os_disk_size_in_mb",
+                      "resource_disk_size_in_mb",
+                      "memory_in_mb",
+                      "max_data_disk_count"],
+            "header": ["Name",
+                       "NumberOfCores",
+                       "OS_Disk_Size",
+                       "Resource_Disk_Size",
+                       "Memory",
+                       "Max_Data_Disk"]},
     }
+
 
     def __init__(self, name="azure", configuration=None, credentials=None):
         """
@@ -137,6 +201,7 @@ class Provider(VolumeABC):
 
         credentials = ServicePrincipalCredentials(
             client_id=cred['AZURE_APPLICATION_ID'],
+            #application and client id are same thing
             secret=cred['AZURE_SECRET_KEY'],
             tenant=cred['AZURE_TENANT_ID']
         )
@@ -144,7 +209,52 @@ class Provider(VolumeABC):
         subscription = cred['AZURE_SUBSCRIPTION_ID']
 
         # Management Clients
-        self.resource_client = ResourceManagementClient(
-            credentials, subscription)
         self.compute_client = ComputeManagementClient(
             credentials, subscription)
+
+
+    def Print(self, data, output=None, kind=None):
+        order = self.output["volume"]['order']
+        header = self.output["volume"]['header']
+        print(Printer.flatwrite(data,
+                                sort_keys=["name"],
+                                order=order,
+                                header=header,
+                                output=output,
+                                )
+              )
+
+    def update_dict(self, results):
+        """
+        This function adds a cloudmesh cm dict to each dict in the list
+        elements.
+        Libcloud
+        returns an object or list of objects With the dict method
+        this object is converted to a dict. Typically this method is used
+        internally.
+
+        :param results: the original dicts.
+        :param kind: for some kinds special attributes are added. This includes
+                     key, vm, image, flavor.
+        :return: The list with the modified dicts
+        """
+
+        if results is None:
+            return None
+
+        d = []
+        print("results", results)
+
+        for entry in results:
+            print("entry",entry)
+            volume_name = entry['name']
+            if "cm" not in entry:
+                entry['cm'] = {}
+
+            entry["cm"].update({
+                "cloud": self.cloud,
+                "kind": "volume",
+                "name": volume_name,
+            })
+            d.append(entry)
+        return d

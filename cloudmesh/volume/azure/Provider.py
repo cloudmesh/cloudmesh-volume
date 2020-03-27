@@ -7,10 +7,10 @@ from cloudmesh.configuration.Config import Config
 from cloudmesh.common.dotdict import dotdict
 from cloudmesh.common.Printer import Printer
 
-from azure.common.client_factory import get_client_from_auth_file
+# from azure.common.client_factory import get_client_from_auth_file
 from azure.mgmt.compute import ComputeManagementClient
 
-client = get_client_from_auth_file(ComputeManagementClient, auth_path=C:\Users\plj2861\Documents\AshleyPersonal\School\IndianaUniversity\CloudComputing\azure_credentials.json)
+# client = get_client_from_auth_file(ComputeManagementClient, auth_path=C:\Users\plj2861\Documents\AshleyPersonal\School\IndianaUniversity\CloudComputing\azure_credentials.json)
 
 
 class Provider(VolumeABC):
@@ -21,139 +21,139 @@ class Provider(VolumeABC):
 
     kind = "volume"
 
-    sample = """
-        cloudmesh:
-          cloud:
-            {name}:
-              cm:
-                active: true
-                heading: {name}
-                host: TBD
-                label: {name}
-                kind: azure
-                version: latest
-                service: compute
-              default:
-                image: Canonical:UbuntuServer:16.04.0-LTS:latest
-                size: Basic_A0
-                resource_group: cloudmesh
-                storage_account: cmdrive
-                network: cmnetwork
-                subnet: cmsubnet
-                blob_container: vhds
-                AZURE_VM_IP_CONFIG: cloudmesh-ip-config
-                AZURE_VM_NIC: cloudmesh-nic
-                AZURE_VM_DISK_NAME: cloudmesh-os-disk
-                AZURE_VM_USER: TBD
-                AZURE_VM_PASSWORD: TBD
-                AZURE_VM_NAME: cloudmeshVM
-              credentials:
-                AZURE_TENANT_ID: {tenantid}
-                AZURE_SUBSCRIPTION_ID: {subscriptionid}
-                AZURE_APPLICATION_ID: {applicationid}
-                AZURE_SECRET_KEY: {secretkey}
-                AZURE_REGION: eastus
-    """
-
-    volume_states = [
-        'ACTIVE',
-        'BUILDING',
-        'DELETED',
-        'ERROR',
-        'HARD_REBOOT',
-        'PASSWORD',
-        'PAUSED',
-        'REBOOT',
-        'REBUILD',
-        'RESCUED',
-        'RESIZED',
-        'REVERT_RESIZE',
-        'SHUTOFF',
-        'SOFT_DELETED',
-        'STOPPED',
-        'SUSPENDED',
-        'UNKNOWN',
-        'VERIFY_RESIZE'
-    ]
-
-    output = {
-        "status": {
-            "sort_keys": ["cm.name"],
-            "order": ["cm.name",
-                      "cm.cloud",
-                      "vm_state",
-                      "status",
-                      "task_state"],
-            "header": ["Name",
-                       "Cloud",
-                       "State",
-                       "Status",
-                       "Task"]
-        },
-        "vm": {
-            "sort_keys": ["cm.name"],
-            "order": [
-                "cm.name",
-                "cm.cloud",
-                "id",
-                "type",
-                "location",
-                "hardware_profile.vm_size",
-                "storage_profile.image_reference.offer",
-                "storage_profile.image_reference.sku",
-                "storage_profile.os_disk.disk_size_gb",
-                "provisioning_state",
-                "vm_id",
-                "cm.kind"],
-            "header": [
-                "Name",
-                "Cloud",
-                "Id",
-                "Type",
-                "Location",
-                "VM Size",
-                "OS Name",
-                "OS Version",
-                "OS Disk Size",
-                "Provisioning State",
-                "VM ID",
-                "Kind"]
-        },
-        "image": {
-            "sort_keys": ["cm.name",
-                          "plan.publisher"],
-            "order": ["cm.name",
-                      "location",
-                      "plan.publisher",
-                      "plan.name",
-                      "plan.product",
-                      "operating_system"],
-            "header": ["Name",
-                       "Location",
-                       "Publisher",
-                       "Plan Name",
-                       "Product",
-                       "Operating System",
-                       ]
-        },
-        "flavor": {
-            "sort_keys": ["name",
-                          "number_of_cores",
-                          "os_disk_size_in_mb"],
-            "order": ["name",
-                      "number_of_cores",
-                      "os_disk_size_in_mb",
-                      "resource_disk_size_in_mb",
-                      "memory_in_mb",
-                      "max_data_disk_count"],
-            "header": ["Name",
-                       "NumberOfCores",
-                       "OS_Disk_Size",
-                       "Resource_Disk_Size",
-                       "Memory",
-                       "Max_Data_Disk"]},
-    }
-
+    # sample = """
+    #     cloudmesh:
+    #       cloud:
+    #         {name}:
+    #           cm:
+    #             active: true
+    #             heading: {name}
+    #             host: TBD
+    #             label: {name}
+    #             kind: azure
+    #             version: latest
+    #             service: compute
+    #           default:
+    #             image: Canonical:UbuntuServer:16.04.0-LTS:latest
+    #             size: Basic_A0
+    #             resource_group: cloudmesh
+    #             storage_account: cmdrive
+    #             network: cmnetwork
+    #             subnet: cmsubnet
+    #             blob_container: vhds
+    #             AZURE_VM_IP_CONFIG: cloudmesh-ip-config
+    #             AZURE_VM_NIC: cloudmesh-nic
+    #             AZURE_VM_DISK_NAME: cloudmesh-os-disk
+    #             AZURE_VM_USER: TBD
+    #             AZURE_VM_PASSWORD: TBD
+    #             AZURE_VM_NAME: cloudmeshVM
+    #           credentials:
+    #             AZURE_TENANT_ID: {tenantid}
+    #             AZURE_SUBSCRIPTION_ID: {subscriptionid}
+    #             AZURE_APPLICATION_ID: {applicationid}
+    #             AZURE_SECRET_KEY: {secretkey}
+    #             AZURE_REGION: eastus
+    # """
+    #
+    # volume_states = [
+    #     'ACTIVE',
+    #     'BUILDING',
+    #     'DELETED',
+    #     'ERROR',
+    #     'HARD_REBOOT',
+    #     'PASSWORD',
+    #     'PAUSED',
+    #     'REBOOT',
+    #     'REBUILD',
+    #     'RESCUED',
+    #     'RESIZED',
+    #     'REVERT_RESIZE',
+    #     'SHUTOFF',
+    #     'SOFT_DELETED',
+    #     'STOPPED',
+    #     'SUSPENDED',
+    #     'UNKNOWN',
+    #     'VERIFY_RESIZE'
+    # ]
+    #
+    # output = {
+    #     "status": {
+    #         "sort_keys": ["cm.name"],
+    #         "order": ["cm.name",
+    #                   "cm.cloud",
+    #                   "vm_state",
+    #                   "status",
+    #                   "task_state"],
+    #         "header": ["Name",
+    #                    "Cloud",
+    #                    "State",
+    #                    "Status",
+    #                    "Task"]
+    #     },
+    #     "vm": {
+    #         "sort_keys": ["cm.name"],
+    #         "order": [
+    #             "cm.name",
+    #             "cm.cloud",
+    #             "id",
+    #             "type",
+    #             "location",
+    #             "hardware_profile.vm_size",
+    #             "storage_profile.image_reference.offer",
+    #             "storage_profile.image_reference.sku",
+    #             "storage_profile.os_disk.disk_size_gb",
+    #             "provisioning_state",
+    #             "vm_id",
+    #             "cm.kind"],
+    #         "header": [
+    #             "Name",
+    #             "Cloud",
+    #             "Id",
+    #             "Type",
+    #             "Location",
+    #             "VM Size",
+    #             "OS Name",
+    #             "OS Version",
+    #             "OS Disk Size",
+    #             "Provisioning State",
+    #             "VM ID",
+    #             "Kind"]
+    #     },
+    #     "image": {
+    #         "sort_keys": ["cm.name",
+    #                       "plan.publisher"],
+    #         "order": ["cm.name",
+    #                   "location",
+    #                   "plan.publisher",
+    #                   "plan.name",
+    #                   "plan.product",
+    #                   "operating_system"],
+    #         "header": ["Name",
+    #                    "Location",
+    #                    "Publisher",
+    #                    "Plan Name",
+    #                    "Product",
+    #                    "Operating System",
+    #                    ]
+    #     },
+    #     "flavor": {
+    #         "sort_keys": ["name",
+    #                       "number_of_cores",
+    #                       "os_disk_size_in_mb"],
+    #         "order": ["name",
+    #                   "number_of_cores",
+    #                   "os_disk_size_in_mb",
+    #                   "resource_disk_size_in_mb",
+    #                   "memory_in_mb",
+    #                   "max_data_disk_count"],
+    #         "header": ["Name",
+    #                    "NumberOfCores",
+    #                    "OS_Disk_Size",
+    #                    "Resource_Disk_Size",
+    #                    "Memory",
+    #                    "Max_Data_Disk"]},
+    # }
+    #
 
     def __init__(self, name="azure", configuration=None, credentials=None):
         """
@@ -312,27 +312,49 @@ class Provider(VolumeABC):
 
 
     def list(self,**kwargs):
-        if kwargs["--refresh"]:
-            con = azure.connect(**self.config)
-            results = con.list_volumes()
-            result = self.update_dict(results)
-            print(self.Print(result, kind='volume', output=kwargs['output']))
-        else:
-            # read record from mongoDB
-            refresh = False
+        # if kwargs["--refresh"]:
+        #     con = azure.connect(**self.config)
+        #     results = con.list_volumes()
+        #     result = self.update_dict(results)
+        #     print(self.Print(result, kind='volume', output=kwargs['output']))
+        # else:
+        #     # read record from mongoDB
+        #     refresh = False
+        print("update me")
 
 
     def create(self, **kwargs):
-        con = azure.connect(**self.config)
-        arguments = dotdict(kwargs)
-        if arguments.volume_type == None:
-            arguments.volume_type = self.defaults["volume_type"]
-        if arguments.size == None:
-            arguments.size = self.defaults["size"]
-        print(arguments.NAME)
-        con.create_volume(name=arguments.NAME, size=arguments.size,
-                          volume_type=arguments.volume_type)
-        # print list after create
-        results = con.list_volumes()
-        result = self.update_dict(results)
-        print(self.Print(result, kind='volume', output=kwargs['output']))
+        # con = azure.connect(**self.config)
+        # arguments = dotdict(kwargs)
+        # if arguments.volume_type == None:
+        #     arguments.volume_type = self.defaults["volume_type"]
+        # if arguments.size == None:
+        #     arguments.size = self.defaults["size"]
+        # print(arguments.NAME)
+        # con.create_volume(name=arguments.NAME, size=arguments.size,
+        #                   volume_type=arguments.volume_type)
+        # # print list after create
+        # results = con.list_volumes()
+        # result = self.update_dict(results)
+        # print(self.Print(result, kind='volume', output=kwargs['output']))
+        print("update me")
+
+
+    def delete (self,**kwargs):
+        print("update me")
+
+
+    def attach(self,**kwargs):
+        print("update me")
+
+
+    def detach(self,**kwargs):
+        print("update me")
+
+
+    def migrate(self,**kwargs):
+        print("update me")
+
+
+    def sync(self, **kwargs):
+        print("update me")

@@ -224,37 +224,99 @@ class Provider(VolumeABC):
                                 )
               )
 
-    def update_dict(self, results):
+
+    def update_dict(self, elements, kind=None):
         """
-        This function adds a cloudmesh cm dict to each dict in the list
-        elements.
-        Libcloud
-        returns an object or list of objects With the dict method
-        this object is converted to a dict. Typically this method is used
+        The cloud returns an object or list of objects With the dict method this
+        object is converted to a cloudmesh dict. Typically this method is used
         internally.
 
-        :param results: the original dicts.
-        :param kind: for some kinds special attributes are added. This includes
-                     key, vm, image, flavor.
-        :return: The list with the modified dicts
+        :param elements: the elements
+        :param kind: Kind is image, flavor, or node, secgroup and key
+        :return:
         """
 
-        if results is None:
+        if elements is None:
             return None
-
+        elif type(elements) == list:
+            _elements = elements
+        else:
+            _elements = [elements]
         d = []
-        print("results", results)
 
-        for entry in results:
-            print("entry",entry)
-            volume_name = entry['name']
-            if "cm" not in entry:
+        for entry in _elements:
+
+            if "cm" not in entry.keys():
                 entry['cm'] = {}
 
             entry["cm"].update({
+                "kind": kind,
+                "driver": self.cloudtype,
                 "cloud": self.cloud,
-                "kind": "volume",
-                "name": volume_name,
+                "name": entry['name']
             })
+
+            if kind == 'vm':
+                if 'created' not in entry["cm"].keys():
+                    entry["cm"]["created"] = str(datetime.utcnow())
+                entry["cm"]["updated"] = str(datetime.utcnow())
+                entry["cm"]["name"] = entry["name"]
+                entry["cm"]["type"] = entry[
+                    "type"]  # Check feasibility of the following items
+                entry["cm"]["location"] = entry[
+                    "location"]  # Check feasibility of the following items
+                if 'status' in entry.keys():
+                    entry["cm"]["status"] = str(entry["status"])
+                if 'ssh_key_name' in entry.keys():
+                    entry["cm"]["ssh_key_name"] = str(entry["ssh_key_name"])
+
+            elif kind == 'flavor':
+
+                entry["cm"]["created"] = str(datetime.utcnow())
+                entry["cm"]["name"] = entry["name"]
+                entry["cm"]["number_of_cores"] = entry["number_of_cores"]
+                entry["cm"]["os_disk_size_in_mb"] = entry["os_disk_size_in_mb"]
+                entry["cm"]["resource_disk_size_in_mb"] = entry[
+                    "resource_disk_size_in_mb"]
+                entry["cm"]["memory_in_mb"] = entry["memory_in_mb"]
+                entry["cm"]["max_data_disk_count"] = entry[
+                    "max_data_disk_count"]
+                entry["cm"]["updated"] = str(datetime.utcnow())
+
+            elif kind == 'image':
+
+                entry['cm']['created'] = str(datetime.utcnow())
+                entry['cm']['updated'] = str(datetime.utcnow())
+                entry["cm"]["name"] = entry["name"]
+
+            elif kind == 'secgroup':
+
+                entry["cm"]["name"] = entry["name"]
+                entry['cm']['created'] = str(datetime.utcnow())
+                entry['cm']['updated'] = str(datetime.utcnow())
+
+            elif kind == 'key':
+
+                entry['cm']['created'] = str(datetime.utcnow())
+                entry['cm']['updated'] = str(datetime.utcnow())
+
+            elif kind == 'secrule':
+
+                entry['cm']['created'] = str(datetime.utcnow())
+                entry['cm']['updated'] = str(datetime.utcnow())
+
             d.append(entry)
+            # VERBOSE(d, verbose=10)
+
         return d
+
+
+    def list(self,**kwargs):
+        if kwargs["--refresh"]:
+            con = openstack.connect(**self.config)
+            results = con.list_volumes()
+            result = self.update_dict(results)
+            print(self.Print(result, kind='volume', output=kwargs['output']))
+        else:
+            # read record from mongoDB
+            refresh = False

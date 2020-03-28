@@ -1,14 +1,10 @@
 import json
 import time
 from pprint import pprint
-
-import yaml
-
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from cloudmesh.common.DateTime import DateTime
 from cloudmesh.volume.VolumeABC import VolumeABC
-from cloudmesh.volume.command import volume
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
@@ -37,7 +33,7 @@ class Provider(VolumeABC):
             physicalBlockSizeBytes: '4096'
           credentials:
             project_id: {project_id}
-            path_to_json_file: {path}
+            path_to_service_account_json: {path}
     """
 
     output = {
@@ -125,7 +121,7 @@ class Provider(VolumeABC):
             Method to get google compute service v1.
         """
         service_account_credentials = self._get_credentials(
-            self.credentials['path_to_json_file'],
+            self.credentials['path_to_service_account_json'],
             self.compute_scopes)
         # Authenticate using service account.
         if service_account_credentials is None:
@@ -146,7 +142,8 @@ class Provider(VolumeABC):
         """
         compute_service = self._get_compute_service()
         disk_list = compute_service.disks().aggregatedList(
-            project=self.credentials["project_id"]).execute()
+            project=self.credentials["project_id"],
+            orderBy='creationTimestamp desc').execute()
         # look thought all disk list zones and find zones w/ 'disks'
         # then get disk details and add to found
         found = []
@@ -174,9 +171,10 @@ class Provider(VolumeABC):
         create_disk = compute_service.disks().insert(
             project=self.credentials["project_id"],
             zone=self.default['zone'],
-            body={'physicalBlockSizeBytes':self.default['physicalBlockSizeBytes'],
+            body={'physicalBlockSizeBytes':
+                  self.default['physicalBlockSizeBytes'],
                   'type':self.default['type'],
-                  'name':kwargs.NAME,
+                  'name':kwargs['NAME'],
                   'sizeGB':self.default['sizeGb']}).execute()
         banner('disk created')
         pprint(create_disk)
@@ -190,7 +188,10 @@ class Provider(VolumeABC):
         :param name:
         :return:
         """
-        raise NotImplementedError
+        compute_service = self._get_compute_service()
+        disk_list = self.list()
+        print(disk_list)
+
 
     def attach(self, NAME=None, vm=None):
 

@@ -73,7 +73,32 @@ class Provider(VolumeABC):
     #             AZURE_APPLICATION_ID: {applicationid}
     #             AZURE_SECRET_KEY: {secretkey}
     #             AZURE_REGION: eastus
-    # """
+
+    sample = """
+    cloudmesh:
+      volume:
+        azure:
+          cm:
+            active: true
+            heading: Chameleon
+            host: chameleoncloud.org
+            label: chameleon
+            kind: azure
+            version: train
+            service: compute
+          credentials:
+             AZURE_TENANT_ID: {tenantid}
+             AZURE_SUBSCRIPTION_ID: {subscriptionid}
+             AZURE_APPLICATION_ID: {applicationid}
+             AZURE_SECRET_KEY: {secretkey}
+             AZURE_REGION: eastus
+          default:
+            size: Basic_A0
+            volume_type: __DEFAULT__
+
+    """
+
+
     #
     # volume_states = [
     #     'ACTIVE',
@@ -245,6 +270,7 @@ class Provider(VolumeABC):
               )
 
 
+# UPDATE ME
     def update_dict(self, elements, kind=None):
         """
         The cloud returns an object or list of objects With the dict method this
@@ -359,22 +385,33 @@ class Provider(VolumeABC):
         # print(self.Print(result, kind='volume', output=kwargs['output']))
         print("update me")
 
+#output dictionary w/ volume name example name_disk
 
-    def delete (self,**kwargs):
+    def delete (self, NAMES=None):
         print("update me")
 
 
-    def attach(self,**kwargs):
+    def attach(self, NAME=None, vm=None):
+        print("update me")
+
+#might need to access azure compute provider vm name
+#create vm first then attach disk to new vm
+#if vm unavailable, give an error
+#if missing (Such as delete), give an error
+
+    def detach(self,
+              NAME=None):
         print("update me")
 
 
-    def detach(self,**kwargs):
+    def migrate(self,
+                name=None,
+                from_vm=None,
+                to_vm=None):
         print("update me")
 
 
-    def migrate(self,**kwargs):
-        print("update me")
-
-
-    def sync(self, **kwargs):
+    def sync(self,
+             from_volume=None,
+             to_volume=None):
         print("update me")

@@ -41,39 +41,6 @@ class Provider(VolumeABC):
 
     kind = "volume"
 
-    # sample = """
-    #     cloudmesh:
-    #       cloud:
-    #         {name}:
-    #           cm:
-    #             active: true
-    #             heading: {name}
-    #             host: TBD
-    #             label: {name}
-    #             kind: azure
-    #             version: latest
-    #             service: compute
-    #           default:
-    #             image: Canonical:UbuntuServer:16.04.0-LTS:latest
-    #             size: Basic_A0
-    #             resource_group: cloudmesh
-    #             storage_account: cmdrive
-    #             network: cmnetwork
-    #             subnet: cmsubnet
-    #             blob_container: vhds
-    #             AZURE_VM_IP_CONFIG: cloudmesh-ip-config
-    #             AZURE_VM_NIC: cloudmesh-nic
-    #             AZURE_VM_DISK_NAME: cloudmesh-os-disk
-    #             AZURE_VM_USER: TBD
-    #             AZURE_VM_PASSWORD: TBD
-    #             AZURE_VM_NAME: cloudmeshVM
-    #           credentials:
-    #             AZURE_TENANT_ID: {tenantid}
-    #             AZURE_SUBSCRIPTION_ID: {subscriptionid}
-    #             AZURE_APPLICATION_ID: {applicationid}
-    #             AZURE_SECRET_KEY: {secretkey}
-    #             AZURE_REGION: eastus
-
     sample = """
     cloudmesh:
       volume:
@@ -99,28 +66,27 @@ class Provider(VolumeABC):
     """
 
 
-    #
-    # volume_states = [
-    #     'ACTIVE',
-    #     'BUILDING',
-    #     'DELETED',
-    #     'ERROR',
-    #     'HARD_REBOOT',
-    #     'PASSWORD',
-    #     'PAUSED',
-    #     'REBOOT',
-    #     'REBUILD',
-    #     'RESCUED',
-    #     'RESIZED',
-    #     'REVERT_RESIZE',
-    #     'SHUTOFF',
-    #     'SOFT_DELETED',
-    #     'STOPPED',
-    #     'SUSPENDED',
-    #     'UNKNOWN',
-    #     'VERIFY_RESIZE'
-    # ]
-    #
+    volume_states = [
+        'ACTIVE',
+        'BUILDING',
+        'DELETED',
+        'ERROR',
+        'HARD_REBOOT',
+        'PASSWORD',
+        'PAUSED',
+        'REBOOT',
+        'REBUILD',
+        'RESCUED',
+        'RESIZED',
+        'REVERT_RESIZE',
+        'SHUTOFF',
+        'SOFT_DELETED',
+        'STOPPED',
+        'SUSPENDED',
+        'UNKNOWN',
+        'VERIFY_RESIZE'
+    ]
+
     # output = {
     #     "status": {
     #         "sort_keys": ["cm.name"],

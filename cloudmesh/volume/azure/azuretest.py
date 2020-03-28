@@ -313,26 +313,10 @@ class Provider(VolumeABC):
 
     def list(self,**kwargs):
         if kwargs["--refresh"]:
-            con = azure.connect(**self.config)
+            con = openstack.connect(**self.config)
             results = con.list_volumes()
             result = self.update_dict(results)
             print(self.Print(result, kind='volume', output=kwargs['output']))
         else:
             # read record from mongoDB
             refresh = False
-
-
-    def create(self, **kwargs):
-        con = azure.connect(**self.config)
-        arguments = dotdict(kwargs)
-        if arguments.volume_type == None:
-            arguments.volume_type = self.defaults["volume_type"]
-        if arguments.size == None:
-            arguments.size = self.defaults["size"]
-        print(arguments.NAME)
-        con.create_volume(name=arguments.NAME, size=arguments.size,
-                          volume_type=arguments.volume_type)
-        # print list after create
-        results = con.list_volumes()
-        result = self.update_dict(results)
-        print(self.Print(result, kind='volume', output=kwargs['output']))

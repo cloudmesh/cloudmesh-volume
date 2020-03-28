@@ -141,6 +141,28 @@ class Provider(VolumeABC):
         print(self.Print(result, kind='volume', output=kwargs['output']))
 
     def delete(self, name=None):
+        block_storage = oci.core.BlockstorageClient(self.config)
+        v = block_storage.list_volumes(self.config['compartment_id'])
+        results = v.data
+        volid = None
+        for entry in results:
+            display_name = entry.__getattribute__("display_name")
+            if(name==display_name):
+                volid=entry.__getattribute__("id")
+                break
+        if(volid!=None):
+            print(volid)
+        block_storage.delete_volume(volume_id=volid)
+        #print list after delete
+        v = block_storage.list_volumes(self.config['compartment_id'])
+        results = v.data
+        result = self.update_dict(results)
+        print(self.Print(result, kind='volume', output='table'))
+
+    def attach(self, NAME=None, vm=None):
+        raise NotImplementedError
+
+    def detach(self, NAME=None, vm=None):
         raise NotImplementedError
 
     def list(self, **kwargs):

@@ -34,17 +34,6 @@ In this project we will be developing features related to completing and simplif
 
 ## Volume Management functions
 
-* volume register which
-```
-    volume register which
-```
-
-* volume register
-```
-    volume register [NAME]
-                    [--cloud=CLOUD]
-```
-
 * volume list
   
   List all the volumes for certain vm, region, or cloud. 
@@ -67,13 +56,7 @@ In this project we will be developing features related to completing and simplif
                   [--description=DESCRIPTION]
                   [--dryrun]
 ```
-* volume status
 
-    Retrieves status of last volume created on cloud and displays it.
-```
-    volume status [NAMES]
-                  [--cloud=CLOUD]
-```
 * volume attach
 
     attatch volume to a vm
@@ -85,7 +68,7 @@ In this project we will be developing features related to completing and simplif
 
 * volume detach
 
-    detatch volume from a vm
+    detatch volumes from vms
 ``` 
     volume detach [NAME]  
 ```
@@ -111,9 +94,6 @@ In this project we will be developing features related to completing and simplif
     volume sync FROM_VOLUME TO_VOLUME
 ```
 
-* volume cost
-    * Multicloud enhanced function including cost estimates and the actual cost accured
-
 ## Volume Providers
 
 ### Multipass
@@ -121,6 +101,48 @@ In this project we will be developing features related to completing and simplif
 * <https://freshbrewed.science/ubuntu-multipass-part-deux/index.html>
 
 #### Multipass volume management functions
+
+
+mount(self, name="cloudmesh", source=None, destination=None)
+```
+mounts the source into the instance at the given destination
+
+Required Parameters: 
+
+        source --
+    
+            The name of source (volume?)
+
+        destination --
+
+            The name of vm???
+```
+
+umount(self, name="cloudmesh", path=None)
+```
+Unmount a volume from an instance.
+
+Required Parameters:
+
+        source --
+
+             The name of source (volume?)
+```
+
+transfer(self, name="cloudmesh", source=None, destination=None, recursive=True):
+```
+Copies files or entire directories into the vm
+
+Required Parameters: 
+
+        source --
+    
+            The name of source (volume?)
+
+        destination --
+
+            The name of vm???
+```
 
 :o2: Add functions from provider with descriptions of required parameters
 
@@ -141,6 +163,63 @@ In this project we will be developing features related to completing and simplif
   <https://docs.aws.amazon.com/>
 
 #### AWS volume management functions
+
+create_volume(**kwargs)
+```
+Creates an EBS volume that can be attached to an instance in the same Availability Zone. 
+
+Required Parameters: 
+
+        AvailabilityZone (string) -- 
+
+            The Availability Zone in which to create the volume.
+```
+
+describe_volumes(**kwargs)
+```
+Describes the specified EBS volumes or all of your EBS volumes.
+```
+
+delete_volume(**kwargs)
+```
+Deletes the specified EBS volume. The volume must be in the available state (not attached to an instance).
+
+Required Parameters: 
+
+        VolumeId (string) --
+
+            The ID of the volume.
+```
+
+attach_volume(**kwargs)
+```
+Attaches an EBS volume to a running or stopped instance and exposes it to the instance with the specified device name.
+
+Required Parameters:
+
+        Device (string) --
+
+            The device name (for example, /dev/sdh or xvdh ).
+
+        InstanceId (string) --
+
+            The ID of the instance.
+
+        VolumeId (string) --
+
+            The ID of the volume.
+```
+
+detach_volume(**kwargs)
+```
+Detaches an EBS volume from an instance.
+
+Required Parameters:
+
+        VolumeId (string) --
+
+            The ID of the volume.
+```
 
 :o2: Add functions from provider with descriptions of required parameters
 

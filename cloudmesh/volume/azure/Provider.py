@@ -185,94 +185,46 @@ class Provider(VolumeABC):
               )
 
 
-# UPDATE ME
-    def update_dict(self, elements, kind=None):
-        """
-        The cloud returns an object or list of objects With the dict method this
-        object is converted to a cloudmesh dict. Typically this method is used
-        internally.
+def update_dict(self, results):
+    """
+    This function adds a cloudmesh cm dict to each dict in the list
+    elements. Libcloud returns an object or list of objects with the dict
+    method. This object is converted to a dict. Typically this method is used
+    internally.
 
-        :param elements: the elements
-        :param kind: Kind is image, flavor, or node, secgroup and key
-        :return:
-        """
+    :param results: the original dicts.
+    :param kind: for some kinds special attributes are added. This includes
+                 key, vm, image, flavor.
+    :return: The list with the modified dicts
+    """
 
-        if elements is None:
-            return None
-        elif type(elements) == list:
-            _elements = elements
-        else:
-            _elements = [elements]
-        d = []
+    if results is None:
+        return None
 
-        for entry in _elements:
+    d = []
 
-            if "cm" not in entry.keys():
-                entry['cm'] = {}
+    for entry in results:
+        print("entry", entry)
+        volume_name = entry['name']
+        if "cm" not in entry:
+            entry['cm'] = {}
 
-            entry["cm"].update({
-                "kind": kind,
-                "driver": self.cloudtype,
-                "cloud": self.cloud,
-                "name": entry['name']
-            })
-
-            if kind == 'vm':
-                if 'created' not in entry["cm"].keys():
-                    entry["cm"]["created"] = str(datetime.utcnow())
-                entry["cm"]["updated"] = str(datetime.utcnow())
-                entry["cm"]["name"] = entry["name"]
-                entry["cm"]["type"] = entry[
-                    "type"]  # Check feasibility of the following items
-                entry["cm"]["location"] = entry[
-                    "location"]  # Check feasibility of the following items
-                if 'status' in entry.keys():
-                    entry["cm"]["status"] = str(entry["status"])
-                if 'ssh_key_name' in entry.keys():
-                    entry["cm"]["ssh_key_name"] = str(entry["ssh_key_name"])
-
-            elif kind == 'flavor':
-
-                entry["cm"]["created"] = str(datetime.utcnow())
-                entry["cm"]["name"] = entry["name"]
-                entry["cm"]["number_of_cores"] = entry["number_of_cores"]
-                entry["cm"]["os_disk_size_in_mb"] = entry["os_disk_size_in_mb"]
-                entry["cm"]["resource_disk_size_in_mb"] = entry[
-                    "resource_disk_size_in_mb"]
-                entry["cm"]["memory_in_mb"] = entry["memory_in_mb"]
-                entry["cm"]["max_data_disk_count"] = entry[
-                    "max_data_disk_count"]
-                entry["cm"]["updated"] = str(datetime.utcnow())
-
-            elif kind == 'image':
-
-                entry['cm']['created'] = str(datetime.utcnow())
-                entry['cm']['updated'] = str(datetime.utcnow())
-                entry["cm"]["name"] = entry["name"]
-
-            elif kind == 'secgroup':
-
-                entry["cm"]["name"] = entry["name"]
-                entry['cm']['created'] = str(datetime.utcnow())
-                entry['cm']['updated'] = str(datetime.utcnow())
-
-            elif kind == 'key':
-
-                entry['cm']['created'] = str(datetime.utcnow())
-                entry['cm']['updated'] = str(datetime.utcnow())
-
-            elif kind == 'secrule':
-
-                entry['cm']['created'] = str(datetime.utcnow())
-                entry['cm']['updated'] = str(datetime.utcnow())
-
-            d.append(entry)
-            # VERBOSE(d, verbose=10)
-
-        return d
+        entry["cm"].update({
+            "cloud": self.cloud,
+            "kind": "volume",
+            "name": volume_name,
+        })
+        d.append(entry)
+    return d
 
 
-    def list(self,**kwargs):
+    def list(self,
+             NAMES=None,
+             vm=None,
+             region=None,
+             cloud=None,
+             refresh=None,
+             dryrun=None):
         # if kwargs["--refresh"]:
         #     con = azure.connect(**self.config)
         #     results = con.list_volumes()
@@ -284,21 +236,23 @@ class Provider(VolumeABC):
         print("update me")
 
 
-    def create(self, **kwargs):
-        # con = azure.connect(**self.config)
-        # arguments = dotdict(kwargs)
-        # if arguments.volume_type == None:
-        #     arguments.volume_type = self.defaults["volume_type"]
-        # if arguments.size == None:
-        #     arguments.size = self.defaults["size"]
-        # print(arguments.NAME)
-        # con.create_volume(name=arguments.NAME, size=arguments.size,
-        #                   volume_type=arguments.volume_type)
-        # # print list after create
-        # results = con.list_volumes()
-        # result = self.update_dict(results)
-        # print(self.Print(result, kind='volume', output=kwargs['output']))
-        print("update me")
+    def create(self, NAME=None, **kwargs):
+        disk_creation = self.compute_client.disks.create_or_update(
+            group,
+            f"{self.OS_DISK_NAME}_{disks_count}",
+            {
+                'location': self.LOCATION,
+                'disk_size_gb': 8,
+                'creation_data': {
+                    'create_option': 'Empty'
+                }
+            }
+        )
+        # print list after create
+        results = disk_creation.list_volumes()
+        result = self.update_dict(results)
+        print(self.Print(result, kind='volume', output=kwargs['output']))
+
 
 #output dictionary w/ volume name example name_disk
 

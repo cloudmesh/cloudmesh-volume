@@ -237,22 +237,22 @@ def update_dict(self, results):
 
 
     def create(self, NAME=None, **kwargs):
-        disk_creation = self.compute_client.disks.create_or_update(
-            group,
-            f"{self.OS_DISK_NAME}_{disks_count}",
-            {
-                'location': self.LOCATION,
-                'disk_size_gb': 8,
-                'creation_data': {
-                    'create_option': 'Empty'
-                }
-            }
-        )
-        # print list after create
-        results = disk_creation.list_volumes()
-        result = self.update_dict(results)
-        print(self.Print(result, kind='volume', output=kwargs['output']))
-
+        # disk_creation = self.compute_client.disks.create_or_update(
+        #     group,
+        #     f"{self.OS_DISK_NAME}_{disks_count}",
+        #     {
+        #         'location': self.LOCATION,
+        #         'disk_size_gb': 8,
+        #         'creation_data': {
+        #             'create_option': 'Empty'
+        #         }
+        #     }
+        # )
+        # # print list after create
+        # results = disk_creation.list_volumes()
+        # result = self.update_dict(results)
+        # print(self.Print(result, kind='volume', output=kwargs['output']))
+        print("update me")
 
 #output dictionary w/ volume name example name_disk
 

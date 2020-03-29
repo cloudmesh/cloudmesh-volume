@@ -106,6 +106,7 @@ class Provider(VolumeABC):
                        "Kind",
                        "Availability Zone",
                        "Created At",
+                       "Location"
                        "Size",
                        "Status",
                        "Id",

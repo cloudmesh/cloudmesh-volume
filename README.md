@@ -12,7 +12,7 @@
 
 ## Abstract
 
-A simple abstraction layer to manage Cloud Volumes for AWS, Azure, Google, Openstack and Multipass
+A simple abstraction layer to manage Cloud Volumes for AWS, Azure, Google, Openstack, Oracle and Multipass
 
 In this project we will be developing features related to completing and simplifying the volume management interface to an existing cloud. We will also benchmark the clouds while comparing the volume management functions that are deployed on different clouds.
 
@@ -265,13 +265,67 @@ Required Parameters:
 
 * API:   
   <https://docs.cloud.oracle.com/en-us/iaas/api/#/en/iaas/20160918/Volume/>
-* OCI CLI:   
-  <https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/2.9.3/oci_cli_docs/cmdref/bv/volume.html>
+* OCI API:   
+  <https://oracle-cloud-infrastructure-python-sdk.readthedocs.io/en/latest/api/core/client/oci.core.BlockstorageClient.html>
 
 #### Oracle volume management functions
 
 :o2: Add functions from provider with descriptions of required parameters
 
+List Volumes
+
+```
+list(**kwargs):
+    Lists the volumes in the specified compartment
+
+Required Parameters: 
+        compartment_id: The OCID of the compartment that contains the volume          
+```
+
+Create Volume
+```
+create(**kwargs)
+    Create Volume Creates a new volume in the specified compartment. Volumes can
+be created in sizes ranging from 50GB to 32 TB, in 1 GB (1024 MB) increments. 
+By default, volumes are 50GB.
+
+Required Parameters: 
+        availability_domain: The availability domain of the volume
+                             Example: Uocm:PHX-AD-1
+        compartment_id: The OCID of the compartment that contains the volume
+           
+```
+
+Delete Volume
+
+```
+delete(name)
+    Deletes the specified volume. The volume cannot have an active connection to an instance.
+Warning: All data on the volume will be permanently lost when the volume is deleted.
+
+Required Parameters: 
+        name: Name of the volume to be deleted
+```
+
+Attach Volume
+```
+attach(name,vm)
+    Attaches the specified volume to the specified VM instance.
+
+Required Parameters: 
+        name: Name of the volume to be attached
+        vm: Instance name
+```
+
+Detach Volume
+```
+Detach(name,vm)
+    Detaches the specified volume from a VM instance
+
+Required Parameters: 
+        name: Name of the volume to be detached
+        
+```
 
 ## Documentation on how to move volumes from one provider to the next 
 

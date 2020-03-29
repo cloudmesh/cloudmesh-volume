@@ -1,4 +1,3 @@
-# import cloudmesh.storage.provider.gdrive.Provider as cmProvider
 from cloudmesh.volume.azure.Provider import Provider as AZProvider
 
 p = AZProvider(name="azure",
@@ -15,3 +14,5 @@ p = AZProvider(name="azure",
 # print(p.list())
 
 print(p)
+
+# p.create()

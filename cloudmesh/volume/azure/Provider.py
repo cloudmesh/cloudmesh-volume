@@ -257,22 +257,22 @@ class Provider(VolumeABC):
 
 
     def delete (self, NAMES=None):
-        self.compute_client.disks.delete(
-            group,
-            f"{self.OS_DISK_NAME}_{disks_count}",
-            {
-                'location': self.LOCATION,
-                'disk_size_gb': 8,
-                'creation_data': {
-                    'create_option': 'Empty'
-                }
-            }
-        )
-        # print list after deleting
-        results = self.compute_client.disks.list()
-        result = self.update_dict(results)
-        print(self.Print(result, kind='volume', output=kwargs['output']))
-
+        # self.compute_client.disks.delete(
+        #     group,
+        #     f"{self.OS_DISK_NAME}_{disks_count}",
+        #     {
+        #         'location': self.LOCATION,
+        #         'disk_size_gb': 8,
+        #         'creation_data': {
+        #             'create_option': 'Empty'
+        #         }
+        #     }
+        # )
+        # # print list after deleting
+        # results = self.compute_client.disks.list()
+        # result = self.update_dict(results)
+        # print(self.Print(result, kind='volume', output=kwargs['output']))
+        print("update me")
 
     def list(self,
              NAMES=None,
@@ -281,9 +281,10 @@ class Provider(VolumeABC):
              cloud=None,
              refresh=None,
              dryrun=None):
-        results = self.compute_client.disks.list()
-        result = self.update_dict(results)
-        print(self.Print(result, kind='volume', output=kwargs['output']))
+        # results = self.compute_client.disks.list()
+        # result = self.update_dict(results)
+        # print(self.Print(result, kind='volume', output=kwargs['output']))
+        print("update me")
 
 
     def attach(self, NAME=None, vm=None):

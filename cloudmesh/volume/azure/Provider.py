@@ -219,9 +219,10 @@ class Provider(VolumeABC):
 
 
     def create(self, NAME=None, group=None, **kwargs):
+        arguments = dotdict(kwargs)
         disk_creation = self.compute_client.disks.create_or_update(
             group,
-            f"{self.OS_DISK_NAME}_{disks_count}",
+            arguments.NAME,
             {
                 'location': self.LOCATION,
                 'disk_size_gb': 8,

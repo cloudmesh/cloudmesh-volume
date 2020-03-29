@@ -125,6 +125,18 @@ class Provider(VolumeABC):
         self.config = Config()["cloudmesh.volume.oracle.credentials"]
         self.defaults = Config()["cloudmesh.volume.oracle.default"]
 
+    def getVolumeIdFromName(self,block_storage,name):
+        block_storage = oci.core.BlockstorageClient(self.config)
+        v = block_storage.list_volumes(self.config['compartment_id'])
+        results = v.data
+        volumeId = None
+        for entry in results:
+            display_name = entry.__getattribute__("display_name")
+            if(name==display_name):
+                volumeId=entry.__getattribute__("id")
+                break
+        return volumeId
+
     def create(self, **kwargs):
         arguments = dotdict(kwargs)
         block_storage = oci.core.BlockstorageClient(self.config)
@@ -141,7 +153,56 @@ class Provider(VolumeABC):
         print(self.Print(result, kind='volume', output=kwargs['output']))
 
     def delete(self, name=None):
-        raise NotImplementedError
+        block_storage = oci.core.BlockstorageClient(self.config)
+        volumeId = self.getVolumeIdFromName(block_storage,name)
+        print(volumeId)
+        if(volumeId!=None):
+            block_storage.delete_volume(volume_id=volumeId)
+        #print list after delete
+        v = block_storage.list_volumes(self.config['compartment_id'])
+        results = v.data
+        result = self.update_dict(results)
+        print(self.Print(result, kind='volume', output='table'))
+
+    def attach(self, NAME=None, vm=None):
+        compute_client = oci.core.ComputeClient(self.config)
+        #get instance id from VM name
+        i = compute_client.list_instances(self.config['compartment_id'])
+        instances = i.data;
+        instanceId = None
+        for entry in instances:
+            display_name = entry.__getattribute__("display_name")
+            if(vm==display_name):
+                instanceId=entry.__getattribute__("id")
+                break
+
+        #get volumeId from Volume name
+        block_storage = oci.core.BlockstorageClient(self.config)
+        volumeId = self.getVolumeIdFromName(block_storage, NAME)
+        #attach volume to vm
+        iscsi_volume_attachment_response = compute_client.attach_volume(
+            oci.core.models.AttachIScsiVolumeDetails(
+                display_name='IscsiVolAttachment',
+                instance_id=instanceId,
+                volume_id=volumeId
+            )
+        )
+        #return result after attach
+        v = block_storage.list_volumes(self.config['compartment_id'])
+        results = v.data
+        results = self.update_dict(results)
+        return results
+
+    def detach(self, NAME=None, vm=None):
+        compute_client = oci.core.ComputeClient(self.config)
+        block_storage = oci.core.BlockstorageClient(self.config)
+        volumeId = self.getVolumeIdFromName(block_storage, NAME)
+        compute_client.detach_volume(volumeId)
+        #return result after detach
+        v = block_storage.list_volumes(self.config['compartment_id'])
+        results = v.data
+        results = self.update_dict(results)
+        return results
 
     def list(self, **kwargs):
         if kwargs["--refresh"]:

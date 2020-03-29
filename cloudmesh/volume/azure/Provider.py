@@ -106,7 +106,6 @@ class Provider(VolumeABC):
                        "Kind",
                        "Availability Zone",
                        "Created At",
-                       "Location",
                        "Size",
                        "Status",
                        "Id",
@@ -219,13 +218,32 @@ class Provider(VolumeABC):
         return d
 
 
-    def create(self, NAME=None, group=None, **kwargs):
+    # def _get_resource_group(self):
+    #     groups = self.resource_client.resource_groups
+    #     if groups.check_existence(self.GROUP_NAME):
+    #         return groups.get(self.GROUP_NAME)
+    #     else:
+    #         # Create or Update Resource groupCreating new public IP
+    #         Console.info('Creating Azure Resource Group')
+    #         res = groups.create_or_update(self.GROUP_NAME,
+    #                                       {'location': self.LOCATION})
+    #         Console.info('Azure Resource Group created: ' + res.name)
+    #         return res
+    #
+    #
+    # # Azure Resource Group
+    # self.GROUP_NAME = self.default["resource_group"]
+    #
+
+    def create(self, **kwargs):
         arguments = dotdict(kwargs)
+        self.GROUP_NAME = self.default["resource_group"]
+        self.vms = self.compute_client.virtual_machines
         disk_creation = self.compute_client.disks.create_or_update(
-            group,
-            arguments.NAME,
+            self.GROUP_NAME,
+            "Volume_Disk1",
             {
-                'location': self.LOCATION,
+                'Disk.location': self.vms,
                 'disk_size_gb': 8,
                 'creation_data': {
                     'create_option': 'Empty'

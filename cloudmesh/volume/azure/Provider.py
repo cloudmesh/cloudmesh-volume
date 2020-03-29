@@ -231,14 +231,27 @@ class Provider(VolumeABC):
             }
         )
         # print list after create
-        results = disk_creation.list_volumes()
+        results = self.compute_client.disks.list()
         result = self.update_dict(results)
         print(self.Print(result, kind='volume', output=kwargs['output']))
 
-#output dictionary w/ volume name example name_disk
 
     def delete (self, NAMES=None):
-        print("update me")
+        self.compute_client.disks.delete(
+            group,
+            f"{self.OS_DISK_NAME}_{disks_count}",
+            {
+                'location': self.LOCATION,
+                'disk_size_gb': 8,
+                'creation_data': {
+                    'create_option': 'Empty'
+                }
+            }
+        )
+        # print list after deleting
+        results = self.compute_client.disks.list()
+        result = self.update_dict(results)
+        print(self.Print(result, kind='volume', output=kwargs['output']))
 
 
     def list(self,
@@ -248,11 +261,10 @@ class Provider(VolumeABC):
              cloud=None,
              refresh=None,
              dryrun=None):
-        # con = openstack.connect(**self.config)
-        # results = con.list_volumes()
-        # result = self.update_dict(results)
-        # print(self.Print(result, kind='volume', output=kwargs['output']))
-        print("update me")
+        results = self.compute_client.disks.list()
+        result = self.update_dict(results)
+        print(self.Print(result, kind='volume', output=kwargs['output']))
+
 
     def attach(self, NAME=None, vm=None):
         print("update me")

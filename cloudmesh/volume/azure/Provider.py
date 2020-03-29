@@ -218,7 +218,7 @@ class Provider(VolumeABC):
         return d
 
 
-    def create(self, NAME=None, groupd=None, **kwargs):
+    def create(self, NAME=None, group=None, **kwargs):
         disk_creation = self.compute_client.disks.create_or_update(
             group,
             f"{self.OS_DISK_NAME}_{disks_count}",

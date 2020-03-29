@@ -185,37 +185,60 @@ class Provider(VolumeABC):
               )
 
 
-def update_dict(self, results):
-    """
-    This function adds a cloudmesh cm dict to each dict in the list
-    elements. Libcloud returns an object or list of objects with the dict
-    method. This object is converted to a dict. Typically this method is used
-    internally.
+    def update_dict(self, results):
+        """
+        This function adds a cloudmesh cm dict to each dict in the list
+        elements. Libcloud returns an object or list of objects with the dict
+        method. This object is converted to a dict. Typically this method is used
+        internally.
 
-    :param results: the original dicts.
-    :param kind: for some kinds special attributes are added. This includes
-                 key, vm, image, flavor.
-    :return: The list with the modified dicts
-    """
+        :param results: the original dicts.
+        :param kind: for some kinds special attributes are added. This includes
+                     key, vm, image, flavor.
+        :return: The list with the modified dicts
+        """
 
-    if results is None:
-        return None
+        if results is None:
+            return None
 
-    d = []
+        d = []
 
-    for entry in results:
-        print("entry", entry)
-        volume_name = entry['name']
-        if "cm" not in entry:
-            entry['cm'] = {}
+        for entry in results:
+            print("entry", entry)
+            volume_name = entry['name']
+            if "cm" not in entry:
+                entry['cm'] = {}
 
-        entry["cm"].update({
-            "cloud": self.cloud,
-            "kind": "volume",
-            "name": volume_name,
-        })
-        d.append(entry)
-    return d
+            entry["cm"].update({
+                "cloud": self.cloud,
+                "kind": "volume",
+                "name": volume_name,
+            })
+            d.append(entry)
+        return d
+
+
+    def create(self, NAME=None, **kwargs):
+        disk_creation = self.compute_client.disks.create_or_update(
+            group,
+            f"{self.OS_DISK_NAME}_{disks_count}",
+            {
+                'location': self.LOCATION,
+                'disk_size_gb': 8,
+                'creation_data': {
+                    'create_option': 'Empty'
+                }
+            }
+        )
+        # print list after create
+        results = disk_creation.list_volumes()
+        result = self.update_dict(results)
+        print(self.Print(result, kind='volume', output=kwargs['output']))
+
+#output dictionary w/ volume name example name_disk
+
+    def delete (self, NAMES=None):
+        print("update me")
 
 
     def list(self,
@@ -225,40 +248,11 @@ def update_dict(self, results):
              cloud=None,
              refresh=None,
              dryrun=None):
-        # if kwargs["--refresh"]:
-        #     con = azure.connect(**self.config)
-        #     results = con.list_volumes()
-        #     result = self.update_dict(results)
-        #     print(self.Print(result, kind='volume', output=kwargs['output']))
-        # else:
-        #     # read record from mongoDB
-        #     refresh = False
-        print("update me")
-
-
-    def create(self, NAME=None, **kwargs):
-        # disk_creation = self.compute_client.disks.create_or_update(
-        #     group,
-        #     f"{self.OS_DISK_NAME}_{disks_count}",
-        #     {
-        #         'location': self.LOCATION,
-        #         'disk_size_gb': 8,
-        #         'creation_data': {
-        #             'create_option': 'Empty'
-        #         }
-        #     }
-        # )
-        # # print list after create
-        # results = disk_creation.list_volumes()
+        # con = openstack.connect(**self.config)
+        # results = con.list_volumes()
         # result = self.update_dict(results)
         # print(self.Print(result, kind='volume', output=kwargs['output']))
         print("update me")
-
-#output dictionary w/ volume name example name_disk
-
-    def delete (self, NAMES=None):
-        print("update me")
-
 
     def attach(self, NAME=None, vm=None):
         print("update me")

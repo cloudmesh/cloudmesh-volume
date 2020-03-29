@@ -87,84 +87,33 @@ class Provider(VolumeABC):
         'VERIFY_RESIZE'
     ]
 
-    # output = {
-    #     "status": {
-    #         "sort_keys": ["cm.name"],
-    #         "order": ["cm.name",
-    #                   "cm.cloud",
-    #                   "vm_state",
-    #                   "status",
-    #                   "task_state"],
-    #         "header": ["Name",
-    #                    "Cloud",
-    #                    "State",
-    #                    "Status",
-    #                    "Task"]
-    #     },
-    #     "vm": {
-    #         "sort_keys": ["cm.name"],
-    #         "order": [
-    #             "cm.name",
-    #             "cm.cloud",
-    #             "id",
-    #             "type",
-    #             "location",
-    #             "hardware_profile.vm_size",
-    #             "storage_profile.image_reference.offer",
-    #             "storage_profile.image_reference.sku",
-    #             "storage_profile.os_disk.disk_size_gb",
-    #             "provisioning_state",
-    #             "vm_id",
-    #             "cm.kind"],
-    #         "header": [
-    #             "Name",
-    #             "Cloud",
-    #             "Id",
-    #             "Type",
-    #             "Location",
-    #             "VM Size",
-    #             "OS Name",
-    #             "OS Version",
-    #             "OS Disk Size",
-    #             "Provisioning State",
-    #             "VM ID",
-    #             "Kind"]
-    #     },
-    #     "image": {
-    #         "sort_keys": ["cm.name",
-    #                       "plan.publisher"],
-    #         "order": ["cm.name",
-    #                   "location",
-    #                   "plan.publisher",
-    #                   "plan.name",
-    #                   "plan.product",
-    #                   "operating_system"],
-    #         "header": ["Name",
-    #                    "Location",
-    #                    "Publisher",
-    #                    "Plan Name",
-    #                    "Product",
-    #                    "Operating System",
-    #                    ]
-    #     },
-    #     "flavor": {
-    #         "sort_keys": ["name",
-    #                       "number_of_cores",
-    #                       "os_disk_size_in_mb"],
-    #         "order": ["name",
-    #                   "number_of_cores",
-    #                   "os_disk_size_in_mb",
-    #                   "resource_disk_size_in_mb",
-    #                   "memory_in_mb",
-    #                   "max_data_disk_count"],
-    #         "header": ["Name",
-    #                    "NumberOfCores",
-    #                    "OS_Disk_Size",
-    #                    "Resource_Disk_Size",
-    #                    "Memory",
-    #                    "Max_Data_Disk"]},
-    # }
-    #
+    output = {
+
+        "volume": {
+            "sort_keys": ["cm.name"],
+            "order": ["cm.name",
+                      "cm.cloud",
+                      "cm.kind",
+                      "availability_zone",
+                      "created_at",
+                      "size",
+                      "status",
+                      "id",
+                      "volume_type"
+                      ],
+            "header": ["Name",
+                       "Cloud",
+                       "Kind",
+                       "Availability Zone",
+                       "Created At",
+                       "Size",
+                       "Status",
+                       "Id",
+                       "Volume Type"
+                       ],
+        }
+    }
+
 
     def __init__(self, name="azure", configuration=None, credentials=None):
         """
@@ -381,3 +330,7 @@ class Provider(VolumeABC):
              from_volume=None,
              to_volume=None):
         print("update me")
+
+
+#every cloud needs a function called search (per Xin) such as describe or
+# list volume

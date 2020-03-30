@@ -238,12 +238,13 @@ class Provider(VolumeABC):
     def create(self, **kwargs):
         arguments = dotdict(kwargs)
         self.GROUP_NAME = self.default["resource_group"]
-        self.vms = self.compute_client.virtual_machines
+        # self.vms = self.compute_client.virtual_machines
+        LOCATION = 'eastus'
         disk_creation = self.compute_client.disks.create_or_update(
             self.GROUP_NAME,
             "Volume_Disk1",
             {
-                'Disk.location': self.vms,
+                'location': LOCATION,
                 'disk_size_gb': 8,
                 'creation_data': {
                     'create_option': 'Empty'

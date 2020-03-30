@@ -1,9 +1,6 @@
 import json
 import time
 from pprint import pprint
-
-import yaml
-
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from cloudmesh.common.DateTime import DateTime
@@ -33,13 +30,11 @@ class Provider(VolumeABC):
           default:
             zone: us-central1-a
             type: projects/{project_id}/zones/{zone}/diskTypes/pd-standard
-            sizeGB: 200
+            sizeGB: '200'
+            physicalBlockSizeBytes: '4096'
           credentials:
-            type: {type}
-            auth:
-              json_file: {filename}
-              project_id: {project_id}
-              client_email: {client_email}
+            project_id: {project_id}
+            path_to_service_account_json: {path}
     """
 
     output = {
@@ -69,12 +64,11 @@ class Provider(VolumeABC):
     def __init__(self, name):
         self.cloud = name
         config = Config()
-        self.default = config["cloudmesh.volume.google.default"]
-        self.credentials = config["cloudmesh.volume.google.credentials"]
-        self.auth = self.credentials['auth']
-        self.compute_scopes = ['https://www.googleapis.com/auth/compute',
-                               'https://www.googleapis.com/auth/cloud-platform',
-                               'https://www.googleapis.com/auth/compute.readonly']
+        self.default = config[f"cloudmesh.volume.{name}.default"]
+        self.credentials = config[f"cloudmesh.volume.{name}.credentials"]
+        self.compute_scopes=['https://www.googleapis.com/auth/compute',
+                             'https://www.googleapis.com/auth/cloud-platform',
+                             'https://www.googleapis.com/auth/compute.readonly']
 
     def update_dict(self, elements, kind=None):
         """
@@ -118,7 +112,6 @@ class Provider(VolumeABC):
         :param scopes: Scopes needed to provision.
         :return:
         """
-        # Authenticate using service account.
         _credentials = service_account.Credentials.from_service_account_file(
             filename=path_to_service_account_file,
             scopes=scopes)
@@ -129,7 +122,7 @@ class Provider(VolumeABC):
             Method to get google compute service v1.
         """
         service_account_credentials = self._get_credentials(
-            self.auth['path_to_json_file'],
+            self.credentials['path_to_service_account_json'],
             self.compute_scopes)
         # Authenticate using service account.
         if service_account_credentials is None:
@@ -150,7 +143,10 @@ class Provider(VolumeABC):
         """
         compute_service = self._get_compute_service()
         disk_list = compute_service.disks().aggregatedList(
-            project=self.auth["project_id"]).execute()
+
+            project=self.credentials["project_id"],
+            orderBy='creationTimestamp desc').execute()
+
         # look thought all disk list zones and find zones w/ 'disks'
         # then get disk details and add to found
         found = []
@@ -172,20 +168,54 @@ class Provider(VolumeABC):
         the request.
         :return: a dict representing the disk
         """
+        banner('starting create disk')
         compute_service = self._get_compute_service()
-        name = volume.create_name()
-        print(name)
+        banner('creating disk')
         create_disk = compute_service.disks().insert(
-            project=self.auth["project_id"]).execute()
-
-
-        raise NotImplementedError
+            project=self.credentials["project_id"],
+            zone=self.default['zone'],
+            body={'physicalBlockSizeBytes':
+                  self.default['physicalBlockSizeBytes'],
+                  'type':self.default['type'],
+                  'name':kwargs['NAME'],
+                  'sizeGB':self.default['sizeGb']}).execute()
+        banner('disk created')
+        pprint(create_disk)
+        banner('result')
+        result = self.update_dict(create_disk)
+        return result
 
     def delete(self, name=None):
         """
         Delete volume
         :param name:
         :return:
+        """
+        compute_service = self._get_compute_service()
+        disk_list = self.list()
+        print(disk_list)
+
+
+    def attach(self, NAME=None, vm=None):
+
+        """
+        attatch volume to a vm
+
+        :param NAME: volume name
+        :param vm: vm name which the volume will be attached to
+        :return: dict
+        """
+
+        raise NotImplementedError
+
+    def detach(self,
+              NAME=None):
+
+        """
+        Dettach a volume from vm
+
+        :param NAME: name of volume to dettach
+        :return: str
         """
         raise NotImplementedError
 

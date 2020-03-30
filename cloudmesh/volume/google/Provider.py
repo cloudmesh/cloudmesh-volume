@@ -8,6 +8,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from cloudmesh.common.DateTime import DateTime
 from cloudmesh.volume.VolumeABC import VolumeABC
+from cloudmesh.volume.command import volume
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
@@ -88,7 +89,6 @@ class Provider(VolumeABC):
                      key, vm, image, flavor.
         :return: The list with the modified dicts
         """
-        pprint(elements)
         if elements is None:
             return None
         elif type(elements) == list:
@@ -104,29 +104,29 @@ class Provider(VolumeABC):
             entry["cm"].update({
                 "kind": kind,
                 "cloud": self.cloud,
-                "name": entry["pmccand-test-disk-1"],
+                "name": entry["name"],
                 "driver": kind
             })
 
             d.append(entry)
         return d
 
-    def _get_credentials(self, client_secret_file, scopes):
+    def _get_credentials(self, path_to_service_account_file, scopes):
         """
         Method to get the credentials using the Service Account JSON file.
-        :param client_secret_file: Service Account JSON File path.
+        :param path_to_service_account_file: Service Account JSON File path.
         :param scopes: Scopes needed to provision.
         :return:
         """
         # Authenticate using service account.
         _credentials = service_account.Credentials.from_service_account_file(
-            filename=client_secret_file,
+            filename=path_to_service_account_file,
             scopes=scopes)
         return _credentials
 
     def _get_compute_service(self):
         """
-            Method to get compute service.
+            Method to get google compute service v1.
         """
         service_account_credentials = self._get_credentials(
             self.auth['path_to_json_file'],
@@ -141,56 +141,6 @@ class Provider(VolumeABC):
 
         return compute_service
 
-    def _process_disk(self, disk):
-        """
-        Method to convert the disk json to dict.
-        :param disk: JSON with disk details
-        :return:
-        """
-        disk_dict = {}
-        disk_dict["cm.name"] = disk["name"]
-        disk_dict["zone"] = disk["zone"]
-        disk_dict["type"] = disk["type"]
-        disk_dict["SizeGb"] = disk["sizeGb"]
-        disk_dict["status"] = disk["status"]
-        disk_dict["created"] = disk["creationTimestamp"]
-        disk_dict["id"] = disk["id"]
-        disk_dict["cm.cloud"] = self.kind
-        disk_dict["cm.kind"] = disk["kind"]
-
-
-        return disk_dict
-
-    def _format_aggregate_list(self, disk_list):
-        """
-        Method to format the instance list to flat dict format.
-        :param disk_list:
-        :return: dict
-        """
-        result = []
-        if disk_list is not None:
-            if "items" in disk_list:
-                items = disk_list["items"]
-                for item in items:
-                    if "disks" in items[item]:
-                        disks = items[item]["disks"]
-                        for disk in disks:
-                            # Extract the disk details.
-                            result.append(self._process_disk(disk))
-
-        return result
-
-    def Print(self, data, output=None, kind=None):
-        order = self.output["volume"]['order']
-        header = self.output["volume"]['header']
-        print(Printer.flatwrite(data,
-                                sort_keys=["name"],
-                                order=order,
-                                header=header,
-                                output=output,
-                                )
-              )
-
     def list(self, **kwargs):
         """
         Retrieves an aggregated list of persistent disks.
@@ -198,34 +148,36 @@ class Provider(VolumeABC):
         is supported.
         :return: an array of dicts representing the disks
         """
-        result = None
-
         compute_service = self._get_compute_service()
         disk_list = compute_service.disks().aggregatedList(
             project=self.auth["project_id"]).execute()
-        # look thought all disk list zones and find w/o warning
-        # get details and add to found
-        if found:
+        # look thought all disk list zones and find zones w/ 'disks'
+        # then get disk details and add to found
+        found = []
+        items = disk_list["items"]
+        for item in items:
+            if "disks" in items[item]:
+                disks = items[item]["disks"]
+                for disk in disks:
+                    # Add disk details to found.
+                    found.append(disk)
 
-            result = self.update_dict(found)
-        else:
-            return None
-
-        print(self.Print(result, kind='volume', output=kwargs['output']))
+        result = self.update_dict(found)
 
         return result
 
     def create(self, name=None, **kwargs):
-        # def create(self,
-        #            NAME=None,
-        #            size=None,
-        #            volume_type=None,
-        #            description=None,
-        #            dryrun=None
-        #            ):
         """
-        Create a volume.
+        Creates a persistent disk in the specified project using the data in
+        the request.
+        :return: a dict representing the disk
         """
+        compute_service = self._get_compute_service()
+        name = volume.create_name()
+        print(name)
+        create_disk = compute_service.disks().insert(
+            project=self.auth["project_id"]).execute()
+
 
         raise NotImplementedError
 
@@ -234,6 +186,29 @@ class Provider(VolumeABC):
         Delete volume
         :param name:
         :return:
+        """
+        raise NotImplementedError
+
+    def attach(self, NAME=None, vm=None):
+
+        """
+        attatch volume to a vm
+
+        :param NAME: volume name
+        :param vm: vm name which the volume will be attached to
+        :return: dict
+        """
+
+        raise NotImplementedError
+
+    def detach(self,
+              NAME=None):
+
+        """
+        Dettach a volume from vm
+
+        :param NAME: name of volume to dettach
+        :return: str
         """
         raise NotImplementedError
 
@@ -263,28 +238,5 @@ class Provider(VolumeABC):
         :param to_volume: name of the to volume
 
         :return: str
-        """
-        raise NotImplementedError
-
-    def unset(self,
-              name=None,
-              property=None,
-              image_property=None):
-        """
-        Separate a volume from a group of joined volumes
-
-        :param name: name of volume to separate
-        :param property: key to volume being separated
-        :param image_property: image stored in separated volume
-        :return: str
-        """
-        raise NotImplementedError
-
-    def mount(self, volume=None, vm=None):
-        """
-        mounts volume
-        :param name: the name of the volume
-        :param volume: volume id
-        :return: dict
         """
         raise NotImplementedError

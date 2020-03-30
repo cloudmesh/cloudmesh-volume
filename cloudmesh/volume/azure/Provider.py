@@ -1,16 +1,36 @@
-import pprint
-import azure
 from cloudmesh.volume.VolumeABC import VolumeABC
-from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
-from cloudmesh.configuration.Config import Config
 from cloudmesh.common.dotdict import dotdict
-from cloudmesh.common.Printer import Printer
 
-from azure.common.client_factory import get_client_from_auth_file
+import ctypes
+import os
+import subprocess
+from datetime import datetime
+from pprint import pprint
+from sys import platform
+
+from azure.common.credentials import ServicePrincipalCredentials
+from azure.mgmt.compute import ComputeManagementClient
+from azure.mgmt.network import NetworkManagementClient
+from azure.mgmt.network.v2018_12_01.models import SecurityRule
+from azure.mgmt.resource import ResourceManagementClient
+from cloudmesh.abstract.ComputeNodeABC import ComputeNodeABC
+from cloudmesh.common.Printer import Printer
+from cloudmesh.common.console import Console
+from cloudmesh.common.debug import VERBOSE
+from cloudmesh.common.util import HEADING, banner
+from cloudmesh.configuration.Config import Config
+from cloudmesh.mongo.CmDatabase import CmDatabase
+from cloudmesh.provider import ComputeProviderPlugin
+from msrestazure.azure_exceptions import CloudError
+
+
+
+
+# from azure.common.client_factory import get_client_from_auth_file
 from azure.mgmt.compute import ComputeManagementClient
 
-client = get_client_from_auth_file(ComputeManagementClient, auth_path=C:\Users\plj2861\Documents\AshleyPersonal\School\IndianaUniversity\CloudComputing\azure_credentials.json)
+# client = get_client_from_auth_file(ComputeManagementClient, auth_path=C:\Users\plj2861\Documents\AshleyPersonal\School\IndianaUniversity\CloudComputing\azure_credentials.json)
 
 
 class Provider(VolumeABC):
@@ -22,38 +42,29 @@ class Provider(VolumeABC):
     kind = "volume"
 
     sample = """
-        cloudmesh:
-          cloud:
-            {name}:
-              cm:
-                active: true
-                heading: {name}
-                host: TBD
-                label: {name}
-                kind: azure
-                version: latest
-                service: compute
-              default:
-                image: Canonical:UbuntuServer:16.04.0-LTS:latest
-                size: Basic_A0
-                resource_group: cloudmesh
-                storage_account: cmdrive
-                network: cmnetwork
-                subnet: cmsubnet
-                blob_container: vhds
-                AZURE_VM_IP_CONFIG: cloudmesh-ip-config
-                AZURE_VM_NIC: cloudmesh-nic
-                AZURE_VM_DISK_NAME: cloudmesh-os-disk
-                AZURE_VM_USER: TBD
-                AZURE_VM_PASSWORD: TBD
-                AZURE_VM_NAME: cloudmeshVM
-              credentials:
-                AZURE_TENANT_ID: {tenantid}
-                AZURE_SUBSCRIPTION_ID: {subscriptionid}
-                AZURE_APPLICATION_ID: {applicationid}
-                AZURE_SECRET_KEY: {secretkey}
-                AZURE_REGION: eastus
+    cloudmesh:
+      volume:
+        azure:
+          cm:
+            active: true
+            heading: Chameleon
+            host: chameleoncloud.org
+            label: chameleon
+            kind: azure
+            version: train
+            service: compute
+          credentials:
+             AZURE_TENANT_ID: {tenantid}
+             AZURE_SUBSCRIPTION_ID: {subscriptionid}
+             AZURE_APPLICATION_ID: {applicationid}
+             AZURE_SECRET_KEY: {secretkey}
+             AZURE_REGION: eastus
+          default:
+            size: Basic_A0
+            volume_type: __DEFAULT__
+
     """
+
 
     volume_states = [
         'ACTIVE',
@@ -77,81 +88,30 @@ class Provider(VolumeABC):
     ]
 
     output = {
-        "status": {
+
+        "volume": {
             "sort_keys": ["cm.name"],
             "order": ["cm.name",
                       "cm.cloud",
-                      "vm_state",
+                      "cm.kind",
+                      "availability_zone",
+                      "created_at",
+                      "size",
                       "status",
-                      "task_state"],
+                      "id",
+                      "volume_type"
+                      ],
             "header": ["Name",
                        "Cloud",
-                       "State",
+                       "Kind",
+                       "Availability Zone",
+                       "Created At",
+                       "Size",
                        "Status",
-                       "Task"]
-        },
-        "vm": {
-            "sort_keys": ["cm.name"],
-            "order": [
-                "cm.name",
-                "cm.cloud",
-                "id",
-                "type",
-                "location",
-                "hardware_profile.vm_size",
-                "storage_profile.image_reference.offer",
-                "storage_profile.image_reference.sku",
-                "storage_profile.os_disk.disk_size_gb",
-                "provisioning_state",
-                "vm_id",
-                "cm.kind"],
-            "header": [
-                "Name",
-                "Cloud",
-                "Id",
-                "Type",
-                "Location",
-                "VM Size",
-                "OS Name",
-                "OS Version",
-                "OS Disk Size",
-                "Provisioning State",
-                "VM ID",
-                "Kind"]
-        },
-        "image": {
-            "sort_keys": ["cm.name",
-                          "plan.publisher"],
-            "order": ["cm.name",
-                      "location",
-                      "plan.publisher",
-                      "plan.name",
-                      "plan.product",
-                      "operating_system"],
-            "header": ["Name",
-                       "Location",
-                       "Publisher",
-                       "Plan Name",
-                       "Product",
-                       "Operating System",
-                       ]
-        },
-        "flavor": {
-            "sort_keys": ["name",
-                          "number_of_cores",
-                          "os_disk_size_in_mb"],
-            "order": ["name",
-                      "number_of_cores",
-                      "os_disk_size_in_mb",
-                      "resource_disk_size_in_mb",
-                      "memory_in_mb",
-                      "max_data_disk_count"],
-            "header": ["Name",
-                       "NumberOfCores",
-                       "OS_Disk_Size",
-                       "Resource_Disk_Size",
-                       "Memory",
-                       "Max_Data_Disk"]},
+                       "Id",
+                       "Volume Type"
+                       ],
+        }
     }
 
 
@@ -225,114 +185,134 @@ class Provider(VolumeABC):
               )
 
 
-    def update_dict(self, elements, kind=None):
+    def update_dict(self, results):
         """
-        The cloud returns an object or list of objects With the dict method this
-        object is converted to a cloudmesh dict. Typically this method is used
+        This function adds a cloudmesh cm dict to each dict in the list
+        elements. Libcloud returns an object or list of objects with the dict
+        method. This object is converted to a dict. Typically this method is used
         internally.
 
-        :param elements: the elements
-        :param kind: Kind is image, flavor, or node, secgroup and key
-        :return:
+        :param results: the original dicts.
+        :param kind: for some kinds special attributes are added. This includes
+                     key, vm, image, flavor.
+        :return: The list with the modified dicts
         """
 
-        if elements is None:
+        if results is None:
             return None
-        elif type(elements) == list:
-            _elements = elements
-        else:
-            _elements = [elements]
+
         d = []
 
-        for entry in _elements:
-
-            if "cm" not in entry.keys():
+        for entry in results:
+            print("entry", entry)
+            volume_name = entry['name']
+            if "cm" not in entry:
                 entry['cm'] = {}
 
             entry["cm"].update({
-                "kind": kind,
-                "driver": self.cloudtype,
                 "cloud": self.cloud,
-                "name": entry['name']
+                "kind": "volume",
+                "name": volume_name,
             })
-
-            if kind == 'vm':
-                if 'created' not in entry["cm"].keys():
-                    entry["cm"]["created"] = str(datetime.utcnow())
-                entry["cm"]["updated"] = str(datetime.utcnow())
-                entry["cm"]["name"] = entry["name"]
-                entry["cm"]["type"] = entry[
-                    "type"]  # Check feasibility of the following items
-                entry["cm"]["location"] = entry[
-                    "location"]  # Check feasibility of the following items
-                if 'status' in entry.keys():
-                    entry["cm"]["status"] = str(entry["status"])
-                if 'ssh_key_name' in entry.keys():
-                    entry["cm"]["ssh_key_name"] = str(entry["ssh_key_name"])
-
-            elif kind == 'flavor':
-
-                entry["cm"]["created"] = str(datetime.utcnow())
-                entry["cm"]["name"] = entry["name"]
-                entry["cm"]["number_of_cores"] = entry["number_of_cores"]
-                entry["cm"]["os_disk_size_in_mb"] = entry["os_disk_size_in_mb"]
-                entry["cm"]["resource_disk_size_in_mb"] = entry[
-                    "resource_disk_size_in_mb"]
-                entry["cm"]["memory_in_mb"] = entry["memory_in_mb"]
-                entry["cm"]["max_data_disk_count"] = entry[
-                    "max_data_disk_count"]
-                entry["cm"]["updated"] = str(datetime.utcnow())
-
-            elif kind == 'image':
-
-                entry['cm']['created'] = str(datetime.utcnow())
-                entry['cm']['updated'] = str(datetime.utcnow())
-                entry["cm"]["name"] = entry["name"]
-
-            elif kind == 'secgroup':
-
-                entry["cm"]["name"] = entry["name"]
-                entry['cm']['created'] = str(datetime.utcnow())
-                entry['cm']['updated'] = str(datetime.utcnow())
-
-            elif kind == 'key':
-
-                entry['cm']['created'] = str(datetime.utcnow())
-                entry['cm']['updated'] = str(datetime.utcnow())
-
-            elif kind == 'secrule':
-
-                entry['cm']['created'] = str(datetime.utcnow())
-                entry['cm']['updated'] = str(datetime.utcnow())
-
             d.append(entry)
-            # VERBOSE(d, verbose=10)
-
         return d
 
 
-    def list(self,**kwargs):
-        if kwargs["--refresh"]:
-            con = azure.connect(**self.config)
-            results = con.list_volumes()
-            result = self.update_dict(results)
-            print(self.Print(result, kind='volume', output=kwargs['output']))
-        else:
-            # read record from mongoDB
-            refresh = False
-
+    # def _get_resource_group(self):
+    #     groups = self.resource_client.resource_groups
+    #     if groups.check_existence(self.GROUP_NAME):
+    #         return groups.get(self.GROUP_NAME)
+    #     else:
+    #         # Create or Update Resource groupCreating new public IP
+    #         Console.info('Creating Azure Resource Group')
+    #         res = groups.create_or_update(self.GROUP_NAME,
+    #                                       {'location': self.LOCATION})
+    #         Console.info('Azure Resource Group created: ' + res.name)
+    #         return res
+    #
+    #
+    # # Azure Resource Group
+    # self.GROUP_NAME = self.default["resource_group"]
+    #
 
     def create(self, **kwargs):
-        con = azure.connect(**self.config)
         arguments = dotdict(kwargs)
-        if arguments.volume_type == None:
-            arguments.volume_type = self.defaults["volume_type"]
-        if arguments.size == None:
-            arguments.size = self.defaults["size"]
-        print(arguments.NAME)
-        con.create_volume(name=arguments.NAME, size=arguments.size,
-                          volume_type=arguments.volume_type)
+        self.GROUP_NAME = self.default["resource_group"]
+        # self.vms = self.compute_client.virtual_machines
+        LOCATION = 'eastus'
+        disk_creation = self.compute_client.disks.create_or_update(
+            self.GROUP_NAME,
+            "Volume_Disk1",
+            {
+                'location': LOCATION,
+                'disk_size_gb': 8,
+                'creation_data': {
+                    'create_option': 'Empty'
+                }
+            }
+        )
         # print list after create
-        results = con.list_volumes()
+        results = self.compute_client.disks.list()
         result = self.update_dict(results)
         print(self.Print(result, kind='volume', output=kwargs['output']))
+
+
+    def delete (self, NAMES=None):
+        # self.compute_client.disks.delete(
+        #     group,
+        #     f"{self.OS_DISK_NAME}_{disks_count}",
+        #     {
+        #         'location': self.LOCATION,
+        #         'disk_size_gb': 8,
+        #         'creation_data': {
+        #             'create_option': 'Empty'
+        #         }
+        #     }
+        # )
+        # # print list after deleting
+        # results = self.compute_client.disks.list()
+        # result = self.update_dict(results)
+        # print(self.Print(result, kind='volume', output=kwargs['output']))
+        print("update me")
+
+    def list(self,
+             NAMES=None,
+             vm=None,
+             region=None,
+             cloud=None,
+             refresh=None,
+             dryrun=None):
+        # results = self.compute_client.disks.list()
+        # result = self.update_dict(results)
+        # print(self.Print(result, kind='volume', output=kwargs['output']))
+        print("update me")
+
+
+    def attach(self, NAME=None, vm=None):
+        print("update me")
+
+#might need to access azure compute provider vm name
+#create vm first then attach disk to new vm
+#if vm unavailable, give an error
+#if missing (Such as delete), give an error
+
+    def detach(self,
+              NAME=None):
+        print("update me")
+
+
+    def migrate(self,
+                name=None,
+                from_vm=None,
+                to_vm=None):
+        print("update me")
+
+
+    def sync(self,
+             from_volume=None,
+             to_volume=None):
+        print("update me")
+
+
+#every cloud needs a function called search (per Xin) such as describe or
+# list volume

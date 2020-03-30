@@ -261,6 +261,50 @@ Required Parameters:
 
 :o2: Add functions from provider with descriptions of required parameters
 
+List Volumes
+```
+list(**kwargs):
+    Lists all the volumes  
+```
+
+Create Volume
+```
+create(**kwargs)
+    Create Volume Creates a new volume
+
+Required Parameters: 
+        name: Name of the volume
+           
+```
+
+Delete Volume
+```
+delete(name)
+    Deletes the specified volume. 
+
+Required Parameters: 
+        name: Name of the volume to be deleted
+```
+
+Attach Volume
+```
+attach(name,vm)
+    Attaches the specified volume to the specified VM instance.
+
+Required Parameters: 
+        name: Name of the volume to be attached
+        vm: Instance name
+```
+
+Detach Volume
+```
+Detach(name,vm)
+    Detaches the specified volume from a VM instance
+
+Required Parameters: 
+        name: Name of the volume to be detached
+        vm: Instance name
+```
 ### Oracle
 
 * API:   
@@ -273,7 +317,6 @@ Required Parameters:
 :o2: Add functions from provider with descriptions of required parameters
 
 List Volumes
-
 ```
 list(**kwargs):
     Lists the volumes in the specified compartment
@@ -297,7 +340,6 @@ Required Parameters:
 ```
 
 Delete Volume
-
 ```
 delete(name)
     Deletes the specified volume. The volume cannot have an active connection to an instance.

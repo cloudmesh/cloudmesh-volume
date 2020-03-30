@@ -5,6 +5,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from cloudmesh.common.DateTime import DateTime
 from cloudmesh.volume.VolumeABC import VolumeABC
+from cloudmesh.volume.command import volume
 from cloudmesh.common.util import banner
 from cloudmesh.common.Shell import Shell
 from cloudmesh.configuration.Config import Config
@@ -142,8 +143,10 @@ class Provider(VolumeABC):
         """
         compute_service = self._get_compute_service()
         disk_list = compute_service.disks().aggregatedList(
+
             project=self.credentials["project_id"],
             orderBy='creationTimestamp desc').execute()
+
         # look thought all disk list zones and find zones w/ 'disks'
         # then get disk details and add to found
         found = []
@@ -159,7 +162,7 @@ class Provider(VolumeABC):
 
         return result
 
-    def create(self, **kwargs):
+    def create(self, name=None, **kwargs):
         """
         Creates a persistent disk in the specified project using the data in
         the request.
@@ -192,6 +195,29 @@ class Provider(VolumeABC):
         disk_list = self.list()
         print(disk_list)
 
+
+    def attach(self, NAME=None, vm=None):
+
+        """
+        attatch volume to a vm
+
+        :param NAME: volume name
+        :param vm: vm name which the volume will be attached to
+        :return: dict
+        """
+
+        raise NotImplementedError
+
+    def detach(self,
+              NAME=None):
+
+        """
+        Dettach a volume from vm
+
+        :param NAME: name of volume to dettach
+        :return: str
+        """
+        raise NotImplementedError
 
     def attach(self, NAME=None, vm=None):
 

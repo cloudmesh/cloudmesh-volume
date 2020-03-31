@@ -59,7 +59,7 @@ class Provider(VolumeABC):
              AZURE_SUBSCRIPTION_ID: {subscriptionid}
              AZURE_APPLICATION_ID: {applicationid}
              AZURE_SECRET_KEY: {secretkey}
-             AZURE_REGION: eastus
+             AZURE_REGION: westus
           default:
             size: Basic_A0
             volume_type: __DEFAULT__
@@ -240,7 +240,7 @@ class Provider(VolumeABC):
         arguments = dotdict(kwargs)
         self.GROUP_NAME = self.default["resource_group"]
         # self.vms = self.compute_client.virtual_machines
-        LOCATION = 'eastus'
+        LOCATION = 'westus'
         disk_creation = self.compute_client.disks.create_or_update(
             self.GROUP_NAME,
             "Volume_Disk1",
@@ -290,7 +290,7 @@ class Provider(VolumeABC):
 
 
     def attach(self, NAME=None, vm=None):
-        LOCATION = 'eastus'
+        LOCATION = 'westus'
         GROUP_NAME = 'azure-sample-group-virtual-machines'
         VM_NAME = 'VmName'
         cred = self.spec["credentials"]

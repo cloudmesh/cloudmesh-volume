@@ -4,7 +4,7 @@
 
 ## Abstract
 
-A simple abstraction layer to manage Cloud Volumes for AWS, Azure, Google, Openstack and Multipass
+A simple abstraction layer to manage Cloud Volumes for AWS, Azure, Google, Openstack, Oracle and Multipass
 
 In this project we will be developing features related to completing and simplifying the volume management interface to an existing cloud. We will also benchmark the clouds while comparing the volume management functions that are deployed on different clouds.
 
@@ -25,17 +25,6 @@ In this project we will be developing features related to completing and simplif
 * Multipass - Ashok & Ashley
 
 ## Volume Management functions
-
-* volume register which
-```
-    volume register which
-```
-
-* volume register
-```
-    volume register [NAME]
-                    [--cloud=CLOUD]
-```
 
 * volume list
   
@@ -59,13 +48,7 @@ In this project we will be developing features related to completing and simplif
                   [--description=DESCRIPTION]
                   [--dryrun]
 ```
-* volume status
 
-    Retrieves status of last volume created on cloud and displays it.
-```
-    volume status [NAMES]
-                  [--cloud=CLOUD]
-```
 * volume attach
 
     attatch volume to a vm
@@ -77,9 +60,9 @@ In this project we will be developing features related to completing and simplif
 
 * volume detach
 
-    detatch volume from a vm
+    detatch volumes from vms
 ``` 
-    volume detach [NAME]  
+    volume detach [NAMES]  
 ```
 
 * volume delete
@@ -103,9 +86,6 @@ In this project we will be developing features related to completing and simplif
     volume sync FROM_VOLUME TO_VOLUME
 ```
 
-* volume cost
-    * Multicloud enhanced function including cost estimates and the actual cost accured
-
 ## Volume Providers
 
 ### Multipass
@@ -113,6 +93,48 @@ In this project we will be developing features related to completing and simplif
 * <https://freshbrewed.science/ubuntu-multipass-part-deux/index.html>
 
 #### Multipass volume management functions
+
+
+mount(self, name="cloudmesh", source=None, destination=None)
+```
+mounts the source into the instance at the given destination
+
+Required Parameters: 
+
+        source --
+    
+            The name of source (volume?)
+
+        destination --
+
+            The name of vm???
+```
+
+umount(self, name="cloudmesh", path=None)
+```
+Unmount a volume from an instance.
+
+Required Parameters:
+
+        source --
+
+             The name of source (volume?)
+```
+
+transfer(self, name="cloudmesh", source=None, destination=None, recursive=True):
+```
+Copies files or entire directories into the vm
+
+Required Parameters: 
+
+        source --
+    
+            The name of source (volume?)
+
+        destination --
+
+            The name of vm???
+```
 
 :o2: Add functions from provider with descriptions of required parameters
 
@@ -133,6 +155,63 @@ In this project we will be developing features related to completing and simplif
   <https://docs.aws.amazon.com/>
 
 #### AWS volume management functions
+
+create_volume(**kwargs)
+```
+Creates an EBS volume that can be attached to an instance in the same Availability Zone. 
+
+Required Parameters: 
+
+        AvailabilityZone (string) -- 
+
+            The Availability Zone in which to create the volume.
+```
+
+describe_volumes(**kwargs)
+```
+Describes the specified EBS volumes or all of your EBS volumes.
+```
+
+delete_volume(**kwargs)
+```
+Deletes the specified EBS volume. The volume must be in the available state (not attached to an instance).
+
+Required Parameters: 
+
+        VolumeId (string) --
+
+            The ID of the volume.
+```
+
+attach_volume(**kwargs)
+```
+Attaches an EBS volume to a running or stopped instance and exposes it to the instance with the specified device name.
+
+Required Parameters:
+
+        Device (string) --
+
+            The device name (for example, /dev/sdh or xvdh ).
+
+        InstanceId (string) --
+
+            The ID of the instance.
+
+        VolumeId (string) --
+
+            The ID of the volume.
+```
+
+detach_volume(**kwargs)
+```
+Detaches an EBS volume from an instance.
+
+Required Parameters:
+
+        VolumeId (string) --
+
+            The ID of the volume.
+```
 
 :o2: Add functions from provider with descriptions of required parameters
 
@@ -174,17 +253,113 @@ In this project we will be developing features related to completing and simplif
 
 :o2: Add functions from provider with descriptions of required parameters
 
+List Volumes
+```
+list(**kwargs):
+    Lists all the volumes  
+```
+
+Create Volume
+```
+create(**kwargs)
+    Create Volume Creates a new volume
+
+Required Parameters: 
+        name: Name of the volume
+           
+```
+
+Delete Volume
+```
+delete(name)
+    Deletes the specified volume. 
+
+Required Parameters: 
+        name: Name of the volume to be deleted
+```
+
+Attach Volume
+```
+attach(name,vm)
+    Attaches the specified volume to the specified VM instance.
+
+Required Parameters: 
+        name: Name of the volume to be attached
+        vm: Instance name
+```
+
+Detach Volume
+```
+Detach(name,vm)
+    Detaches the specified volume from a VM instance
+
+Required Parameters: 
+        name: Name of the volume to be detached
+        vm: Instance name
+```
 ### Oracle
 
 * API:   
   <https://docs.cloud.oracle.com/en-us/iaas/api/#/en/iaas/20160918/Volume/>
-* OCI CLI:   
-  <https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/2.9.3/oci_cli_docs/cmdref/bv/volume.html>
+* OCI API:   
+  <https://oracle-cloud-infrastructure-python-sdk.readthedocs.io/en/latest/api/core/client/oci.core.BlockstorageClient.html>
 
 #### Oracle volume management functions
 
 :o2: Add functions from provider with descriptions of required parameters
 
+List Volumes
+```
+list(**kwargs):
+    Lists the volumes in the specified compartment
+
+Required Parameters: 
+        compartment_id: The OCID of the compartment that contains the volume          
+```
+
+Create Volume
+```
+create(**kwargs)
+    Create Volume Creates a new volume in the specified compartment. Volumes can
+be created in sizes ranging from 50GB to 32 TB, in 1 GB (1024 MB) increments. 
+By default, volumes are 50GB.
+
+Required Parameters: 
+        availability_domain: The availability domain of the volume
+                             Example: Uocm:PHX-AD-1
+        compartment_id: The OCID of the compartment that contains the volume
+           
+```
+
+Delete Volume
+```
+delete(name)
+    Deletes the specified volume. The volume cannot have an active connection to an instance.
+Warning: All data on the volume will be permanently lost when the volume is deleted.
+
+Required Parameters: 
+        name: Name of the volume to be deleted
+```
+
+Attach Volume
+```
+attach(name,vm)
+    Attaches the specified volume to the specified VM instance.
+
+Required Parameters: 
+        name: Name of the volume to be attached
+        vm: Instance name
+```
+
+Detach Volume
+```
+Detach(name,vm)
+    Detaches the specified volume from a VM instance
+
+Required Parameters: 
+        name: Name of the volume to be detached
+        
+```
 
 ## Documentation on how to move volumes from one provider to the next 
 

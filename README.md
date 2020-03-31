@@ -1,12 +1,14 @@
 # Cloudmesh Volume Management
 
-
-
 ## Abstract
 
-A simple abstraction layer to manage Cloud Volumes for AWS, Azure, Google, Openstack, Oracle and Multipass
+A simple abstraction layer to manage Cloud Volumes for AWS, Azure,
+Google, Openstack, Oracle and Multipass
 
-In this project we will be developing features related to completing and simplifying the volume management interface to an existing cloud. We will also benchmark the clouds while comparing the volume management functions that are deployed on different clouds.
+In this project we will be developing features related to completing and
+simplifying the volume management interface to an existing cloud. We
+will also benchmark the clouds while comparing the volume management
+functions that are deployed on different clouds.
 
 ## Team members
 
@@ -74,10 +76,8 @@ In this project we will be developing features related to completing and simplif
     
 * volume migrate
   
-  Migrate volume from one vm to another vm between different regions, services or providers.
-```
-    volume migrate NAME FROM_VM TO_VM
-```
+  Migrate volume from one vm to another vm between different regions,
+  services or providers. ``` volume migrate NAME FROM_VM TO_VM ```
 
 * volume sync
   
@@ -121,9 +121,10 @@ Required Parameters:
              The name of source (volume?)
 ```
 
-transfer(self, name="cloudmesh", source=None, destination=None, recursive=True):
-```
-Copies files or entire directories into the vm
+transfer(self, name="cloudmesh", source=None, destination=None,
+recursive=True):
+
+``` Copies files or entire directories into the vm
 
 Required Parameters: 
 
@@ -136,7 +137,8 @@ Required Parameters:
             The name of vm???
 ```
 
-:o2: Add functions from provider with descriptions of required parameters
+:o2: Add functions from provider with descriptions of required
+parameters
 
 ### AWS
 
@@ -156,11 +158,14 @@ Required Parameters:
 
 #### AWS volume management functions
 
-create_volume(**kwargs)
 ```
-Creates an EBS volume that can be attached to an instance in the same Availability Zone. 
+create_volume(**kwargs)
+
+Creates an EBS volume that can be attached to an instance in the same
+Availability Zone.
 
 Required Parameters: 
+
 
         AvailabilityZone (string) -- 
 
@@ -168,13 +173,16 @@ Required Parameters:
 ```
 
 describe_volumes(**kwargs)
+
 ```
 Describes the specified EBS volumes or all of your EBS volumes.
 ```
 
 delete_volume(**kwargs)
+
 ```
-Deletes the specified EBS volume. The volume must be in the available state (not attached to an instance).
+Deletes the specified EBS volume. The volume must be in the available
+state (not attached to an instance).
 
 Required Parameters: 
 
@@ -184,8 +192,10 @@ Required Parameters:
 ```
 
 attach_volume(**kwargs)
+
 ```
-Attaches an EBS volume to a running or stopped instance and exposes it to the instance with the specified device name.
+Attaches an EBS volume to a running or stopped instance and exposes it
+to the instance with the specified device name.
 
 Required Parameters:
 
@@ -320,9 +330,10 @@ Required Parameters:
 Create Volume
 ```
 create(**kwargs)
-    Create Volume Creates a new volume in the specified compartment. Volumes can
-be created in sizes ranging from 50GB to 32 TB, in 1 GB (1024 MB) increments. 
-By default, volumes are 50GB.
+
+    Create Volume Creates a new volume in the specified compartment.
+    Volumes can be created in sizes ranging from 50GB to 32 TB, in 1 GB
+    (1024 MB) increments. By default, volumes are 50GB.
 
 Required Parameters: 
         availability_domain: The availability domain of the volume
@@ -334,7 +345,10 @@ Required Parameters:
 Delete Volume
 ```
 delete(name)
-    Deletes the specified volume. The volume cannot have an active connection to an instance.
+
+    Deletes the specified volume. The volume cannot have an active
+    connection to an instance.
+
 Warning: All data on the volume will be permanently lost when the volume is deleted.
 
 Required Parameters: 

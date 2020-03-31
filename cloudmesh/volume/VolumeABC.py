@@ -91,12 +91,12 @@ class VolumeABC(metaclass=ABCMeta):
 
     @abstractmethod
     def detach(self,
-              NAME=None):
+              NAMES=None):
 
         """
         Dettach a volume from vm
 
-        :param NAME: name of volume to dettach
+        :param NAMES: names of volumes to dettach
         :return: str
         """
         raise NotImplementedError

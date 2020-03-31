@@ -168,21 +168,27 @@ class Provider(VolumeABC):
         the request.
         :return: a dict representing the disk
         """
+
         banner('starting create disk')
         compute_service = self._get_compute_service()
         banner('creating disk')
+        if kwargs['volume_type'] is None:
+            kwargs['volume_type'] = self.default["type"]
+        if kwargs['size'] is None:
+            kwargs['size'] = self.default["sizeGb"]
         create_disk = compute_service.disks().insert(
             project=self.credentials["project_id"],
             zone=self.default['zone'],
             body={'physicalBlockSizeBytes':
                   self.default['physicalBlockSizeBytes'],
-                  'type':self.default['type'],
-                  'name':kwargs['NAME'],
-                  'sizeGB':self.default['sizeGb']}).execute()
+                  'type': kwargs['volume_type'],
+                  'name': kwargs['NAME'],
+                  'sizeGB': kwargs['size']}).execute()
         banner('disk created')
         pprint(create_disk)
         banner('result')
         result = self.update_dict(create_disk)
+        pprint(result)
         return result
 
     def delete(self, name=None):
@@ -194,30 +200,12 @@ class Provider(VolumeABC):
         compute_service = self._get_compute_service()
         disk_list = self.list()
         print(disk_list)
+        # find disk in list
+        # find region from disk info
+        #compute_service.disks().delete(project=self.credentials["project_id"],
 
 
-    def attach(self, NAME=None, vm=None):
 
-        """
-        attatch volume to a vm
-
-        :param NAME: volume name
-        :param vm: vm name which the volume will be attached to
-        :return: dict
-        """
-
-        raise NotImplementedError
-
-    def detach(self,
-              NAME=None):
-
-        """
-        Dettach a volume from vm
-
-        :param NAME: name of volume to dettach
-        :return: str
-        """
-        raise NotImplementedError
 
     def attach(self, NAME=None, vm=None):
 

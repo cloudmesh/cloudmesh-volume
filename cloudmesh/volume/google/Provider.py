@@ -70,17 +70,15 @@ class Provider(VolumeABC):
                              'https://www.googleapis.com/auth/cloud-platform',
                              'https://www.googleapis.com/auth/compute.readonly']
 
-    def update_dict(self, elements, kind=None):
+    def update_dict(self, elements):
         """
         This function adds a cloudmesh cm dict to each dict in the list
         elements.
-        returns an object or list of objects With the dict method
+        returns an object or list of objects with the dict method
         this object is converted to a dict. Typically this method is used
         internally.
         :param elements: the list of original dicts. If elements is a single
                          dict a list with a single element is returned.
-        :param kind: for some kinds special attributes are added. This includes
-                     key, vm, image, flavor.
         :return: The list with the modified dicts
         """
         if elements is None:
@@ -91,17 +89,13 @@ class Provider(VolumeABC):
             _elements = [elements]
         d = []
         for entry in _elements:
-
             if "cm" not in entry:
                 entry['cm'] = {}
-
             entry["cm"].update({
-                "kind": kind,
+                "kind": 'volume',
                 "cloud": self.cloud,
-                "name": entry["name"],
-                "driver": kind
+                "name": entry["name"]
             })
-
             d.append(entry)
         return d
 
@@ -169,7 +163,6 @@ class Provider(VolumeABC):
         :return: a dict representing the disk
         """
 
-        banner('starting create disk')
         compute_service = self._get_compute_service()
         banner('creating disk')
         if kwargs['volume_type'] is None:
@@ -184,28 +177,28 @@ class Provider(VolumeABC):
                   'type': kwargs['volume_type'],
                   'name': kwargs['NAME'],
                   'sizeGB': kwargs['size']}).execute()
-        banner('disk created')
         pprint(create_disk)
-        banner('result')
+        banner('disk created')
         result = self.update_dict(create_disk)
-        pprint(result)
         return result
 
     def delete(self, name=None):
         """
-        Delete volume
-        :param name:
-        :return:
+        Deletes the specified persistent disk.
+        Deleting a disk removes its data permanently and is irreversible.
+        :param name: Name of the disk to delete
         """
         compute_service = self._get_compute_service()
         disk_list = self.list()
-        print(disk_list)
-        # find disk in list
-        # find region from disk info
-        #compute_service.disks().delete(project=self.credentials["project_id"],
-
-
-
+        # find disk in list and get zone
+        zone_https = None
+        for disk in disk_list:
+            if disk['name'] == name:
+                zone_https = str(disk['zone'])
+        # get zone from end of zone_https
+        zone = zone_https.rsplit('/', 1)[1]
+        compute_service.disks().delete(project=self.credentials["project_id"],
+                                       zone=zone, disk=name).execute()
 
     def attach(self, NAME=None, vm=None):
 

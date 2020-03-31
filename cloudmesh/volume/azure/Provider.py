@@ -11,6 +11,7 @@ from sys import platform
 
 from azure.common.credentials import ServicePrincipalCredentials
 from azure.mgmt.compute import ComputeManagementClient
+from azure.mgmt.storage import StorageManagementClient
 from azure.mgmt.network import NetworkManagementClient
 from azure.mgmt.network.v2018_12_01.models import SecurityRule
 from azure.mgmt.resource import ResourceManagementClient
@@ -233,7 +234,7 @@ class Provider(VolumeABC):
     #
     # # Azure Resource Group
     # self.GROUP_NAME = self.default["resource_group"]
-    #
+
 
     def create(self, **kwargs):
         arguments = dotdict(kwargs)
@@ -289,7 +290,37 @@ class Provider(VolumeABC):
 
 
     def attach(self, NAME=None, vm=None):
-        print("update me")
+        LOCATION = 'eastus'
+        GROUP_NAME = 'azure-sample-group-virtual-machines'
+        VM_NAME = 'VmName'
+        cred = self.spec["credentials"]
+        credentials = ServicePrincipalCredentials(
+            client_id=cred['AZURE_APPLICATION_ID'],
+            #application and client id are same thing
+            secret=cred['AZURE_SECRET_KEY'],
+            tenant=cred['AZURE_TENANT_ID']
+        )
+        subscription = cred['AZURE_SUBSCRIPTION_ID']
+        compute_client = ComputeManagementClient(credentials, subscription)
+        resource_client = ResourceManagementClient(credentials, subscription)
+        resource_client.resource_groups.create_or_update(
+            GROUP_NAME, {'location': LOCATION})
+        async_vm_update = compute_client.virtual_machines.create_or_update(
+            GROUP_NAME,
+            VM_NAME,
+            {
+                'location': LOCATION,
+                'storage_profile': {
+                    'data_disks': [{
+                        'name': 'voldisk1',
+                        'disk_size_gb': 1,
+                        'lun': 0,
+                        'create_option': 'Empty'
+                    }]
+                }
+            }
+        )
+
 
 #might need to access azure compute provider vm name
 #create vm first then attach disk to new vm

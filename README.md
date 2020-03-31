@@ -70,7 +70,7 @@ In this project we will be developing features related to completing and simplif
 
     detatch volumes from vms
 ``` 
-    volume detach [NAME]  
+    volume detach [NAMES]  
 ```
 
 * volume delete

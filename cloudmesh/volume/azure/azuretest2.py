@@ -13,4 +13,5 @@ p = AZProvider(name="azure",
 
 print(p)
 
-p.create()
+# p.create()
+p.attach()

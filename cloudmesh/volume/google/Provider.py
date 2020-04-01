@@ -203,12 +203,13 @@ class Provider(VolumeABC):
     def attach(self, NAME=None, vm=None):
 
         """
-        attatch volume to a vm
+        Attach a disk to an instance
 
-        :param NAME: volume name
-        :param vm: vm name which the volume will be attached to
+        :param NAME: disk name
+        :param vm: instance name which the volume will be attached to
         :return: dict
         """
+
 
         raise NotImplementedError
 

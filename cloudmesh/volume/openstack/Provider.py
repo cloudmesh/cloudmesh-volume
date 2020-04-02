@@ -117,10 +117,10 @@ class Provider(VolumeABC):
             return None
 
         d = []
-        print("results", results)
+        #print("results:", results)
 
         for entry in results:
-            print("entry",entry)
+            #print("entry:",entry)
             volume_name = entry['name']
             if "cm" not in entry:
                 entry['cm'] = {}
@@ -146,11 +146,12 @@ class Provider(VolumeABC):
         if arguments.size == None:
             arguments.size=self.defaults["size"]
         print(arguments.NAME)
-        con.create_volume(name=arguments.NAME,size=arguments.size,volume_type=arguments.volume_type)
-        #print list after create
-        results = con.list_volumes()
-        result = self.update_dict(results)
-        print(self.Print(result, kind='volume', output=kwargs['output']))
+        r = con.create_volume(name=arguments.NAME,size=arguments.size,
+                           volume_type=arguments.volume_type)
+        r = [r]
+        result = self.update_dict(r)
+        return result
+        #print(self.Print(result, kind='volume', output=kwargs['output']))
 
     def delete(self, name=None):
         con = openstack.connect(**self.config)
@@ -158,14 +159,16 @@ class Provider(VolumeABC):
         # print list after delete
         results = con.list_volumes()
         result = self.update_dict(results)
-        print(self.Print(result, kind='volume', output='table'))
+        #print(self.Print(result, kind='volume', output='table'))
+        return result
         
     def list(self,**kwargs):
         if kwargs["--refresh"]:
             con = openstack.connect(**self.config)
             results = con.list_volumes()
             result = self.update_dict(results)
-            print(self.Print(result, kind='volume', output=kwargs['output']))
+            #print(self.Print(result, kind='volume', output=kwargs['output']))
+            return result
         else:
             # read record from mongoDB
             refresh = False

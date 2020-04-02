@@ -52,7 +52,7 @@ class Provider(VolumeABC):
                        "Kind",
                        "Cloud",
                        "Status",
-                       "SizeGb",
+                       "Size",
                        "Type",
                        "Created",
                        "ID",
@@ -158,7 +158,7 @@ class Provider(VolumeABC):
 
         return result
 
-    def create(self, name=None, **kwargs):
+    def create(self, **kwargs):
         """
         Creates a persistent disk in the specified project using the data in
         the request.
@@ -167,20 +167,28 @@ class Provider(VolumeABC):
 
         compute_service = self._get_compute_service()
         banner('creating disk')
-        if kwargs['volume_type'] == None:
-            kwargs['volume_type'] = self.default["type"]
-        if kwargs['size'] == None:
-            kwargs['size'] = self.default["sizeGb"]
+        volume_type = kwargs['volume_type']
+        size = kwargs['size']
+        if volume_type == None:
+            volume_type = self.default["type"]
+        if size == None:
+            size = self.default["sizeGb"]
+        banner(str(size))
         create_disk = compute_service.disks().insert(
             project=self.credentials["project_id"],
             zone=self.default['zone'],
-            body={'type': kwargs['volume_type'],
-                  'name': kwargs['NAME'],
-                  'sizeGB': kwargs['size']}).execute()
+            body={'type':volume_type,
+                  'name':kwargs['NAME'],
+                  'sizeGb':str(size)}).execute()
+        pprint(create_disk)
         banner('disk created')
-        result = self.update_dict(create_disk)
-        pprint(result)
-        return result
+        disk_list = self.list()
+        new_disk = []
+        for disk in disk_list:
+            if disk['name'] == kwargs['NAME']:
+                new_disk.append(disk)
+        result = self.update_dict(new_disk)
+        return result[0]
 
     def delete(self, name=None):
         """

@@ -291,8 +291,8 @@ class Provider(VolumeABC):
 
     def attach(self, NAME=None, vm=None):
         LOCATION = 'westus'
-        GROUP_NAME = 'azure-sample-group-virtual-machines'
-        VM_NAME = 'VmName'
+        GROUP_NAME = 'volume-group'
+        VM_NAME = 'VM1'
         cred = self.spec["credentials"]
         credentials = ServicePrincipalCredentials(
             client_id=cred['AZURE_APPLICATION_ID'],

@@ -15,9 +15,11 @@
 # limitations under the License.                                          #
 # ------------------------------------------------------------------------#
 
-from setuptools import find_packages, setup
 import io
 import os
+
+from setuptools import find_packages, setup
+
 
 def readfile(filename):
     with io.open(filename, encoding="utf-8") as stream:
@@ -31,6 +33,9 @@ psutil
 requiers_cloudmesh = """
 cloudmesh-common
 cloudmesh-cmd5
+cloudmesh-abstract
+cloudmesh-configuration
+cloudmesh-admin
 """.splitlines()
 
 if "TESTING" not in os.environ:

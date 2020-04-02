@@ -166,14 +166,12 @@ class Provider(VolumeABC):
         """
 
         compute_service = self._get_compute_service()
-        banner('creating disk')
         volume_type = kwargs['volume_type']
         size = kwargs['size']
         if volume_type == None:
             volume_type = self.default["type"]
         if size == None:
             size = self.default["sizeGb"]
-        banner(str(size))
         create_disk = compute_service.disks().insert(
             project=self.credentials["project_id"],
             zone=self.default['zone'],

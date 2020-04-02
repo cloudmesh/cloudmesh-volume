@@ -88,12 +88,17 @@ class Provider(VolumeABC):
             _elements = [elements]
         d = []
         for entry in _elements:
+            name = None
+            if 'targetLink' in entry:
+                name = entry['targetLink'].rsplit('/', 1)[1]
+            else:
+                name = entry['name']
             if "cm" not in entry:
                 entry['cm'] = {}
             entry["cm"].update({
                 "kind": 'volume',
                 "cloud": self.cloud,
-                "name": entry["name"]
+                "name": name
             })
             d.append(entry)
         return d
@@ -162,9 +167,9 @@ class Provider(VolumeABC):
 
         compute_service = self._get_compute_service()
         banner('creating disk')
-        if kwargs['volume_type'] is None:
+        if kwargs['volume_type'] == None:
             kwargs['volume_type'] = self.default["type"]
-        if kwargs['size'] is None:
+        if kwargs['size'] == None:
             kwargs['size'] = self.default["sizeGb"]
         create_disk = compute_service.disks().insert(
             project=self.credentials["project_id"],
@@ -172,9 +177,9 @@ class Provider(VolumeABC):
             body={'type': kwargs['volume_type'],
                   'name': kwargs['NAME'],
                   'sizeGB': kwargs['size']}).execute()
-        pprint(create_disk)
         banner('disk created')
         result = self.update_dict(create_disk)
+        pprint(result)
         return result
 
     def delete(self, name=None):
@@ -190,11 +195,16 @@ class Provider(VolumeABC):
         for disk in disk_list:
             if disk['name'] == name:
                 zone_url = str(disk['zone'])
+        if zone_url is None:
+            banner(f'{name} was not found')
+            return
         # get zone from end of zone_https
         zone = zone_url.rsplit('/', 1)[1]
-        compute_service.disks().delete(project=self.credentials["project_id"],
-                                       zone=zone, disk=name).execute()
-        result = self.list()
+        delete_disk = compute_service.disks().delete(
+            project=self.credentials["project_id"],
+            zone=zone,
+            disk=name).execute()
+        result = self.update_dict(delete_disk)
         return result
 
     def attach(self, name=None, vm=None):
@@ -202,9 +212,9 @@ class Provider(VolumeABC):
         """
         Attach a disk to an instance
 
-        :param name: disk name
+        :param name: name of disk to attach
         :param vm: instance name which the volume will be attached to
-        :return: dict
+        :return: updated list of disks with current status
         """
         compute_service = self._get_compute_service()
 
@@ -219,7 +229,7 @@ class Provider(VolumeABC):
             if "instances" in items[item]:
                 instances = items[item]["instances"]
                 for instance in instances:
-                    # Add disk details to found.
+                    # Add instance details to found_instance.
                     found_instance.append(instance)
         for instance in found_instance:
             if instance['name'] == vm:
@@ -241,16 +251,62 @@ class Provider(VolumeABC):
         result = self.list()
         return result
 
-    def detach(self,
-              NAME=None):
+    def detach(self, name=None):
 
         """
-        Dettach a volume from vm
+        Detach a disk from all instances
 
-        :param NAME: name of volume to dettach
-        :return: str
+        :param name: name of disk to detach
+        :return: updated list of disks with current status
         """
-        raise NotImplementedError
+        compute_service = self._get_compute_service()
+        # Get name of attached instance(s) from list of disks
+        instances = []
+        disk_list = self.list()
+        for disk in disk_list:
+            if disk['name'] == name:
+                for user in disk['users']:
+                    user_url = user
+                    user = user_url.rsplit('/', 1)[1]
+                    instances.append(user)
+
+        # detach disk from all instances
+        for instance in instances:
+            instance_list = compute_service.instance().aggregatedList(
+                project=self.credentials["project_id"],
+                orderBy='creationTimestamp desc').execute()
+            found_instance = []
+            items = instance_list["items"]
+            for item in items:
+                if "instances" in items[item]:
+                    instances_list = items[item]["instances"]
+                    for entry in instances_list:
+                        # Add instance details to found_instance.
+                        found_instance.append(entry)
+            zone_url = None
+            for found in found_instance:
+                if instance['name'] == found:
+                    zone_url = instance['zone']
+            zone = zone_url.rsplit('/', 1)[1]
+
+            # Use instance and zone to get deviceName
+            get_instance = compute_service.instance().get(
+                project=self.credentials["project_id"],
+                zone=zone,
+                instance=instance).execute()
+            deviceName = None
+            disks = get_instance['disks']
+            for disk in disks:
+                if disk['name'] == name:
+                    deviceName = disk['deviceName']
+            compute_service.instance().detachDisk(
+                project=self.credentials['project_id'],
+                zone=zone,
+                instance=instance,
+                deviceName=deviceName).execute()
+
+        result = self.list()
+        return result
 
     def migrate(self,
                 name=None,

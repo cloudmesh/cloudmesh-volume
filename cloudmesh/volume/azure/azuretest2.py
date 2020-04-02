@@ -1,9 +1,16 @@
 from cloudmesh.volume.azure.Provider import Provider as AZProvider
+from pprint import pprint
 
 p = AZProvider(name="azure",
              configuration="C:\\Users\\plj2861\\.cloudmesh\\cloudmesh.yaml")
 
 print(p)
 
-# p.create()
+# pprint(p.create())
+
+# p.delete()
+# p.list()
 p.attach()
+# p.detach()
+# p.migrate()
+# p.sync()

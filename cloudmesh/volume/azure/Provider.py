@@ -238,43 +238,45 @@ class Provider(VolumeABC):
 
     def create(self, **kwargs):
         arguments = dotdict(kwargs)
-        self.GROUP_NAME = self.default["resource_group"]
+        GROUP_NAME = 'volume-group'
         # self.vms = self.compute_client.virtual_machines
         LOCATION = 'westus'
         disk_creation = self.compute_client.disks.create_or_update(
-            self.GROUP_NAME,
+            GROUP_NAME,
             "Volume_Disk1",
             {
                 'location': LOCATION,
-                'disk_size_gb': 8,
+                'disk_size_gb': 1,
                 'creation_data': {
                     'create_option': 'Empty'
                 }
             }
         )
         # print list after create
-        results = self.compute_client.disks.list()
-        result = self.update_dict(results)
-        print(self.Print(result, kind='volume', output=kwargs['output']))
+        results = disk_creation.result().as_dict()
+        result = self.update_dict([results])
+        return result
 
 
     def delete (self, NAMES=None):
-        # self.compute_client.disks.delete(
-        #     group,
-        #     f"{self.OS_DISK_NAME}_{disks_count}",
-        #     {
-        #         'location': self.LOCATION,
-        #         'disk_size_gb': 8,
-        #         'creation_data': {
-        #             'create_option': 'Empty'
-        #         }
-        #     }
-        # )
+        GROUP_NAME = 'volume-group'
+        LOCATION = 'westus'
+        self.compute_client.disks.delete(
+            GROUP_NAME,
+            "Volume_Disk1",
+            {
+                'location': LOCATION,
+                'disk_size_gb': 1,
+                'creation_data': {
+                    'create_option': 'Empty'
+                }
+            }
+        )
         # # print list after deleting
         # results = self.compute_client.disks.list()
         # result = self.update_dict(results)
         # print(self.Print(result, kind='volume', output=kwargs['output']))
-        print("update me")
+
 
     def list(self,
              NAMES=None,
@@ -283,29 +285,21 @@ class Provider(VolumeABC):
              cloud=None,
              refresh=None,
              dryrun=None):
-        # results = self.compute_client.disks.list()
+        results = self.compute_client.disks.list()
+        print(results)
         # result = self.update_dict(results)
         # print(self.Print(result, kind='volume', output=kwargs['output']))
-        print("update me")
 
 
     def attach(self, NAME=None, vm=None):
         LOCATION = 'westus'
         GROUP_NAME = 'volume-group'
         VM_NAME = 'VM1'
-        cred = self.spec["credentials"]
-        credentials = ServicePrincipalCredentials(
-            client_id=cred['AZURE_APPLICATION_ID'],
-            #application and client id are same thing
-            secret=cred['AZURE_SECRET_KEY'],
-            tenant=cred['AZURE_TENANT_ID']
-        )
-        subscription = cred['AZURE_SUBSCRIPTION_ID']
-        compute_client = ComputeManagementClient(credentials, subscription)
-        resource_client = ResourceManagementClient(credentials, subscription)
-        resource_client.resource_groups.create_or_update(
-            GROUP_NAME, {'location': LOCATION})
-        async_vm_update = compute_client.virtual_machines.create_or_update(
+        # if virtualmachine.get(VM_NAME) is None, give error
+            #check sdk if virtual machine is missing
+        #convert VM object into a dictionary, then pass it on to below
+        # parameters
+        async_vm_update = self.compute_client.virtual_machines.create_or_update(
             GROUP_NAME,
             VM_NAME,
             {

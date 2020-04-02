@@ -31,7 +31,6 @@ class Provider(VolumeABC):
             zone: us-central1-a
             type: projects/{project_id}/zones/{zone}/diskTypes/pd-standard
             sizeGB: '200'
-            physicalBlockSizeBytes: '4096'
           credentials:
             project_id: {project_id}
             path_to_service_account_json: {path}
@@ -137,10 +136,8 @@ class Provider(VolumeABC):
         """
         compute_service = self._get_compute_service()
         disk_list = compute_service.disks().aggregatedList(
-
             project=self.credentials["project_id"],
             orderBy='creationTimestamp desc').execute()
-
         # look thought all disk list zones and find zones w/ 'disks'
         # then get disk details and add to found
         found = []
@@ -172,9 +169,7 @@ class Provider(VolumeABC):
         create_disk = compute_service.disks().insert(
             project=self.credentials["project_id"],
             zone=self.default['zone'],
-            body={'physicalBlockSizeBytes':
-                  self.default['physicalBlockSizeBytes'],
-                  'type': kwargs['volume_type'],
+            body={'type': kwargs['volume_type'],
                   'name': kwargs['NAME'],
                   'sizeGB': kwargs['size']}).execute()
         pprint(create_disk)
@@ -191,27 +186,60 @@ class Provider(VolumeABC):
         compute_service = self._get_compute_service()
         disk_list = self.list()
         # find disk in list and get zone
-        zone_https = None
+        zone_url = None
         for disk in disk_list:
             if disk['name'] == name:
-                zone_https = str(disk['zone'])
+                zone_url = str(disk['zone'])
         # get zone from end of zone_https
-        zone = zone_https.rsplit('/', 1)[1]
+        zone = zone_url.rsplit('/', 1)[1]
         compute_service.disks().delete(project=self.credentials["project_id"],
                                        zone=zone, disk=name).execute()
+        result = self.list()
+        return result
 
-    def attach(self, NAME=None, vm=None):
+    def attach(self, name=None, vm=None):
 
         """
         Attach a disk to an instance
 
-        :param NAME: disk name
+        :param name: disk name
         :param vm: instance name which the volume will be attached to
         :return: dict
         """
+        compute_service = self._get_compute_service()
 
+        # get zone of vm from list of vm
+        zone_url = None
+        instance_list = compute_service.instance().aggregatedList(
+            project=self.credentials["project_id"],
+            orderBy='creationTimestamp desc').execute()
+        found_instance = []
+        items = instance_list["items"]
+        for item in items:
+            if "instances" in items[item]:
+                instances = items[item]["instances"]
+                for instance in instances:
+                    # Add disk details to found.
+                    found_instance.append(instance)
+        for instance in found_instance:
+            if instance['name'] == vm:
+                zone_url = instance['zone']
+        zone = zone_url.rsplit('/', 1)[1]
 
-        raise NotImplementedError
+        # get URL source to disk from list of disks
+        source = None
+        disk_list = self.list()
+        for disk in disk_list:
+            if disk['name'] == name:
+                source = disk['selfLink']
+        compute_service.instance().attachDisk(
+            project=self.credentials['project_id'],
+            zone=zone,
+            instance=vm,
+            body={'source': source}).execute()
+
+        result = self.list()
+        return result
 
     def detach(self,
               NAME=None):

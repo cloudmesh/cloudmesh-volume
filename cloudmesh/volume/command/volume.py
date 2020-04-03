@@ -158,47 +158,30 @@ class VolumeCommand(PluginCommand):
                         for name in deleted:
                             names.remove(name)
 
-
         elif arguments.attach:
-
             arguments.cloud = arguments.cloud or cloud
-
             names = arguments.NAMES or variables["volume"]
             vm = arguments.vm or variables["vm"]
-
             if names is None:
                 Console.error("No Volume specified or found")
                 return ""
-
-
             if vm is None:
                 Console.error("No vm specified or found")
                 return ""
-
             names = Parameter.expand(names)
-
             banner(f"Attaching {names} to {arguments.vm}")
             provider = Provider(name=arguments.cloud)
-
-            for name in names:
-                print(name)
-                result = provider.attach(name, vm)
-                print(provider.Print(result,
-                                     kind='volume',
-                                     output=arguments.output))
+            result = provider.attach(names, vm)
+            print(provider.Print(result, kind='volume', output=arguments.output))
 
         elif arguments.detach:
-
             config = Config()
             clouds = list(config["cloudmesh.volume"].keys())
             volumes = arguments.NAMES or variables["volume"]
-
             if volumes is None:
                 Console.error ("No volumes specified or found")
                 return ""
-
             volumes = Parameter.expand(volumes)
-
             for cloud in clouds:
                 if len(volumes) != 0:
                     banner(f"Detaching volumes from {cloud}")

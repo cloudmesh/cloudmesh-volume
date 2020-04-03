@@ -24,8 +24,6 @@ class VolumeCommand(PluginCommand):
         ::
 
           Usage:
-            volume register which
-            volume register [NAME] [--cloud=CLOUD] [ARGUMENTS...]
             volume list [NAMES]
                         [--vm=VM]
                         [--region=REGION]
@@ -39,8 +37,6 @@ class VolumeCommand(PluginCommand):
                       [--description=DESCRIPTION]
                       [--dryrun]
                       [ARGUMENTS...]
-            volume status [NAMES]
-                      [--cloud=CLOUD]
             volume attach [NAMES] [--vm=VM]
             volume detach [NAMES]
             volume delete [NAMES]
@@ -112,8 +108,6 @@ class VolumeCommand(PluginCommand):
                                           variables,
                                           )
 
-        #arguments.NAME = arguments.NAME or variables["volume"] #or get_last_volume()
-        #path = arguments.PATH
         cloud = variables['cloud']
 
         if arguments.list:
@@ -122,30 +116,20 @@ class VolumeCommand(PluginCommand):
                 names = Parameter.expand(arguments.NAMES)
 
                 for name in names:
-                    # kind = cm.kind
                     provider = Provider(name=name)
-                    # result = provider.list(???)
                     result = provider.list()
             elif arguments.cloud:
-                # banner(f'get in arguments.cloud {arguments.cloud}')
-                #print (arguments.cloud)
                 provider = Provider(name=arguments.cloud)
 
                 result = provider.list(**arguments)
                 print(provider.Print(result,
                                      kind='volume',
                                      output=arguments.output))
-
-                #from pprint import pprint
-                #pprint (result)
             return ""
 
         elif arguments.create:
-            #parameters = Parameter.arguments_to_dict(arguments.ARGUMENTS)
-            #print("parameters",parameters)
-
             if arguments.cloud == None:
-                arguments['cloud'] = cloud #cloud from variable['volume']
+                arguments['cloud'] = cloud
             if arguments.NAME ==None:
                 arguments.NAME = str(create_name())
             provider = Provider(name=arguments.cloud)

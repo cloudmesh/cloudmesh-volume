@@ -188,13 +188,21 @@ class VolumeCommand(PluginCommand):
             print(provider.Print(result, kind='volume', output=arguments.output))
 
         elif arguments.delete:
-            names = Parameter.expand(arguments["NAMES"])
+            names = arguments.NAMES or variables["volume"]
+            names = Parameter.expand(names)
             '''
             volume delete NAMES
             '''
+            if names is None:
+                Console.error ("No volume specified or found")
+                return ""
             config = Config()
             clouds = list(config["cloudmesh.volume"].keys())
             for cloud in clouds:
+                if len(names) != 0:
+                    banner(f"Deleting volumes from {cloud}")
+                else:
+                    banner("End of Deleting Volumes")
                 active = config[f"cloudmesh.volume.{cloud}.cm.active"]
                 if active:
                     provider = Provider(name=cloud)
@@ -211,7 +219,6 @@ class VolumeCommand(PluginCommand):
 
         elif arguments.attach:
             arguments.cloud = arguments.cloud or cloud
-            print(type(get_last_volume()))
             names = arguments.NAMES or variables["volume"]
             vm = arguments.vm or variables["vm"]
             if names is None:
@@ -231,7 +238,7 @@ class VolumeCommand(PluginCommand):
             clouds = list(config["cloudmesh.volume"].keys())
             volumes = arguments.NAMES or variables["volume"]
             if volumes is None:
-                Console.error ("No volumes specified or found")
+                Console.error ("No volume specified or found")
                 return ""
             volumes = Parameter.expand(volumes)
             for cloud in clouds:

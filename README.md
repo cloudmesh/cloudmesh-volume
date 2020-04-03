@@ -185,7 +185,7 @@ list(**kwargs)
         :param NAME: name of volume
         :param vm: name of vm
         :param region: name of availability zone
-        :return:        
+        :return: dict
     """
 
 create(**kwargs)
@@ -203,10 +203,11 @@ create(**kwargs)
 delete volumes(NAME)
     
     """    
-        This function delete one volume. It will call self.list() to return a dict of all the volumes under the cloud.
+        This function delete one volume.
+        If NAMES is not given, delete the most recent volume.
 
         :param NAME (string): volume name
-        :return: self.list()        
+        :return: dict        
     """
     
 attach(NAMES, vm, device, dryrun=False):
@@ -221,7 +222,7 @@ attach(NAMES, vm, device, dryrun=False):
         :param device (string): The device name which is the attaching point to vm. 
                                 This function provided 5 attaching points.
         :param dryrun (boolean): True|False
-        :return: self.list()
+        :return: dict
     """
 
 detach(NAME):
@@ -230,8 +231,8 @@ detach(NAME):
         This function detach a volume from vm. It returns self.list(NAME) to list the updated volume. The vm under "AttachedToVm" will be
         removed if volume is successfully detached.
 
-        :param NAME: name of volume to dettach
-        :return: self.list(NAME)
+        :param NAME: name of volume to detach
+        :return: dict
     """
     
 add_tag(NAME, **kwargs):
@@ -246,7 +247,7 @@ add_tag(NAME, **kwargs):
         :param kwargs:
                     key: name of tag
                     value: value of tag
-        :return: self.list(NAME)        
+        :return: dict        
     """
 
 :o2: Add functions from provider with descriptions of required parameters

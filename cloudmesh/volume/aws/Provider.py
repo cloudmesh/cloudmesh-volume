@@ -11,6 +11,7 @@ from cloudmesh.common.DateTime import DateTime
 from cloudmesh.common.Printer import Printer
 from cloudmesh.common.console import Console
 from time import sleep
+from cloudmesh.common.parameter import Parameter
 
 import collections
 
@@ -239,7 +240,6 @@ class Provider(VolumeABC):
             :param volume_name: the name of volume
             :return: volume_id
         """
-        print("volume_name",volume_name)
         volume = self.client.describe_volumes(
             Filters=[
                 {
@@ -248,7 +248,6 @@ class Provider(VolumeABC):
                 },
             ],
         )
-        print(volume)
         volume_id = volume['Volumes'][0]['VolumeId']
         return volume_id
 
@@ -422,61 +421,62 @@ class Provider(VolumeABC):
         :return:
         """
 
-        if len(kwargs)==0:
-            dryrun = False
-        else:
-            dryrun = kwargs['--dryrun']
+        # if len(kwargs)==0:
+        #     dryrun = False
+        # else:
+        #     dryrun = kwargs['--dryrun']
         if kwargs:
-            if kwargs['NAME']:
-                result = self.client.describe_volumes(
-                    DryRun=dryrun,
-                    Filters=[
-                        {
-                            'Name': 'tag:Name',
-                            'Values': [kwargs['NAME'],]
-                        },
-                    ],
-                )
-            elif kwargs['NAMES']:
-                result = self.client.describe_volumes(
-                    DryRun=dryrun,
-                    Filters=[
-                        {
-                            'Name': 'tag:Name',
-                            'Values': kwargs['NAMES']
-                        },
-                    ],
-                )
-            elif kwargs['vm']:
-                vm_id =  self.find_vm_id(kwargs['vm'])
-                result = self.client.describe_volumes(
-                    DryRun=dryrun,
-                    Filters=[
-                        {
-                            'Name': 'attachment.instance-id',
-                            'Values': [vm_id,]
-                        },
-                    ],
-                )
-            elif kwargs['region']:
-                result = self.client.describe_volumes(
-                    DryRun=dryrun,
-                    Filters=[
-                        {
-                            'Name': 'availability-zone',
-                            'Values': [kwargs['region'],]
-                        },
-                    ],
-                )
-            else:
-                result = self.client.describe_volumes(DryRun=dryrun)
+            for key in kwargs:
+                if key == 'NAME' and kwargs['NAME']:
+                    result = self.client.describe_volumes(
+                        #DryRun=dryrun,
+                        Filters=[
+                            {
+                                'Name': 'tag:Name',
+                                'Values': [kwargs['NAME'],]
+                            },
+                        ],
+                    )
+
+                elif key=='NAMES' and kwargs['NAMES']:
+                    result = self.client.describe_volumes(
+                        #DryRun=dryrun,
+                        Filters=[
+                            {
+                                'Name': 'tag:Name',
+                                'Values': kwargs['NAMES']
+                            },
+                        ],
+                    )
+                elif key =='vm' and kwargs['vm']:
+                    vm_id =  self.find_vm_id(kwargs['vm'])
+                    result = self.client.describe_volumes(
+                        #DryRun=dryrun,
+                        Filters=[
+                            {
+                                'Name': 'attachment.instance-id',
+                                'Values': [vm_id,]
+                            },
+                        ],
+                    )
+                elif key =='region' and kwargs['region']:
+                    result = self.client.describe_volumes(
+                        #DryRun=dryrun,
+                        Filters=[
+                            {
+                                'Name': 'availability-zone',
+                                'Values': [kwargs['region'],]
+                            },
+                        ],
+                    )
+                else:
+                    result = self.client.describe_volumes()
+
         else:
-            result = self.client.describe_volumes(DryRun=dryrun)
+            result = self.client.describe_volumes()
 
         result = self.update_AttachedToVm(result)
         result = self.update_dict(result)
-
-
         return result
 
     def delete(self, NAME):
@@ -521,7 +521,6 @@ class Provider(VolumeABC):
 
         vm_id = self.find_vm_id(vm)
         for name in NAMES:
-            print('name: ', name)
             volume_id = self.find_volume_id(name)
             for device in devices:
                 try:
@@ -533,7 +532,7 @@ class Provider(VolumeABC):
                                     )
                 except:
                     pass
-        return self.list(NAMES)
+        return self.list(NAMES=NAMES)
 
     def detach(self,
                 NAME):
@@ -551,7 +550,7 @@ class Provider(VolumeABC):
             volume_id = self.find_volume_id(volume_name=NAME)
             rresponse = self.client.detach_volume(VolumeId=volume_id)
             self.wait(10)
-        return self.list(NAME)
+        return self.list(NAME=NAME)[0]
 
     def add_tag(self, NAME, **kwargs):
 
@@ -582,7 +581,11 @@ class Provider(VolumeABC):
                 },
             ],
         )
-        return self.list()[0]
+        if key == 'Name':
+            result = self.list(NAME=value)[0]
+        else:
+            result = self.list(NAME=NAME)[0]
+        return result
 
 
     def migrate(self,

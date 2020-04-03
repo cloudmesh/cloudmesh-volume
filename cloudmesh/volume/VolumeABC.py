@@ -65,6 +65,7 @@ class VolumeABC(metaclass=ABCMeta):
     def delete(self, NAMES=None):
         """
         Delete volumes.
+        If NAMES is not given, delete the most recent volume.
 
         :param NAMES: List of volume names
         :return:
@@ -76,7 +77,7 @@ class VolumeABC(metaclass=ABCMeta):
 
         """
         Attatch volume to a vm.
-        If NAMES is not specified, attach the last created volume to vm.
+        If NAMES is not specified, attach the most recent volume to vm.
 
         :param NAME: volume name
         :param vm: vm name which the volume will be attached to
@@ -107,7 +108,7 @@ class VolumeABC(metaclass=ABCMeta):
         :param kwargs:
                     key: name of tag
                     value: value of tag
-        :return: self.list(NAME)
+        :return: self.list()
         """
 
         raise NotImplementedError

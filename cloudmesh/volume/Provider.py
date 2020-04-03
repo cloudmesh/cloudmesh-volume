@@ -94,7 +94,6 @@ class Provider(object):  # broken
             conf = Config(configuration)["cloudmesh"]
             self.spec = conf["volume"][name]
             self.cloud = name
-    #        print('self.cloud = ', self.cloud)
             self.kind = self.spec["cm"]["kind"]
             super().__init__()
 
@@ -146,18 +145,11 @@ class Provider(object):  # broken
                 return volume
         return None
 
-    @staticmethod
     def search(self, name=None):
-        raise NotImplementedError
-
-    #
-    # BUG: two different definitiosn of mount
-    #
-    # def mount(self, path=None, name=None):
-    #    self.provider.mount(path, name)
+        return self.info(name=name)
 
     @DatabaseUpdate()
-    def attach(self, NAME=None, vm=None):
+    def attach(self, NAMES=None, vm=None):
 
         """
         Attatch volume to a vm
@@ -166,7 +158,7 @@ class Provider(object):  # broken
         :param vm: vm name which the volume will be attached to
         :return: dict
         """
-        result = self.provider.attach(NAME, vm)
+        result = self.provider.attach(NAMES, vm)
         return result
 
     @DatabaseUpdate()
@@ -176,14 +168,31 @@ class Provider(object):  # broken
         Detach a volume from vm
 
         :param NAME: name of volume to detach
-        :return: str
+        :return: dict
         """
         result = self.provider.detach(NAME)
         return result
 
-    # BUG NO GENERAL DEFINITIONS OF MIGRATE
-    # BUG THE PARAMETER NAMES ARE REALY NOT GOOD
-    #
+    @DatabaseUpdate()
+    def add_tag(self, **kwargs):
+
+        """
+        Add tag for a volume. For example: key="Name", value="user-volume-1".
+
+        :param NAME: name of volume
+        :param key: tag key
+        :param value: tag value
+        :return: dict
+        """
+        try:
+            result = self.provider.add_tag(**kwargs)
+            variables = Variables()
+            variables["volume"] = result["cm"]["name"]
+        except:
+            raise ValueError("Tag could not be added")
+        return result
+
+
     def migrate(self,
                 name=None,
                 fvm=None,

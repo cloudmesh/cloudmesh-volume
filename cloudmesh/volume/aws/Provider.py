@@ -9,6 +9,8 @@ from cloudmesh.configuration.Config import Config
 import boto3
 from cloudmesh.common.DateTime import DateTime
 from cloudmesh.common.Printer import Printer
+from cloudmesh.common.console import Console
+from time import sleep
 
 import collections
 
@@ -45,11 +47,6 @@ class Provider(VolumeABC):
     volume_states = [
         'in-use',
         'available',
-        'creating',
-        'deleted',
-        'deleting',
-        'error',
-        'inuse'
     ]
 
     output = {
@@ -65,7 +62,7 @@ class Provider(VolumeABC):
                       "Encrypted",
                       "Size",
                       #"SnapshotId",
-                      "States",
+                      "State",
                       #"VolumeId",
                       "Iops",
                       #"Tags",
@@ -82,7 +79,7 @@ class Provider(VolumeABC):
                        "Encrypted",
                        "Size",
                        #"SnapshotId",
-                       "Status",
+                       "State",
                         #"VolumeId",
                        "Iops",
                        #"Tags",
@@ -95,7 +92,7 @@ class Provider(VolumeABC):
 
     def __init__(self, name=None):
         self.cloud = name
-        #self.ec2 = boto3.resource('ec2')
+        self.client = boto3.client('ec2')
 
     def update_dict(self, results):
         """
@@ -114,14 +111,17 @@ class Provider(VolumeABC):
 
         # {'Volumes':
         #     [
-        #         {'Attachments':
+        #         {
+        #         'Attachments':
         #             [
-        #                 {'AttachTime': datetime.datetime(2020, 3, 16, 20, 0, 35, tzinfo=tzutc()),
+        #                 {
+        #                 'AttachTime': datetime.datetime(2020, 3, 16, 20, 0, 35, tzinfo=tzutc()),
         #                  'Device': '/dev/sda1',
         #                  'InstanceId': 'i-0765529fec90ba56b',
         #                  'State': 'attached',
         #                  'VolumeId': 'vol-09db404935694e941',
-        #                  'DeleteOnTermination': True}
+        #                  'DeleteOnTermination': True
+        #                  }
         #             ],
         #         'AvailabilityZone': 'us-east-2c',
         #         'CreateTime': datetime.datetime(2020, 3, 16, 20, 0, 35, 257000, tzinfo=tzutc()),
@@ -134,7 +134,8 @@ class Provider(VolumeABC):
         #         'Tags':
         #             [{'Key': 'Name',
         #               'Value': 'xin-vol-3'}],
-        #         'VolumeType': 'gp2'},
+        #         'VolumeType': 'gp2'
+        #         },
         #         {...}
         #     ]
         # }
@@ -161,6 +162,7 @@ class Provider(VolumeABC):
                         volume_name =" "
             except:
                 pass
+
             if "cm" not in entry:
                 entry['cm'] = {}
 
@@ -176,12 +178,95 @@ class Provider(VolumeABC):
             d.append(entry)
         return d
 
+    def find_vm_name(self, volume_name=None):
+        volume = self.client.describe_volumes(
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': [volume_name, ]
+                },
+            ],
+        )
+        #only implemented circumstance with a volume can only attach to one vm, type iol volume could attach to multiple vms
+        #vms = []
+        elements = volume['Volumes']
+        for i in range(len(elements)):
+            try:
+                for item in elements[i]['Attachments']:
+                    vm_id = item['InstanceId']
+                    instance = client.describe_instances(InstanceIds=[vm_id])
+                    for tag in instance['Reservations'][0]['Instances'][0]['Tags']:
+                        print(tag)
+                        if tag['Key'] == 'Name':
+                            vm_name = tag['Value']
+                            print("vm_name: ", vm_name)
+                        return vm_name
+            except:
+                Console.error(f"{volume_name} does not attach to any vm")
+
+    def update_AttachedToVm(self, data):
+        elements = data['Volumes']
+        for i in range(len(elements)):
+            elements[i]['AttachedToVm'] = []
+            try:
+                for item in elements[i]['Attachments']:
+                    vm_id = item['InstanceId']
+                    instance = self.client.describe_instances(InstanceIds=[vm_id])
+                    for tag in instance['Reservations'][0]['Instances'][0]['Tags']:
+                        if tag['Key'] == 'Name':
+                            vm_name = tag['Value']
+                            elements[i]['AttachedToVm'].append(vm_name)
+            except:
+                pass
+        return data
+
+    def find_volume_id(self, volume_name):
+        volume = self.client.describe_volumes(
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': [volume_name,]
+                },
+            ],
+        )
+        volume_id = volume['Volumes'][0]['VolumeId']
+        return volume_id
+
+    def find_vm_id(self, vm_name):
+        instance = self.client.describe_instances(
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': [vm_name, ]
+                },
+            ],
+        )
+        vm_id = instance['Reservations'][0]['Instances'][0]['InstanceId']
+        return vm_id
+
+    def wait(self,
+             time=None):
+        Console.info("waiting for volume to be updated")
+        sleep(time)
+        return False
+
+    def get_volume_state(self, volume_name):
+        volume = self.client.describe_volumes(
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': [volume_name, ]
+                },
+            ],
+        )
+        volume_state = volume['Volumes'][0]['State']
+        return volume_state
+
+
     def create(self, name=None, **kwargs): #name is volume name
         cloud = kwargs['cloud']
         config = Config()
         default = config[f"cloudmesh.volume.{cloud}.default"]
-        #banner(f"print default {default}")
-        #banner(f"print kwargs {kwargs}")
         for key in default.keys():
             if key not in kwargs.keys():
                 kwargs[key] = default[key]
@@ -197,7 +282,7 @@ class Provider(VolumeABC):
             #encrypted: False
             #multi_attach_enabled: True
         result = self.update_dict(result)
-        return result
+        return result[0]
 
     def _create(self,
                **kwargs):
@@ -237,9 +322,6 @@ class Provider(VolumeABC):
 
         """
 
-        #banner(f"create volume {kwargs}")
-        client = boto3.client('ec2')
-
         if kwargs['volume_type']=='io1':
 
             raise NotImplementedError
@@ -249,7 +331,7 @@ class Provider(VolumeABC):
                 raise Exception("minimum volume size for sc1 is 500 GB")
 
 
-        r = client.create_volume(
+        r = self.client.create_volume(
             AvailabilityZone=kwargs['region'],
             Encrypted=kwargs['encrypted'],
             #Iops=kwargs['iops'],
@@ -275,15 +357,11 @@ class Provider(VolumeABC):
         r = [r]
         result = {}
         result['Volumes']= r
-
-        #banner("raw results")
-        #print(result)
-        #banner("raw results end")
+        result['Volumes'][0]['AttachedToVm'] = []
 
         return result
 
 
-    # PROPOSAL 2
     def list(self,
              **kwargs
              ):
@@ -322,15 +400,12 @@ class Provider(VolumeABC):
 
         # filter = eval(filter)
 
-       #banner('print kwargs')
-       #print(kwargs)
-       #print(kwargs['output'])
+        if len(kwargs)==0:
+            dryrun = False
+        else:
+            dryrun = kwargs['--dryrun']
 
-        client = boto3.client('ec2')
-        dryrun = kwargs['--dryrun']
-        #region = kwargs['--region']
-        #vm = kwargs['--vm']# will need vm id from mongo records
-        result = client.describe_volumes(
+        result = self.client.describe_volumes(
             DryRun=dryrun,
             # Filters=[
             #     {
@@ -341,16 +416,15 @@ class Provider(VolumeABC):
             #     },
             # ],
         )
-        #banner("raw results")
-        #print(result)
-        #banner("raw results end")
+
+
+        result = self.update_AttachedToVm(result)
         result = self.update_dict(result)
 
-        #print(self.Print(result, kind='volume', output=kwargs['output']))
 
         return result
 
-    def delete(self, volume_id, dryrun=False):
+    def delete(self, NAME, dryrun=False):
         """
         delete volume
 
@@ -359,21 +433,20 @@ class Provider(VolumeABC):
         :return: dict
         """
 
-        banner(f"delete volume")
-        volume = self.ec2.Volume(volume_id)
-        result = volume.delete(
-            DryRun=dryrun
-        )
-        # This is wrong not updated
-        return result
+        banner(f"delete volume {NAME}")
+        volume_id = self.find_volume_id(NAME)
+
+        response = self.client.delete_volume(VolumeId=volume_id)
+        #self.wait(10)
+        return self.list()
 
     def attach(self,
                NAME,
                vm,
-               device="/dev/sdh",
+               device=None, #"/dev/sdh",
                dryrun=False):
         """
-        mounts volume
+        attach volume
 
         :param volume_id (string): volume id
         :param vm_id (string): instance id
@@ -382,46 +455,34 @@ class Provider(VolumeABC):
         :return: dict
 
         """
-        client = boto3.client('ec2')
-        volume = client.describe_volumes(
-            DryRun=dryrun,
-            Filters=[
-                {
-                    'Name': 'tag:Name',
-                    'Values': [NAME,]
-                },
-            ],
-        )
-        volume_id = volume['Volumes'][0]['VolumeId']
-        instance = client.describe_instances(
-            Filters=[
-                {
-                    'Name': 'tag:Name',
-                    'Values': [vm,]
-                },
-            ],
-            DryRun=dryrun
-        )
-        vm_id = instance['Reservations'][0]['Instances'][0]['InstanceId']
-        response = client.attach_volume(
-                                        Device=device,
-                                        InstanceId=vm_id,
-                                        VolumeId=volume_id,
-                                        DryRun=dryrun
-                                    )
-        result = client.describe_volumes(
-            DryRun=dryrun,
-            Filters=[
-                {
-                    'Name': 'tag:Name',
-                    'Values': [NAME]
-                },
-            ],
-        )
-        result['Volumes'][0]['AttachedToVm']=[vm]
+        devices = [
+                  "/dev/sdb",
+                  "/dev/sdd",
+                  "/dev/sde",
+                  "/dev/sdf",
+                  "/dev/sdg",
+                  "/dev/sdh",]
 
-        result = self.update_dict(result)
-        return result
+        volume_id = self.find_volume_id(NAME)
+        vm_id = self.find_vm_id(vm)
+
+
+        for device in devices:
+            try:
+                response = self.client.attach_volume(
+                                    Device=device,
+                                    InstanceId=vm_id,
+                                    VolumeId=volume_id,
+                                    DryRun=dryrun
+                                )
+                print("response: ",response)
+            except:
+                pass
+            if response is null:
+                Console.info("No available attach point")
+
+        return self.list()
+
 
     def detach(self,
                 NAME):
@@ -431,32 +492,12 @@ class Provider(VolumeABC):
         :param NAME: name of volume to dettach
         :return: str
         """
-
-        client = boto3.client('ec2')
-        volume = client.describe_volumes(
-            Filters=[
-                {
-                    'Name': 'tag:Name',
-                    'Values': [NAME, ]
-                },
-            ],
-        )
-        volume_id = volume['Volumes'][0]['VolumeId']
-        rresponse = client.detach_volume(
-            VolumeId=volume_id,
-        )
-        result = client.describe_volumes(
-            Filters=[
-                {
-                    'Name': 'tag:Name',
-                    'Values': [NAME]
-                },
-            ],
-        )
-        result['Volumes'][0]['AttachedToVm'] = " "
-
-        result = self.update_dict(result)
-        return result
+        volume_state = self.get_volume_state(volume_name=NAME)
+        if volume_state == 'in-use':
+            volume_id = self.find_volume_id(volume_name=NAME)
+            rresponse = self.client.detach_volume(VolumeId=volume_id)
+            self.wait(10)
+        return self.list()
 
 
     def migrate(self,

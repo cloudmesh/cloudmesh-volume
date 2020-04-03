@@ -94,7 +94,6 @@ class Provider(object):  # broken
             conf = Config(configuration)["cloudmesh"]
             self.spec = conf["volume"][name]
             self.cloud = name
-    #        print('self.cloud = ', self.cloud)
             self.kind = self.spec["cm"]["kind"]
             super().__init__()
 
@@ -146,44 +145,35 @@ class Provider(object):  # broken
                 return volume
         return None
 
-    @staticmethod
     def search(self, name=None):
-        raise NotImplementedError
-
-    #
-    # BUG: two different definitiosn of mount
-    #
-    # def mount(self, path=None, name=None):
-    #    self.provider.mount(path, name)
+        return self.info(name=name)
 
     @DatabaseUpdate()
-    def attach(self, NAME=None, vm=None):
-
-        """
-        Attatch volume to a vm
-
-        :param NAME: volume name
-        :param vm: vm name which the volume will be attached to
-        :return: dict
-        """
-        result = self.provider.attach(NAME, vm)
+    def attach(self, NAMES=None, vm=None):
+        result = self.provider.attach(NAMES, vm)
         return result
 
     @DatabaseUpdate()
     def detach(self, NAME=None):
-
-        """
-        Detach a volume from vm
-
-        :param NAME: name of volume to detach
-        :return: str
-        """
-        result = self.provider.detach(NAME)
+        try:
+            result = self.provider.detach(NAME)
+            variables = Variables()
+            variables["volume"] = result["cm"]["name"]
+        except:
+            raise ValueError("Volume could not be detached")
         return result
 
-    # BUG NO GENERAL DEFINITIONS OF MIGRATE
-    # BUG THE PARAMETER NAMES ARE REALY NOT GOOD
-    #
+    @DatabaseUpdate()
+    def add_tag(self, **kwargs):
+        try:
+            result = self.provider.add_tag(**kwargs)
+            variables = Variables()
+            variables["volume"] = result["cm"]["name"]
+        except:
+            raise ValueError("Tag could not be added")
+        return result
+
+
     def migrate(self,
                 name=None,
                 fvm=None,

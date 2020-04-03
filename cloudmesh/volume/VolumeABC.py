@@ -91,6 +91,7 @@ class VolumeABC(metaclass=ABCMeta):
 
         """
         Dettach volumes from vm.
+        If success, the last volume will be saved as the most recent volume.
 
         :param NAMES: names of volumes to dettach
         :return: dict
@@ -103,6 +104,7 @@ class VolumeABC(metaclass=ABCMeta):
         """
         This function add tag to a volume.
         If NAME is not specified, then tag will be added to the last volume.
+        If success, the volume will be saved as the most recent volume.
 
         :param NAME: name of volume
         :param kwargs:

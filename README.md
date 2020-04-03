@@ -39,7 +39,8 @@ functions that are deployed on different clouds.
 
 * volume create
 
-    Create a volume.    
+    Create a volume.
+    If success, the volume will be saved as the most recent volume.     
 ```
     volume create [NAME]
                   [--size=SIZE]
@@ -59,14 +60,17 @@ functions that are deployed on different clouds.
 
 * volume detach
 
-    Detatch volumes from vms.
+    Detach volumes from vms.
+    If NAMES is not specified, detach the last created volume from vm.
+    If success, the last volume will be saved as the most recent volume. 
 ``` 
     volume detach [NAMES]  
 ```
 
 * volume delete
 
-    delete volumes
+    Delete volumes.
+    If NAMES is not given, delete the most recent volume.
 ```
     volume delete [NAMES] 
 ```
@@ -75,7 +79,8 @@ functions that are deployed on different clouds.
 
     Add tag for a volume. For example: key="Name", value="user-volume-1". 
     It could also be used to rename or name a volume. 
-    If NAME is not specified, then tag will be added to the last volume.
+    If NAME is not specified, then tag will be added to the most recent volume.
+    If success, the volume will be saved as the most recent volume. 
     
 ```
     volume add_tag  [NAME]
@@ -204,7 +209,6 @@ delete volumes(NAME)
     
     """    
         This function delete one volume.
-        If NAMES is not given, delete the most recent volume.
 
         :param NAME (string): volume name
         :return: dict        

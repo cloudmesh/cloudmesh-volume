@@ -147,11 +147,20 @@ class Provider(VolumeABC):
             try:
                 for item in entry['Tags']:
                     if item['Key'] == 'Name':
-                        volume_name = item['Value']
+                        if item['Value'] == "":
+                            Console.error(f"Please name volume {entry['VolumeId']}")
+                            volume_name = " "
+                        elif item['Value'] == " ":
+                            Console.error(f"Please name volume {entry['VolumeId']}")
+                            volume_name = " "
+                        else:
+                            volume_name = item['Value']
                     else:
-                        volume_name =" "
+                        Console.error(f"Please name volume {entry['VolumeId']}")
+                        volume_name = " "
             except:
-                pass
+                Console.error(f"Please name volume {entry['VolumeId']}")
+                volume_name = " "
 
             if "cm" not in entry:
                 entry['cm'] = {}
@@ -230,6 +239,7 @@ class Provider(VolumeABC):
             :param volume_name: the name of volume
             :return: volume_id
         """
+        print("volume_name",volume_name)
         volume = self.client.describe_volumes(
             Filters=[
                 {
@@ -238,6 +248,7 @@ class Provider(VolumeABC):
                 },
             ],
         )
+        print(volume)
         volume_id = volume['Volumes'][0]['VolumeId']
         return volume_id
 
@@ -399,56 +410,68 @@ class Provider(VolumeABC):
              ):
 
         """
-        THis function list all volumes as follows
+        This function list all volumes as following:
+        If NAME (volume_name) is specified, it will print out info of NAME
+        If NAME (volume_name) is not specified, it will print out info of all volumes
+        If vm is specified, it will print out all the volumes attached to vm
+        If region(availability zone) is specified, it will print out all the volumes in that region
 
-        If vm is defined, all vloumes of teh vm are returned.
-        If region is defined all volumes of the vms in that region are returned.
-        ....
-
-        #The filter allows us to specify cloud specific filter option
-        #a filter for this cloud looks like ....????
-
-        :param dryrun:
-        :param refresh:
+        :param NAME: name of volume
+        :param vm: name of vm
+        :param region: name of availability zone
         :return:
         """
-
-        # dont    filter_name=None,
-        # dont    filter_value=None,
-        #     dryrun=False):
-
-        #:param filter_name (string)
-        #:param filter_value (string)
-        #:param volume_ids (list): The volume IDs
-
-        # filter = "[[
-        #                 {
-        #                     'Name': 'xyz',
-        #                     'Values': [
-        #                         'abc',
-        #                     ]
-        #                 },
-        #             ]"
-
-        # filter = eval(filter)
 
         if len(kwargs)==0:
             dryrun = False
         else:
             dryrun = kwargs['--dryrun']
-
-        result = self.client.describe_volumes(
-            DryRun=dryrun,
-            # Filters=[
-            #     {
-            #         'Name': {},
-            #         'Values': [
-            #             filter_value,
-            #         ]
-            #     },
-            # ],
-        )
-
+        if kwargs:
+            if kwargs['NAME']:
+                result = self.client.describe_volumes(
+                    DryRun=dryrun,
+                    Filters=[
+                        {
+                            'Name': 'tag:Name',
+                            'Values': [kwargs['NAME'],]
+                        },
+                    ],
+                )
+            elif kwargs['NAMES']:
+                result = self.client.describe_volumes(
+                    DryRun=dryrun,
+                    Filters=[
+                        {
+                            'Name': 'tag:Name',
+                            'Values': kwargs['NAMES']
+                        },
+                    ],
+                )
+            elif kwargs['vm']:
+                vm_id =  self.find_vm_id(kwargs['vm'])
+                result = self.client.describe_volumes(
+                    DryRun=dryrun,
+                    Filters=[
+                        {
+                            'Name': 'attachment.instance-id',
+                            'Values': [vm_id,]
+                        },
+                    ],
+                )
+            elif kwargs['region']:
+                result = self.client.describe_volumes(
+                    DryRun=dryrun,
+                    Filters=[
+                        {
+                            'Name': 'availability-zone',
+                            'Values': [kwargs['region'],]
+                        },
+                    ],
+                )
+            else:
+                result = self.client.describe_volumes(DryRun=dryrun)
+        else:
+            result = self.client.describe_volumes(DryRun=dryrun)
 
         result = self.update_AttachedToVm(result)
         result = self.update_dict(result)
@@ -456,7 +479,7 @@ class Provider(VolumeABC):
 
         return result
 
-    def delete(self, NAME, dryrun=False):
+    def delete(self, NAME):
         """
         This function delete one volume. It will call self.list() to return a dict of all the volumes under the cloud.
 
@@ -471,16 +494,17 @@ class Provider(VolumeABC):
         return self.list()
 
     def attach(self,
-               NAME,
+               NAMES,
                vm,
                device=None,
                dryrun=False):
 
         """
-        This function attach volume to vm. It returns self.list() to list the updated volume. The updated dict with
+        This function attach one or more volumes to vm. It returns self.list() to list the updated volume.
+        The updated dict with
         "AttachedToVm" showing the name of vm where the volume attached to
 
-        :param NAME (string): name of volume
+        :param NAMES (string): names of volumes
         :param vm (string): name of vm
         :param device (string): The device name which is the attaching point to vm
         :param dryrun (boolean): True|False
@@ -495,24 +519,21 @@ class Provider(VolumeABC):
                   "/dev/sdg",
                   "/dev/sdh",]
 
-        volume_id = self.find_volume_id(NAME)
         vm_id = self.find_vm_id(vm)
-
-        for device in devices:
-            try:
-                response = self.client.attach_volume(
-                                    Device=device,
-                                    InstanceId=vm_id,
-                                    VolumeId=volume_id,
-                                    DryRun=dryrun
-                                )
-                print("response: ",response)
-            except:
-                pass
-            if response is null:
-                Console.info("No available attach point")
-
-        return self.list()
+        for name in NAMES:
+            print('name: ', name)
+            volume_id = self.find_volume_id(name)
+            for device in devices:
+                try:
+                    response = self.client.attach_volume(
+                                        Device=device,
+                                        InstanceId=vm_id,
+                                        VolumeId=volume_id,
+                                        DryRun=dryrun
+                                    )
+                except:
+                    pass
+        return self.list(NAMES)
 
     def detach(self,
                 NAME):
@@ -530,7 +551,38 @@ class Provider(VolumeABC):
             volume_id = self.find_volume_id(volume_name=NAME)
             rresponse = self.client.detach_volume(VolumeId=volume_id)
             self.wait(10)
-        return self.list()
+        return self.list(NAME)
+
+    def add_tag(self, NAME, **kwargs):
+
+        """
+        This function add tag to a volume.
+        In aws Boto3, key for volume name is "Name". For example, key="Name", value="user-volume-1".
+        It could also be used to rename or name a volume.
+        If NAME is not specified, then tag will be added to the last volume.
+
+        :param NAME: name of volume
+        :param kwargs:
+                    key: name of tag
+                    value: value of tag
+        :return: self.list(NAME)
+        """
+
+        key = kwargs['key']
+        value = kwargs['value']
+        volume_id = self.find_volume_id(volume_name=NAME)
+        result = self.client.create_tags(
+            Resources=[
+                volume_id,
+            ],
+            Tags=[
+                {
+                    'Key': key,
+                    'Value': value
+                },
+            ],
+        )
+        return self.list()[0]
 
 
     def migrate(self,

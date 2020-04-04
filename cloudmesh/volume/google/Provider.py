@@ -47,7 +47,8 @@ class Provider(VolumeABC):
                       "type",
                       "creationTimestamp",
                       "id",
-                      "zone"],
+                      "zone",
+                      "users"],
             "header": ["Name",
                        "Kind",
                        "Cloud",
@@ -56,7 +57,8 @@ class Provider(VolumeABC):
                        "Type",
                        "Created",
                        "ID",
-                       "Zone"]
+                       "Zone",
+                       "VMs"]
         }
     }
 
@@ -89,10 +91,18 @@ class Provider(VolumeABC):
         d = []
         for entry in _elements:
             name = None
+            entry['type'] = entry['type'].rsplit('/', 1)[1]
+            entry['zone'] = entry['zone'].rsplit('/', 1)[1]
             if 'targetLink' in entry:
                 name = entry['targetLink'].rsplit('/', 1)[1]
             else:
                 name = entry['name']
+            VMs = []
+            if 'users' in entry:
+                for user in entry['users']:
+                    user = user.rsplit('/', 1)[1]
+                    VMs.append(user)
+            entry['users'] = VMs
             if "cm" not in entry:
                 entry['cm'] = {}
             entry["cm"].update({
@@ -214,7 +224,7 @@ class Provider(VolumeABC):
 
     def _list_instances(self):
         compute_service = self._get_compute_service()
-        instance_list = compute_service.instance().aggregatedList(
+        instance_list = compute_service.instances().aggregatedList(
             project=self.credentials["project_id"],
             orderBy='creationTimestamp desc').execute()
         found_instances = []
@@ -254,7 +264,7 @@ class Provider(VolumeABC):
                 if disk['name'] == name:
                     source = disk['selfLink']
             print(source)
-            compute_service.instance().attachDisk(
+            compute_service.instances().attachDisk(
                 project=self.credentials['project_id'],
                 zone=zone,
                 instance=vm,
@@ -290,7 +300,7 @@ class Provider(VolumeABC):
         print(instances)
         # detach disk from all instances
         for instance in instances:
-            compute_service.instance().detachDisk(
+            compute_service.instances().detachDisk(
                 project=self.credentials['project_id'],
                 zone=zone,
                 instance=instance,

@@ -30,7 +30,7 @@ class Provider(VolumeABC):
           default:
             zone: us-central1-a
             type: projects/{project_id}/zones/{zone}/diskTypes/pd-standard
-            sizeGB: '200'
+            sizeGb: '200'
           credentials:
             project_id: {project_id}
             path_to_service_account_json: {path}
@@ -178,13 +178,12 @@ class Provider(VolumeABC):
             body={'type':volume_type,
                   'name':kwargs['NAME'],
                   'sizeGb':str(size)}).execute()
-        pprint(create_disk)
         banner('disk created')
         disk_list = self.list()
-        new_disk = []
-        for disk in disk_list:
-            if disk['name'] == kwargs['NAME']:
-                new_disk.append(disk)
+        new_disk = disk_list[0]
+        #for disk in disk_list:
+        #    if disk['name'] == kwargs['NAME']:
+        #        new_disk.append(disk)
         result = self.update_dict(new_disk)
         return result[0]
 
@@ -213,46 +212,53 @@ class Provider(VolumeABC):
         result = self.update_dict(delete_disk)
         return result
 
-    def attach(self, name=None, vm=None):
-
-        """
-        Attach a disk to an instance
-
-        :param name: name of disk to attach
-        :param vm: instance name which the volume will be attached to
-        :return: updated list of disks with current status
-        """
+    def _list_instances(self):
         compute_service = self._get_compute_service()
-
-        # get zone of vm from list of vm
-        zone_url = None
         instance_list = compute_service.instance().aggregatedList(
             project=self.credentials["project_id"],
             orderBy='creationTimestamp desc').execute()
-        found_instance = []
+        found_instances = []
         items = instance_list["items"]
         for item in items:
             if "instances" in items[item]:
                 instances = items[item]["instances"]
                 for instance in instances:
                     # Add instance details to found_instance.
-                    found_instance.append(instance)
-        for instance in found_instance:
+                    found_instances.append(instance)
+        return found_instances
+
+    def attach(self, names, vm=None):
+
+        """
+        Attach one or more disks to an instance
+
+        :param Names: name(s) of disk(s) to attach
+        :param vm: instance name which the volume(s) will be attached to
+        :return: updated list of disks with current status
+        """
+        compute_service = self._get_compute_service()
+
+        # get zone of vm from list of vm
+        instance_list = self._list_instances()
+        zone_url = None
+        for instance in instance_list:
             if instance['name'] == vm:
                 zone_url = instance['zone']
         zone = zone_url.rsplit('/', 1)[1]
-
-        # get URL source to disk from list of disks
-        source = None
+        print(zone)
+        # get URL source to disk(s) from list of disks
         disk_list = self.list()
-        for disk in disk_list:
-            if disk['name'] == name:
-                source = disk['selfLink']
-        compute_service.instance().attachDisk(
-            project=self.credentials['project_id'],
-            zone=zone,
-            instance=vm,
-            body={'source': source}).execute()
+        for name in names:
+            source = None
+            for disk in disk_list:
+                if disk['name'] == name:
+                    source = disk['selfLink']
+            print(source)
+            compute_service.instance().attachDisk(
+                project=self.credentials['project_id'],
+                zone=zone,
+                instance=vm,
+                body={'source': source}).execute()
 
         result = self.list()
         return result
@@ -265,54 +271,37 @@ class Provider(VolumeABC):
         :param name: name of disk to detach
         :return: updated list of disks with current status
         """
+        banner(name)
         compute_service = self._get_compute_service()
         # Get name of attached instance(s) from list of disks
         instances = []
+        zone_url = None
         disk_list = self.list()
         for disk in disk_list:
             if disk['name'] == name:
+                zone_url = disk['zone']
                 for user in disk['users']:
                     user_url = user
                     user = user_url.rsplit('/', 1)[1]
+                    print(user)
                     instances.append(user)
-
+        zone = zone_url.rsplit('/', 1)[1]
+        print(zone)
+        print(instances)
         # detach disk from all instances
         for instance in instances:
-            instance_list = compute_service.instance().aggregatedList(
-                project=self.credentials["project_id"],
-                orderBy='creationTimestamp desc').execute()
-            found_instance = []
-            items = instance_list["items"]
-            for item in items:
-                if "instances" in items[item]:
-                    instances_list = items[item]["instances"]
-                    for entry in instances_list:
-                        # Add instance details to found_instance.
-                        found_instance.append(entry)
-            zone_url = None
-            for found in found_instance:
-                if instance['name'] == found:
-                    zone_url = instance['zone']
-            zone = zone_url.rsplit('/', 1)[1]
-
-            # Use instance and zone to get deviceName
-            get_instance = compute_service.instance().get(
-                project=self.credentials["project_id"],
-                zone=zone,
-                instance=instance).execute()
-            deviceName = None
-            disks = get_instance['disks']
-            for disk in disks:
-                if disk['name'] == name:
-                    deviceName = disk['deviceName']
             compute_service.instance().detachDisk(
                 project=self.credentials['project_id'],
                 zone=zone,
                 instance=instance,
-                deviceName=deviceName).execute()
+                deviceName=name).execute()
 
         result = self.list()
         return result
+
+    def add_tag(self, **kwargs):
+
+        raise NotImplementedError
 
     def migrate(self,
                 name=None,

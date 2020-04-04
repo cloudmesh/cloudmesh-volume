@@ -142,6 +142,10 @@ class Provider(object):  # broken
     def search(self, name=None):
         return self.info(name=name)
 
+    def status(self, NAME=None):
+        volume_status = self.provider.status(NAME)
+        return volume_status
+
     @DatabaseUpdate()
     def attach(self, NAMES=None, vm=None):
         result = self.provider.attach(NAMES, vm)

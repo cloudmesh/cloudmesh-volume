@@ -16,8 +16,6 @@ from cloudmesh.common.Benchmark import Benchmark
 from cloudmesh.volume.Provider import Provider
 from cloudmesh.configuration.Config import Config
 from cloudmesh.management.configuration.name import Name
-from cloudmesh.mongo.CmDatabase import CmDatabase
-import sys
 
 Benchmark.debug()
 
@@ -27,7 +25,7 @@ VERBOSE(variables.dict())
 
 
 #
-# cms set cloud=aws
+# cms set cloud=aws1
 #
 
 cloud = variables.parameter('cloud')
@@ -90,12 +88,19 @@ class Test_provider_volume:
         data = provider.create(**params)
         Benchmark.Stop()
         VERBOSE(data)
-        for entry in data:
-            state = entry['State']
-            assert state in ['creating', 'available']
+        start_timeout = 360
+        time = 0
+        while time <= start_timeout:
+            sleep(5)
+            time += 5
+            status = provider.status(NAME=name)
+            if status == "available":
+                break
+        # for entry in data:
+        #     status = entry['State']
+        assert status =='available'
 
     def test_provider_volume_addtag(self):
-        sleep(10)
         HEADING()
         name_generator.incr()
         name3 = str(name_generator)
@@ -112,8 +117,6 @@ class Test_provider_volume:
             value_name = entry['cm']['name']
         assert value_name == key_value
 
-
-
     def test_provider_volume_list(self):
         HEADING()
         # os.system("cms volume list")
@@ -129,7 +132,6 @@ class Test_provider_volume:
         HEADING()
         # os.system("cms volume list NAMES")
         # os.system("cms volume list NAMES --cloud=aws1")
-        print("names: ",names)
         params = {"cloud": cloud, "NAMES": names}
         Benchmark.Start()
         data = provider.list(**params)
@@ -143,26 +145,28 @@ class Test_provider_volume:
 
     def test_provider_volume_attach(self):
         # test attach one volume to vm
-        HEADING()
         # os.system("cms volume attach {name} --vm={vm}")
+        HEADING()
         vm = variables['vm']
-        name = [str(name_generator)]
-        print("attach volume: ", name)
-        print("name: ", name)
+        name = str(name_generator)
         Benchmark.Start()
-        data = provider.attach(NAMES=name, vm=vm)
+        data = provider.attach(NAMES=[name], vm=vm)
         Benchmark.Stop()
-        start_timeout = 20
+        start_timeout = 360
         time = 0
         while time <= start_timeout:
             sleep(5)
             time += 5
-            for entry in data:
-                attached = entry["AttachedToVm"]
-                if vm in attached:
-                    break
+            status = provider.status(NAME=name)
+            if status == "in-use":
+                break
+            # for entry in data:
+            #     attached = entry["AttachedToVm"]
+            #     if vm in attached:
+            #         break
         VERBOSE(data)
-        assert vm in attached
+        #assert vm in attached
+        assert status == "in-use"
 
     def test_provider_volume_detach(self):
         # test detach the most recent volume
@@ -173,17 +177,20 @@ class Test_provider_volume:
         Benchmark.Start()
         data = provider.detach(NAME=name)
         Benchmark.Stop()
-        stop_timeout = 20
+        stop_timeout = 360
         time = 0
         while time <= stop_timeout:
             sleep(5)
             time += 5
-            for entry in data:
-                attached = entry["AttachedToVm"]
-                if vm not in attached:
-                    break
+            status = provider.status(NAME=name)
+            if status == "available":
+                break
+            # for entry in data:
+            #     attached = entry["AttachedToVm"]
+            #     if vm not in attached:
+            #         break
         VERBOSE(data)
-        assert vm not in attached
+        assert status == "available"
 
     def test_provider_volume_attach_multi(self):
         # test attach multiple volumes to vm
@@ -193,16 +200,16 @@ class Test_provider_volume:
         Benchmark.Start()
         data = provider.attach(names, vm)
         Benchmark.Stop()
-        start_timeout = 20
+        start_timeout = 360
         time = 0
         count = 0
         while time <= start_timeout:
             sleep(5)
             time += 5
+            if count >= len(names):
+                break
             for name in names:
                 for entry in data:
-                    print("entry['cm']['name']",entry['cm']['name'])
-                    print("entry['AttachedToVm'']: ",entry["AttachedToVm"])
                     if entry['cm']['name'] == name and entry["AttachedToVm"] == [vm]:
                         count += 1
         VERBOSE(data)
@@ -222,10 +229,19 @@ class Test_provider_volume:
 
     def test_provider_volume_delete(self):
         # test delete given one volume name and cloud
-        os.system(f"cms volume detach {names}")
-        sleep(10)
-        HEADING()
+        #os.system(f"cms volume delete {name}")
         name = str(Name())
+        provider.detach(NAME=name)
+        start_timeout = 360
+        time = 0
+        while time <= start_timeout:
+            sleep(5)
+            time += 5
+            status = provider.status(NAME=name)
+            if status == "available":
+                break
+
+        HEADING()
         params = {"NAME": name}
         Benchmark.Start()
         provider.delete(NAME=name)

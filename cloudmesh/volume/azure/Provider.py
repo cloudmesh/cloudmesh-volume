@@ -237,7 +237,6 @@ class Provider(VolumeABC):
 
 
     def create(self, **kwargs):
-        arguments = dotdict(kwargs)
         GROUP_NAME = 'volume-group'
         # self.vms = self.compute_client.virtual_machines
         LOCATION = 'westus'
@@ -261,21 +260,17 @@ class Provider(VolumeABC):
     def delete (self, NAMES=None):
         GROUP_NAME = 'volume-group'
         LOCATION = 'westus'
-        self.compute_client.disks.delete(
+        disk_deletion = self.compute_client.disks.delete(
             GROUP_NAME,
             "Volume_Disk1",
             {
-                'location': LOCATION,
-                'disk_size_gb': 1,
-                'creation_data': {
-                    'create_option': 'Empty'
-                }
+                'location': LOCATION
             }
         )
-        # # print list after deleting
-        # results = self.compute_client.disks.list()
-        # result = self.update_dict(results)
-        # print(self.Print(result, kind='volume', output=kwargs['output']))
+        # print list after deleting
+        results = disk_deletion.result()
+        result = self.update_dict(results)
+        return result
 
 
     def list(self,
@@ -285,10 +280,8 @@ class Provider(VolumeABC):
              cloud=None,
              refresh=None,
              dryrun=None):
-        results = self.compute_client.disks.list()
-        print(results)
-        # result = self.update_dict(results)
-        # print(self.Print(result, kind='volume', output=kwargs['output']))
+        disk_list = self.compute_client.disks.list()
+        return disk_list
 
 
     def attach(self, NAME=None, vm=None):

@@ -382,7 +382,7 @@ class Provider(VolumeABC):
             Size=int(kwargs['size']),
             #SnapshotId=None,
             VolumeType=kwargs['volume_type'],
-            DryRun=kwargs['dryrun'],
+            #DryRun=kwargs['dryrun'],
             TagSpecifications=[
                 {
                     'ResourceType': 'volume',
@@ -426,6 +426,7 @@ class Provider(VolumeABC):
         # else:
         #     dryrun = kwargs['--dryrun']
         if kwargs:
+            result = self.client.describe_volumes()
             for key in kwargs:
                 if key == 'NAME' and kwargs['NAME']:
                     result = self.client.describe_volumes(
@@ -439,12 +440,14 @@ class Provider(VolumeABC):
                     )
 
                 elif key=='NAMES' and kwargs['NAMES']:
+                    if type(kwargs['NAMES'])== str:
+                        kwargs['NAMES'] = [kwargs['NAMES']]
                     result = self.client.describe_volumes(
                         #DryRun=dryrun,
                         Filters=[
                             {
                                 'Name': 'tag:Name',
-                                'Values': kwargs['NAMES']
+                                'Values': kwargs['NAMES'],
                             },
                         ],
                     )
@@ -469,8 +472,6 @@ class Provider(VolumeABC):
                             },
                         ],
                     )
-                else:
-                    result = self.client.describe_volumes()
 
         else:
             result = self.client.describe_volumes()
@@ -490,7 +491,6 @@ class Provider(VolumeABC):
         banner(f"delete volume {NAME}")
         volume_id = self.find_volume_id(NAME)
         response = self.client.delete_volume(VolumeId=volume_id)
-        #self.wait(10)
         return self.list()
 
     def attach(self,
@@ -569,6 +569,7 @@ class Provider(VolumeABC):
 
         key = kwargs['key']
         value = kwargs['value']
+
         volume_id = self.find_volume_id(volume_name=NAME)
         result = self.client.create_tags(
             Resources=[

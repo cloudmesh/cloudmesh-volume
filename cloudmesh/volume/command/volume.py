@@ -210,7 +210,7 @@ class VolumeCommand(PluginCommand):
                     for name in names:
                         volume = provider.search(name=name)
                         if volume:
-                            result = provider.delete(name)
+                            result = provider.delete(NAME=name)
                             deleted.append(name)
                     if len(deleted) > 0:
                         #delete all deleted volumes in names

@@ -1,9 +1,3 @@
-# Gregor will help us, can only do this after the abstract base class is defined
-# Example can find under
-#
-# cloudmesh-cloud/cloudmesh/compute/*,
-# cloudmesh-cloud/cloudmesh/vm/command,
-# cloudmesh-storage/cloudmesh/storage/*
 import os
 import json
 
@@ -129,8 +123,8 @@ class Provider(object):  # broken
         return data
 
     @DatabaseUpdate()
-    def delete(self, name=None):
-        d = self.provider.delete(name)
+    def delete(self, NAME=None):
+        d = self.provider.delete(NAME)
         return d
 
     @DatabaseUpdate()

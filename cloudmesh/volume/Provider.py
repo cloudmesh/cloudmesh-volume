@@ -117,7 +117,7 @@ class Provider(object):  # broken
         try:
             data = self.provider.create(**kwargs)
             variables = Variables()
-            variables["volume"] = data["cm"]["name"]
+            variables["volume"] = data[0]["cm"]["name"]
         except:
             raise ValueError("Volume could not be created")
         return data

@@ -7,10 +7,9 @@ p = AZProvider(name="azure",
 print(p)
 
 # pprint(p.create())
-
-# p.delete()
-# p.list()
-p.attach()
+# pprint(p.delete())
+pprint(p.list())
+# pprint(p.attach())
 # p.detach()
 # p.migrate()
 # p.sync()

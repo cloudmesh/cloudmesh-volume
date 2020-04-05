@@ -16,17 +16,17 @@ functions that are deployed on different clouds.
   
   List volumes.
   
-  If NAMES are given, search through all the active clouds and list them all.
+  If NAMES are given, search through all the active clouds and list all the volumes.
   
   If NAMES and cloud are given, list all volumes under the cloud.
   
-  If cloud is given, list all volumes under the cloud.
+  If cloud is given, list all the volumes under the cloud.
   
-  If cloud is not given, list all volumes under current cloud.
+  If cloud is not given, list all the volumes under current cloud.
 
-  If vm is defined, under the current cloud, all volumes attaching to the vm are returned.
+  If vm is given, under the current cloud, list all the volumes attaching to the vm.
   
-  If region is defined, under the current cloud, all volumes of the vms in that region are returned.
+  If region is given, under the current cloud, list all volumes in that region.
       
 ```
     volume list NAMES
@@ -40,6 +40,7 @@ functions that are deployed on different clouds.
 * volume create
 
     Create a volume.
+    
     If success, the volume will be saved as the most recent volume.     
 ```
     volume create [NAME]
@@ -51,7 +52,8 @@ functions that are deployed on different clouds.
 
 * volume attach
 
-    Attatch volumes to a vm.
+    Attach volumes to a vm.
+    
     If NAMES is not specified, attach the last created volume to vm.    
 ```
     volume attach [NAMES]
@@ -61,7 +63,9 @@ functions that are deployed on different clouds.
 * volume detach
 
     Detach volumes from vms.
+    
     If NAMES is not specified, detach the last created volume from vm.
+    
     If success, the last volume will be saved as the most recent volume. 
 ``` 
     volume detach [NAMES]  
@@ -70,6 +74,7 @@ functions that are deployed on different clouds.
 * volume delete
 
     Delete volumes.
+    
     If NAMES is not given, delete the most recent volume.
 ```
     volume delete [NAMES] 
@@ -77,9 +82,12 @@ functions that are deployed on different clouds.
 
 * volume add_tag
 
-    Add tag for a volume. For example: key="Name", value="user-volume-1". 
-    It could also be used to rename or name a volume. 
+    Add tag for a volume. For example: key="Name", value="user-volume-1".
+     
+    It could also be used to rename or name a volume.
+     
     If NAME is not specified, then tag will be added to the most recent volume.
+    
     If success, the volume will be saved as the most recent volume. 
     
 ```
@@ -198,11 +206,11 @@ create(**kwargs)
     """
        Create a volume.
 
-           :param NAME (string): name of volume
-           :param region (string): availability-zone
-           :param size (integer): size of volume
-           :param volume_type (string): type of volume
-           :return: dict
+       :param NAME (string): name of volume
+       :param region (string): availability-zone
+       :param size (integer): size of volume
+       :param volume_type (string): type of volume
+       :return: dict
     """
     
 delete volumes(NAME)
@@ -232,8 +240,8 @@ attach(NAMES, vm, device, dryrun=False):
 detach(NAME):
 
     """
-        This function detach a volume from vm. It returns self.list(NAME) to list the updated volume. The vm under "AttachedToVm" will be
-        removed if volume is successfully detached.
+        This function detach a volume from vm. It returns self.list(NAME) to list the updated volume. 
+        The vm under "AttachedToVm" will be removed if volume is successfully detached.
 
         :param NAME: name of volume to detach
         :return: dict
@@ -245,7 +253,6 @@ add_tag(NAME, **kwargs):
         This function add tag to a volume. 
         In aws Boto3, key for volume name is "Name". For example, key="Name", value="user-volume-1". 
         It could also be used to rename or name a volume. 
-        If NAME is not specified, then tag will be added to the last volume.
 
         :param NAME: name of volume
         :param kwargs:

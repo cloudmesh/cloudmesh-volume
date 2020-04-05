@@ -163,15 +163,15 @@ class Provider(VolumeABC):
         return result
         
     def list(self,**kwargs):
-        if kwargs["--refresh"]:
+        #if kwargs["--refresh"]:
             con = openstack.connect(**self.config)
             results = con.list_volumes()
             result = self.update_dict(results)
             #print(self.Print(result, kind='volume', output=kwargs['output']))
             return result
-        else:
+        #else:
             # read record from mongoDB
-            refresh = False
+            #refresh = False
 
     def attach(self, NAME=None, vm=None):
         con = openstack.connect(**self.config)
@@ -248,4 +248,7 @@ class Provider(VolumeABC):
         :return: str
         """
         raise NotImplementedError
+
+    def add_tag(self, NAME, **kwargs):
+        raise NotImplemented
 

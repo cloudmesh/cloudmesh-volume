@@ -45,7 +45,7 @@ class Provider(VolumeABC):
             EC2_PRIVATE_KEY_FILE_NAME: 
     """
 
-    volume_states = [
+    volume_status = [
         'in-use',
         'available',
     ]
@@ -80,7 +80,7 @@ class Provider(VolumeABC):
                        "Encrypted",
                        "Size",
                        #"SnapshotId",
-                       "State",
+                       "Status",
                         #"VolumeId",
                        "Iops",
                        #"Tags",
@@ -281,12 +281,12 @@ class Provider(VolumeABC):
         sleep(time)
         return False
 
-    def get_volume_state(self, volume_name):
+    def status(self, volume_name):
         """
-            This function get volume state, such as "in-use", "available"
+            This function get volume status, such as "in-use", "available"
 
             :param volume_name
-            :return: volume_state
+            :return: volume_status
         """
         volume = self.client.describe_volumes(
             Filters=[
@@ -296,8 +296,8 @@ class Provider(VolumeABC):
                 },
             ],
         )
-        volume_state = volume['Volumes'][0]['State']
-        return volume_state
+        volume_status = volume['Volumes'][0]['State']
+        return volume_status
 
 
     def create(self, name=None, **kwargs):
@@ -382,7 +382,7 @@ class Provider(VolumeABC):
             Size=int(kwargs['size']),
             #SnapshotId=None,
             VolumeType=kwargs['volume_type'],
-            DryRun=kwargs['dryrun'],
+            #DryRun=kwargs['dryrun'],
             TagSpecifications=[
                 {
                     'ResourceType': 'volume',
@@ -426,6 +426,7 @@ class Provider(VolumeABC):
         # else:
         #     dryrun = kwargs['--dryrun']
         if kwargs:
+            result = self.client.describe_volumes()
             for key in kwargs:
                 if key == 'NAME' and kwargs['NAME']:
                     result = self.client.describe_volumes(
@@ -439,12 +440,14 @@ class Provider(VolumeABC):
                     )
 
                 elif key=='NAMES' and kwargs['NAMES']:
+                    if type(kwargs['NAMES'])== str:
+                        kwargs['NAMES'] = [kwargs['NAMES']]
                     result = self.client.describe_volumes(
                         #DryRun=dryrun,
                         Filters=[
                             {
                                 'Name': 'tag:Name',
-                                'Values': kwargs['NAMES']
+                                'Values': kwargs['NAMES'],
                             },
                         ],
                     )
@@ -469,8 +472,6 @@ class Provider(VolumeABC):
                             },
                         ],
                     )
-                else:
-                    result = self.client.describe_volumes()
 
         else:
             result = self.client.describe_volumes()
@@ -490,7 +491,6 @@ class Provider(VolumeABC):
         banner(f"delete volume {NAME}")
         volume_id = self.find_volume_id(NAME)
         response = self.client.delete_volume(VolumeId=volume_id)
-        #self.wait(10)
         return self.list()
 
     def attach(self,
@@ -545,8 +545,8 @@ class Provider(VolumeABC):
         :return: self.list()
         """
 
-        volume_state = self.get_volume_state(volume_name=NAME)
-        if volume_state == 'in-use':
+        volume_status = self.status(volume_name=NAME)
+        if volume_status == 'in-use':
             volume_id = self.find_volume_id(volume_name=NAME)
             rresponse = self.client.detach_volume(VolumeId=volume_id)
             self.wait(10)
@@ -569,6 +569,7 @@ class Provider(VolumeABC):
 
         key = kwargs['key']
         value = kwargs['value']
+
         volume_id = self.find_volume_id(volume_name=NAME)
         result = self.client.create_tags(
             Resources=[

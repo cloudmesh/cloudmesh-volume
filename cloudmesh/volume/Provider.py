@@ -1,9 +1,3 @@
-# Gregor will help us, can only do this after the abstract base class is defined
-# Example can find under
-#
-# cloudmesh-cloud/cloudmesh/compute/*,
-# cloudmesh-cloud/cloudmesh/vm/command,
-# cloudmesh-storage/cloudmesh/storage/*
 import os
 import json
 
@@ -123,14 +117,14 @@ class Provider(object):  # broken
         try:
             data = self.provider.create(**kwargs)
             variables = Variables()
-            variables["volume"] = data["cm"]["name"]
+            variables["volume"] = data[0]["cm"]["name"]
         except:
             raise ValueError("Volume could not be created")
         return data
 
     @DatabaseUpdate()
-    def delete(self, name=None):
-        d = self.provider.delete(name)
+    def delete(self, NAME=None):
+        d = self.provider.delete(NAME)
         return d
 
     @DatabaseUpdate()
@@ -147,6 +141,10 @@ class Provider(object):  # broken
 
     def search(self, name=None):
         return self.info(name=name)
+
+    def status(self, NAME=None):
+        volume_status = self.provider.status(NAME)
+        return volume_status
 
     @DatabaseUpdate()
     def attach(self, NAMES=None, vm=None):

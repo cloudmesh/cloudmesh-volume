@@ -118,7 +118,7 @@ class Provider(VolumeABC):
         Method to get the credentials using the Service Account JSON file.
         :param path_to_service_account_file: Service Account JSON File path.
         :param scopes: Scopes needed to provision.
-        :return:
+        :return: credentials used to get compute service
         """
         _credentials = service_account.Credentials.from_service_account_file(
             filename=path_to_service_account_file,
@@ -127,7 +127,8 @@ class Provider(VolumeABC):
 
     def _get_compute_service(self):
         """
-            Method to get google compute service v1.
+        Method to get google compute service v1.
+        :return: Google Compute Engine API
         """
         service_account_credentials = self._get_credentials(
             self.credentials['path_to_service_account_json'],
@@ -202,6 +203,7 @@ class Provider(VolumeABC):
         Deletes the specified persistent disk.
         Deleting a disk removes its data permanently and is irreversible.
         :param name: Name of the disk to delete
+        :return: a dict representing the deleted disk
         """
         compute_service = self._get_compute_service()
         disk_list = self.list()

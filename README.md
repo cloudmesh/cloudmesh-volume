@@ -10,27 +10,24 @@ simplifying the volume management interface to an existing cloud. We
 will also benchmark the clouds while comparing the volume management
 functions that are deployed on different clouds.
 
-## Team members
-
-* Peter McCandless sp20-516-222
-* Xin Gu sp20-516-227
-* Ashley Thornton sp20-516-230
-* Ashok Singam sp20-516-232
-
-## Distribution of clouds between team memebers
-
-* Azure - Ashley & Xin
-* AWS - Ashley & Xin
-* Google - Peter & Xin
-* Oracle - Ashok & Peter
-* Openstack - Peter & Ashok
-* Multipass - Ashok & Ashley
-
 ## Volume Management functions
 
 * volume list
   
-  List all the volumes for certain vm, region, or cloud. 
+  List volumes.
+  
+  If NAMES are given, search through all the active clouds and list all the volumes.
+  
+  If NAMES and cloud are given, list all volumes under the cloud.
+  
+  If cloud is given, list all the volumes under the cloud.
+  
+  If cloud is not given, list all the volumes under current cloud.
+
+  If vm is given, under the current cloud, list all the volumes attaching to the vm.
+  
+  If region is given, under the current cloud, list all volumes in that region.
+      
 ```
     volume list NAMES
                 [--vm=VM]
@@ -43,6 +40,8 @@ functions that are deployed on different clouds.
 * volume create
 
     Create a volume.
+    
+    If success, the volume will be saved as the most recent volume.     
 ```
     volume create [NAME]
                   [--size=SIZE]
@@ -53,35 +52,64 @@ functions that are deployed on different clouds.
 
 * volume attach
 
-    attatch volume to a vm
+    Attach volumes to a vm.
+    
+    If NAMES is not specified, attach the last created volume to vm.    
 ```
-    volume attach [NAME]
+    volume attach [NAMES]
                   [--vm=VM]
-
 ```
 
 * volume detach
 
-    detatch volumes from vms
+    Detach volumes from vms.
+    
+    If NAMES is not specified, detach the last created volume from vm.
+    
+    If success, the last volume will be saved as the most recent volume. 
 ``` 
     volume detach [NAMES]  
 ```
 
 * volume delete
 
-    delete volumes
+    Delete volumes.
+    
+    If NAMES is not given, delete the most recent volume.
 ```
     volume delete [NAMES] 
+```
+
+* volume add_tag
+
+    Add tag for a volume. For example: key="Name", value="user-volume-1".
+     
+    It could also be used to rename or name a volume.
+     
+    If NAME is not specified, then tag will be added to the most recent volume.
+    
+    If success, the volume will be saved as the most recent volume. 
+    
+```
+    volume add_tag  [NAME]
+                    [--key=KEY]
+                    [--value=VALUE]
 ```
     
 * volume migrate
   
   Migrate volume from one vm to another vm between different regions,
-  services or providers. ``` volume migrate NAME FROM_VM TO_VM ```
+  services or providers. 
+  
+``` 
+  volume migrate NAME FROM_VM TO_VM 
+```
 
 * volume sync
   
-  Volume sync alows for data to shared bewteen two volumes.
+  Sync contents of one volume to another volume. It is  a copy of all 
+  changed content from one volume to the other.
+  
 ```
     volume sync FROM_VOLUME TO_VOLUME
 ```
@@ -158,70 +186,80 @@ parameters
 
 #### AWS volume management functions
 
-```
-create_volume(**kwargs)
+list(**kwargs)
 
-Creates an EBS volume that can be attached to an instance in the same
-Availability Zone.
+    """        
+        This function list all volumes as following:
+        If NAME (volume_name) is specified, it will print out info of NAME
+        If NAME (volume_name) is not specified, it will print out info of all volumes
+        If vm is specified, it will print out all the volumes attached to vm
+        If region(availability zone) is specified, it will print out all the volumes in that region
 
-Required Parameters: 
+        :param NAME: name of volume
+        :param vm: name of vm
+        :param region: name of availability zone
+        :return: dict
+    """
 
+create(**kwargs)
 
-        AvailabilityZone (string) -- 
+    """
+       Create a volume.
 
-            The Availability Zone in which to create the volume.
-```
+       :param NAME (string): name of volume
+       :param region (string): availability-zone
+       :param size (integer): size of volume
+       :param volume_type (string): type of volume
+       :return: dict
+    """
+    
+delete volumes(NAME)
+    
+    """    
+        This function delete one volume.
 
-describe_volumes(**kwargs)
+        :param NAME (string): volume name
+        :return: dict        
+    """
+    
+attach(NAMES, vm, device, dryrun=False):
 
-```
-Describes the specified EBS volumes or all of your EBS volumes.
-```
+    """        
+        This function attach one or more volumes to vm. It returns self.list() to list the updated volume.
+        The updated dict with
+        "AttachedToVm" showing the name of vm where the volume attached to
 
-delete_volume(**kwargs)
+        :param NAMES (string): names of volumes
+        :param vm (string): name of vm
+        :param device (string): The device name which is the attaching point to vm. 
+                                This function provided 5 attaching points.
+        :param dryrun (boolean): True|False
+        :return: dict
+    """
 
-```
-Deletes the specified EBS volume. The volume must be in the available
-state (not attached to an instance).
+detach(NAME):
 
-Required Parameters: 
+    """
+        This function detach a volume from vm. It returns self.list(NAME) to list the updated volume. 
+        The vm under "AttachedToVm" will be removed if volume is successfully detached.
 
-        VolumeId (string) --
+        :param NAME: name of volume to detach
+        :return: dict
+    """
+    
+add_tag(NAME, **kwargs):
 
-            The ID of the volume.
-```
+    """    
+        This function add tag to a volume. 
+        In aws Boto3, key for volume name is "Name". For example, key="Name", value="user-volume-1". 
+        It could also be used to rename or name a volume. 
 
-attach_volume(**kwargs)
-
-```
-Attaches an EBS volume to a running or stopped instance and exposes it
-to the instance with the specified device name.
-
-Required Parameters:
-
-        Device (string) --
-
-            The device name (for example, /dev/sdh or xvdh ).
-
-        InstanceId (string) --
-
-            The ID of the instance.
-
-        VolumeId (string) --
-
-            The ID of the volume.
-```
-
-detach_volume(**kwargs)
-```
-Detaches an EBS volume from an instance.
-
-Required Parameters:
-
-        VolumeId (string) --
-
-            The ID of the volume.
-```
+        :param NAME: name of volume
+        :param kwargs:
+                    key: name of tag
+                    value: value of tag
+        :return: dict        
+    """
 
 :o2: Add functions from provider with descriptions of required parameters
 

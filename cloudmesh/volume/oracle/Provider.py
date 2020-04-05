@@ -137,6 +137,18 @@ class Provider(VolumeABC):
                 break
         return volumeId
 
+    def status(self, name):
+        block_storage = oci.core.BlockstorageClient(self.config)
+        v = block_storage.list_volumes(self.config['compartment_id'])
+        results = v.data
+        status = None
+        for entry in results:
+            display_name = entry.__getattribute__("display_name")
+            if (name == display_name):
+                status = entry.__getattribute__("lifecycle_state")
+                break
+        return status
+
     def create(self, **kwargs):
         arguments = dotdict(kwargs)
         block_storage = oci.core.BlockstorageClient(self.config)
@@ -150,21 +162,23 @@ class Provider(VolumeABC):
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
         result = self.update_dict(results)
-        print(self.Print(result, kind='volume', output=kwargs['output']))
+        return result
+        #print(self.Print(result, kind='volume', output=kwargs['output']))
 
     def delete(self, name=None):
         block_storage = oci.core.BlockstorageClient(self.config)
+        print("oracle delete volume",name)
         volumeId = self.getVolumeIdFromName(block_storage,name)
         print(volumeId)
         if(volumeId!=None):
             block_storage.delete_volume(volume_id=volumeId)
-        #print list after delete
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
         result = self.update_dict(results)
-        print(self.Print(result, kind='volume', output='table'))
+        #print(self.Print(result, kind='volume', output='table'))
+        return result
 
-    def attach(self, NAME=None, vm=None):
+    def attach(self, NAMES=None, vm=None):
         compute_client = oci.core.ComputeClient(self.config)
         #get instance id from VM name
         i = compute_client.list_instances(self.config['compartment_id'])
@@ -178,7 +192,7 @@ class Provider(VolumeABC):
 
         #get volumeId from Volume name
         block_storage = oci.core.BlockstorageClient(self.config)
-        volumeId = self.getVolumeIdFromName(block_storage, NAME)
+        volumeId = self.getVolumeIdFromName(block_storage, NAMES[0])
         #attach volume to vm
         iscsi_volume_attachment_response = compute_client.attach_volume(
             oci.core.models.AttachIScsiVolumeDetails(
@@ -205,15 +219,22 @@ class Provider(VolumeABC):
         return results
 
     def list(self, **kwargs):
-        if kwargs["--refresh"]:
-            block_storage = oci.core.BlockstorageClient(self.config)
+        block_storage = oci.core.BlockstorageClient(self.config)
+        if kwargs and kwargs['NAME']:
+            v = block_storage.list_volumes(self.config['compartment_id'])
+            results = v.data
+            for entry in results:
+                display_name = entry.__getattribute__("display_name")
+                if (kwargs["NAME"] == display_name):
+                    break
+            result = [entry]
+            result = self.update_dict(result)
+            return result
+        else:
             v = block_storage.list_volumes(self.config['compartment_id'])
             results = v.data
             result = self.update_dict(results)
-            print(self.Print(result, kind='volume', output=kwargs['output']))
-        else:
-            # read record from mongoDB
-            refresh = False
+            return result
 
     def mount(self, path=None, name=None):
         raise NotImplementedError
@@ -282,4 +303,9 @@ class Provider(VolumeABC):
         :return: str
         """
         raise NotImplementedError
+
+    def add_tag(self, NAME, **kwargs):
+        raise NotImplemented
+
+
 

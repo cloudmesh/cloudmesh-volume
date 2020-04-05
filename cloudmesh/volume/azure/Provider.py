@@ -237,13 +237,12 @@ class Provider(VolumeABC):
 
 
     def create(self, **kwargs):
-        arguments = dotdict(kwargs)
         GROUP_NAME = 'volume-group'
         # self.vms = self.compute_client.virtual_machines
         LOCATION = 'westus'
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
-            "Volume_Disk1",
+            "cloudmesh-os-disk",
             {
                 'location': LOCATION,
                 'disk_size_gb': 1,
@@ -261,21 +260,17 @@ class Provider(VolumeABC):
     def delete (self, NAMES=None):
         GROUP_NAME = 'volume-group'
         LOCATION = 'westus'
-        self.compute_client.disks.delete(
+        disk_deletion = self.compute_client.disks.delete(
             GROUP_NAME,
-            "Volume_Disk1",
+            "cloudmesh-os-disk",
             {
-                'location': LOCATION,
-                'disk_size_gb': 1,
-                'creation_data': {
-                    'create_option': 'Empty'
-                }
+                'location': LOCATION
             }
         )
-        # # print list after deleting
-        # results = self.compute_client.disks.list()
-        # result = self.update_dict(results)
-        # print(self.Print(result, kind='volume', output=kwargs['output']))
+        # print list after deleting
+        results = disk_deletion.result()
+        result = self.update_dict(results)
+        return result
 
 
     def list(self,
@@ -285,17 +280,17 @@ class Provider(VolumeABC):
              cloud=None,
              refresh=None,
              dryrun=None):
-        results = self.compute_client.disks.list()
-        print(results)
-        # result = self.update_dict(results)
-        # print(self.Print(result, kind='volume', output=kwargs['output']))
+        disk_list = self.compute_client.disks.list()
+        return disk_list
 
 
     def attach(self, NAME=None, vm=None):
         LOCATION = 'westus'
         GROUP_NAME = 'volume-group'
-        VM_NAME = 'VM1'
-        # if virtualmachine.get(VM_NAME) is None, give error
+        VM_NAME = 'cloudmeshVM'
+        VM_NAME = VM_NAME.as_dict()
+        if self.virtualmachine.get(VM_NAME) is None :
+            print("VM does not exist")
             #check sdk if virtual machine is missing
         #convert VM object into a dictionary, then pass it on to below
         # parameters
@@ -306,7 +301,7 @@ class Provider(VolumeABC):
                 'location': LOCATION,
                 'storage_profile': {
                     'data_disks': [{
-                        'name': 'voldisk1',
+                        'name': 'cloudmesh-os-disk',
                         'disk_size_gb': 1,
                         'lun': 0,
                         'create_option': 'Empty'

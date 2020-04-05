@@ -195,8 +195,7 @@ class Provider(VolumeABC):
         #for disk in disk_list:
         #    if disk['name'] == kwargs['NAME']:
         #        new_disk.append(disk)
-        result = self.update_dict(new_disk)
-        return result[0]
+        return disk_list
 
     def delete(self, name=None):
         """
@@ -208,21 +207,18 @@ class Provider(VolumeABC):
         compute_service = self._get_compute_service()
         disk_list = self.list()
         # find disk in list and get zone
-        zone_url = None
+        zone = None
         for disk in disk_list:
             if disk['name'] == name:
-                zone_url = str(disk['zone'])
-        if zone_url is None:
+                zone = str(disk['zone'])
+        if zone is None:
             banner(f'{name} was not found')
             return
-        # get zone from end of zone_https
-        zone = zone_url.rsplit('/', 1)[1]
         delete_disk = compute_service.disks().delete(
             project=self.credentials["project_id"],
             zone=zone,
             disk=name).execute()
-        result = self.update_dict(delete_disk)
-        return result
+        return
 
     def _list_instances(self):
         compute_service = self._get_compute_service()

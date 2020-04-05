@@ -16,17 +16,17 @@ functions that are deployed on different clouds.
   
   List volumes.
   
-  If NAMES are given, search through all the active clouds and list them all.
+  If NAMES are given, search through all the active clouds and list all the volumes.
   
   If NAMES and cloud are given, list all volumes under the cloud.
   
-  If cloud is given, list all volumes under the cloud.
+  If cloud is given, list all the volumes under the cloud.
   
-  If cloud is not given, list all volumes under current cloud.
+  If cloud is not given, list all the volumes under current cloud.
 
-  If vm is defined, under the current cloud, all volumes attaching to the vm are returned.
+  If vm is given, under the current cloud, list all the volumes attaching to the vm.
   
-  If region is defined, under the current cloud, all volumes of the vms in that region are returned.
+  If region is given, under the current cloud, list all volumes in that region.
       
 ```
     volume list NAMES

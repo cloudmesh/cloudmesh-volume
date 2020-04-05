@@ -86,22 +86,54 @@ class Test_provider_volume:
         params = {"NAME":name}
         data = provider.create(**params)
         Benchmark.Stop()
-
         for v in data:
             status = v['status']
-        if cloud == 'openstack':
-            assert status in ['available']
-        else:
-            assert status in ['available']
+        assert status in ['available']
+
+    def test_provider_volume_attach(self):
+        # test attach one volume to vm
+        # os.system("cms volume attach {name} --vm={vm}")
+        HEADING()
+        vm = variables['vm']
+        Benchmark.Start()
+        NAMES = []
+        NAMES.append(name)
+        provider.attach(NAMES=NAMES,vm=vm)
+        Benchmark.Stop()
+        start_timeout = 360
+        time = 0
+        while time <= start_timeout:
+            sleep(5)
+            time += 5
+            status = provider.status(NAME=NAMES[0])
+            if status == "in-use":
+                break
+        assert status == "in-use"
+
+    def test_provider_volume_detach(self):
+        # test detach one volume
+        # os.system("cms volume detach {name} ")
+        HEADING()
+        Benchmark.Start()
+        provider.detach(NAME=name)
+        Benchmark.Stop()
+        start_timeout = 360
+        time = 0
+        while time <= start_timeout:
+            sleep(5)
+            time += 5
+            status = provider.status(NAME=name)
+            if status == "available":
+                break
+        assert status == "available"
 
     def test_provider_volume_delete(self):
         HEADING()
         Benchmark.Start()
-        data = provider.delete(name=name)
+        provider.delete(NAME=name)
         Benchmark.Stop()
         result = provider.info(name=name)
         assert result is None
-
 
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)

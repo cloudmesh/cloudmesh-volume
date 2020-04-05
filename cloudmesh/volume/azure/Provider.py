@@ -242,7 +242,7 @@ class Provider(VolumeABC):
         LOCATION = 'westus'
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
-            "Volume_Disk1",
+            "cloudmesh-os-disk",
             {
                 'location': LOCATION,
                 'disk_size_gb': 1,
@@ -262,7 +262,7 @@ class Provider(VolumeABC):
         LOCATION = 'westus'
         disk_deletion = self.compute_client.disks.delete(
             GROUP_NAME,
-            "Volume_Disk1",
+            "cloudmesh-os-disk",
             {
                 'location': LOCATION
             }
@@ -287,7 +287,7 @@ class Provider(VolumeABC):
     def attach(self, NAME=None, vm=None):
         LOCATION = 'westus'
         GROUP_NAME = 'volume-group'
-        VM_NAME = 'VM1'
+        VM_NAME = 'cloudmeshVM'
         VM_NAME = VM_NAME.as_dict()
         if self.virtualmachine.get(VM_NAME) is None :
             print("VM does not exist")
@@ -301,7 +301,7 @@ class Provider(VolumeABC):
                 'location': LOCATION,
                 'storage_profile': {
                     'data_disks': [{
-                        'name': 'Volume_Disk1',
+                        'name': 'cloudmesh-os-disk',
                         'disk_size_gb': 1,
                         'lun': 0,
                         'create_option': 'Empty'

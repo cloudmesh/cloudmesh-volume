@@ -325,6 +325,10 @@ class Provider(VolumeABC):
         results = disk_attach.result()
         result = self.update_dict(results)
         return result
+        # results = disk_attach.result().as_dict()
+        # result = self.update_dict([results])
+        # return result
+
 
 
 #might need to access azure compute provider vm name

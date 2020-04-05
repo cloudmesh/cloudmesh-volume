@@ -288,7 +288,9 @@ class Provider(VolumeABC):
         LOCATION = 'westus'
         GROUP_NAME = 'volume-group'
         VM_NAME = 'VM1'
-        # if virtualmachine.get(VM_NAME) is None, give error
+        VM_NAME = VM_NAME.as_dict()
+        if self.virtualmachine.get(VM_NAME) is None :
+            print("VM does not exist")
             #check sdk if virtual machine is missing
         #convert VM object into a dictionary, then pass it on to below
         # parameters
@@ -299,7 +301,7 @@ class Provider(VolumeABC):
                 'location': LOCATION,
                 'storage_profile': {
                     'data_disks': [{
-                        'name': 'voldisk1',
+                        'name': 'Volume_Disk1',
                         'disk_size_gb': 1,
                         'lun': 0,
                         'create_option': 'Empty'

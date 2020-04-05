@@ -237,7 +237,7 @@ class Provider(VolumeABC):
 
 
     def create(self, **kwargs):
-        GROUP_NAME = 'volume-group'
+        GROUP_NAME = 'cloudmesh'
         # self.vms = self.compute_client.virtual_machines
         LOCATION = 'westus'
         disk_creation = self.compute_client.disks.create_or_update(
@@ -258,7 +258,7 @@ class Provider(VolumeABC):
 
 
     def delete (self, NAMES=None):
-        GROUP_NAME = 'volume-group'
+        GROUP_NAME = 'cloudmesh'
         LOCATION = 'westus'
         disk_deletion = self.compute_client.disks.delete(
             GROUP_NAME,
@@ -286,7 +286,7 @@ class Provider(VolumeABC):
 
     def attach(self, NAME=None, vm=None):
         LOCATION = 'westus'
-        GROUP_NAME = 'volume-group'
+        GROUP_NAME = 'cloudmesh'
         VM_NAME = 'cloudmeshVM'
         VM_NAME = VM_NAME.as_dict()
         if self.virtualmachine.get(VM_NAME) is None :

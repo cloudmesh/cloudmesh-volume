@@ -242,7 +242,7 @@ class Provider(VolumeABC):
         """
         Attach one or more disks to an instance
 
-        :param Names: name(s) of disk(s) to attach
+        :param names: name(s) of disk(s) to attach
         :param vm: instance name which the volume(s) will be attached to
         :return: updated list of disks with current status
         """
@@ -255,7 +255,6 @@ class Provider(VolumeABC):
             if instance['name'] == vm:
                 zone_url = instance['zone']
         zone = zone_url.rsplit('/', 1)[1]
-        print(zone)
         # get URL source to disk(s) from list of disks
         disk_list = self.list()
         for name in names:
@@ -263,12 +262,12 @@ class Provider(VolumeABC):
             for disk in disk_list:
                 if disk['name'] == name:
                     source = disk['selfLink']
-            print(source)
             compute_service.instances().attachDisk(
                 project=self.credentials['project_id'],
                 zone=zone,
                 instance=vm,
-                body={'source': source}).execute()
+                body={'source': source,
+                      'deviceName': name}).execute()
 
         result = self.list()
         return result
@@ -281,32 +280,29 @@ class Provider(VolumeABC):
         :param name: name of disk to detach
         :return: updated list of disks with current status
         """
-        banner(name)
         compute_service = self._get_compute_service()
         # Get name of attached instance(s) from list of disks
         instances = []
-        zone_url = None
+        zone = None
         disk_list = self.list()
         for disk in disk_list:
             if disk['name'] == name:
-                zone_url = disk['zone']
+                zone = disk['zone']
                 for user in disk['users']:
-                    user_url = user
-                    user = user_url.rsplit('/', 1)[1]
-                    print(user)
                     instances.append(user)
-        zone = zone_url.rsplit('/', 1)[1]
-        print(zone)
-        print(instances)
         # detach disk from all instances
         for instance in instances:
-            compute_service.instances().detachDisk(
+            detach = compute_service.instances().detachDisk(
                 project=self.credentials['project_id'],
                 zone=zone,
                 instance=instance,
                 deviceName=name).execute()
+        result = None
+        updated_list = self.list()
+        for disk in updated_list:
+            if disk['name'] == name:
+                result = disk
 
-        result = self.list()
         return result
 
     def add_tag(self, **kwargs):

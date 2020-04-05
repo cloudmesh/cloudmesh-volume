@@ -1,5 +1,5 @@
 ###############################################################
-# pytest -v --capture=no tests/test_volume_openstack.py
+# pytest -v --capture=no tests/test_volume_oracle.py
 ###############################################################
 
 # TODO: start this with cloud init, e.g, empty mongodb
@@ -28,7 +28,7 @@ VERBOSE(variables.dict())
 key = variables['key']
 
 #
-# cms set cloud=openstack
+# cms set cloud=oracle
 #
 cloud = variables.parameter('cloud')
 
@@ -68,6 +68,18 @@ class Test_provider_volume:
             numbers.sort()
             return numbers[-1]
 
+    def test_provider_volume_create(self):
+        HEADING()
+        os.system(f"cms volume list --cloud={cloud}")
+        name_generator.incr()
+        Benchmark.Start()
+        params = {"NAME": name}
+        data = provider.create(**params)
+        Benchmark.Stop()
+        for v in data:
+            status = v['lifecycle_state']
+        assert status in ['AVAILABLE','PROVISIONING']
+
     def test_provider_volumeprovider_volume_list(self):
         # list should be after create() since it would return empty and
         # len(data) would be 0
@@ -78,62 +90,6 @@ class Test_provider_volume:
         assert len(data) > 0
         Benchmark.Stop()
 
-    def test_provider_volume_create(self):
-        HEADING()
-        os.system(f"cms volume list --cloud={cloud}")
-        name_generator.incr()
-        Benchmark.Start()
-        params = {"NAME":name}
-        data = provider.create(**params)
-        Benchmark.Stop()
-        for v in data:
-            status = v['status']
-        assert status in ['available']
-
-    def test_provider_volume_attach(self):
-        # test attach one volume to vm
-        # os.system("cms volume attach {name} --vm={vm}")
-        HEADING()
-        vm = variables['vm']
-        Benchmark.Start()
-        NAMES = []
-        NAMES.append(name)
-        provider.attach(NAMES=NAMES,vm=vm)
-        Benchmark.Stop()
-        start_timeout = 360
-        time = 0
-        while time <= start_timeout:
-            sleep(5)
-            time += 5
-            status = provider.status(NAME=NAMES[0])
-            if status == "in-use":
-                break
-        assert status == "in-use"
-
-    def test_provider_volume_detach(self):
-        # test detach one volume
-        # os.system("cms volume detach {name} ")
-        HEADING()
-        Benchmark.Start()
-        provider.detach(NAME=name)
-        Benchmark.Stop()
-        start_timeout = 360
-        time = 0
-        while time <= start_timeout:
-            sleep(5)
-            time += 5
-            status = provider.status(NAME=name)
-            if status == "available":
-                break
-        assert status == "available"
-
-    def test_provider_volume_delete(self):
-        HEADING()
-        Benchmark.Start()
-        provider.delete(NAME=name)
-        Benchmark.Stop()
-        result = provider.info(name=name)
-        assert result is None
-
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)
+

@@ -30,8 +30,7 @@ class Provider(VolumeABC):
           default:
             zone: us-central1-a
             type: projects/{project_id}/zones/{zone}/diskTypes/pd-standard
-            sizeGB: '200'
-            physicalBlockSizeBytes: '4096'
+            sizeGb: '200'
           credentials:
             project_id: {project_id}
             path_to_service_account_json: {path}
@@ -48,16 +47,18 @@ class Provider(VolumeABC):
                       "type",
                       "creationTimestamp",
                       "id",
-                      "zone"],
+                      "zone",
+                      "users"],
             "header": ["Name",
                        "Kind",
                        "Cloud",
                        "Status",
-                       "SizeGb",
+                       "Size",
                        "Type",
                        "Created",
                        "ID",
-                       "Zone"]
+                       "Zone",
+                       "VMs"]
         }
     }
 
@@ -89,12 +90,25 @@ class Provider(VolumeABC):
             _elements = [elements]
         d = []
         for entry in _elements:
+            name = None
+            entry['type'] = entry['type'].rsplit('/', 1)[1]
+            entry['zone'] = entry['zone'].rsplit('/', 1)[1]
+            if 'targetLink' in entry:
+                name = entry['targetLink'].rsplit('/', 1)[1]
+            else:
+                name = entry['name']
+            VMs = []
+            if 'users' in entry:
+                for user in entry['users']:
+                    user = user.rsplit('/', 1)[1]
+                    VMs.append(user)
+            entry['users'] = VMs
             if "cm" not in entry:
                 entry['cm'] = {}
             entry["cm"].update({
                 "kind": 'volume',
                 "cloud": self.cloud,
-                "name": entry["name"]
+                "name": name
             })
             d.append(entry)
         return d
@@ -104,7 +118,7 @@ class Provider(VolumeABC):
         Method to get the credentials using the Service Account JSON file.
         :param path_to_service_account_file: Service Account JSON File path.
         :param scopes: Scopes needed to provision.
-        :return:
+        :return: credentials used to get compute service
         """
         _credentials = service_account.Credentials.from_service_account_file(
             filename=path_to_service_account_file,
@@ -113,7 +127,8 @@ class Provider(VolumeABC):
 
     def _get_compute_service(self):
         """
-            Method to get google compute service v1.
+        Method to get google compute service v1.
+        :return: Google Compute Engine API
         """
         service_account_credentials = self._get_credentials(
             self.credentials['path_to_service_account_json'],
@@ -137,10 +152,8 @@ class Provider(VolumeABC):
         """
         compute_service = self._get_compute_service()
         disk_list = compute_service.disks().aggregatedList(
-
             project=self.credentials["project_id"],
             orderBy='creationTimestamp desc').execute()
-
         # look thought all disk list zones and find zones w/ 'disks'
         # then get disk details and add to found
         found = []
@@ -156,7 +169,7 @@ class Provider(VolumeABC):
 
         return result
 
-    def create(self, name=None, **kwargs):
+    def create(self, **kwargs):
         """
         Creates a persistent disk in the specified project using the data in
         the request.
@@ -164,64 +177,138 @@ class Provider(VolumeABC):
         """
 
         compute_service = self._get_compute_service()
-        banner('creating disk')
-        if kwargs['volume_type'] is None:
-            kwargs['volume_type'] = self.default["type"]
-        if kwargs['size'] is None:
-            kwargs['size'] = self.default["sizeGb"]
+        volume_type = kwargs['volume_type']
+        size = kwargs['size']
+        if volume_type == None:
+            volume_type = self.default["type"]
+        if size == None:
+            size = self.default["sizeGb"]
         create_disk = compute_service.disks().insert(
             project=self.credentials["project_id"],
             zone=self.default['zone'],
-            body={'physicalBlockSizeBytes':
-                  self.default['physicalBlockSizeBytes'],
-                  'type': kwargs['volume_type'],
-                  'name': kwargs['NAME'],
-                  'sizeGB': kwargs['size']}).execute()
-        pprint(create_disk)
+            body={'type':volume_type,
+                  'name':kwargs['NAME'],
+                  'sizeGb':str(size)}).execute()
         banner('disk created')
-        result = self.update_dict(create_disk)
-        return result
+        disk_list = self.list()
+        new_disk = disk_list[0]
+        #for disk in disk_list:
+        #    if disk['name'] == kwargs['NAME']:
+        #        new_disk.append(disk)
+        result = self.update_dict(new_disk)
+        return result[0]
 
     def delete(self, name=None):
         """
         Deletes the specified persistent disk.
         Deleting a disk removes its data permanently and is irreversible.
         :param name: Name of the disk to delete
+        :return: a dict representing the deleted disk
         """
         compute_service = self._get_compute_service()
         disk_list = self.list()
         # find disk in list and get zone
-        zone_https = None
+        zone_url = None
         for disk in disk_list:
             if disk['name'] == name:
-                zone_https = str(disk['zone'])
+                zone_url = str(disk['zone'])
+        if zone_url is None:
+            banner(f'{name} was not found')
+            return
         # get zone from end of zone_https
-        zone = zone_https.rsplit('/', 1)[1]
-        compute_service.disks().delete(project=self.credentials["project_id"],
-                                       zone=zone, disk=name).execute()
+        zone = zone_url.rsplit('/', 1)[1]
+        delete_disk = compute_service.disks().delete(
+            project=self.credentials["project_id"],
+            zone=zone,
+            disk=name).execute()
+        result = self.update_dict(delete_disk)
+        return result
 
-    def attach(self, NAME=None, vm=None):
+    def _list_instances(self):
+        compute_service = self._get_compute_service()
+        instance_list = compute_service.instances().aggregatedList(
+            project=self.credentials["project_id"],
+            orderBy='creationTimestamp desc').execute()
+        found_instances = []
+        items = instance_list["items"]
+        for item in items:
+            if "instances" in items[item]:
+                instances = items[item]["instances"]
+                for instance in instances:
+                    # Add instance details to found_instance.
+                    found_instances.append(instance)
+        return found_instances
+
+    def attach(self, names, vm=None):
 
         """
-        Attach a disk to an instance
+        Attach one or more disks to an instance
 
-        :param NAME: disk name
-        :param vm: instance name which the volume will be attached to
-        :return: dict
+        :param names: name(s) of disk(s) to attach
+        :param vm: instance name which the volume(s) will be attached to
+        :return: updated list of disks with current status
         """
+        compute_service = self._get_compute_service()
 
+        # get zone of vm from list of vm
+        instance_list = self._list_instances()
+        zone_url = None
+        for instance in instance_list:
+            if instance['name'] == vm:
+                zone_url = instance['zone']
+        zone = zone_url.rsplit('/', 1)[1]
+        # get URL source to disk(s) from list of disks
+        disk_list = self.list()
+        for name in names:
+            source = None
+            for disk in disk_list:
+                if disk['name'] == name:
+                    source = disk['selfLink']
+            compute_service.instances().attachDisk(
+                project=self.credentials['project_id'],
+                zone=zone,
+                instance=vm,
+                body={'source': source,
+                      'deviceName': name}).execute()
 
-        raise NotImplementedError
+        result = self.list()
+        return result
 
-    def detach(self,
-              NAME=None):
+    def detach(self, name=None):
 
         """
-        Dettach a volume from vm
+        Detach a disk from all instances
 
-        :param NAME: name of volume to dettach
-        :return: str
+        :param name: name of disk to detach
+        :return: updated list of disks with current status
         """
+        compute_service = self._get_compute_service()
+        # Get name of attached instance(s) from list of disks
+        instances = []
+        zone = None
+        disk_list = self.list()
+        for disk in disk_list:
+            if disk['name'] == name:
+                zone = disk['zone']
+                for user in disk['users']:
+                    instances.append(user)
+        # detach disk from all instances
+        for instance in instances:
+            detach = compute_service.instances().detachDisk(
+                project=self.credentials['project_id'],
+                zone=zone,
+                instance=instance,
+                deviceName=name).execute()
+        result = None
+        updated_list = self.list()
+        for disk in updated_list:
+            if disk['name'] == name:
+                result = disk
+
+        return result
+
+    def add_tag(self, **kwargs):
+
         raise NotImplementedError
 
     def migrate(self,

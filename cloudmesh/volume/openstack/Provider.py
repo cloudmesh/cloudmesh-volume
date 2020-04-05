@@ -133,6 +133,11 @@ class Provider(VolumeABC):
             d.append(entry)
         return d
 
+    def status(self, volume_name):
+        con = openstack.connect(**self.config)
+        result = con.get_volume(name_or_id=volume_name)
+        return result['status']
+
     def __init__(self,name):
         self.cloud = name
         self.config = Config()["cloudmesh.volume.openstack.credentials"]
@@ -145,7 +150,6 @@ class Provider(VolumeABC):
             arguments.volume_type=self.defaults["volume_type"]
         if arguments.size == None:
             arguments.size=self.defaults["size"]
-        print(arguments.NAME)
         r = con.create_volume(name=arguments.NAME,size=arguments.size,
                            volume_type=arguments.volume_type)
         r = [r]
@@ -156,33 +160,37 @@ class Provider(VolumeABC):
     def delete(self, name=None):
         con = openstack.connect(**self.config)
         con.delete_volume(name_or_id=name)
-        # print list after delete
         results = con.list_volumes()
         result = self.update_dict(results)
-        #print(self.Print(result, kind='volume', output='table'))
         return result
         
     def list(self,**kwargs):
-        #if kwargs["--refresh"]:
-            con = openstack.connect(**self.config)
-            results = con.list_volumes()
-            result = self.update_dict(results)
-            #print(self.Print(result, kind='volume', output=kwargs['output']))
+        con = openstack.connect(**self.config)
+        results = con.list_volumes()
+        if kwargs and kwargs['NAME']:
+            result = con.get_volume(name_or_id=kwargs["NAME"])
+            result = [result]
+            result = self.update_dict(result)
             return result
-        #else:
-            # read record from mongoDB
-            #refresh = False
+        else:
+            result = self.update_dict(results)
+            return result
 
-    def attach(self, NAME=None, vm=None):
+    def attach(self, NAMES=None, vm=None):
         con = openstack.connect(**self.config)
         server = con.get_server(vm)
-        volume = con.list_volumes(NAME)[0]
-        results = con.attach_volume(server, volume, device=None, wait=True, timeout=None)
-        result = self.update_dict(results)
-        return ''
+        volume = con.get_volume(name_or_id=NAMES[0])
+        con.attach_volume(server, volume, device=None, wait=True, timeout=None)
+        return self.list(NAME=NAMES[0])
 
-    def detach(self, NAME=None, vm=None):
-        raise NotImplementedError
+    def detach(self, NAME=None):
+        con = openstack.connect(**self.config)
+        volume = con.get_volume(name_or_id=NAME)
+        attachments = volume['attachments']
+        server = con.get_server(attachments[0]['server_id'])
+        con.detach_volume(server,volume, wait=True,
+                          timeout=None)
+        return self.list(NAME=NAME)
 
     def migrate(self,
                 name=None,

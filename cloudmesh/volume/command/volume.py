@@ -258,6 +258,8 @@ class VolumeCommand(PluginCommand):
                             banner(f"Detaching {name} from {cloud}")
                             result = provider.detach(NAME=name)
                             detached.append(name)
+                            print(provider.Print(result, kind='volume',
+                                                 output=arguments.output))
                     if len(detached) > 0:
                         # delete all detached volumes in volumes
                         for name in detached:

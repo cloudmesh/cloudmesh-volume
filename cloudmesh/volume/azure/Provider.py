@@ -239,7 +239,7 @@ class Provider(VolumeABC):
     def create(self, **kwargs):
         GROUP_NAME = 'cloudmesh'
         # self.vms = self.compute_client.virtual_machines
-        LOCATION = 'westus'
+        LOCATION = 'eastus'
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
             "cloudmesh-os-disk",
@@ -259,7 +259,7 @@ class Provider(VolumeABC):
 
     def delete (self, NAMES=None):
         GROUP_NAME = 'cloudmesh'
-        LOCATION = 'westus'
+        LOCATION = 'eastus'
         disk_deletion = self.compute_client.disks.delete(
             GROUP_NAME,
             "cloudmesh-os-disk",
@@ -284,31 +284,47 @@ class Provider(VolumeABC):
         return disk_list
 
 
+    # def attach(self, NAME=None, vm=None):
+    #     LOCATION = 'westus'
+    #     GROUP_NAME = 'cloudmesh'
+    #     VM_NAME = 'cloudmeshVM'
+    #     if self.virtualmachine.get(VM_NAME) is None :
+    #         print("VM does not exist")
+    #         #check sdk if virtual machine is missing
+    #     #convert VM object into a dictionary, then pass it on to below
+    #     # parameters
+    #     async_vm_update = self.compute_client.virtual_machines.create_or_update(
+    #         GROUP_NAME,
+    #         VM_NAME,
+    #         {
+    #             'location': LOCATION,
+    #             'storage_profile': {
+    #                 'data_disks': [{
+    #                     'name': 'cloudmesh-os-disk',
+    #                     'disk_size_gb': 1,
+    #                     'lun': 0,
+    #                     'create_option': 'Empty'
+    #                 }]
+    #             }
+    #         }
+    #     )
+    #
+    #
     def attach(self, NAME=None, vm=None):
         LOCATION = 'westus'
         GROUP_NAME = 'cloudmesh'
-        VM_NAME = 'cloudmeshVM'
-        VM_NAME = VM_NAME.as_dict()
-        if self.virtualmachine.get(VM_NAME) is None :
-            print("VM does not exist")
-            #check sdk if virtual machine is missing
-        #convert VM object into a dictionary, then pass it on to below
-        # parameters
-        async_vm_update = self.compute_client.virtual_machines.create_or_update(
-            GROUP_NAME,
-            VM_NAME,
-            {
-                'location': LOCATION,
-                'storage_profile': {
-                    'data_disks': [{
-                        'name': 'cloudmesh-os-disk',
-                        'disk_size_gb': 1,
-                        'lun': 0,
-                        'create_option': 'Empty'
-                    }]
-                }
-            }
-        )
+        # VM_NAME = 'cloudmeshVM'
+        VM_NAME = 'ashthorn-vm-3'
+        self.vms = self.compute_client.virtual_machines
+        virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
+        disk_attach = virtual_machine.storage_profile.data_disks.append({
+            'lun': 0,
+            'name': "cloudmesh-os-disk",
+            'create_option': 'Attach'
+        })
+        results = disk_attach.result()
+        result = self.update_dict(results)
+        return result
 
 
 #might need to access azure compute provider vm name
@@ -318,6 +334,10 @@ class Provider(VolumeABC):
 
     def detach(self,
               NAME=None):
+        print("update me")
+
+
+    def add_tag(selfself,**kwargs):
         print("update me")
 
 

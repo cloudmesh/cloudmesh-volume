@@ -6,10 +6,10 @@ p = AZProvider(name="azure",
 
 print(p)
 
-pprint(p.create())
+# pprint(p.create())
 # pprint(p.delete())
 # pprint(p.list())
-# pprint(p.attach())
+pprint(p.attach())
 # p.detach()
 # p.migrate()
 # p.sync()

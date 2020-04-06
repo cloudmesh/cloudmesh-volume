@@ -105,7 +105,7 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            status = provider.status(NAME=NAMES[0])
+            status = provider.status(NAME=NAMES[0])[0]['status']
             if status == "in-use":
                 break
         assert status == "in-use"
@@ -122,7 +122,7 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            status = provider.status(NAME=name)
+            status = provider.status(NAME=name)[0]['status']
             if status == "available":
                 break
         assert status == "available"

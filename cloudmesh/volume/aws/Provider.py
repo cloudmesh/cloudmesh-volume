@@ -548,11 +548,18 @@ class Provider(VolumeABC):
         :return: self.list()
         """
 
-        volume_status = self.status(volume_name=NAME)
+        volume_status = self.status(volume_name=NAME)[0]['State']
         if volume_status == 'in-use':
             volume_id = self.find_volume_id(volume_name=NAME)
             rresponse = self.client.detach_volume(VolumeId=volume_id)
-            self.wait(10)
+        stop_timeout = 360
+        time = 0
+        while time <= stop_timeout:
+            sleep(5)
+            time += 5
+            volume_status = self.status(volume_name=NAME)[0]['State']
+            if volume_status == "available":
+                break
         return self.list(NAME=NAME)[0]
 
     def add_tag(self, NAME, **kwargs):

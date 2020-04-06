@@ -142,6 +142,7 @@ class Provider(object):  # broken
     def search(self, name=None):
         return self.info(name=name)
 
+    @DatabaseUpdate()
     def status(self, NAME=None):
         volume_status = self.provider.status(NAME)
         return volume_status

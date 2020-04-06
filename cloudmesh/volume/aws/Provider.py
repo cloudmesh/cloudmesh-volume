@@ -48,6 +48,7 @@ class Provider(VolumeABC):
     volume_status = [
         'in-use',
         'available',
+        'creating'
     ]
 
     output = {
@@ -288,7 +289,7 @@ class Provider(VolumeABC):
             :param volume_name
             :return: volume_status
         """
-        volume = self.client.describe_volumes(
+        result = self.client.describe_volumes(
             Filters=[
                 {
                     'Name': 'tag:Name',
@@ -296,8 +297,10 @@ class Provider(VolumeABC):
                 },
             ],
         )
-        volume_status = volume['Volumes'][0]['State']
-        return volume_status
+        result = self.update_dict(result)
+        #volume_status = volume['Volumes'][0]['State']
+
+        return result
 
 
     def create(self, name=None, **kwargs):
@@ -325,7 +328,7 @@ class Provider(VolumeABC):
             #encrypted: False
             #multi_attach_enabled: True
         result = self.update_dict(result)
-        return result[0]
+        return result
 
     def _create(self,
                **kwargs):

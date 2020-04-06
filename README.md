@@ -122,7 +122,6 @@ functions that are deployed on different clouds.
 
 #### Multipass volume management functions
 
-
 mount(self, name="cloudmesh", source=None, destination=None)
 ```
 mounts the source into the instance at the given destination
@@ -415,19 +414,7 @@ Required Parameters:
 
 ## Documentation on how to move volumes from one provider to the next 
 
-* from Amazon S3
-
-  * Migrating from Amazon S3 to Cloud Storage
-
-    <https://cloud.google.com/storage/docs/migrating#storage-list-buckets-s3-python>
-
-    <https://github.com/adzerk/s3-to-google-cloud-storage-connector>
-
-  * Migrating from Amazon S3 to Azure Blob Storage
-
-    <https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/master/README.md>
-
-  * Migrating from Amazon S3 to OpenStack
+* from Amazon
 
 * from Cloud Storage
 

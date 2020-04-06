@@ -93,7 +93,7 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            status = provider.status(NAME=name)
+            status = provider.status(NAME=name)[0]['State']
             if status == "available":
                 break
         # for entry in data:
@@ -157,7 +157,7 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            status = provider.status(NAME=name)
+            status = provider.status(NAME=name)[0]['State']
             if status == "in-use":
                 break
             # for entry in data:
@@ -182,7 +182,7 @@ class Test_provider_volume:
         while time <= stop_timeout:
             sleep(5)
             time += 5
-            status = provider.status(NAME=name)
+            status = provider.status(NAME=name)[0]['State']
             if status == "available":
                 break
             # for entry in data:
@@ -237,7 +237,7 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            status = provider.status(NAME=name)
+            status = provider.status(NAME=name)[0]['State']
             if status == "available":
                 break
 

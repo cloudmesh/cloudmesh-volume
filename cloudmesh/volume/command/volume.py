@@ -43,6 +43,7 @@ class VolumeCommand(PluginCommand):
             volume add_tag [NAME]
                            [--key=KEY]
                            [--value=VALUE]
+            volume status [NAME]
             volume migrate NAME FROM_VM TO_VM
             volume sync FROM_VOLUME TO_VOLUME
 
@@ -273,6 +274,14 @@ class VolumeCommand(PluginCommand):
             result = provider.add_tag(**arguments)
             print(provider.Print(result, kind='volume', output=arguments.output))
 
+        elif arguments.status:
+            arguments.cloud = arguments.cloud or cloud
+            name = arguments.NAME or variables["volume"] or get_last_volume()
+            arguments.NAME = name
+            provider = Provider(name=arguments.cloud)
+            result = provider.status(NAME=name)
+            print(f"{name} is {result[0]['State']}")
+            #print(provider.Print(result, kind='volume', output=arguments.output))
 
 
 

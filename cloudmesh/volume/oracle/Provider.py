@@ -126,7 +126,6 @@ class Provider(VolumeABC):
         self.defaults = Config()["cloudmesh.volume.oracle.default"]
 
     def getVolumeIdFromName(self,block_storage,name):
-        block_storage = oci.core.BlockstorageClient(self.config)
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
         volumeId = None
@@ -136,6 +135,18 @@ class Provider(VolumeABC):
                 volumeId=entry.__getattribute__("id")
                 break
         return volumeId
+
+    def getAttachmentIdFromName(self,block_storage,name):
+        v = block_storage.list_volumes(self.config['compartment_id'])
+        results = v.data
+        attachmentid = None
+        for entry in results:
+            display_name = entry.__getattribute__("display_name")
+            if(name==display_name):
+                tags = entry.__getattribute__("freeform_tags")
+                attachmentid = tags['attachmentid']
+                break
+        return attachmentid
 
     def status(self, name):
         block_storage = oci.core.BlockstorageClient(self.config)
@@ -152,13 +163,20 @@ class Provider(VolumeABC):
     def create(self, **kwargs):
         arguments = dotdict(kwargs)
         block_storage = oci.core.BlockstorageClient(self.config)
-        block_storage.create_volume(oci.core.models.CreateVolumeDetails(
+        result = block_storage.create_volume(
+            oci.core.models.CreateVolumeDetails(
                                         compartment_id=self.config['compartment_id'],
                                         availability_domain=self.config['availability_domain'],
                                         display_name=arguments.NAME
                                     ))
-        # print list after create
-        block_storage = oci.core.BlockstorageClient(self.config)
+        #wait for availability of volume
+        volume = oci.wait_until(
+            block_storage,
+            block_storage.get_volume(result.data.id),
+            'lifecycle_state',
+            'AVAILABLE'
+        ).data
+
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
         result = self.update_dict(results)
@@ -169,9 +187,15 @@ class Provider(VolumeABC):
         block_storage = oci.core.BlockstorageClient(self.config)
         print("oracle delete volume",name)
         volumeId = self.getVolumeIdFromName(block_storage,name)
-        print(volumeId)
         if(volumeId!=None):
             block_storage.delete_volume(volume_id=volumeId)
+            #wait for termination
+            volume = oci.wait_until(
+                block_storage,
+                block_storage.get_volume(volumeId),
+                'lifecycle_state',
+                'TERMINATED'
+            ).data
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
         result = self.update_dict(results)
@@ -194,12 +218,28 @@ class Provider(VolumeABC):
         block_storage = oci.core.BlockstorageClient(self.config)
         volumeId = self.getVolumeIdFromName(block_storage, NAMES[0])
         #attach volume to vm
-        iscsi_volume_attachment_response = compute_client.attach_volume(
+        a = compute_client.attach_volume(
             oci.core.models.AttachIScsiVolumeDetails(
                 display_name='IscsiVolAttachment',
                 instance_id=instanceId,
                 volume_id=volumeId
             )
+        )
+
+        #tag volume with attachment id. This needed during detach.
+        result = block_storage.update_volume(
+            volumeId,
+            oci.core.models.UpdateVolumeDetails(
+                freeform_tags={'attachmentid':a.data.id},
+            ))
+
+        #wait until attached
+        oci.wait_until(
+            compute_client,
+            compute_client.get_volume_attachment(
+                a.data.id),
+            'lifecycle_state',
+            'ATTACHED'
         )
         #return result after attach
         v = block_storage.list_volumes(self.config['compartment_id'])
@@ -207,16 +247,23 @@ class Provider(VolumeABC):
         results = self.update_dict(results)
         return results
 
-    def detach(self, NAME=None, vm=None):
+    def detach(self, NAME=None):
         compute_client = oci.core.ComputeClient(self.config)
         block_storage = oci.core.BlockstorageClient(self.config)
-        volumeId = self.getVolumeIdFromName(block_storage, NAME)
-        compute_client.detach_volume(volumeId)
+        attachmentId = self.getAttachmentIdFromName(block_storage, NAME)
+        compute_client.detach_volume(attachmentId)
+        #wait for detachment
+        oci.wait_until(
+            compute_client,
+            compute_client.get_volume_attachment(attachmentId),
+            'lifecycle_state',
+            'DETACHED'
+        )
         #return result after detach
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
         results = self.update_dict(results)
-        return results
+        return results[0]
 
     def list(self, **kwargs):
         block_storage = oci.core.BlockstorageClient(self.config)
@@ -233,8 +280,8 @@ class Provider(VolumeABC):
         else:
             v = block_storage.list_volumes(self.config['compartment_id'])
             results = v.data
-            result = self.update_dict(results)
-            return result
+            results = self.update_dict(results)
+            return results
 
     def mount(self, path=None, name=None):
         raise NotImplementedError
@@ -283,23 +330,6 @@ class Provider(VolumeABC):
         :param volume_id: id of volume A
         :param zone: zone where new volume will be created
         :param cloud: the provider where volumes will be hosted
-        :return: str
-        """
-        raise NotImplementedError
-
-    #
-    # BUG NO DEFINITION OF WAHT UNSET IS. ARCHITECTURE DOCUMENT IS MISSING
-    #
-    def unset(self,
-              name=None,
-              property=None,
-              image_property=None):
-        """
-        Separate a volume from a group of joined volumes
-
-        :param name: name of volume to separate
-        :param property: key to volume being separated
-        :param image_property: image stored in separated volume
         :return: str
         """
         raise NotImplementedError

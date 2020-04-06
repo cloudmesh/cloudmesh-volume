@@ -151,14 +151,15 @@ class Provider(VolumeABC):
     def status(self, name):
         block_storage = oci.core.BlockstorageClient(self.config)
         v = block_storage.list_volumes(self.config['compartment_id'])
-        results = v.data
-        status = None
-        for entry in results:
+        volumes = v.data
+        result = []
+        for entry in volumes:
             display_name = entry.__getattribute__("display_name")
             if (name == display_name):
-                status = entry.__getattribute__("lifecycle_state")
                 break
-        return status
+        result.append(entry)
+        result = self.update_dict(result)
+        return result
 
     def create(self, **kwargs):
         arguments = dotdict(kwargs)

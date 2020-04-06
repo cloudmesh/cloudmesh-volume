@@ -280,8 +280,8 @@ class VolumeCommand(PluginCommand):
             arguments.NAME = name
             provider = Provider(name=arguments.cloud)
             result = provider.status(NAME=name)
-            print(f"{name} is {result[0]['State']}")
-            #print(provider.Print(result, kind='volume', output=arguments.output))
+            #print(f"{name} is {result[0]['State']}")
+            print(provider.Print(result, kind='volume', output=arguments.output))
 
 
 

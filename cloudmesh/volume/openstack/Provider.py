@@ -136,7 +136,9 @@ class Provider(VolumeABC):
     def status(self, volume_name):
         con = openstack.connect(**self.config)
         result = con.get_volume(name_or_id=volume_name)
-        return result['status']
+        result = [result]
+        result = self.update_dict(result)
+        return result
 
     def __init__(self,name):
         self.cloud = name

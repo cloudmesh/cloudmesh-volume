@@ -190,7 +190,7 @@ class Provider(VolumeABC):
         server = con.get_server(attachments[0]['server_id'])
         con.detach_volume(server,volume, wait=True,
                           timeout=None)
-        return self.list(NAME=NAME)
+        return self.list(NAME=NAME)[0]
 
     def migrate(self,
                 name=None,

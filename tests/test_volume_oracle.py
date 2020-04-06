@@ -80,15 +80,48 @@ class Test_provider_volume:
             status = v['lifecycle_state']
         assert status in ['AVAILABLE','PROVISIONING']
 
-    def test_provider_volumeprovider_volume_list(self):
-        # list should be after create() since it would return empty and
-        # len(data) would be 0
+    def test_provider_volume_list(self):
         HEADING()
         Benchmark.Start()
         params = {}
         data = provider.list(**params)
         assert len(data) > 0
         Benchmark.Stop()
+
+    def test_provider_volume_attach(self):
+        # test attach one volume to vm
+        # os.system("cms volume attach {name} --vm={vm}")
+        HEADING()
+        vm = variables['vm']
+        Benchmark.Start()
+        NAMES = []
+        NAMES.append(name)
+        result = provider.attach(NAMES=NAMES, vm=vm)
+        Benchmark.Stop()
+        status = provider.status(NAME=NAMES[0])
+        # TODO: Volume status is not changing in Oracle after attaching
+        # a volume to an instance. It is still AVAILABLE
+        assert status == "AVAILABLE"
+
+    def test_provider_volume_detach(self):
+        # test detach one volume to vm
+        # os.system("cms volume detach {name} --vm={vm}")
+        HEADING()
+        vm = variables['vm']
+        Benchmark.Start()
+        result = provider.detach(NAME=name)
+        Benchmark.Stop()
+        status = provider.status(NAME=name)
+        # TODO: Volume status is always AVAILABLE
+        assert status == "AVAILABLE"
+
+    def test_provider_volume_delete(self):
+        HEADING()
+        Benchmark.Start()
+        provider.delete(NAME=name)
+        Benchmark.Stop()
+        status = provider.status(NAME=name)
+        assert status == "TERMINATED"
 
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)

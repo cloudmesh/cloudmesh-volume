@@ -98,7 +98,7 @@ class Test_provider_volume:
         NAMES.append(name)
         result = provider.attach(NAMES=NAMES, vm=vm)
         Benchmark.Stop()
-        status = provider.status(NAME=NAMES[0])
+        status = provider.status(NAME=NAMES[0])[0]['lifecycle_state']
         # TODO: Volume status is not changing in Oracle after attaching
         # a volume to an instance. It is still AVAILABLE
         assert status == "AVAILABLE"
@@ -111,7 +111,7 @@ class Test_provider_volume:
         Benchmark.Start()
         result = provider.detach(NAME=name)
         Benchmark.Stop()
-        status = provider.status(NAME=name)
+        status = provider.status(NAME=name)[0]['lifecycle_state']
         # TODO: Volume status is always AVAILABLE
         assert status == "AVAILABLE"
 
@@ -120,7 +120,7 @@ class Test_provider_volume:
         Benchmark.Start()
         provider.delete(NAME=name)
         Benchmark.Stop()
-        status = provider.status(NAME=name)
+        status = provider.status(NAME=name)[0]['lifecycle_state']
         assert status == "TERMINATED"
 
     def test_benchmark(self):

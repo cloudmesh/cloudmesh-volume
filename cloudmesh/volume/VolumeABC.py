@@ -116,6 +116,17 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    def status(self, NAME=None):
+
+        """
+        This function returns status of volume, such as "available", "in-use" and etc..
+
+        :param NAME: name of volume
+        :return: string
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def migrate(self,
                 name=None,
                 from_vm=None,

@@ -4,9 +4,6 @@ from cloudmesh.configuration.Config import Config
 
 class VolumeABC(metaclass=ABCMeta):
 
-    # def __init__(self, cloud):
-    #    raise NotImplementedError
-
     def __init__(self, cloud, path):
         try:
             config = Config(config_path=path)["cloudmesh"]
@@ -17,7 +14,6 @@ class VolumeABC(metaclass=ABCMeta):
             self.experiment = config["default"]["experiment"]
 
         except Exception as e:
-            # raise ValueError(f"storage service {service} not specified")
             print(e)
 
     @abstractmethod
@@ -29,7 +25,7 @@ class VolumeABC(metaclass=ABCMeta):
              refresh=None,
              dryrun=None):
         """
-        This command list all volumes as follows
+        This command list all volumes as follows:
 
         If vm is defined, all vloumes of teh vm are returned.
         If region is defined all volumes of the vms in that region are returned.
@@ -52,25 +48,25 @@ class VolumeABC(metaclass=ABCMeta):
     #
     @abstractmethod
     def create(self, NAME=None, **kwargs):
-    # def create(self,
-    #            NAME=None,
-    #            size=None,
-    #            volume_type=None,
-    #            description=None,
-    #            dryrun=None
-    #            ):
         """
         Create a volume.
-        :param NAME: Volume name
-        :return: dict
-        """
 
+           :param NAME (string): name of volume
+           :param region (string): availability-zone
+           :param size (integer): size of volume
+           :param volume_type (string): type of volume.
+           :param source:
+           :param description (string):
+           :return: dict
+        """
         raise NotImplementedError
 
     @abstractmethod
     def delete(self, NAMES=None):
         """
-        Delete volume
+        Delete volumes.
+        If NAMES is not given, delete the most recent volume.
+
         :param NAMES: List of volume names
         :return:
         """
@@ -80,7 +76,8 @@ class VolumeABC(metaclass=ABCMeta):
     def attach(self, NAME=None, vm=None):
 
         """
-        attatch volume to a vm
+        Attatch volume to a vm.
+        If NAMES is not specified, attach the most recent volume to vm.
 
         :param NAME: volume name
         :param vm: vm name which the volume will be attached to
@@ -90,14 +87,42 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def detach(self,
-              NAMES=None):
+    def detach(self,NAMES=None):
 
         """
-        Dettach a volume from vm
+        Dettach volumes from vm.
+        If success, the last volume will be saved as the most recent volume.
 
         :param NAMES: names of volumes to dettach
-        :return: str
+        :return: dict
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def add_tag(self,**kwargs):
+
+        """
+        This function add tag to a volume.
+        If NAME is not specified, then tag will be added to the last volume.
+        If success, the volume will be saved as the most recent volume.
+
+        :param NAME: name of volume
+        :param kwargs:
+                    key: name of tag
+                    value: value of tag
+        :return: self.list()
+        """
+
+        raise NotImplementedError
+
+    @abstractmethod
+    def status(self, NAME=None):
+
+        """
+        This function returns status of volume, such as "available", "in-use" and etc..
+
+        :param NAME: name of volume
+        :return: string
         """
         raise NotImplementedError
 

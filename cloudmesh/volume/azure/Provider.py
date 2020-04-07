@@ -237,13 +237,12 @@ class Provider(VolumeABC):
 
 
     def create(self, **kwargs):
-        arguments = dotdict(kwargs)
-        GROUP_NAME = 'volume-group'
+        GROUP_NAME = 'cloudmesh'
         # self.vms = self.compute_client.virtual_machines
-        LOCATION = 'westus'
+        LOCATION = 'eastus'
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
-            "Volume_Disk1",
+            "cloudmesh-os-disk",
             {
                 'location': LOCATION,
                 'disk_size_gb': 1,
@@ -259,23 +258,19 @@ class Provider(VolumeABC):
 
 
     def delete (self, NAMES=None):
-        GROUP_NAME = 'volume-group'
-        LOCATION = 'westus'
-        self.compute_client.disks.delete(
+        GROUP_NAME = 'cloudmesh'
+        LOCATION = 'eastus'
+        disk_deletion = self.compute_client.disks.delete(
             GROUP_NAME,
-            "Volume_Disk1",
+            "cloudmesh-os-disk",
             {
-                'location': LOCATION,
-                'disk_size_gb': 1,
-                'creation_data': {
-                    'create_option': 'Empty'
-                }
+                'location': LOCATION
             }
         )
-        # # print list after deleting
-        # results = self.compute_client.disks.list()
-        # result = self.update_dict(results)
-        # print(self.Print(result, kind='volume', output=kwargs['output']))
+        # print list after deleting
+        results = disk_deletion.result()
+        result = self.update_dict(results)
+        return result
 
 
     def list(self,
@@ -285,35 +280,45 @@ class Provider(VolumeABC):
              cloud=None,
              refresh=None,
              dryrun=None):
-        results = self.compute_client.disks.list()
-        print(results)
-        # result = self.update_dict(results)
-        # print(self.Print(result, kind='volume', output=kwargs['output']))
+        disk_list = self.compute_client.disks.list()
+        return disk_list
 
 
     def attach(self, NAME=None, vm=None):
-        LOCATION = 'westus'
-        GROUP_NAME = 'volume-group'
-        VM_NAME = 'VM1'
-        # if virtualmachine.get(VM_NAME) is None, give error
-            #check sdk if virtual machine is missing
-        #convert VM object into a dictionary, then pass it on to below
-        # parameters
-        async_vm_update = self.compute_client.virtual_machines.create_or_update(
+        LOCATION = 'eastus'
+        GROUP_NAME = 'cloudmesh'
+        VM_NAME = 'ashthorn-vm-3'
+        disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
-            VM_NAME,
+            "test",
             {
                 'location': LOCATION,
-                'storage_profile': {
-                    'data_disks': [{
-                        'name': 'voldisk1',
-                        'disk_size_gb': 1,
-                        'lun': 0,
-                        'create_option': 'Empty'
-                    }]
+                'disk_size_gb': 1,
+                'creation_data': {
+                    'create_option': 'Empty'
                 }
             }
         )
+        data_disk = disk_creation.result()
+        self.vms = self.compute_client.virtual_machines
+        virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
+        disk_attach = virtual_machine.storage_profile.data_disks.append({
+            'lun': 0,
+            'name': data_disk.name,
+            'create_option': 'Attach',
+            'managed_disk': {
+                'id': data_disk.id
+            }
+        })
+        updated_vm = self.vms.create_or_update(
+            GROUP_NAME,
+            VM_NAME,
+            virtual_machine
+        )
+        results = updated_vm.result().as_dict()
+        result = self.update_dict([results])
+        return result
+
 
 
 #might need to access azure compute provider vm name
@@ -323,6 +328,48 @@ class Provider(VolumeABC):
 
     def detach(self,
               NAME=None):
+        LOCATION = 'eastus'
+        GROUP_NAME = 'cloudmesh'
+        VM_NAME = 'ashthorn-vm-3'
+        # disk_creation = self.compute_client.disks.create_or_update(
+        #     GROUP_NAME,
+        #     "test",
+        #     {
+        #         'location': LOCATION,
+        #         'disk_size_gb': 1,
+        #         'creation_data': {
+        #             'create_option': 'Empty'
+        #         }
+        #     }
+        # )
+        self.vms = self.compute_client.virtual_machines
+        virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
+        data_disks = virtual_machine.storage_profile.data_disks
+        data_disk = [disk for disk in data_disks if
+                         disk.name == 'test']
+        disk_detach = virtual_machine.storage_profile.data_disks.append({
+            'lun': 0,
+            'name': data_disk.name,
+            'create_option': 'Detach',
+            'managed_disk': {
+                'id': data_disk.id
+            }
+        })
+        updated_vm = self.vms.create_or_update(
+            GROUP_NAME,
+            VM_NAME,
+            virtual_machine
+        )
+        results = updated_vm.result().as_dict()
+        result = self.update_dict([results])
+        return result
+
+
+    def status(self, NAME=None):
+        print("update me")
+
+
+    def add_tag(self,**kwargs):
         print("update me")
 
 
@@ -337,6 +384,7 @@ class Provider(VolumeABC):
              from_volume=None,
              to_volume=None):
         print("update me")
+
 
 
 #every cloud needs a function called search (per Xin) such as describe or

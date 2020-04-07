@@ -317,7 +317,8 @@ class Provider(VolumeABC):
         VM_NAME = 'ashthorn-vm-3'
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
-            "cloudmesh-os-disk",
+            # "cloudmesh-os-disk",
+            "test3",
             {
                 'location': LOCATION,
                 'disk_size_gb': 1,
@@ -330,17 +331,26 @@ class Provider(VolumeABC):
         self.vms = self.compute_client.virtual_machines
         virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
         disk_attach = virtual_machine.storage_profile.data_disks.append({
-            'lun': 0,
+            'lun': 2,
             'name': data_disk.name,
             'create_option': 'Attach',
             'managed_disk': {
                 'id': data_disk.id
             }
         })
+        updated_vm = self.vms.create_or_update(
+            GROUP_NAME,
+            VM_NAME,
+            virtual_machine
+        )
+        print(disk_creation)
+        print(data_disk)
+        print(disk_attach)
+        print(updated_vm)
+        # print(disk_attach)
         # results = disk_attach.result()
         # result = self.update_dict(results)
         # return result
-        print(disk_attach)
         # results = disk_attach.result().as_dict()
         # result = self.update_dict([results])
         # return result

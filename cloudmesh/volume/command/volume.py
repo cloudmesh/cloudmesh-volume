@@ -2,6 +2,7 @@ import oyaml as yaml
 from cloudmesh.common.console import Console
 from cloudmesh.common.debug import VERBOSE
 from cloudmesh.common.parameter import Parameter
+from cloudmesh.common.util import banner
 from cloudmesh.common.util import path_expand
 from cloudmesh.common.variables import Variables
 from cloudmesh.configuration.Config import Config
@@ -10,7 +11,8 @@ from cloudmesh.shell.command import PluginCommand
 from cloudmesh.shell.command import command
 from cloudmesh.shell.command import map_parameters
 from cloudmesh.volume.Provider import Provider
-from cloudmesh.common.util import banner
+
+
 #from cloudmesh.management.configuration.Name import Name as VolumeName
 
 
@@ -63,7 +65,49 @@ class VolumeCommand(PluginCommand):
 
           Description:
 
-             TBD
+            volume register which
+                TODO: describe
+
+            volume register [NAME] [--cloud=CLOUD] [ARGUMENTS...]
+                TODO: describe
+
+            volume list [NAMES]
+                        [--vm=VM]
+                        [--region=REGION]
+                        [--cloud=CLOUD]
+                        [--refresh]
+                        [--dryrun]
+                        [--output=FORMAT]
+                List all the volumes for certain vm, region, or cloud.
+
+            volume create [NAME]
+                      [--size=SIZE]
+                      [--volume_type=TYPE]
+                      [--description=DESCRIPTION]
+                      [--dryrun]
+                      [ARGUMENTS...]
+                Creates a volume
+
+            volume status [NAMES]
+                      [--cloud=CLOUD]
+            volume attach [NAMES] [--vm=VM]
+                Attatch volume to a vm
+
+            volume detach [NAMES]
+                Dettatch volume from a vm
+
+            volume delete NAMES
+                Delete the named volumes
+
+            volume migrate NAME FROM_VM TO_VM
+                 TODO: not yet implemented
+                 Migrate volume from one vm to another vm between different
+                 regions, services or providers. `
+
+            volume sync FROM_VOLUME TO_VOLUME
+                TODO: not yet implemented
+                Volume sync alows for data to shared bewteen two volumes.
+
         """
 
         VERBOSE(arguments)

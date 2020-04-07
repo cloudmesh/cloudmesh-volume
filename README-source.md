@@ -1,20 +1,8 @@
 # Cloudmesh Volume Management
 
+{warning}
 
-> **Note:** The README.md page is outomatically generated, do not edit it.
-> To modify  change the content in
-> <https://github.com/cloudmesh/cloudmesh-volume/blob/master/README-source.md>
-> Curley brackets must use two in README-source.md
-
-
-
-[![image](https://img.shields.io/pypi/v/cloudmesh-volume.svg)](https://pypi.org/project/cloudmesh-volume/)
-[![Python](https://img.shields.io/pypi/pyversions/cloudmesh-volume.svg)](https://pypi.python.org/pypi/cloudmesh-volume)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/cloudmesh/cloudmesh-volume/blob/master/LICENSE)
-[![Format](https://img.shields.io/pypi/format/cloudmesh-volume.svg)](https://pypi.python.org/pypi/cloudmesh-volume)
-[![Status](https://img.shields.io/pypi/status/cloudmesh-volume.svg)](https://pypi.python.org/pypi/cloudmesh-volume)
-[![Travis](https://travis-ci.com/cloudmesh/cloudmesh-volume.svg?branch=master)](https://travis-ci.com/cloudmesh/cloudmesh-volume)
-
+{icons}
 
 ## Abstract
 
@@ -28,10 +16,7 @@ functions that are deployed on different clouds.
 
 ## Manual
 
-```bash
-
-```
-
+{manual}
 
 
 ## Volume Providers
@@ -363,8 +348,7 @@ Required Parameters:
 
 ## Test cases
 
- * [test_01_volume_provider](tests/test_01_volume_provider.py)
- * [test_02_volume_vm_management](tests/test_02_volume_vm_management.py)
+{tests}
 
 ## Active Developments
 

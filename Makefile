@@ -11,6 +11,11 @@ endef
 
 all: install
 
+readme:
+	python ../cloudmesh-common/bin/readme.py cloudmesh-$(package) $(package)
+	#-git commit -m "Upadte Readme" README.md README-source.md
+	#-git push
+
 install:
 	pip install -e .
 

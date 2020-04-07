@@ -284,32 +284,6 @@ class Provider(VolumeABC):
         return disk_list
 
 
-    # def attach(self, NAME=None, vm=None):
-    #     LOCATION = 'westus'
-    #     GROUP_NAME = 'cloudmesh'
-    #     VM_NAME = 'cloudmeshVM'
-    #     if self.virtualmachine.get(VM_NAME) is None :
-    #         print("VM does not exist")
-    #         #check sdk if virtual machine is missing
-    #     #convert VM object into a dictionary, then pass it on to below
-    #     # parameters
-    #     async_vm_update = self.compute_client.virtual_machines.create_or_update(
-    #         GROUP_NAME,
-    #         VM_NAME,
-    #         {
-    #             'location': LOCATION,
-    #             'storage_profile': {
-    #                 'data_disks': [{
-    #                     'name': 'cloudmesh-os-disk',
-    #                     'disk_size_gb': 1,
-    #                     'lun': 0,
-    #                     'create_option': 'Empty'
-    #                 }]
-    #             }
-    #         }
-    #     )
-    #
-
     def attach(self, NAME=None, vm=None):
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'

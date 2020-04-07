@@ -313,12 +313,10 @@ class Provider(VolumeABC):
     def attach(self, NAME=None, vm=None):
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
-        # VM_NAME = 'cloudmeshVM'
         VM_NAME = 'ashthorn-vm-3'
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
-            # "cloudmesh-os-disk",
-            "test3",
+            "test",
             {
                 'location': LOCATION,
                 'disk_size_gb': 1,
@@ -331,7 +329,7 @@ class Provider(VolumeABC):
         self.vms = self.compute_client.virtual_machines
         virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
         disk_attach = virtual_machine.storage_profile.data_disks.append({
-            'lun': 2,
+            'lun': 0,
             'name': data_disk.name,
             'create_option': 'Attach',
             'managed_disk': {
@@ -343,17 +341,9 @@ class Provider(VolumeABC):
             VM_NAME,
             virtual_machine
         )
-        print(disk_creation)
-        print(data_disk)
-        print(disk_attach)
-        print(updated_vm)
-        # print(disk_attach)
-        # results = disk_attach.result()
-        # result = self.update_dict(results)
-        # return result
-        # results = disk_attach.result().as_dict()
-        # result = self.update_dict([results])
-        # return result
+        results = updated_vm.result().as_dict()
+        result = self.update_dict([results])
+        return result
 
 
 
@@ -381,6 +371,10 @@ class Provider(VolumeABC):
     def sync(self,
              from_volume=None,
              to_volume=None):
+        print("update me")
+
+
+    def status(self, NAME=None):
         print("update me")
 
 

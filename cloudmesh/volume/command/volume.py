@@ -1,25 +1,14 @@
-import oyaml as yaml
 from cloudmesh.common.console import Console
 from cloudmesh.common.debug import VERBOSE
 from cloudmesh.common.parameter import Parameter
 from cloudmesh.common.util import banner
-from cloudmesh.common.util import path_expand
 from cloudmesh.common.variables import Variables
 from cloudmesh.configuration.Config import Config
-from cloudmesh.mongo.CmDatabase import CmDatabase
+from cloudmesh.management.configuration.name import Name as VolumeName
 from cloudmesh.shell.command import PluginCommand
 from cloudmesh.shell.command import command
 from cloudmesh.shell.command import map_parameters
 from cloudmesh.volume.Provider import Provider
-<<<<<<< HEAD
-
-
-#from cloudmesh.management.configuration.Name import Name as VolumeName
-=======
-from cloudmesh.common.util import banner
-from cloudmesh.management.configuration.name import Name as VolumeName
->>>>>>> origin/master
-
 
 
 class VolumeCommand(PluginCommand):
@@ -122,6 +111,11 @@ class VolumeCommand(PluginCommand):
         variables = Variables()
 
         def get_last_volume():
+            """
+            TODO: missing
+
+            :return:
+            """
             config = Config()
 
             n = VolumeName(
@@ -135,6 +129,11 @@ class VolumeCommand(PluginCommand):
             return str(last_volume_name)
 
         def create_name():
+            """
+            TODO: missing
+
+            :return:
+            """
 
             config = Config()
 

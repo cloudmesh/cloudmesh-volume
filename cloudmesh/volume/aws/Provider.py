@@ -1,19 +1,11 @@
-import os
-import json
-
-from cloudmesh.volume.VolumeABC import VolumeABC
-from cloudmesh.common.util import banner
-from datetime import datetime
-from cloudmesh.common.Shell import Shell
-from cloudmesh.configuration.Config import Config
-import boto3
-from cloudmesh.common.DateTime import DateTime
-from cloudmesh.common.Printer import Printer
-from cloudmesh.common.console import Console
 from time import sleep
-from cloudmesh.common.parameter import Parameter
 
-import collections
+import boto3
+from cloudmesh.common.console import Console
+from cloudmesh.common.util import banner
+from cloudmesh.configuration.Config import Config
+from cloudmesh.volume.VolumeABC import VolumeABC
+
 
 class Provider(VolumeABC):
     kind = "volume"
@@ -93,6 +85,11 @@ class Provider(VolumeABC):
     }
 
     def __init__(self, name=None):
+        """
+        TODO: missing
+
+        :param name:
+        """
         self.cloud = name
         self.client = boto3.client('ec2')
 
@@ -179,12 +176,12 @@ class Provider(VolumeABC):
 
     def find_vm_name(self, volume_name=None):
         """
-            This function find attached vm_name from given volume_name. only implemented circumstance when a volume
-            can only
-            attach to one vm. (type iol volume could attach to multiple vms, not implemented)
+        This function find attached vm_name from given volume_name. only
+        implemented circumstance when a volume can only attach to one vm. (type
+        iol volume could attach to multiple vms, not implemented)
 
-            :param volume_name: the name of volume.
-            :return: vm_name: the name of vm
+        :param volume_name: the name of volume.
+        :return: vm_name: the name of vm
         """
         volume = self.client.describe_volumes(
             Filters=[
@@ -213,11 +210,13 @@ class Provider(VolumeABC):
 
     def update_AttachedToVm(self, data):
         """
-            This function update returned volume dict with result['Volumes'][i]['AttachedToVm'] = vm_name. "i" chould
-            be more than 0 if volume could attach to multiple vm, but for now, one volume only attach to one vm.
+        This function update returned volume dict with
+        result['Volumes'][i]['AttachedToVm'] = vm_name. "i" chould be more than
+        0 if volume could attach to multiple vm, but for now, one volume only
+        attach to one vm.
 
-            :param data: returned volume dict
-            :return: data: updated volume dict
+        :param data: returned volume dict
+        :return: data: updated volume dict
         """
         elements = data['Volumes']
         for i in range(len(elements)):
@@ -236,10 +235,10 @@ class Provider(VolumeABC):
 
     def find_volume_id(self, volume_name):
         """
-            This function find volume_id through volume_name
+        This function find volume_id through volume_name
 
-            :param volume_name: the name of volume
-            :return: volume_id
+        :param volume_name: the name of volume
+        :return: volume_id
         """
         volume = self.client.describe_volumes(
             Filters=[
@@ -254,10 +253,10 @@ class Provider(VolumeABC):
 
     def find_vm_id(self, vm_name):
         """
-            This function find vm_id through vm_name
+        This function find vm_id through vm_name
 
-            :param vm_name: the name of vom
-            :return: vm_id
+        :param vm_name: the name of vom
+        :return: vm_id
         """
         instance = self.client.describe_instances(
             Filters=[
@@ -273,10 +272,10 @@ class Provider(VolumeABC):
     def wait(self,
              time=None):
         """
-            This function waiting for volume to be updated
+        This function waiting for volume to be updated
 
-            :param time: time to wait in seconds
-            :return: False
+        :param time: time to wait in seconds
+        :return: False
         """
         Console.info("waiting for volume to be updated")
         sleep(time)
@@ -284,10 +283,10 @@ class Provider(VolumeABC):
 
     def status(self, volume_name):
         """
-            This function get volume status, such as "in-use", "available"
+        This function get volume status, such as "in-use", "available"
 
-            :param volume_name
-            :return: volume_status
+        :param volume_name
+        :return: volume_status
         """
         result = self.client.describe_volumes(
             Filters=[
@@ -305,10 +304,11 @@ class Provider(VolumeABC):
 
     def create(self, name=None, **kwargs):
         """
-            This function create a new volume, with defalt parameters in cloudmesh.volume.{cloud}.default.
+        This function create a new volume, with defalt parameters in
+        cloudmesh.volume.{cloud}.default.
 
-            :param name: the name of volume
-            :return: volume dict
+        :param name: the name of volume
+        :return: volume dict
         """
         cloud = kwargs['cloud']
         config = Config()
@@ -344,15 +344,16 @@ class Provider(VolumeABC):
                                      Purpose SSD, io1 for Provisioned IOPS SSD,
                                     st1 for Throughput Optimized HDD, sc1 for
                                     Cold HDD, or standard for Magnetic volumes.
-        :param iops (integer): NOT IMPLEMENTED. The number of I/O operations per second (IOPS)
-                               that the volume supports
-                               (from 100 to 64,000 for io1 type volume). If iops
-                               is specified, the volume_type must be io1.
-        :param kms_key_id (string): NOT IMPLEMENTED. The identifier of the AWS Key Management
-                                    Service (AWS KMS) customer master key (CMK)
-                                    to use for Amazon EBS encryption. If
-                                    KmsKeyId is specified, the encrypted state
-                                    must be true.
+        :param iops (integer): NOT IMPLEMENTED. The number of I/O operations
+                                   per second (IOPS) that the volume supports
+                                   (from 100 to 64,000 for io1 type volume).
+                                   If iops is specified, the volume_type must
+                                   be io1.
+        :param kms_key_id (string): NOT IMPLEMENTED. The identifier of the AWS
+                                    Key Management Service (AWS KMS) customer
+                                    master key (CMK) to use for Amazon EBS
+                                    encryption. If KmsKeyId is specified,
+                                    the encrypted state must be true.
         :param outpost_arn (string): The Amazon Resource Name (ARN) of the Outpost.
         :param snapshot (string): snapshot id
         :param source:
@@ -414,9 +415,11 @@ class Provider(VolumeABC):
         """
         This function list all volumes as following:
         If NAME (volume_name) is specified, it will print out info of NAME
-        If NAME (volume_name) is not specified, it will print out info of all volumes
+        If NAME (volume_name) is not specified, it will print out info of all
+          volumes
         If vm is specified, it will print out all the volumes attached to vm
-        If region(availability zone) is specified, it will print out all the volumes in that region
+        If region(availability zone) is specified, it will print out
+          all the volumes in that region
 
         :param NAME: name of volume
         :param vm: name of vm
@@ -485,7 +488,8 @@ class Provider(VolumeABC):
 
     def delete(self, NAME):
         """
-        This function delete one volume. It will call self.list() to return a dict of all the volumes under the cloud.
+        This function delete one volume. It will call self.list() to return a
+        dict of all the volumes under the cloud.
 
         :param NAME (string): volume name
         :return: self.list()
@@ -503,9 +507,9 @@ class Provider(VolumeABC):
                dryrun=False):
 
         """
-        This function attach one or more volumes to vm. It returns self.list() to list the updated volume.
-        The updated dict with
-        "AttachedToVm" showing the name of vm where the volume attached to
+        This function attach one or more volumes to vm. It returns self.list()
+        to list the updated volume. The updated dict with "AttachedToVm" showing
+        the name of vm where the volume attached to
 
         :param NAMES (string): names of volumes
         :param vm (string): name of vm
@@ -541,8 +545,9 @@ class Provider(VolumeABC):
                 NAME):
 
         """
-        This function detach a volume from vm. It returns self.list() to list the updated volume. The vm under "AttachedToVm" will be
-        removed if volume is successfully detached.
+        This function detach a volume from vm. It returns self.list() to list
+        the updated volume. The vm under "AttachedToVm" will be removed if
+        volume is successfully detached.
 
         :param NAME: name of volume to dettach
         :return: self.list()
@@ -566,7 +571,8 @@ class Provider(VolumeABC):
 
         """
         This function add tag to a volume.
-        In aws Boto3, key for volume name is "Name". For example, key="Name", value="user-volume-1".
+        In aws Boto3, key for volume name is "Name". For example,
+           key="Name", value="user-volume-1".
         It could also be used to rename or name a volume.
         If NAME is not specified, then tag will be added to the last volume.
 
@@ -678,8 +684,8 @@ class Provider(VolumeABC):
         """
             modify-volume-attribute: resume I/O access to the volume, or add or
                                      overwrite the specified tags, \
-                                     or modify volume size, volume type, iops value
-
+                                     or modify volume size, volume type, iops
+                                     value
             :param volume_id <(string): volume id
             :param attribute (sting): can be "auto_enable_io", "tag"
             :param tag_key (string): Tag keys are case-sensitive and accept a

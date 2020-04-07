@@ -1,15 +1,8 @@
-import json
-import time
-from pprint import pprint
+from cloudmesh.common.util import banner
+from cloudmesh.configuration.Config import Config
+from cloudmesh.volume.VolumeABC import VolumeABC
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from cloudmesh.common.DateTime import DateTime
-from cloudmesh.volume.VolumeABC import VolumeABC
-from cloudmesh.volume.command import volume
-from cloudmesh.common.util import banner
-from cloudmesh.common.Shell import Shell
-from cloudmesh.configuration.Config import Config
-from cloudmesh.common.Printer import Printer
 
 
 class Provider(VolumeABC):
@@ -63,6 +56,11 @@ class Provider(VolumeABC):
     }
 
     def __init__(self, name):
+        """
+        TODO: MISSING
+
+        :param name:
+        """
         self.cloud = name
         config = Config()
         self.default = config[f"cloudmesh.volume.{name}.default"]
@@ -78,6 +76,7 @@ class Provider(VolumeABC):
         returns an object or list of objects with the dict method
         this object is converted to a dict. Typically this method is used
         internally.
+
         :param elements: the list of original dicts. If elements is a single
                          dict a list with a single element is returned.
         :return: The list with the modified dicts
@@ -118,6 +117,7 @@ class Provider(VolumeABC):
         Method to get the credentials using the Service Account JSON file.
         :param path_to_service_account_file: Service Account JSON File path.
         :param scopes: Scopes needed to provision.
+
         :return: credentials used to get compute service
         """
         _credentials = service_account.Credentials.from_service_account_file(
@@ -128,6 +128,7 @@ class Provider(VolumeABC):
     def _get_compute_service(self):
         """
         Method to get google compute service v1.
+
         :return: Google Compute Engine API
         """
         service_account_credentials = self._get_credentials(
@@ -148,6 +149,7 @@ class Provider(VolumeABC):
         Retrieves an aggregated list of persistent disks.
         Currently, only sorting by "name" or "creationTimestamp desc"
         is supported.
+
         :return: an array of dicts representing the disks
         """
         compute_service = self._get_compute_service()
@@ -173,6 +175,7 @@ class Provider(VolumeABC):
         """
         Creates a persistent disk in the specified project using the data in
         the request.
+
         :return: a dict representing the disk
         """
 
@@ -201,6 +204,7 @@ class Provider(VolumeABC):
         """
         Deletes the specified persistent disk.
         Deleting a disk removes its data permanently and is irreversible.
+
         :param name: Name of the disk to delete
         :return: a dict representing the deleted disk
         """

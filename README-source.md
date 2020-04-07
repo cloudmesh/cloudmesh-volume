@@ -18,6 +18,7 @@ functions that are deployed on different clouds.
 
 {manual}
 
+See also: [Volume man page](https://cloudmesh.github.io/cloudmesh-manual/manual/volume.html)
 
 ## Volume Providers
 
@@ -199,46 +200,7 @@ Required Parameters:
 List Volumes
 ```
 list(**kwargs):
-    Lists all the volumes  
-```
-
-Create Volume
-```
-create(**kwargs)
-    Create Volume Creates a new volume
-
-Required Parameters: 
-        name: Name of the volume
-           
-```
-
-Delete Volume
-```
-delete(name)
-    Deletes the specified volume. 
-
-Required Parameters: 
-        name: Name of the volume to be deleted
-```
-
-Attach Volume
-```
-attach(name,vm)
-    Attaches the specified volume to the specified VM instance.
-
-Required Parameters: 
-        name: Name of the volume to be attached
-        vm: Instance name
-```
-
-Detach Volume
-```
-Detach(name,vm)
-    Detaches the specified volume from a VM instance
-
-Required Parameters: 
-        name: Name of the volume to be detached
-        vm: Instance name
+  
 ```
 ### Oracle
 
@@ -248,6 +210,8 @@ Required Parameters:
   <https://oracle-cloud-infrastructure-python-sdk.readthedocs.io/en/latest/api/core/client/oci.core.BlockstorageClient.html>
 
 #### Oracle volume management functions
+
+see:
 
 :o2: Add functions from provider with descriptions of required parameters
 

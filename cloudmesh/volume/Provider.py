@@ -1,22 +1,22 @@
-import os
-import json
-
 from cloudmesh.common.Printer import Printer
-from cloudmesh.volume.VolumeABC import VolumeABC
+from cloudmesh.common.console import Console
 from cloudmesh.common.util import banner
-from cloudmesh.common.Shell import Shell
+from cloudmesh.common.variables import Variables
 from cloudmesh.configuration.Config import Config
 from cloudmesh.mongo.DataBaseDecorator import DatabaseUpdate
-from cloudmesh.management.configuration.arguments import Arguments
-from cloudmesh.common.console import Console
-from cloudmesh.common.variables import Variables
+
 
 # class Provider(VolumeABC): # correct
 class Provider(object):  # broken
-    # kind = "multipass"
+    kind = "volume"
 
     @staticmethod
     def get_kind():
+        """
+        TODO: MISSING
+
+        :return:
+        """
         banner("get in def get_kind()")
         kind = ["multipass",
                 "aws",
@@ -28,6 +28,12 @@ class Provider(object):  # broken
 
     @staticmethod
     def get_provider(kind):
+        """
+        TODO: MISSING
+
+        :param kind:
+        :return:
+        """
 
         if kind == "multipass":
             from cloudmesh.volume.multipass.Provider import Provider as P
@@ -57,6 +63,14 @@ class Provider(object):  # broken
         # noinspection PyPep8Naming
 
     def Print(self, data, kind=None, output="table"):
+        """
+        TODO: MISSING
+
+        :param data:
+        :param kind:
+        :param output:
+        :return:
+        """
 
         if kind is None and len(data) > 0:
             kind = data[0]["cm"]["kind"]
@@ -114,6 +128,12 @@ class Provider(object):  # broken
 
     @DatabaseUpdate()
     def create(self, **kwargs):
+        """
+        TODO: MISSING
+
+        :param kwargs:
+        :return:
+        """
         try:
             data = self.provider.create(**kwargs)
             variables = Variables()
@@ -124,15 +144,33 @@ class Provider(object):  # broken
 
     @DatabaseUpdate()
     def delete(self, NAME=None):
+        """
+        TODO: MISSING
+
+        :param NAME:
+        :return:
+        """
         d = self.provider.delete(NAME)
         return d
 
     @DatabaseUpdate()
     def list(self, **kwargs):
+        """
+        TODO: MISSING
+
+        :param kwargs:
+        :return:
+        """
         data = self.provider.list(**kwargs)
         return data
 
     def info(self, name=None):
+        """
+        TODO: MISSING
+
+        :param name:
+        :return:
+        """
         volumes = self.provider.list()
         for volume in volumes:
             if volume["cm"]["name"] == name:
@@ -140,20 +178,45 @@ class Provider(object):  # broken
         return None
 
     def search(self, name=None):
+        """
+        TODO: MISSING
+
+        :param name:
+        :return:
+        """
         return self.info(name=name)
 
     @DatabaseUpdate()
     def status(self, NAME=None):
+        """
+        TODO: MISSING
+
+        :param NAME:
+        :return:
+        """
         volume_status = self.provider.status(NAME)
         return volume_status
 
     @DatabaseUpdate()
     def attach(self, NAMES=None, vm=None):
+        """
+        TODO: MISSING
+
+        :param NAMES:
+        :param vm:
+        :return:
+        """
         result = self.provider.attach(NAMES, vm)
         return result
 
     @DatabaseUpdate()
     def detach(self, NAME=None):
+        """
+        TODO: MISSING
+
+        :param NAME:
+        :return:
+        """
         try:
             result = self.provider.detach(NAME)
             variables = Variables()
@@ -164,6 +227,12 @@ class Provider(object):  # broken
 
     @DatabaseUpdate()
     def add_tag(self, **kwargs):
+        """
+        TODO: MISSING
+
+        :param kwargs:
+        :return:
+        """
         try:
             result = self.provider.add_tag(**kwargs)
             variables = Variables()

@@ -1,10 +1,17 @@
 from abc import ABCMeta, abstractmethod
+
 from cloudmesh.configuration.Config import Config
 
 
 class VolumeABC(metaclass=ABCMeta):
 
     def __init__(self, cloud, path):
+        '''
+        TODO: MISSING
+
+        :param cloud:
+        :param path:
+        '''
         try:
             config = Config(config_path=path)["cloudmesh"]
             self.cm = config["cloud"][cloud]["cm"]

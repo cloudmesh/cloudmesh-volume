@@ -328,6 +328,44 @@ class Provider(VolumeABC):
 
     def detach(self,
               NAME=None):
+        LOCATION = 'eastus'
+        GROUP_NAME = 'cloudmesh'
+        VM_NAME = 'ashthorn-vm-3'
+        # disk_creation = self.compute_client.disks.create_or_update(
+        #     GROUP_NAME,
+        #     "test",
+        #     {
+        #         'location': LOCATION,
+        #         'disk_size_gb': 1,
+        #         'creation_data': {
+        #             'create_option': 'Empty'
+        #         }
+        #     }
+        # )
+        self.vms = self.compute_client.virtual_machines
+        virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
+        data_disks = virtual_machine.storage_profile.data_disks
+        data_disk = [disk for disk in data_disks if
+                         disk.name == 'test']
+        disk_detach = virtual_machine.storage_profile.data_disks.append({
+            'lun': 0,
+            'name': data_disk.name,
+            'create_option': 'Detach',
+            'managed_disk': {
+                'id': data_disk.id
+            }
+        })
+        updated_vm = self.vms.create_or_update(
+            GROUP_NAME,
+            VM_NAME,
+            virtual_machine
+        )
+        results = updated_vm.result().as_dict()
+        result = self.update_dict([results])
+        return result
+
+
+    def status(self, NAME=None):
         print("update me")
 
 
@@ -347,9 +385,6 @@ class Provider(VolumeABC):
              to_volume=None):
         print("update me")
 
-
-    def status(self, NAME=None):
-        print("update me")
 
 
 #every cloud needs a function called search (per Xin) such as describe or

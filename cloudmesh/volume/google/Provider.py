@@ -65,9 +65,10 @@ class Provider(VolumeABC):
         config = Config()
         self.default = config[f"cloudmesh.volume.{name}.default"]
         self.credentials = config[f"cloudmesh.volume.{name}.credentials"]
-        self.compute_scopes=['https://www.googleapis.com/auth/compute',
-                             'https://www.googleapis.com/auth/cloud-platform',
-                             'https://www.googleapis.com/auth/compute.readonly']
+        self.compute_scopes=[
+            'https://www.googleapis.com/auth/compute',
+            'https://www.googleapis.com/auth/cloud-platform',
+            'https://www.googleapis.com/auth/compute.readonly']
 
     def update_dict(self, elements):
         """
@@ -96,12 +97,12 @@ class Provider(VolumeABC):
                 name = entry['targetLink'].rsplit('/', 1)[1]
             else:
                 name = entry['name']
-            VMs = []
+            vms = []
             if 'users' in entry:
                 for user in entry['users']:
                     user = user.rsplit('/', 1)[1]
-                    VMs.append(user)
-            entry['users'] = VMs
+                    vms.append(user)
+            entry['users'] = vms
             if "cm" not in entry:
                 entry['cm'] = {}
             entry["cm"].update({
@@ -182,11 +183,11 @@ class Provider(VolumeABC):
         compute_service = self._get_compute_service()
         volume_type = kwargs['volume_type']
         size = kwargs['size']
-        if volume_type == None:
+        if volume_type is None:
             volume_type = self.default["type"]
-        if size == None:
+        if size is None:
             size = self.default["sizeGb"]
-        create_disk = compute_service.disks().insert(
+        compute_service.disks().insert(
             project=self.credentials["project_id"],
             zone=self.default['zone'],
             body={'type':volume_type,
@@ -213,7 +214,7 @@ class Provider(VolumeABC):
         if zone is None:
             banner(f'{name} was not found')
             return
-        delete_disk = compute_service.disks().delete(
+        compute_service.disks().delete(
             project=self.credentials["project_id"],
             zone=zone,
             disk=name).execute()
@@ -286,7 +287,7 @@ class Provider(VolumeABC):
                     instances.append(user)
         # detach disk from all instances
         for instance in instances:
-            detach = compute_service.instances().detachDisk(
+            compute_service.instances().detachDisk(
                 project=self.credentials['project_id'],
                 zone=zone,
                 instance=instance,

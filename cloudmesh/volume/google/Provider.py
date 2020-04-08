@@ -115,9 +115,9 @@ class Provider(VolumeABC):
     def _get_credentials(self, path_to_service_account_file, scopes):
         """
         Method to get the credentials using the Service Account JSON file.
+
         :param path_to_service_account_file: Service Account JSON File path.
         :param scopes: Scopes needed to provision.
-
         :return: credentials used to get compute service
         """
         _credentials = service_account.Credentials.from_service_account_file(
@@ -176,7 +176,7 @@ class Provider(VolumeABC):
         Creates a persistent disk in the specified project using the data in
         the request.
 
-        :return: a dict representing the disk
+        :return: a list containing the newly created disk
         """
 
         compute_service = self._get_compute_service()
@@ -192,12 +192,8 @@ class Provider(VolumeABC):
             body={'type':volume_type,
                   'name':kwargs['NAME'],
                   'sizeGb':str(size)}).execute()
-        banner('disk created')
         disk_list = self.list()
-        new_disk = disk_list[0]
-        #for disk in disk_list:
-        #    if disk['name'] == kwargs['NAME']:
-        #        new_disk.append(disk)
+
         return disk_list
 
     def delete(self, name=None):
@@ -206,7 +202,6 @@ class Provider(VolumeABC):
         Deleting a disk removes its data permanently and is irreversible.
 
         :param name: Name of the disk to delete
-        :return: a dict representing the deleted disk
         """
         compute_service = self._get_compute_service()
         disk_list = self.list()
@@ -222,7 +217,6 @@ class Provider(VolumeABC):
             project=self.credentials["project_id"],
             zone=zone,
             disk=name).execute()
-        return
 
     def _list_instances(self):
         compute_service = self._get_compute_service()
@@ -240,7 +234,6 @@ class Provider(VolumeABC):
         return found_instances
 
     def attach(self, names, vm=None):
-
         """
         Attach one or more disks to an instance
 
@@ -275,12 +268,11 @@ class Provider(VolumeABC):
         return result
 
     def detach(self, name=None):
-
         """
         Detach a disk from all instances
 
         :param name: name of disk to detach
-        :return: updated list of disks with current status
+        :return: dict representing updated status of detached disk
         """
         compute_service = self._get_compute_service()
         # Get name of attached instance(s) from list of disks
@@ -308,6 +300,10 @@ class Provider(VolumeABC):
         return result
 
     def add_tag(self, **kwargs):
+
+        raise NotImplementedError
+
+    def status(self, name=None):
 
         raise NotImplementedError
 

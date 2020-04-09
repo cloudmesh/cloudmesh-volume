@@ -57,15 +57,17 @@ class Provider(VolumeABC):
 
     def __init__(self, name):
         """
-        TODO: MISSING
+        Get Google Cloud credentials and defaults from cloudmesh.yaml and set
+        scopes for Google Compute Engine
 
-        :param name:
+        :param name: name of cloud provider in cloudmesh.yaml file under
+                     cloudmesh.volume
         """
         self.cloud = name
         config = Config()
         self.default = config[f"cloudmesh.volume.{name}.default"]
         self.credentials = config[f"cloudmesh.volume.{name}.credentials"]
-        self.compute_scopes=[
+        self.compute_scopes = [
             'https://www.googleapis.com/auth/compute',
             'https://www.googleapis.com/auth/cloud-platform',
             'https://www.googleapis.com/auth/compute.readonly']
@@ -73,10 +75,7 @@ class Provider(VolumeABC):
     def update_dict(self, elements):
         """
         This function adds a cloudmesh cm dict to each dict in the list
-        elements.
-        returns an object or list of objects with the dict method
-        this object is converted to a dict. Typically this method is used
-        internally.
+        elements. Typically this method is used internally.
 
         :param elements: the list of original dicts. If elements is a single
                          dict a list with a single element is returned.
@@ -90,9 +89,9 @@ class Provider(VolumeABC):
             _elements = [elements]
         d = []
         for entry in _elements:
-            name = None
             entry['type'] = entry['type'].rsplit('/', 1)[1]
             entry['zone'] = entry['zone'].rsplit('/', 1)[1]
+            name = None
             if 'targetLink' in entry:
                 name = entry['targetLink'].rsplit('/', 1)[1]
             else:
@@ -190,9 +189,9 @@ class Provider(VolumeABC):
         compute_service.disks().insert(
             project=self.credentials["project_id"],
             zone=self.default['zone'],
-            body={'type':volume_type,
-                  'name':kwargs['NAME'],
-                  'sizeGb':str(size)}).execute()
+            body={'type': volume_type,
+                  'name': kwargs['NAME'],
+                  'sizeGb': str(size)}).execute()
         disk_list = self.list()
 
         return disk_list
@@ -220,6 +219,11 @@ class Provider(VolumeABC):
             disk=name).execute()
 
     def _list_instances(self):
+        """
+        Gets a list of available VM instances
+
+        :return: list of dicts representing VM instances
+        """
         compute_service = self._get_compute_service()
         instance_list = compute_service.instances().aggregatedList(
             project=self.credentials["project_id"],

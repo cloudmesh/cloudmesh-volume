@@ -86,12 +86,14 @@ class Provider(VolumeABC):
 
     def __init__(self, name=None):
         """
-        TODO: missing
+        Initialize provider, create boto3 ec2 client, get the default dict.
 
-        :param name:
+        :param name: name of cloud
         """
         self.cloud = name
         self.client = boto3.client('ec2')
+        config = Config()
+        self.default = config[f"cloudmesh.volume.{self.cloud}.default"]
 
     def update_dict(self, results):
         """
@@ -174,9 +176,27 @@ class Provider(VolumeABC):
             d.append(entry)
         return d
 
-    def find_vm_name(self, volume_name=None):
+    def vm_info(self, vm):
         """
-        This function find attached vm_name from given volume_name. only
+        This function find vm info through given vm name.
+
+        :param vm: the name of vm.
+        :return: dict
+        """
+
+        vm_info = self.client.describe_instances(
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': [vm,]
+                },
+            ]
+        )
+        return vm_info
+
+    def find_vm_info_from_volume_name(self, volume_name=None):
+        """
+        This function find vm info which the volume attached to through given volume name. only
         implemented circumstance when a volume can only attach to one vm. (type
         iol volume could attach to multiple vms, not implemented)
 
@@ -200,7 +220,6 @@ class Provider(VolumeABC):
                     vm_id = item['InstanceId']
                     instance = client.describe_instances(InstanceIds=[vm_id])
                     for tag in instance['Reservations'][0]['Instances'][0]['Tags']:
-                        print(tag)
                         if tag['Key'] == 'Name':
                             vm_name = tag['Value']
                             print("vm_name: ", vm_name)
@@ -302,31 +321,25 @@ class Provider(VolumeABC):
         return result
 
 
-    def create(self, name=None, **kwargs):
+    def create(self, **kwargs):
         """
-        This function create a new volume, with defalt parameters in
-        cloudmesh.volume.{cloud}.default.
+        This function create a new volume, with defalt parameters in self.default (size: 2, iops: 1000,
+        encrypted: False, multi_attach_enabled: True).
 
-        :param name: the name of volume
+        :param NAME (string): the name of volume
+        :param size (int): the size of volume (GB)
+        :param volume_type: volume type
+        :param region (string): availability zone of volume
         :return: volume dict
         """
-        cloud = kwargs['cloud']
-        config = Config()
-        default = config[f"cloudmesh.volume.{cloud}.default"]
-        for key in default.keys():
+
+        for key in self.default.keys():
             if key not in kwargs.keys():
-                kwargs[key] = default[key]
+                kwargs[key] = self.default[key]
             elif kwargs[key] == None:
-                kwargs[key] = default[key]
+                kwargs[key] = self.default[key]
 
-        #default.update(kwargs)
-        #banner(f"print kwargs after update {kwargs}")
-        result = self._create(name=name, **kwargs)
-
-            #size: 2
-            #iops: 1000
-            #encrypted: False
-            #multi_attach_enabled: True
+        result = self._create(**kwargs)
         result = self.update_dict(result)
         return result
 
@@ -376,30 +389,48 @@ class Provider(VolumeABC):
             if int(kwargs['size']) < 500:
                 raise Exception("minimum volume size for sc1 is 500 GB")
 
-
-        r = self.client.create_volume(
-            AvailabilityZone=kwargs['region'],
-            Encrypted=kwargs['encrypted'],
-            #Iops=kwargs['iops'],
-            #KmsKeyId=None,
-            #OutpostArn=None,
-            Size=int(kwargs['size']),
-            #SnapshotId=None,
-            VolumeType=kwargs['volume_type'],
-            #DryRun=kwargs['dryrun'],
-            TagSpecifications=[
-                {
-                    'ResourceType': 'volume',
-                    'Tags': [
-                        {
-                            'Key': "Name",
-                            'Value': kwargs['NAME']
-                        },
-                    ]
-                },
-            ],
-            #MultiAttachEnabled=kwargs['multi_attach_enabled']
-        )
+        if kwargs['snapshot'] is not None:
+            r = self.client.create_volume(
+                AvailabilityZone=kwargs['region'],
+                Encrypted=kwargs['encrypted'],
+                #Iops=kwargs['iops'],
+                #KmsKeyId=None,
+                #OutpostArn=None,
+                Size=int(kwargs['size']),
+                SnapshotId=kwargs['snapshot'],
+                VolumeType=kwargs['volume_type'],
+                #DryRun=kwargs['dryrun'],
+                TagSpecifications=[
+                    {
+                        'ResourceType': 'volume',
+                        'Tags': [
+                            {
+                                'Key': "Name",
+                                'Value': kwargs['NAME']
+                            },
+                        ]
+                    },
+                ],
+                #MultiAttachEnabled=kwargs['multi_attach_enabled']
+            )
+        else:
+            r = self.client.create_volume(
+                AvailabilityZone=kwargs['region'],
+                Encrypted=kwargs['encrypted'],
+                Size=int(kwargs['size']),
+                VolumeType=kwargs['volume_type'],
+                TagSpecifications=[
+                    {
+                        'ResourceType': 'volume',
+                        'Tags': [
+                            {
+                                'Key': "Name",
+                                'Value': kwargs['NAME']
+                            },
+                        ]
+                    },
+                ],
+            )
         r = [r]
         result = {}
         result['Volumes']= r
@@ -539,6 +570,7 @@ class Provider(VolumeABC):
                                     )
                 except:
                     pass
+
         return self.list(NAMES=NAMES)
 
     def detach(self,
@@ -605,175 +637,107 @@ class Provider(VolumeABC):
         return result
 
 
-    def migrate(self,
-                name=None,
-                fvm=None,
-                tvm=None,
-                fregion=None,
-                tregion=None,
-                fservice=None,
-                tservice=None,
-                fcloud=None,
-                tcloud=None,
-                cloud=None,
-                region=None,
-                service=None):
+    def migrate(self, **kwargs):
         """
         Migrate volume from one vm to another vm.
 
-        :param name: name of volume
-        :param fvm: name of vm where volume will be moved from
-        :param tvm: name of vm where volume will be moved to
-        :param fregion: the region where the volume will be moved from
-        :param tregion: region where the volume will be moved to
-        :param fservice: the service where the volume will be moved from
-        :param tservice: the service where the volume will be moved to
-        :param fcloud: the provider where the volume will be moved from
-        :param tcloud: the provider where the volume will be moved to
-        :param cloud: the provider where the volume will be moved within
-        :param region: the region where the volume will be moved within
-        :param service: the service where the volume will be moved within
+        :param NAME (string): the volume name
+        :param vm (string): the vm name
         :return: dict
-
         """
+        volume_name = kwargs['NAME']
+        vm = kwargs['vm']
+        volume_status = self.status(volume_name=volume_name)[0]['State']
+        volume_region = self.list(NAME=volume_name)[0]['cm']['region']
+        volume_id = self.find_volume_id(volume_name=volume_name)
+        vm_info = self.vm_info(vm=vm)
+        vm_status = vm_info['Reservations'][0]['Instances'][0]['State']['Name']
+        vm_region = vm_info['Reservations'][0]['Instances'][0]['Placement']['AvailabilityZone']
+        vm_id = self.find_vm_id(vm_name=vm)
 
-        raise NotImplementedError
+        # migrate within same region:
+        if vm_status == 'running':
+            if volume_region == vm_region:
+                #if volume and vm are in the same zone,
+                if volume_status == "in-use":
+                    # if volume is attached to a vm, first detach and than attach to vm
+                    self.detach(NAME=volume_name)
+                    self.attach(NAMES=[volume_name,],vm=vm)
+                elif volume_status == "available":
+                    #if volume is available, attach to vm
+                    self.attach(NAMES=[volume_name,], vm=vm)
+                return self.list(NAME=volume_name)
+            else:
+                #if volume and vm are not in the same zone, create a snapshot, create a new volume with the snapshot
+                # and in the same zone as vm, delete old volume
 
-    def sync(self,
-             volume_id,
-             zone=None,
-             cloud=None,
-             dryrun=False
-             ):
+                snapshot_id = self.client.create_snapshot(
+                    VolumeId=volume_id,)['SnapshotId']
+                ec2 = boto3.resource('ec2')
+                snapshot = ec2.Snapshot(snapshot_id)
+                start_timeout = 360
+                time = 0
+                while time <= start_timeout:
+                    sleep(5)
+                    time += 5
+                    if snapshot.state == "completed":
+                        break
+                kwargs['snapshot'] = snapshot_id
+                kwargs['region'] = vm_region
+                new_volume = self.create(name=volume_name, **kwargs)
+                start_timeout = 360
+                time = 0
+                while time <= start_timeout:
+                    sleep(5)
+                    time += 5
+                    status = self.status(volume_name=volume_name)[0]['State']
+                    if status == "available":
+                        break
+                self.attach(NAMES=[volume_name,], vm=vm)
+                response = self.client.delete_volume(VolumeId=volume_id)
+
+        else:
+            Console.error("vm is not available")
+        return self.list()
+
+    def sync(self, NAMES):
         """
         sync contents of one volume to another volume
 
-        :param volume_id (string): list of id of volume
-        :param zone (string): zone where new volume will be created
-        :param cloud (string): the provider where volumes will be hosted
+        :param NAMES (list): list of volume names
         :return: dict
-
         """
-        banner(f"sync volume")
-        volume = self.ec2.Volume(volume_id)
-        snapshot = volume.create_snapshot()
-        if zone is None:
-            availability_zone = self.ec2.describe_volumes(
-                VolumeIds=[volume_id])['Volumes'][0]['availability-zone']
-        else:
-            availability_zone = zone
-        result = self.ec2.create_volume(SnapshotId=snapshot,
-                                        AvailabilityZone=availability_zone,
-                                        DryRun=dryrun)
-        # This is wrong not updated
-        raise NotImplementedError
+        volume_1 = NAMES[0]
+        volume_1_region = self.list(NAME=volume_1)[0]['cm']['region']
+        volume_2 = NAMES[1]
+        volume_2_id = self.find_volume_id(volume_name=volume_2)
+        # make a snapshot of volume_2
+        snapshot_id = self.client.create_snapshot(
+            VolumeId=volume_2_id, )['SnapshotId']
+        ec2 = boto3.resource('ec2')
+        snapshot = ec2.Snapshot(snapshot_id)
+        start_timeout = 360
+        time = 0
+        while time <= start_timeout:
+            sleep(5)
+            time += 5
+            if snapshot.state == "completed":
+                break
+        # delete volume_1
+        self.delete(NAME=volume_1)
+        # create volume_1 with snapshot of volume_2
+        kwargs = {}
+        kwargs['region'] = volume_1_region
+        kwargs['snapshot'] = snapshot_id
+        kwargs['NAME'] = volume_1
 
-
-
-
-    def set(self,
-            volume_id,
-            attribute=None,
-            tag_key=None,
-            tag_value=None,
-            size=None,
-            voltype=None,
-            iops=None,
-            dryrun=False):
-
-        """
-            modify-volume-attribute: resume I/O access to the volume, or add or
-                                     overwrite the specified tags, \
-                                     or modify volume size, volume type, iops
-                                     value
-            :param volume_id <(string): volume id
-            :param attribute (sting): can be "auto_enable_io", "tag"
-            :param tag_key (string): Tag keys are case-sensitive and accept a
-                                     maximum of 127 Unicode characters.
-                                     May not begin with aws.
-            :param tag_value (string): Tag values are case-sensitive and accept
-                                       a maximum of 255 Unicode characters.
-            :param size (integer): The target size of the volume, in GiB.
-            :param voltype (string): Type of volume. This can be 'gp2' for
-                                     General Purpose SSD,
-                                    'io1' for Provisioned IOPS SSD, 'st1'
-                                    for Throughput Optimized HDD,
-                                    'sc1' for Cold HDD, or 'standard' for
-                                    Magnetic volumes.
-            :param iops (integer): The number of I/O operations per second
-                                   (IOPS) that the volume supports
-                                   (from 100 to 64,000 for io1 type volume).
-            :param dryrun (boolean): True | False
-        """
-
-        volume = self.ec2.Volume(volume_id)
-        if attribute == "auto_enable_io":
-            result = volume.modify_attribute(
-                AutoEnableIO={
-                    'Value': True
-                },
-                DryRun=dryrun
-            )
-
-        elif attribute == "tag":
-            result = volume.create_tags(
-                DryRun=dryrun,
-                Tags=[
-                    {
-                        'Key': tag_key,
-                        'Value': tag_value
-                    },
-                ]
-            )
-
-        else:
-            result = volume.modify_volume(
-                DryRun=dryrun,
-                VolumeId=volume_id,
-                Size=size,
-                VolumeType=volume_type, # BUG
-                Iops=iops
-            )
-
-        # This is wrong not updated
-        return result
-
-    def unset(self, volume_id, attribute=None, dryrun=False):
-
-        """
-        modify-volume-attribute: suspend I/O access to the volume, or
-        overwrite tag by an empty string
-
-        :param volume_id (string): volume id
-        :param attribute (sting): "no_auto_enable_io" | "tag"
-        :param dryrun (boolean): True | False
-        """
-
-        volume = self.ec2.Volume(volume_id)
-        if attribute == "no_auto_enable_io":
-            result = volume.modify_attribute(
-                AutoEnableIO={
-                    'Value': False
-                },
-                DryRun=dryrun
-            )
-
-        elif attribute == "tag":
-            result = volume.create_tags(
-                DryRun=dryrun,
-                Tags=[
-                    {
-                        'Key': " ",
-                        'Value': " "
-                    },
-                ]
-            )
-        # This is wrong not updated
-        return result
-
-
-if __name__ == "__main__":
-    # region = 'us-east-2'
-    p = Provider()
-
-    p.list()
+        new_volume = self.create(**kwargs)
+        start_timeout = 360
+        time = 0
+        while time <= start_timeout:
+            sleep(5)
+            time += 5
+            status = self.status(volume_name=volume_1)[0]['State']
+            if status == "available":
+                break
+        return self.list(NAME=volume_1)[0]

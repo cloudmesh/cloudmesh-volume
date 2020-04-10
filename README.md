@@ -72,6 +72,7 @@ functions that are deployed on different clouds.
                   [--size=SIZE]
                   [--volume_type=TYPE]
                   [--description=DESCRIPTION]
+                  [--region=REGION]
                   [--dryrun]
 ```
 
@@ -127,7 +128,7 @@ functions that are deployed on different clouds.
   services or providers. 
   
 ``` 
-  volume migrate NAME FROM_VM TO_VM 
+  volume migrate NAME [--vm=VM] 
 ```
 
 * volume sync
@@ -136,7 +137,7 @@ functions that are deployed on different clouds.
   changed content from one volume to the other.
   
 ```
-    volume sync FROM_VOLUME TO_VOLUME
+    volume sync NAME
 ```
 >>>>>>> origin/master
 

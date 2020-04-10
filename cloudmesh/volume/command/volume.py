@@ -47,14 +47,14 @@ class VolumeCommand(PluginCommand):
 
           Arguments:
               NAME   the name of the volume
-              NAMES  the names of nultiple volumes
+              NAMES  the names of multiple volumes
               vm     the name of the vm
 
           Options:
               --vm=VMNAME        The name of the virtual machine
               --region=REGION    The name of the region
               --cloud=CLOUD      The name of the cloud
-              --refresh          If refresh the information is taken from the cloud
+              --refresh          If refresh the info is taken from the cloud
               --volume_type=TYPE  The type of the volume
               --output=FORMAT    Output format [default: table]
               --key=KEY          The tag key
@@ -88,10 +88,10 @@ class VolumeCommand(PluginCommand):
             volume status [NAMES]
                       [--cloud=CLOUD]
             volume attach [NAMES] [--vm=VM]
-                Attatch volume to a vm
+                Attach volume to a vm
 
             volume detach [NAMES]
-                Dettatch volume from a vm
+                Detach volume from a vm
 
             volume delete NAMES
                 Delete the named volumes
@@ -103,7 +103,7 @@ class VolumeCommand(PluginCommand):
 
             volume sync FROM_VOLUME TO_VOLUME
                 TODO: not yet implemented
-                Volume sync alows for data to shared bewteen two volumes.
+                Volume sync allows for data to shared between two volumes.
 
         """
 
@@ -199,7 +199,8 @@ class VolumeCommand(PluginCommand):
                                     result = provider.list(**arguments)
                                     print(provider.Print(result,
                                                          kind='volume',
-                                                         output=arguments.output))
+                                                         output=arguments.output
+                                                         ))
                                     listed.append(name)
                             if len(listed) > 0:
                                 # delete all listed volumes in names
@@ -234,7 +235,8 @@ class VolumeCommand(PluginCommand):
                 arguments.NAME = str(create_name())
             provider = Provider(name=arguments.cloud)
             result = provider.create(**arguments)
-            print(provider.Print(result, kind='volume', output=arguments.output))
+            print(provider.Print(result, kind='volume',
+                                 output=arguments.output))
 
         elif arguments.delete:
             names = arguments.NAMES or variables["volume"]

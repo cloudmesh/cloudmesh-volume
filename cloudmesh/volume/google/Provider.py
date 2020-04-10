@@ -91,17 +91,16 @@ class Provider(VolumeABC):
         for entry in _elements:
             entry['type'] = entry['type'].rsplit('/', 1)[1]
             entry['zone'] = entry['zone'].rsplit('/', 1)[1]
-            name = None
             if 'targetLink' in entry:
                 name = entry['targetLink'].rsplit('/', 1)[1]
             else:
                 name = entry['name']
-            vms = []
+            vm_list = []
             if 'users' in entry:
                 for user in entry['users']:
                     user = user.rsplit('/', 1)[1]
-                    vms.append(user)
-            entry['users'] = vms
+                    vm_list.append(user)
+            entry['users'] = vm_list
             if "cm" not in entry:
                 entry['cm'] = {}
             entry["cm"].update({
@@ -182,6 +181,7 @@ class Provider(VolumeABC):
         compute_service = self._get_compute_service()
         volume_type = kwargs['volume_type']
         size = kwargs['size']
+        description = kwargs['description']
         if volume_type is None:
             volume_type = self.default["type"]
         if size is None:
@@ -191,7 +191,8 @@ class Provider(VolumeABC):
             zone=self.default['zone'],
             body={'type': volume_type,
                   'name': kwargs['NAME'],
-                  'sizeGb': str(size)}).execute()
+                  'sizeGb': str(size),
+                  'description': description}).execute()
         disk_list = self.list()
 
         return disk_list
@@ -309,8 +310,20 @@ class Provider(VolumeABC):
         raise NotImplementedError
 
     def status(self, name=None):
+        """
+        Gets status of specified disk
 
-        raise NotImplementedError
+        :param name: name of disk
+        :return: status of disk
+        """
+        compute_service = self._get_compute_service()
+        disk_list = self.list()
+        volume = None
+        for disk in disk_list:
+            if disk['name'] == name:
+                volume = disk
+        volume_status = disk['status']
+        volume_vm = disk['users']
 
     def migrate(self,
                 name=None,

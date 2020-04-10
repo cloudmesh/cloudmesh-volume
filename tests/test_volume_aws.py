@@ -23,7 +23,6 @@ user = Config()["cloudmesh.profile.user"]
 variables = Variables()
 VERBOSE(variables.dict())
 
-
 #
 # cms set cloud=aws1
 #

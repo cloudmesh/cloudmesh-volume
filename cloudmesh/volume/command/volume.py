@@ -46,7 +46,7 @@ class VolumeCommand(PluginCommand):
             volume sync [NAMES]
                         [--cloud=CLOUD]
 
-          This command manages volumes accross different clouds
+          This command manages volumes across different clouds
 
           Arguments:
               NAME   the name of the volume
@@ -57,7 +57,7 @@ class VolumeCommand(PluginCommand):
               --vm=VMNAME        The name of the virtual machine
               --region=REGION    The name of the region
               --cloud=CLOUD      The name of the cloud
-              --refresh          If refresh the information is taken from the cloud
+              --refresh          If refresh the info is taken from the cloud
               --volume_type=TYPE  The type of the volume
               --output=FORMAT    Output format [default: table]
               --key=KEY          The tag key
@@ -94,10 +94,10 @@ class VolumeCommand(PluginCommand):
                           [--cloud=CLOUD]
             volume attach [NAMES]
                           [--vm=VM]
-                Attatch volume to a vm
+                Attach volume to a vm
 
             volume detach [NAMES]
-                Dettatch volume from a vm
+                Detach volume from a vm
 
             volume delete [NAMES]
                 Delete the named volumes
@@ -109,7 +109,7 @@ class VolumeCommand(PluginCommand):
 
             volume sync [NAMES]
                         [--cloud=CLOUD]
-                Volume sync allows for data to shared bewteen two volumes.
+                Volume sync allows for data to shared between two volumes.
         """
 
         VERBOSE(arguments)
@@ -143,11 +143,11 @@ class VolumeCommand(PluginCommand):
             config = Config()
 
             n = VolumeName(
-                    user=config["cloudmesh.profile.user"],
-                    kind="volume",
-                    path=f"{config.location}/volume.yaml",
-                    schema="{user}-volume-{counter}"
-                )
+                user=config["cloudmesh.profile.user"],
+                kind="volume",
+                path=f"{config.location}/volume.yaml",
+                schema="{user}-volume-{counter}"
+            )
             n.incr()
             return n
 
@@ -205,7 +205,8 @@ class VolumeCommand(PluginCommand):
                                     result = provider.list(**arguments)
                                     print(provider.Print(result,
                                                          kind='volume',
-                                                         output=arguments.output))
+                                                         output=arguments.output
+                                                         ))
                                     listed.append(name)
                             if len(listed) > 0:
                                 # delete all listed volumes in names
@@ -214,7 +215,7 @@ class VolumeCommand(PluginCommand):
 
             else:
                 if arguments.cloud:
-                # "cms volume list --cloud=aws1"
+                    # "cms volume list --cloud=aws1"
                     provider = Provider(name=arguments.cloud)
 
                     result = provider.list(**arguments)
@@ -222,7 +223,7 @@ class VolumeCommand(PluginCommand):
                                          kind='volume',
                                          output=arguments.output))
                 else:
-                # "cms volume list"
+                    # "cms volume list"
                     arguments['cloud'] = cloud
                     provider = Provider(name=arguments.cloud)
 
@@ -234,19 +235,20 @@ class VolumeCommand(PluginCommand):
             return ""
 
         elif arguments.create:
-            if arguments.cloud == None:
+            if arguments.cloud is None:
                 arguments['cloud'] = cloud
-            if arguments.NAME ==None:
+            if arguments.NAME is None:
                 arguments.NAME = str(create_name())
             provider = Provider(name=arguments.cloud)
             result = provider.create(**arguments)
-            print(provider.Print(result, kind='volume', output=arguments.output))
+            print(provider.Print(result, kind='volume', output=arguments.output
+                                 ))
 
         elif arguments.delete:
             names = arguments.NAMES or variables["volume"]
             names = Parameter.expand(names)
             if names is None:
-                Console.error ("No volume specified or found")
+                Console.error("No volume specified or found")
                 return ""
             config = Config()
             clouds = list(config["cloudmesh.volume"].keys())
@@ -265,7 +267,7 @@ class VolumeCommand(PluginCommand):
                             result = provider.delete(NAME=name)
                             deleted.append(name)
                     if len(deleted) > 0:
-                        #delete all deleted volumes in names
+                        # delete all deleted volumes in names
                         for name in deleted:
                             names.remove(name)
 
@@ -283,28 +285,30 @@ class VolumeCommand(PluginCommand):
             banner(f"Attaching {names} to {arguments.vm}")
             provider = Provider(name=arguments.cloud)
             result = provider.attach(names, vm)
-            print(provider.Print(result, kind='volume', output=arguments.output))
+            print(provider.Print(result, kind='volume', output=arguments.output)
+                  )
 
         elif arguments.detach:
             config = Config()
             clouds = list(config["cloudmesh.volume"].keys())
             volumes = arguments.NAMES or variables["volume"]
             if volumes is None:
-                Console.error ("No volume specified or found")
+                Console.error("No volume specified or found")
                 return ""
             volumes = Parameter.expand(volumes)
             for cloud in clouds:
                 if len(volumes) != 0:
                     banner(f"Detaching volumes from {cloud}")
                 else:
-                    banner("End of Dataching Volumes")
+                    banner("End of Detaching Volumes")
                     break
                 active = config[f"cloudmesh.volume.{cloud}.cm.active"]
                 if active:
                     detached = []
                     provider = Provider(name=cloud)
                     for name in volumes:
-                        # returns volume name if found in the cloud, None if it is not in the cloud
+                        # returns volume name if found in the cloud,
+                        # None if it is not in the cloud
                         volume = provider.search(name=name)
                         if volume:
                             banner(f"Detaching {name} from {cloud}")
@@ -323,7 +327,8 @@ class VolumeCommand(PluginCommand):
             arguments.NAME = name
             provider = Provider(name=arguments.cloud)
             result = provider.add_tag(**arguments)
-            print(provider.Print(result, kind='volume', output=arguments.output))
+            print(provider.Print(result, kind='volume', output=arguments.output)
+                  )
 
         elif arguments.status:
             arguments.cloud = arguments.cloud or cloud
@@ -331,14 +336,17 @@ class VolumeCommand(PluginCommand):
             arguments.NAME = name
             provider = Provider(name=arguments.cloud)
             result = provider.status(NAME=name)
-            #print(f"{name} is {result[0]['State']}")
-            print(provider.Print(result, kind='volume', output=arguments.output))
+            # print(f"{name} is {result[0]['State']}")
+            print(provider.Print(result, kind='volume', output=arguments.output)
+                  )
 
         elif arguments.migrate:
             if arguments.cloud:
                 # "cms volume migrate NAME --vm=VM --cloud=aws1"
-                #if no given volume, get the current volume or get the last volume,
-                name = arguments.NAME or variables["volume"] or get_last_volume()
+                # if no given volume, get the current volume
+                # or get the last volume,
+                name = arguments.NAME or variables["volume"] \
+                       or get_last_volume()
                 arguments.NAME = name
                 provider = Provider(name=arguments.cloud)
                 result = provider.migrate(**arguments)
@@ -349,17 +357,18 @@ class VolumeCommand(PluginCommand):
             else:
                 raise NotImplementedError
                 # "cms volume migrate NAME vm"
-                #search through clouds, find cloud of vm???????
+                # search through clouds, find cloud of vm???????
                 config = Config()
-                clouds = ["multipass", "aws", "azure", "google", "openstack", "oracle"]
-                #clouds = list(config["cloudmesh.cloud"].keys())
-                #['docker', 'azure', 'aws', 'google', 'chameleon', 'jetstream', 'cybera', 'vagrant', 'vagrant_remote']
+                clouds = ["multipass", "aws", "azure", "google", "openstack",
+                          "oracle"]
+                # clouds = list(config["cloudmesh.cloud"].keys())
+                # ['docker', 'azure', 'aws', 'google', 'chameleon', 'jetstream',
+                # 'cybera', 'vagrant', 'vagrant_remote']
                 for cloud in clouds:
                     provider = Provider(name=cloud)
                     result = provider.migrate(**arguments)
-                    print(provider.Print(result,
-                                     kind='volume',
-                                     output=arguments.output))
+                    print(provider.Print(result, kind='volume',
+                                         output=arguments.output))
 
         elif arguments.sync:
             # "cms volume sync NAMES"
@@ -368,10 +377,11 @@ class VolumeCommand(PluginCommand):
             # what it actually does is copy second volume and overwrite
             # the other (current volume or first volume in NAMES)
 
-            if len([arguments.NAMES])==1:
-                volumes = [variables["volume"] or get_last_volume(), arguments.NAMES]
+            if len([arguments.NAMES]) == 1:
+                volumes = [variables["volume"] or get_last_volume(),
+                           arguments.NAMES]
                 arguments.NAMES = volumes
-            elif len([arguments.NAMES])==2:
+            elif len([arguments.NAMES]) == 2:
                 volumes = arguments.NAMES
             else:
                 Console.error("Two volumes should be specified")
@@ -392,10 +402,11 @@ class VolumeCommand(PluginCommand):
                         detached = []
                         provider = Provider(name=cloud)
                         for name in volumes:
-                            # returns volume name if found in the cloud, None if it is not in the cloud
+                            # returns volume name if found in the cloud,
+                            # None if it is not in the cloud
                             volume = provider.search(name=name)
                             if volume:
-                                banner(f"syncronizing {name} from {cloud}")
+                                banner(f"synchronizing {name} from {cloud}")
                                 result = provider.detach(NAME=name)
                                 detached.append(name)
                                 print(provider.Print(result, kind='volume',
@@ -404,8 +415,3 @@ class VolumeCommand(PluginCommand):
                             # delete all detached volumes in volumes
                             for name in detached:
                                 volumes.remove(name)
-
-
-
-
-

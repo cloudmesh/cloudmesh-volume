@@ -381,7 +381,19 @@ class Provider(VolumeABC):
         :param kwargs:
         :return:
         """
-        print("update me")
+        LOCATION = 'eastus'
+        GROUP_NAME = 'cloudmesh'
+        async_vm_update = compute_client.virtual_machines.create_or_update(
+            GROUP_NAME,
+            VM_NAME,
+            {
+                'location': LOCATION,
+                'tags': {
+                    'who-rocks': 'python',
+                    'where': 'on azure'
+                }
+            }
+        )
 
 
     def migrate(self,

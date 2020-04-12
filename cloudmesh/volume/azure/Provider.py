@@ -250,10 +250,12 @@ class Provider(VolumeABC):
 
     def delete (self, NAMES=None):
         """
-        TODO: missing
+        This function deletes a disk. It returns result to list outcome of
+        disk deletion, which is nothing since the disk is now gone.
 
-        :param NAMES:
-        :return:
+        :param LOCATION (string): datacenter region
+        :param GROUP_NAME (string): name of resource group
+        :return: result
         """
         GROUP_NAME = 'cloudmesh'
         LOCATION = 'eastus'
@@ -278,15 +280,9 @@ class Provider(VolumeABC):
              refresh=None,
              dryrun=None):
         """
-        TODO: missing
+        This function lists all disks.
 
-        :param NAMES:
-        :param vm:
-        :param region:
-        :param cloud:
-        :param refresh:
-        :param dryrun:
-        :return:
+        :return: result
         """
         disk_list = self.compute_client.disks.list()
         return disk_list

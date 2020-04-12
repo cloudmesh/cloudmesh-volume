@@ -251,7 +251,7 @@ class Provider(VolumeABC):
                 }
             }
         )
-        # print list after create
+        # return after create
         results = disk_creation.result().as_dict()
         result = self.update_dict([results])
         return result
@@ -267,7 +267,7 @@ class Provider(VolumeABC):
                 'location': LOCATION
             }
         )
-        # print list after deleting
+        # return after deleting
         results = disk_deletion.result()
         result = self.update_dict(results)
         return result
@@ -315,52 +315,29 @@ class Provider(VolumeABC):
             VM_NAME,
             virtual_machine
         )
+        # return after attaching
         results = updated_vm.result().as_dict()
         result = self.update_dict([results])
         return result
 
-
-
-#might need to access azure compute provider vm name
-#create vm first then attach disk to new vm
-#if vm unavailable, give an error
-#if missing (Such as delete), give an error
 
     def detach(self,
               NAME=None):
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
         VM_NAME = 'ashthorn-vm-3'
-        # disk_creation = self.compute_client.disks.create_or_update(
-        #     GROUP_NAME,
-        #     "test",
-        #     {
-        #         'location': LOCATION,
-        #         'disk_size_gb': 1,
-        #         'creation_data': {
-        #             'create_option': 'Empty'
-        #         }
-        #     }
-        # )
         self.vms = self.compute_client.virtual_machines
         virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
         data_disks = virtual_machine.storage_profile.data_disks
-        data_disk = [disk for disk in data_disks if
-                         disk.name == 'test']
-        disk_detach = virtual_machine.storage_profile.data_disks.append({
-            'lun': 0,
-            'name': data_disk.name,
-            'create_option': 'Detach',
-            'managed_disk': {
-                'id': data_disk.id
-            }
-        })
-        updated_vm = self.vms.create_or_update(
+        data_disks[:] = [
+            disk for disk in data_disks if disk.name != 'test']
+        async_vm_update = self.compute_client.virtual_machines.create_or_update(
             GROUP_NAME,
             VM_NAME,
             virtual_machine
         )
-        results = updated_vm.result().as_dict()
+        # return after detaching
+        results = async_vm_update.result().as_dict()
         result = self.update_dict([results])
         return result
 

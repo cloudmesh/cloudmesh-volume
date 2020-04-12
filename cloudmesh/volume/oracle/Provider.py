@@ -1,5 +1,4 @@
 import oci
-from cloudmesh.common.Printer import Printer
 from cloudmesh.common.dotdict import dotdict
 from cloudmesh.configuration.Config import Config
 from cloudmesh.volume.VolumeABC import VolumeABC
@@ -58,17 +57,6 @@ class Provider(VolumeABC):
         }
     }
 
-    def Print(self, data, output=None, kind=None):
-        order = self.output["volume"]['order']
-        header = self.output["volume"]['header']
-        print(Printer.flatwrite(data,
-                                sort_keys=["name"],
-                                order=order,
-                                header=header,
-                                output=output,
-                                )
-              )
-
     def update_dict(self, results):
         """
         This function adds a cloudmesh cm dict to each dict in the list
@@ -79,8 +67,6 @@ class Provider(VolumeABC):
         internally.
 
         :param results: the original dicts.
-        :param kind: for some kinds special attributes are added. This includes
-                     key, vm, image, flavor.
         :return: The list with the modified dicts
         """
 
@@ -95,13 +81,13 @@ class Provider(VolumeABC):
             time_created = entry.__getattribute__("time_created")
             size_in_gbs = entry.__getattribute__("size_in_gbs")
             lifecycle_state = entry.__getattribute__("lifecycle_state")
-            id = entry.__getattribute__("id")
+            attribute_id = entry.__getattribute__("id")
 
             entry = {
                 "availability_domain": availability_domain,
                 "time_created": time_created,
                 "size_in_gbs": size_in_gbs,
-                "id": id,
+                "id": attribute_id,
                 "lifecycle_state": lifecycle_state
             }
 
@@ -119,65 +105,67 @@ class Provider(VolumeABC):
 
     def __init__(self, name):
         """
-        TODO: MISSING
+        Initialize provider. The default parameters are read from the
+        configuration file that is defined in yaml format.
 
-        :param name:
+        :param name: name of cloud
         """
         self.cloud = name
         self.config = Config()["cloudmesh.volume.oracle.credentials"]
         self.defaults = Config()["cloudmesh.volume.oracle.default"]
 
-    def getVolumeIdFromName(self,block_storage,name):
+    def get_volume_id_from_name(self, block_storage, name):
         """
-        TODO: MISSING
+        This function get volume id from volume name
 
-        :param block_storage:
-        :param name:
-        :return:
+        :param block_storage: Block storage client object
+        :param name: volume name
+        :return: volume id
         """
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
-        volumeId = None
+        volume_id = None
         for entry in results:
             display_name = entry.__getattribute__("display_name")
-            if(name==display_name):
-                volumeId=entry.__getattribute__("id")
+            if name == display_name:
+                volume_id = entry.__getattribute__("id")
                 break
-        return volumeId
+        return volume_id
 
-    def getAttachmentIdFromName(self,block_storage,name):
+    def get_attachment_id_from_name(self, block_storage, name):
         """
-        TODO: MISSING
+        This function get attachment id from volume name
 
-        :param block_storage:
-        :param name:
-        :return:
+        :param block_storage: Block storage client object
+        :param name: Name of the volume
+        :return: Volume attachment id
         """
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
-        attachmentid = None
+        attachment_id = None
         for entry in results:
             display_name = entry.__getattribute__("display_name")
-            if(name==display_name):
+            if name == display_name:
                 tags = entry.__getattribute__("freeform_tags")
-                attachmentid = tags['attachmentid']
+                attachment_id = tags['attachment_id']
                 break
-        return attachmentid
+        return attachment_id
 
     def status(self, name):
         """
-        TODO: MISSING
+        This function get volume status, such as "in-use", "available"
 
-        :param name:
-        :return:
+        :param name: Volume name
+        :return: Volume_status
         """
         block_storage = oci.core.BlockstorageClient(self.config)
         v = block_storage.list_volumes(self.config['compartment_id'])
         volumes = v.data
         result = []
+        entry = None
         for entry in volumes:
             display_name = entry.__getattribute__("display_name")
-            if (name == display_name):
+            if name == display_name:
                 break
         result.append(entry)
         result = self.update_dict(result)
@@ -185,21 +173,22 @@ class Provider(VolumeABC):
 
     def create(self, **kwargs):
         """
-        TODO: MISSING
+        This function creates a new volume with default size of 50gb.
+        Default parameters are read from self.config.
 
-        :param kwargs:
-        :return:
+        :param kwargs: Contains Volume name
+        :return: Volume dictionary
         """
         arguments = dotdict(kwargs)
         block_storage = oci.core.BlockstorageClient(self.config)
         result = block_storage.create_volume(
             oci.core.models.CreateVolumeDetails(
-                                        compartment_id=self.config['compartment_id'],
-                                        availability_domain=self.config['availability_domain'],
-                                        display_name=arguments.NAME
-                                    ))
-        #wait for availability of volume
-        volume = oci.wait_until(
+                compartment_id=self.config['compartment_id'],
+                availability_domain=self.config['availability_domain'],
+                display_name=arguments.NAME
+            ))
+        # wait for availability of volume
+        oci.wait_until(
             block_storage,
             block_storage.get_volume(result.data.id),
             'lifecycle_state',
@@ -210,72 +199,69 @@ class Provider(VolumeABC):
         results = v.data
         result = self.update_dict(results)
         return result
-        #print(self.Print(result, kind='volume', output=kwargs['output']))
 
     def delete(self, name=None):
         """
-        TODO: MISSING
+        This function delete one volume.
 
-        :param name:
-        :return:
+        :param name: Volume name
+        :return: Dictionary of volumes
         """
         block_storage = oci.core.BlockstorageClient(self.config)
-        print("oracle delete volume",name)
-        volumeId = self.getVolumeIdFromName(block_storage,name)
-        if(volumeId!=None):
-            block_storage.delete_volume(volume_id=volumeId)
-            #wait for termination
-            volume = oci.wait_until(
+        volume_id = self.get_volume_id_from_name(block_storage, name)
+        if volume_id is not None:
+            block_storage.delete_volume(volume_id=volume_id)
+            # wait for termination
+            oci.wait_until(
                 block_storage,
-                block_storage.get_volume(volumeId),
+                block_storage.get_volume(volume_id),
                 'lifecycle_state',
                 'TERMINATED'
             ).data
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
         result = self.update_dict(results)
-        #print(self.Print(result, kind='volume', output='table'))
         return result
 
     def attach(self, NAMES=None, vm=None):
         """
-        TODO: MISSING
+        This function attaches a given volume to a given instance
 
-        :param NAMES:
-        :param vm:
-        :return:
+        :param NAMES: Names of Volumes
+        :param vm: Instance name
+        :return: Dictionary of volumes
         """
         compute_client = oci.core.ComputeClient(self.config)
-        #get instance id from VM name
+        # get instance id from VM name
         i = compute_client.list_instances(self.config['compartment_id'])
-        instances = i.data;
-        instanceId = None
+        instances = i.data
+        instance_id = None
         for entry in instances:
             display_name = entry.__getattribute__("display_name")
-            if(vm==display_name):
-                instanceId=entry.__getattribute__("id")
+            if vm == display_name:
+                instance_id = entry.__getattribute__("id")
                 break
 
-        #get volumeId from Volume name
+        # get volumeId from Volume name
         block_storage = oci.core.BlockstorageClient(self.config)
-        volumeId = self.getVolumeIdFromName(block_storage, NAMES[0])
-        #attach volume to vm
+        volume_id = self.get_volume_id_from_name(block_storage, NAMES[0])
+        # attach volume to vm
         a = compute_client.attach_volume(
             oci.core.models.AttachIScsiVolumeDetails(
                 display_name='IscsiVolAttachment',
-                instance_id=instanceId,
-                volume_id=volumeId
+                instance_id=instance_id,
+                volume_id=volume_id
             )
         )
 
-        #tag volume with attachment id. This needed during detach.
-        result = block_storage.update_volume(
-            volumeId,
+        # tag volume with attachment id. This needed during detach.
+        block_storage.update_volume(
+            volume_id,
             oci.core.models.UpdateVolumeDetails(
-                freeform_tags={'attachmentid':a.data.id},
+                freeform_tags={'attachment_id': a.data.id},
             ))
 
-        #wait until attached
+        # wait until attached
         oci.wait_until(
             compute_client,
             compute_client.get_volume_attachment(
@@ -283,7 +269,7 @@ class Provider(VolumeABC):
             'lifecycle_state',
             'ATTACHED'
         )
-        #return result after attach
+        # return result after attach
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
         results = self.update_dict(results)
@@ -291,23 +277,23 @@ class Provider(VolumeABC):
 
     def detach(self, NAME=None):
         """
-        TODO: MISSING
+        This function detaches a given volume from an instance
 
-        :param NAME:
-        :return:
+        :param NAME: Volume name
+        :return: Dictionary of volumes
         """
         compute_client = oci.core.ComputeClient(self.config)
         block_storage = oci.core.BlockstorageClient(self.config)
-        attachmentId = self.getAttachmentIdFromName(block_storage, NAME)
-        compute_client.detach_volume(attachmentId)
-        #wait for detachment
+        attachment_id = self.get_attachment_id_from_name(block_storage, NAME)
+        compute_client.detach_volume(attachment_id)
+        # wait for detachment
         oci.wait_until(
             compute_client,
-            compute_client.get_volume_attachment(attachmentId),
+            compute_client.get_volume_attachment(attachment_id),
             'lifecycle_state',
             'DETACHED'
         )
-        #return result after detach
+        # return result after detach
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
         results = self.update_dict(results)
@@ -315,18 +301,22 @@ class Provider(VolumeABC):
 
     def list(self, **kwargs):
         """
-        TODO: MISSING
+        This function list all volumes as following:
+        If NAME (volume_name) is specified, it will print out info of NAME
+        If NAME (volume_name) is not specified, it will print out info of all
+          volumes
 
-        :param kwargs:
-        :return:
+        :param kwargs: contains name of volume
+        :return: Dictionary of volumes
         """
         block_storage = oci.core.BlockstorageClient(self.config)
         if kwargs and kwargs['NAME']:
             v = block_storage.list_volumes(self.config['compartment_id'])
             results = v.data
+            entry = None
             for entry in results:
                 display_name = entry.__getattribute__("display_name")
-                if (kwargs["NAME"] == display_name):
+                if kwargs["NAME"] == display_name:
                     break
             result = [entry]
             result = self.update_dict(result)
@@ -339,7 +329,7 @@ class Provider(VolumeABC):
 
     def mount(self, path=None, name=None):
         """
-        TODO: MISSING
+        This method is not applicable to Oracle
 
         :param path:
         :param name:
@@ -396,19 +386,24 @@ class Provider(VolumeABC):
         raise NotImplementedError
 
     def add_tag(self, NAME, **kwargs):
+        """
+        This function add tag to a volume.
+
+        :param NAME: name of volume
+        :param kwargs:
+                    key: name of tag
+                    value: value of tag
+        :return: Dictionary of volume
+        """
         key = kwargs['key']
         value = kwargs['value']
         block_storage = oci.core.BlockstorageClient(self.config)
-        volumeId = self.getVolumeIdFromName(block_storage, NAME)
-        result = block_storage.update_volume(
-            volumeId,
+        volume_id = self.get_volume_id_from_name(block_storage, NAME)
+        block_storage.update_volume(
+            volume_id,
             oci.core.models.UpdateVolumeDetails(
                 freeform_tags={key: value},
             )
         )
         result = self.list(NAME=NAME)[0]
         return result
-
-
-
-

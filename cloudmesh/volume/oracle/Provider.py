@@ -396,7 +396,19 @@ class Provider(VolumeABC):
         raise NotImplementedError
 
     def add_tag(self, NAME, **kwargs):
-        raise NotImplemented
+        key = kwargs['key']
+        value = kwargs['value']
+        block_storage = oci.core.BlockstorageClient(self.config)
+        volumeId = self.getVolumeIdFromName(block_storage, NAME)
+        result = block_storage.update_volume(
+            volumeId,
+            oci.core.models.UpdateVolumeDetails(
+                freeform_tags={key: value},
+            )
+        )
+        result = self.list(NAME=NAME)[0]
+        return result
+
 
 
 

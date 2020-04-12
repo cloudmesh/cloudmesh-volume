@@ -336,12 +336,6 @@ class Provider(VolumeABC):
         return result
 
 
-
-#might need to access azure compute provider vm name
-#create vm first then attach disk to new vm
-#if vm unavailable, give an error
-#if missing (Such as delete), give an error
-
     def detach(self, NAME=None):
         """
         TODO: missing
@@ -349,8 +343,6 @@ class Provider(VolumeABC):
         :param NAME:
         :return:
         """
-    def detach(self,
-              NAME=None):
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
         VM_NAME = 'ashthorn-vm-3'

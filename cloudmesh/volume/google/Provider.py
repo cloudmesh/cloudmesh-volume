@@ -3,7 +3,7 @@ from cloudmesh.configuration.Config import Config
 from cloudmesh.volume.VolumeABC import VolumeABC
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-
+from pprint import pprint
 
 class Provider(VolumeABC):
     kind = "google"
@@ -41,7 +41,9 @@ class Provider(VolumeABC):
                       "creationTimestamp",
                       "id",
                       "zone",
-                      "users"],
+                      "users",
+                      "description",
+                      "labels"],
             "header": ["Name",
                        "Kind",
                        "Cloud",
@@ -51,7 +53,9 @@ class Provider(VolumeABC):
                        "Created",
                        "ID",
                        "Zone",
-                       "VMs"]
+                       "VMs",
+                       "Description",
+                       "Tags"]
         }
     }
 
@@ -101,6 +105,11 @@ class Provider(VolumeABC):
                     user = user.rsplit('/', 1)[1]
                     vm_list.append(user)
             entry['users'] = vm_list
+            _labels = []
+            if 'labels' in entry:
+                for label in entry['labels']:
+                    _labels.append(label)
+            entry['labels'] = _labels
             if "cm" not in entry:
                 entry['cm'] = {}
             entry["cm"].update({
@@ -306,8 +315,31 @@ class Provider(VolumeABC):
         return result
 
     def add_tag(self, **kwargs):
+        """
+        Add a key:value label to the disk
+        Unable to change the name of a disk in Google Cloud
 
-        raise NotImplementedError
+        :param kwargs: name of the disk with a key and a value for the label
+        :return: updated list of disks with new label
+        """
+        compute_service = self._get_compute_service()
+        disk_list = self.list()
+        # find disk in list and get zone
+        zone = None
+        labelfingerprint = None
+        for disk in disk_list:
+            if disk['name'] == kwargs['NAME']:
+                zone = str(disk['zone'])
+                labelfingerprint = disk['labelFingerprint']
+        compute_service.disks().setLabels(
+            project=self.credentials['project_id'],
+            zone=zone,
+            resource=kwargs['NAME'],
+            body={'labelFingerprint': labelfingerprint,
+                  'labels': {kwargs['key']: str(kwargs['value'])}}).execute()
+
+        updated_list = self.list()
+        return updated_list[0]
 
     def status(self, name=None):
         """
@@ -318,12 +350,15 @@ class Provider(VolumeABC):
         """
         compute_service = self._get_compute_service()
         disk_list = self.list()
-        volume = None
+        vol = None
         for disk in disk_list:
             if disk['name'] == name:
-                volume = disk
-        volume_status = disk['status']
-        volume_vm = disk['users']
+                vol = disk
+        volume_status = vol['status']
+        volume_vm = vol['users']
+        print(volume_status)
+        print(volume_vm)
+
 
     def migrate(self,
                 name=None,

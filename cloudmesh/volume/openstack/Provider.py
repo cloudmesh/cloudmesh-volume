@@ -1,5 +1,4 @@
 import openstack
-from cloudmesh.common.Printer import Printer
 from cloudmesh.common.dotdict import dotdict
 from cloudmesh.configuration.Config import Config
 from cloudmesh.volume.VolumeABC import VolumeABC
@@ -85,37 +84,13 @@ class Provider(VolumeABC):
         }
     }
 
-    def Print(self, data, output=None, kind=None):
-        """
-        TODO: MISSING
-
-        :param data:
-        :param output:
-        :param kind:
-        :return:
-        """
-        order = self.output["volume"]['order']
-        header = self.output["volume"]['header']
-        print(Printer.flatwrite(data,
-                                sort_keys=["name"],
-                                order=order,
-                                header=header,
-                                output=output,
-                                )
-              )
-
     def update_dict(self, results):
         """
         This function adds a cloudmesh cm dict to each dict in the list
-        elements.
-        Libcloud
-        returns an object or list of objects With the dict method
-        this object is converted to a dict. Typically this method is used
+        elements. Typically this method is used
         internally.
 
         :param results: the original dicts.
-        :param kind: for some kinds special attributes are added. This includes
-                     key, vm, image, flavor.
         :return: The list with the modified dicts
         """
 
@@ -123,10 +98,8 @@ class Provider(VolumeABC):
             return None
 
         d = []
-        #print("results:", results)
 
         for entry in results:
-            #print("entry:",entry)
             volume_name = entry['name']
             if "cm" not in entry:
                 entry['cm'] = {}
@@ -141,10 +114,10 @@ class Provider(VolumeABC):
 
     def status(self, volume_name):
         """
-        TODO: MISSING
+        This function get volume status, such as "in-use", "available"
 
-        :param volume_name:
-        :return:
+        :param name: Volume name
+        :return: Volume_status
         """
         con = openstack.connect(**self.config)
         result = con.get_volume(name_or_id=volume_name)
@@ -152,11 +125,12 @@ class Provider(VolumeABC):
         result = self.update_dict(result)
         return result
 
-    def __init__(self,name):
+    def __init__(self, name):
         """
-        TODO: MISSING
+        Initialize provider. The default parameters are read from the
+        configuration file that is defined in yaml format.
 
-        :param name:
+        :param name: name of cloud
         """
         self.cloud = name
         self.config = Config()["cloudmesh.volume.openstack.credentials"]
@@ -164,38 +138,40 @@ class Provider(VolumeABC):
 
     def create(self, **kwargs):
         """
-        TODO: MISSING
+        This function creates a new volume with default volume type __DEFAULT__.
+        Default parameters are read from self.config.
 
-        :param kwargs:
-        :return:
+        :param kwargs: Contains Volume name,size
+        :return: Volume dictionary
         """
         con = openstack.connect(**self.config)
         arguments = dotdict(kwargs)
-        if arguments.volume_type == None:
-            arguments.volume_type=self.defaults["volume_type"]
-        if arguments.size == None:
-            arguments.size=self.defaults["size"]
-        r = con.create_volume(name=arguments.NAME,size=arguments.size,
-                           volume_type=arguments.volume_type)
+        if arguments.volume_type is None:
+            arguments.volume_type = self.defaults["volume_type"]
+        if arguments.size is None:
+            arguments.size = self.defaults["size"]
+        r = con.create_volume(name=arguments.NAME,
+                              size=arguments.size,
+                              volume_type=arguments.volume_type
+                              )
         r = [r]
         result = self.update_dict(r)
         return result
-        #print(self.Print(result, kind='volume', output=kwargs['output']))
 
     def delete(self, name=None):
         """
-        TODO: MISSING
+        This function delete one volume.
 
-        :param name:
-        :return:
+        :param name: Volume name
+        :return: Dictionary of volumes
         """
         con = openstack.connect(**self.config)
         con.delete_volume(name_or_id=name)
         results = con.list_volumes()
         result = self.update_dict(results)
         return result
-        
-    def list(self,**kwargs):
+
+    def list(self, **kwargs):
         """
         TODO: MISSING
 
@@ -215,11 +191,11 @@ class Provider(VolumeABC):
 
     def attach(self, NAMES=None, vm=None):
         """
-        TODO: MISSING
+        This function attaches a given volume to a given instance
 
-        :param NAMES:
-        :param vm:
-        :return:
+        :param NAMES: Names of Volumes
+        :param vm: Instance name
+        :return: Dictionary of volumes
         """
         con = openstack.connect(**self.config)
         server = con.get_server(vm)
@@ -229,16 +205,16 @@ class Provider(VolumeABC):
 
     def detach(self, NAME=None):
         """
-        TODO: MISSING
+        This function detaches a given volume from an instance
 
-        :param NAME:
-        :return:
+        :param NAME: Volume name
+        :return: Dictionary of volumes
         """
         con = openstack.connect(**self.config)
         volume = con.get_volume(name_or_id=NAME)
         attachments = volume['attachments']
         server = con.get_server(attachments[0]['server_id'])
-        con.detach_volume(server,volume, wait=True,
+        con.detach_volume(server, volume, wait=True,
                           timeout=None)
         return self.list(NAME=NAME)[0]
 
@@ -290,23 +266,14 @@ class Provider(VolumeABC):
         """
         raise NotImplementedError
 
-    #
-    # BUG NO DEFINITION OF WAHT UNSET IS. ARCHITECTURE DOCUMENT IS MISSING
-    #
-    def unset(self,
-              name=None,
-              property=None,
-              image_property=None):
-        """
-        Separate a volume from a group of joined volumes
-
-        :param name: name of volume to separate
-        :param property: key to volume being separated
-        :param image_property: image stored in separated volume
-        :return: str
-        """
-        raise NotImplementedError
-
     def add_tag(self, NAME, **kwargs):
-        raise NotImplemented
+        """
+        This function add tag to a volume.
 
+        :param NAME: name of volume
+        :param kwargs:
+                    key: name of tag
+                    value: value of tag
+        :return: Dictionary of volume
+        """
+        raise NotImplemented

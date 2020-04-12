@@ -223,13 +223,13 @@ class Provider(VolumeABC):
 
     def create(self, **kwargs):
         """
-        TODO: missing
+        This function creates a disk. It returns result to list the new disk.
 
-        :param kwargs:
-        :return:
+        :param LOCATION (string): datacenter region
+        :param GROUP_NAME (string): name of resource group
+        :return: result
         """
         GROUP_NAME = 'cloudmesh'
-        # self.vms = self.compute_client.virtual_machines
         LOCATION = 'eastus'
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
@@ -294,11 +294,14 @@ class Provider(VolumeABC):
 
     def attach(self, NAME=None, vm=None):
         """
-        TODO: missing
+        This function attaches a disk to a vm. It returns result to list the
+        updated disk that includes the name of the vm where the disk is now
+        attached.
 
-        :param NAME:
-        :param vm:
-        :return:
+        :param VM_NAME (string): name of vm
+        :param LOCATION (string): datacenter region
+        :param GROUP_NAME (string): name of resource group
+        :return: result
         """
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
@@ -338,10 +341,13 @@ class Provider(VolumeABC):
 
     def detach(self, NAME=None):
         """
-        TODO: missing
+        This function detaches a disk from a vm. It returns result to list the
+        updated disk.
 
-        :param NAME:
-        :return:
+        :param VM_NAME (string): name of vm
+        :param LOCATION (string): datacenter region
+        :param GROUP_NAME (string): name of resource group
+        :return: result
         """
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'

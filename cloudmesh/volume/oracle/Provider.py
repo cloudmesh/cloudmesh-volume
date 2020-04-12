@@ -1,11 +1,8 @@
-import pprint
 import oci
-from cloudmesh.volume.VolumeABC import VolumeABC
-from cloudmesh.common.util import banner
-from cloudmesh.common.Shell import Shell
-from cloudmesh.configuration.Config import Config
-from cloudmesh.common.dotdict import dotdict
 from cloudmesh.common.Printer import Printer
+from cloudmesh.common.dotdict import dotdict
+from cloudmesh.configuration.Config import Config
+from cloudmesh.volume.VolumeABC import VolumeABC
 
 
 class Provider(VolumeABC):
@@ -121,11 +118,23 @@ class Provider(VolumeABC):
         return d
 
     def __init__(self, name):
+        """
+        TODO: MISSING
+
+        :param name:
+        """
         self.cloud = name
         self.config = Config()["cloudmesh.volume.oracle.credentials"]
         self.defaults = Config()["cloudmesh.volume.oracle.default"]
 
     def getVolumeIdFromName(self,block_storage,name):
+        """
+        TODO: MISSING
+
+        :param block_storage:
+        :param name:
+        :return:
+        """
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
         volumeId = None
@@ -137,6 +146,13 @@ class Provider(VolumeABC):
         return volumeId
 
     def getAttachmentIdFromName(self,block_storage,name):
+        """
+        TODO: MISSING
+
+        :param block_storage:
+        :param name:
+        :return:
+        """
         v = block_storage.list_volumes(self.config['compartment_id'])
         results = v.data
         attachmentid = None
@@ -149,6 +165,12 @@ class Provider(VolumeABC):
         return attachmentid
 
     def status(self, name):
+        """
+        TODO: MISSING
+
+        :param name:
+        :return:
+        """
         block_storage = oci.core.BlockstorageClient(self.config)
         v = block_storage.list_volumes(self.config['compartment_id'])
         volumes = v.data
@@ -162,6 +184,12 @@ class Provider(VolumeABC):
         return result
 
     def create(self, **kwargs):
+        """
+        TODO: MISSING
+
+        :param kwargs:
+        :return:
+        """
         arguments = dotdict(kwargs)
         block_storage = oci.core.BlockstorageClient(self.config)
         result = block_storage.create_volume(
@@ -185,6 +213,12 @@ class Provider(VolumeABC):
         #print(self.Print(result, kind='volume', output=kwargs['output']))
 
     def delete(self, name=None):
+        """
+        TODO: MISSING
+
+        :param name:
+        :return:
+        """
         block_storage = oci.core.BlockstorageClient(self.config)
         print("oracle delete volume",name)
         volumeId = self.getVolumeIdFromName(block_storage,name)
@@ -204,6 +238,13 @@ class Provider(VolumeABC):
         return result
 
     def attach(self, NAMES=None, vm=None):
+        """
+        TODO: MISSING
+
+        :param NAMES:
+        :param vm:
+        :return:
+        """
         compute_client = oci.core.ComputeClient(self.config)
         #get instance id from VM name
         i = compute_client.list_instances(self.config['compartment_id'])
@@ -249,6 +290,12 @@ class Provider(VolumeABC):
         return results
 
     def detach(self, NAME=None):
+        """
+        TODO: MISSING
+
+        :param NAME:
+        :return:
+        """
         compute_client = oci.core.ComputeClient(self.config)
         block_storage = oci.core.BlockstorageClient(self.config)
         attachmentId = self.getAttachmentIdFromName(block_storage, NAME)
@@ -267,6 +314,12 @@ class Provider(VolumeABC):
         return results[0]
 
     def list(self, **kwargs):
+        """
+        TODO: MISSING
+
+        :param kwargs:
+        :return:
+        """
         block_storage = oci.core.BlockstorageClient(self.config)
         if kwargs and kwargs['NAME']:
             v = block_storage.list_volumes(self.config['compartment_id'])
@@ -285,6 +338,13 @@ class Provider(VolumeABC):
             return results
 
     def mount(self, path=None, name=None):
+        """
+        TODO: MISSING
+
+        :param path:
+        :param name:
+        :return:
+        """
         raise NotImplementedError
 
     def migrate(self,

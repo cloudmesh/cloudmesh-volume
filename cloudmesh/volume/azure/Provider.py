@@ -1,35 +1,12 @@
-from cloudmesh.volume.VolumeABC import VolumeABC
-from cloudmesh.common.Shell import Shell
-from cloudmesh.common.dotdict import dotdict
-
-import ctypes
-import os
-import subprocess
-from datetime import datetime
-from pprint import pprint
-from sys import platform
-
 from azure.common.credentials import ServicePrincipalCredentials
+# from azure.common.client_factory import get_client_from_auth_file
 from azure.mgmt.compute import ComputeManagementClient
-from azure.mgmt.storage import StorageManagementClient
-from azure.mgmt.network import NetworkManagementClient
-from azure.mgmt.network.v2018_12_01.models import SecurityRule
-from azure.mgmt.resource import ResourceManagementClient
-from cloudmesh.abstract.ComputeNodeABC import ComputeNodeABC
 from cloudmesh.common.Printer import Printer
 from cloudmesh.common.console import Console
 from cloudmesh.common.debug import VERBOSE
-from cloudmesh.common.util import HEADING, banner
 from cloudmesh.configuration.Config import Config
-from cloudmesh.mongo.CmDatabase import CmDatabase
-from cloudmesh.provider import ComputeProviderPlugin
-from msrestazure.azure_exceptions import CloudError
+from cloudmesh.volume.VolumeABC import VolumeABC
 
-
-
-
-# from azure.common.client_factory import get_client_from_auth_file
-from azure.mgmt.compute import ComputeManagementClient
 
 # client = get_client_from_auth_file(ComputeManagementClient, auth_path=C:\Users\plj2861\Documents\AshleyPersonal\School\IndianaUniversity\CloudComputing\azure_credentials.json)
 
@@ -175,6 +152,14 @@ class Provider(VolumeABC):
 
 
     def Print(self, data, output=None, kind=None):
+        """
+        TODO: missing
+
+        :param data:
+        :param output:
+        :param kind:
+        :return:
+        """
         order = self.output["volume"]['order']
         header = self.output["volume"]['header']
         print(Printer.flatwrite(data,
@@ -237,6 +222,12 @@ class Provider(VolumeABC):
 
 
     def create(self, **kwargs):
+        """
+        TODO: missing
+
+        :param kwargs:
+        :return:
+        """
         GROUP_NAME = 'cloudmesh'
         # self.vms = self.compute_client.virtual_machines
         LOCATION = 'eastus'
@@ -258,6 +249,12 @@ class Provider(VolumeABC):
 
 
     def delete (self, NAMES=None):
+        """
+        TODO: missing
+
+        :param NAMES:
+        :return:
+        """
         GROUP_NAME = 'cloudmesh'
         LOCATION = 'eastus'
         disk_deletion = self.compute_client.disks.delete(
@@ -280,11 +277,29 @@ class Provider(VolumeABC):
              cloud=None,
              refresh=None,
              dryrun=None):
+        """
+        TODO: missing
+
+        :param NAMES:
+        :param vm:
+        :param region:
+        :param cloud:
+        :param refresh:
+        :param dryrun:
+        :return:
+        """
         disk_list = self.compute_client.disks.list()
         return disk_list
 
 
     def attach(self, NAME=None, vm=None):
+        """
+        TODO: missing
+
+        :param NAME:
+        :param vm:
+        :return:
+        """
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
         VM_NAME = 'ashthorn-vm-3'
@@ -321,6 +336,19 @@ class Provider(VolumeABC):
         return result
 
 
+
+#might need to access azure compute provider vm name
+#create vm first then attach disk to new vm
+#if vm unavailable, give an error
+#if missing (Such as delete), give an error
+
+    def detach(self, NAME=None):
+        """
+        TODO: missing
+
+        :param NAME:
+        :return:
+        """
     def detach(self,
               NAME=None):
         LOCATION = 'eastus'
@@ -343,10 +371,22 @@ class Provider(VolumeABC):
 
 
     def status(self, NAME=None):
+        """
+        TODO: missing
+
+        :param NAME:
+        :return:
+        """
         print("update me")
 
 
     def add_tag(self,**kwargs):
+        """
+        TODO: missing
+
+        :param kwargs:
+        :return:
+        """
         print("update me")
 
 
@@ -354,12 +394,27 @@ class Provider(VolumeABC):
                 name=None,
                 from_vm=None,
                 to_vm=None):
+        """
+        TODO: missing
+
+        :param name:
+        :param from_vm:
+        :param to_vm:
+        :return:
+        """
         print("update me")
 
 
     def sync(self,
              from_volume=None,
              to_volume=None):
+        """
+        TODO: missing
+
+        :param from_volume:
+        :param to_volume:
+        :return:
+        """
         print("update me")
 
 

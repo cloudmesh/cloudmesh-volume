@@ -1,16 +1,9 @@
-import json
-import time
-from pprint import pprint
+from cloudmesh.common.util import banner
+from cloudmesh.configuration.Config import Config
+from cloudmesh.volume.VolumeABC import VolumeABC
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from cloudmesh.common.DateTime import DateTime
-from cloudmesh.volume.VolumeABC import VolumeABC
-from cloudmesh.volume.command import volume
-from cloudmesh.common.util import banner
-from cloudmesh.common.Shell import Shell
-from cloudmesh.configuration.Config import Config
-from cloudmesh.common.Printer import Printer
-
+from pprint import pprint
 
 class Provider(VolumeABC):
     kind = "google"
@@ -48,7 +41,9 @@ class Provider(VolumeABC):
                       "creationTimestamp",
                       "id",
                       "zone",
-                      "users"],
+                      "users",
+                      "description",
+                      "labels"],
             "header": ["Name",
                        "Kind",
                        "Cloud",
@@ -58,26 +53,34 @@ class Provider(VolumeABC):
                        "Created",
                        "ID",
                        "Zone",
-                       "VMs"]
+                       "VMs",
+                       "Description",
+                       "Tags"]
         }
     }
 
     def __init__(self, name):
+        """
+        Get Google Cloud credentials and defaults from cloudmesh.yaml and set
+        scopes for Google Compute Engine
+
+        :param name: name of cloud provider in cloudmesh.yaml file under
+                     cloudmesh.volume
+        """
         self.cloud = name
         config = Config()
         self.default = config[f"cloudmesh.volume.{name}.default"]
         self.credentials = config[f"cloudmesh.volume.{name}.credentials"]
-        self.compute_scopes=['https://www.googleapis.com/auth/compute',
-                             'https://www.googleapis.com/auth/cloud-platform',
-                             'https://www.googleapis.com/auth/compute.readonly']
+        self.compute_scopes = [
+            'https://www.googleapis.com/auth/compute',
+            'https://www.googleapis.com/auth/cloud-platform',
+            'https://www.googleapis.com/auth/compute.readonly']
 
     def update_dict(self, elements):
         """
         This function adds a cloudmesh cm dict to each dict in the list
-        elements.
-        returns an object or list of objects with the dict method
-        this object is converted to a dict. Typically this method is used
-        internally.
+        elements. Typically this method is used internally.
+
         :param elements: the list of original dicts. If elements is a single
                          dict a list with a single element is returned.
         :return: The list with the modified dicts
@@ -90,19 +93,23 @@ class Provider(VolumeABC):
             _elements = [elements]
         d = []
         for entry in _elements:
-            name = None
             entry['type'] = entry['type'].rsplit('/', 1)[1]
             entry['zone'] = entry['zone'].rsplit('/', 1)[1]
             if 'targetLink' in entry:
                 name = entry['targetLink'].rsplit('/', 1)[1]
             else:
                 name = entry['name']
-            VMs = []
+            vm_list = []
             if 'users' in entry:
                 for user in entry['users']:
                     user = user.rsplit('/', 1)[1]
-                    VMs.append(user)
-            entry['users'] = VMs
+                    vm_list.append(user)
+            entry['users'] = vm_list
+            _labels = []
+            if 'labels' in entry:
+                for label in entry['labels']:
+                    _labels.append(label)
+            entry['labels'] = _labels
             if "cm" not in entry:
                 entry['cm'] = {}
             entry["cm"].update({
@@ -116,6 +123,7 @@ class Provider(VolumeABC):
     def _get_credentials(self, path_to_service_account_file, scopes):
         """
         Method to get the credentials using the Service Account JSON file.
+
         :param path_to_service_account_file: Service Account JSON File path.
         :param scopes: Scopes needed to provision.
         :return: credentials used to get compute service
@@ -128,6 +136,7 @@ class Provider(VolumeABC):
     def _get_compute_service(self):
         """
         Method to get google compute service v1.
+
         :return: Google Compute Engine API
         """
         service_account_credentials = self._get_credentials(
@@ -148,6 +157,7 @@ class Provider(VolumeABC):
         Retrieves an aggregated list of persistent disks.
         Currently, only sorting by "name" or "creationTimestamp desc"
         is supported.
+
         :return: an array of dicts representing the disks
         """
         compute_service = self._get_compute_service()
@@ -173,36 +183,35 @@ class Provider(VolumeABC):
         """
         Creates a persistent disk in the specified project using the data in
         the request.
-        :return: a dict representing the disk
+
+        :return: a list containing the newly created disk
         """
 
         compute_service = self._get_compute_service()
         volume_type = kwargs['volume_type']
         size = kwargs['size']
-        if volume_type == None:
+        description = kwargs['description']
+        if volume_type is None:
             volume_type = self.default["type"]
-        if size == None:
+        if size is None:
             size = self.default["sizeGb"]
-        create_disk = compute_service.disks().insert(
+        compute_service.disks().insert(
             project=self.credentials["project_id"],
             zone=self.default['zone'],
-            body={'type':volume_type,
-                  'name':kwargs['NAME'],
-                  'sizeGb':str(size)}).execute()
-        banner('disk created')
+            body={'type': volume_type,
+                  'name': kwargs['NAME'],
+                  'sizeGb': str(size),
+                  'description': description}).execute()
         disk_list = self.list()
-        new_disk = disk_list[0]
-        #for disk in disk_list:
-        #    if disk['name'] == kwargs['NAME']:
-        #        new_disk.append(disk)
+
         return disk_list
 
     def delete(self, name=None):
         """
         Deletes the specified persistent disk.
         Deleting a disk removes its data permanently and is irreversible.
+
         :param name: Name of the disk to delete
-        :return: a dict representing the deleted disk
         """
         compute_service = self._get_compute_service()
         disk_list = self.list()
@@ -214,13 +223,17 @@ class Provider(VolumeABC):
         if zone is None:
             banner(f'{name} was not found')
             return
-        delete_disk = compute_service.disks().delete(
+        compute_service.disks().delete(
             project=self.credentials["project_id"],
             zone=zone,
             disk=name).execute()
-        return
 
     def _list_instances(self):
+        """
+        Gets a list of available VM instances
+
+        :return: list of dicts representing VM instances
+        """
         compute_service = self._get_compute_service()
         instance_list = compute_service.instances().aggregatedList(
             project=self.credentials["project_id"],
@@ -236,7 +249,6 @@ class Provider(VolumeABC):
         return found_instances
 
     def attach(self, names, vm=None):
-
         """
         Attach one or more disks to an instance
 
@@ -271,12 +283,11 @@ class Provider(VolumeABC):
         return result
 
     def detach(self, name=None):
-
         """
         Detach a disk from all instances
 
         :param name: name of disk to detach
-        :return: updated list of disks with current status
+        :return: dict representing updated status of detached disk
         """
         compute_service = self._get_compute_service()
         # Get name of attached instance(s) from list of disks
@@ -290,7 +301,7 @@ class Provider(VolumeABC):
                     instances.append(user)
         # detach disk from all instances
         for instance in instances:
-            detach = compute_service.instances().detachDisk(
+            compute_service.instances().detachDisk(
                 project=self.credentials['project_id'],
                 zone=zone,
                 instance=instance,
@@ -304,8 +315,50 @@ class Provider(VolumeABC):
         return result
 
     def add_tag(self, **kwargs):
+        """
+        Add a key:value label to the disk
+        Unable to change the name of a disk in Google Cloud
 
-        raise NotImplementedError
+        :param kwargs: name of the disk with a key and a value for the label
+        :return: updated list of disks with new label
+        """
+        compute_service = self._get_compute_service()
+        disk_list = self.list()
+        # find disk in list and get zone
+        zone = None
+        labelfingerprint = None
+        for disk in disk_list:
+            if disk['name'] == kwargs['NAME']:
+                zone = str(disk['zone'])
+                labelfingerprint = disk['labelFingerprint']
+        compute_service.disks().setLabels(
+            project=self.credentials['project_id'],
+            zone=zone,
+            resource=kwargs['NAME'],
+            body={'labelFingerprint': labelfingerprint,
+                  'labels': {kwargs['key']: str(kwargs['value'])}}).execute()
+
+        updated_list = self.list()
+        return updated_list[0]
+
+    def status(self, name=None):
+        """
+        Gets status of specified disk
+
+        :param name: name of disk
+        :return: status of disk
+        """
+        compute_service = self._get_compute_service()
+        disk_list = self.list()
+        vol = None
+        for disk in disk_list:
+            if disk['name'] == name:
+                vol = disk
+        volume_status = vol['status']
+        volume_vm = vol['users']
+        print(volume_status)
+        print(volume_vm)
+
 
     def migrate(self,
                 name=None,

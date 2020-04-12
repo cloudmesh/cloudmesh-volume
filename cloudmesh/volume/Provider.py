@@ -1,23 +1,22 @@
-import os
-import json
-
 from cloudmesh.common.Printer import Printer
-from cloudmesh.volume.VolumeABC import VolumeABC
+from cloudmesh.common.console import Console
 from cloudmesh.common.util import banner
-from cloudmesh.common.Shell import Shell
+from cloudmesh.common.variables import Variables
 from cloudmesh.configuration.Config import Config
 from cloudmesh.mongo.DataBaseDecorator import DatabaseUpdate
-from cloudmesh.management.configuration.arguments import Arguments
-from cloudmesh.common.console import Console
-from cloudmesh.common.variables import Variables
+
 
 # class Provider(VolumeABC): # correct
 class Provider(object):  # broken
-    # kind = "multipass"
+    kind = "volume"
 
     @staticmethod
     def get_kind():
-        banner("get in def get_kind()")
+        """
+        Get the kind of provider
+
+        :return: string
+        """
         kind = ["multipass",
                 "aws",
                 "azure",
@@ -28,6 +27,12 @@ class Provider(object):  # broken
 
     @staticmethod
     def get_provider(kind):
+        """
+        Get the provider with specific provider (kind)
+
+        :param kind:
+        :return:
+        """
 
         if kind == "multipass":
             from cloudmesh.volume.multipass.Provider import Provider as P
@@ -57,6 +62,14 @@ class Provider(object):  # broken
         # noinspection PyPep8Naming
 
     def Print(self, data, kind=None, output="table"):
+        """
+        Print out the result dictionary as table(by default) or json.
+
+        :param data: dic returned from volume functions
+        :param kind: kind of provider
+        :param output: "table" or "json"
+        :return:
+        """
 
         if kind is None and len(data) > 0:
             kind = data[0]["cm"]["kind"]
@@ -114,6 +127,17 @@ class Provider(object):  # broken
 
     @DatabaseUpdate()
     def create(self, **kwargs):
+        """
+        Create a volume.
+
+           :param NAME (string): name of volume
+           :param region (string): availability-zone
+           :param size (integer): size of volume
+           :param volume_type (string): type of volume.
+           :param description (string)
+           :return: dict
+        """
+
         try:
             data = self.provider.create(**kwargs)
             variables = Variables()
@@ -124,15 +148,45 @@ class Provider(object):  # broken
 
     @DatabaseUpdate()
     def delete(self, NAME=None):
+        """
+        Delete volumes.
+        If NAMES is not given, delete the most recent volume.
+
+        :param NAMES: List of volume names
+        :return:
+        """
         d = self.provider.delete(NAME)
         return d
 
     @DatabaseUpdate()
     def list(self, **kwargs):
+        """
+        This command list all volumes as follows:
+
+        If NAMES are given, search through all the active clouds and list all the volumes.
+        If NAMES and cloud are given, list all volumes under the cloud.
+        If cloud is given, list all the volumes under the cloud.
+        If cloud is not given, list all the volumes under current cloud.
+        If vm is given, under the current cloud, list all the volumes attaching to the vm.
+        If region is given, under the current cloud, list all volumes in that region.
+
+        :param NAMES: List of volume names
+        :param vm: The name of the virtual machine
+        :param region:  The name of the region
+        :param cloud: The name of the cloud
+        :param refresh: If refresh the information is taken from the cloud
+        :return: dict
+        """
         data = self.provider.list(**kwargs)
         return data
 
     def info(self, name=None):
+        """
+        Search through the list of volumes, find the matching volume with name, return the dict of matched volume
+
+        :param name: volume name to match
+        :return: dict
+        """
         volumes = self.provider.list()
         for volume in volumes:
             if volume["cm"]["name"] == name:
@@ -140,20 +194,47 @@ class Provider(object):  # broken
         return None
 
     def search(self, name=None):
+        """
+        Calls info(self, name=None)
+
+        :param name: volume name to match
+        :return: dict
+        """
         return self.info(name=name)
 
     @DatabaseUpdate()
     def status(self, NAME=None):
+        """
+        This function returns status of volume, such as "available", "in-use" and etc..
+
+        :param NAME: name of volume
+        :return: string
+        """
         volume_status = self.provider.status(NAME)
         return volume_status
 
     @DatabaseUpdate()
     def attach(self, NAMES=None, vm=None):
+        """
+        Attatch volume to a vm.
+        If NAMES is not specified, attach the most recent volume to vm.
+
+        :param NAME: volume name
+        :param vm: vm name which the volume will be attached to
+        :return: dict
+        """
         result = self.provider.attach(NAMES, vm)
         return result
 
     @DatabaseUpdate()
     def detach(self, NAME=None):
+        """
+        Dettach volumes from vm.
+        If success, the last volume will be saved as the most recent volume.
+
+        :param NAMES: names of volumes to dettach
+        :return: dict
+        """
         try:
             result = self.provider.detach(NAME)
             variables = Variables()
@@ -164,6 +245,17 @@ class Provider(object):  # broken
 
     @DatabaseUpdate()
     def add_tag(self, **kwargs):
+        """
+        This function add tag to a volume.
+        If NAME is not specified, then tag will be added to the last volume.
+        If success, the volume will be saved as the most recent volume.
+
+        :param NAME: name of volume
+        :param kwargs:
+                     key: name of tag
+                     value: value of tag
+        :return: self.list()
+        """
         try:
             result = self.provider.add_tag(**kwargs)
             variables = Variables()
@@ -172,58 +264,33 @@ class Provider(object):  # broken
             raise ValueError("Tag could not be added")
         return result
 
-
-    def migrate(self,
-                name=None,
-                fvm=None,
-                tvm=None,
-                fregion=None,
-                tregion=None,
-                fservice=None,
-                tservice=None,
-                fcloud=None,
-                tcloud=None,
-                cloud=None,
-                region=None,
-                service=None):
-
+    @DatabaseUpdate()
+    def migrate(self, **kwargs):
         """
         Migrate volume from one vm to another vm.
 
-        :param name: name of volume
-        :param fvm: name of vm where volume will be moved from
-        :param tvm: name of vm where volume will be moved to
-        :param fregion: the region where the volume will be moved from
-        :param tregion: region where the volume will be moved to
-        :param fservice: the service where the volume will be moved from
-        :param tservice: the service where the volume will be moved to
-        :param fcloud: the provider where the volume will be moved from
-        :param tcloud: the provider where the volume will be moved to
-        :param cloud: the provider where the volume will be moved within
-        :param region: the region where the volume will be moved within
-        :param service: the service where the volume will be moved within
+        :param NAME (string): the volume name
+        :param vm (string): the vm name
         :return: dict
         """
+        try:
+            result = self.provider.migrate(**kwargs)
+        except:
+            raise ValueError("Volume could not be migrate")
+        return result
 
-        raise NotImplementedError
-
-    #
-    # BUG NO GENERAL DEFINITION OF WHAT SYNC IS DOING
-    # DEFINITION OF SYNC MAY BE WRONG
-    # ARCHITECTURE DOCUMENT IS MISSING
-    #
-    def sync(self,
-             volume_id=None,
-             zone=None,
-             cloud=None):
+    @DatabaseUpdate()
+    def sync(self,NAMES):
         """
-        sync contents of one volume to another volume
+        synchronize one volume with another volume
 
-        :param volume_id: id of volume A
-        :param zone: zone where new volume will be created
-        :param cloud: the provider where volumes will be hosted
-        :return: str
+        :param NAMES (list): list of volume names
+        :return: dict
         """
-        raise NotImplementedError
+        try:
+            result = self.provider.sync(NAMES)
+        except:
+            raise ValueError("Volume could not be synchronized")
+        return result
 
 

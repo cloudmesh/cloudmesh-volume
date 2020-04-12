@@ -1,11 +1,9 @@
-import pprint
 import openstack
-from cloudmesh.volume.VolumeABC import VolumeABC
-from cloudmesh.common.util import banner
-from cloudmesh.common.Shell import Shell
-from cloudmesh.configuration.Config import Config
-from cloudmesh.common.dotdict import dotdict
 from cloudmesh.common.Printer import Printer
+from cloudmesh.common.dotdict import dotdict
+from cloudmesh.configuration.Config import Config
+from cloudmesh.volume.VolumeABC import VolumeABC
+
 
 class Provider(VolumeABC):
     kind = "opensatck"
@@ -88,6 +86,14 @@ class Provider(VolumeABC):
     }
 
     def Print(self, data, output=None, kind=None):
+        """
+        TODO: MISSING
+
+        :param data:
+        :param output:
+        :param kind:
+        :return:
+        """
         order = self.output["volume"]['order']
         header = self.output["volume"]['header']
         print(Printer.flatwrite(data,
@@ -134,6 +140,12 @@ class Provider(VolumeABC):
         return d
 
     def status(self, volume_name):
+        """
+        TODO: MISSING
+
+        :param volume_name:
+        :return:
+        """
         con = openstack.connect(**self.config)
         result = con.get_volume(name_or_id=volume_name)
         result = [result]
@@ -141,11 +153,22 @@ class Provider(VolumeABC):
         return result
 
     def __init__(self,name):
+        """
+        TODO: MISSING
+
+        :param name:
+        """
         self.cloud = name
         self.config = Config()["cloudmesh.volume.openstack.credentials"]
         self.defaults = Config()["cloudmesh.volume.openstack.default"]
 
     def create(self, **kwargs):
+        """
+        TODO: MISSING
+
+        :param kwargs:
+        :return:
+        """
         con = openstack.connect(**self.config)
         arguments = dotdict(kwargs)
         if arguments.volume_type == None:
@@ -160,6 +183,12 @@ class Provider(VolumeABC):
         #print(self.Print(result, kind='volume', output=kwargs['output']))
 
     def delete(self, name=None):
+        """
+        TODO: MISSING
+
+        :param name:
+        :return:
+        """
         con = openstack.connect(**self.config)
         con.delete_volume(name_or_id=name)
         results = con.list_volumes()
@@ -167,6 +196,12 @@ class Provider(VolumeABC):
         return result
         
     def list(self,**kwargs):
+        """
+        TODO: MISSING
+
+        :param kwargs:
+        :return:
+        """
         con = openstack.connect(**self.config)
         results = con.list_volumes()
         if kwargs and kwargs['NAME']:
@@ -179,6 +214,13 @@ class Provider(VolumeABC):
             return result
 
     def attach(self, NAMES=None, vm=None):
+        """
+        TODO: MISSING
+
+        :param NAMES:
+        :param vm:
+        :return:
+        """
         con = openstack.connect(**self.config)
         server = con.get_server(vm)
         volume = con.get_volume(name_or_id=NAMES[0])
@@ -186,6 +228,12 @@ class Provider(VolumeABC):
         return self.list(NAME=NAMES[0])
 
     def detach(self, NAME=None):
+        """
+        TODO: MISSING
+
+        :param NAME:
+        :return:
+        """
         con = openstack.connect(**self.config)
         volume = con.get_volume(name_or_id=NAME)
         attachments = volume['attachments']

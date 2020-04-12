@@ -1,5 +1,21 @@
 # Cloudmesh Volume Management
 
+
+> **Note:** The README.md page is outomatically generated, do not edit it.
+> To modify  change the content in
+> <https://github.com/cloudmesh/cloudmesh-volume/blob/master/README-source.md>
+> Curley brackets must use two in README-source.md
+
+
+
+[![image](https://img.shields.io/pypi/v/cloudmesh-volume.svg)](https://pypi.org/project/cloudmesh-volume/)
+[![Python](https://img.shields.io/pypi/pyversions/cloudmesh-volume.svg)](https://pypi.python.org/pypi/cloudmesh-volume)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/cloudmesh/cloudmesh-volume/blob/master/LICENSE)
+[![Format](https://img.shields.io/pypi/format/cloudmesh-volume.svg)](https://pypi.python.org/pypi/cloudmesh-volume)
+[![Status](https://img.shields.io/pypi/status/cloudmesh-volume.svg)](https://pypi.python.org/pypi/cloudmesh-volume)
+[![Travis](https://travis-ci.com/cloudmesh/cloudmesh-volume.svg?branch=master)](https://travis-ci.com/cloudmesh/cloudmesh-volume)
+
+
 ## Abstract
 
 A simple abstraction layer to manage Cloud Volumes for AWS, Azure,
@@ -10,6 +26,15 @@ simplifying the volume management interface to an existing cloud. We
 will also benchmark the clouds while comparing the volume management
 functions that are deployed on different clouds.
 
+<<<<<<< HEAD
+## Manual
+
+```bash
+
+```
+
+
+=======
 ## Volume Management functions
 
 * volume list
@@ -47,6 +72,7 @@ functions that are deployed on different clouds.
                   [--size=SIZE]
                   [--volume_type=TYPE]
                   [--description=DESCRIPTION]
+                  [--region=REGION]
                   [--dryrun]
 ```
 
@@ -102,7 +128,7 @@ functions that are deployed on different clouds.
   services or providers. 
   
 ``` 
-  volume migrate NAME FROM_VM TO_VM 
+  volume migrate NAME [--vm=VM] 
 ```
 
 * volume sync
@@ -111,8 +137,9 @@ functions that are deployed on different clouds.
   changed content from one volume to the other.
   
 ```
-    volume sync FROM_VOLUME TO_VOLUME
+    volume sync NAME
 ```
+>>>>>>> origin/master
 
 ## Volume Providers
 
@@ -440,8 +467,15 @@ Required Parameters:
 
 ## Test cases
 
-Write test cases in the form of reproducable pytests
+ * [test_01_volume_provider](tests/test_01_volume_provider.py)
+ * [test_02_volume_vm_management](tests/test_02_volume_vm_management.py)
 
+## Active Developments
 
-## <https://cloudmesh.github.io/cloudmesh-manual/>
+* Azure - Ashley & Xin
+* AWS - Ashley & Xin
+* Google - Peter & Xin
+* Oracle - Ashok & Peter
+* Openstack - Peter & Ashok
+* Multipass - Ashok & Ashley
 

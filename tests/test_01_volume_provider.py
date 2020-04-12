@@ -1,7 +1,5 @@
 ###############################################################
-# pytest -v --capture=no tests/cloud/test_01_volume_provider.py
-# pytest -v  tests/cloud/test_01_volume_provider.py
-# pytest -v --capture=no  tests/cloud/test_01_volume_provider..py::Test_provider_volume.METHODNAME
+# pytest -v --capture=no tests/test_volume_openstack.py
 ###############################################################
 
 # TODO: start this with cloud init, e.g, empty mongodb
@@ -19,6 +17,7 @@ from cloudmesh.volume.Provider import Provider
 from cloudmesh.configuration.Config import Config
 from cloudmesh.management.configuration.name import Name
 from cloudmesh.mongo.CmDatabase import CmDatabase
+from cloudmesh.common.Shell import Shell
 import sys
 
 Benchmark.debug()
@@ -30,9 +29,9 @@ VERBOSE(variables.dict())
 key = variables['key']
 
 #
-# cms set volume=aws
+# cms set cloud=openstack
 #
-cloud = variables.parameter('volume')
+cloud = variables.parameter('cloud')
 
 print(f"Test run for {cloud}")
 
@@ -41,205 +40,105 @@ if cloud is None:
 
 name_generator = Name()
 name_generator.set(f"test-{user}-volume-" + "{counter}")
-
 name = str(name_generator)
-
 provider = Provider(name=cloud)
-
 
 def Print(data):
     print(provider.Print(data=data, output='table', kind='vm'))
 
-
-current_vms = 0
-
-
 @pytest.mark.incremental
 class Test_provider_volume:
 
+    def test_cms_init(self):
+        HEADING()
+        Benchmark.Start()
+        result = os.system(f"cms init")
+        Benchmark.Stop()
 
-    def find_counter(self):
-        name = str(Name())
-        print(name)
-        vms = provider.list()
-        print(f'VM is {vms}')
-        if vms is not None:
-            numbers = []
-            names = []
-            for vm in vms:
-                names.append(vm['name'])
-                numbers.append(int(vm['name'].rsplit("-", 1)[1]))
-            numbers.sort()
-            return numbers[-1]
-
-    def test_find_largest_id(self):
-        name = Name()
-        counter = 1
-        if self.find_counter() is not None:
-            counter = {"counter": self.find_counter()}
-            name.assign(counter)
-        else:
-            name.assign(counter)
+    def test_cms_vm(self):
+        HEADING()
+        cmd = "cms vm boot"+" --name="+name
+        Benchmark.Start()
+        result = Shell.run(cmd)
+        Benchmark.Stop()
+        print(result)
+        assert "vm" in result
 
     def test_provider_volume_create(self):
         HEADING()
         os.system(f"cms volume list --cloud={cloud}")
         name_generator.incr()
-
         Benchmark.Start()
-        data = provider.create(key=key)
+        params = {"NAME":name}
+        data = provider.create(**params)
         Benchmark.Stop()
+        for v in data:
+            status = v['status']
+        assert status in ['available','STARTING', 'RUNNING','ACTIVE']
 
-        # print(data)
-        VERBOSE(data)
-        name = str(Name())
-        status = provider.status(name=name)[0]
-        print(f'status: {str(status)}')
-        if cloud == 'oracle':
-            assert status["cm.status"] in ['STARTING', 'RUNNING', 'STOPPING',
-                                           'STOPPED']
-        else:
-            assert status["cm.status"] in ['ACTIVE', 'BOOTING', 'TERMINATED',
-                                           'STOPPED']
-
-    def test_provider_volumeprovider_volume_list(self):
-        # list should be after create() since it would return empty and
-        # len(data) would be 0
+    def test_provider_volume_list(self):
         HEADING()
         Benchmark.Start()
-        data = provider.list()
+        params = {}
+        data = provider.list(**params)
         assert len(data) > 0
         Benchmark.Stop()
-        Print(data)
 
-
-    def test_provider_volume_info(self):
-        # This is just a dry run, status test actually uses info() in all
-        # provider
+    def test_provider_volume_attach(self):
+        # test attach one volume to vm
+        # os.system("cms volume attach {name} --vm={vm}")
         HEADING()
+        vm = variables['vm']
         Benchmark.Start()
-        name = str(Name())
-        data = provider.info(name=name)
-        print("dry run info():")
-        pprint(data)
-        Benchmark.Stop()
-
-    def test_volume_status(self):
-        HEADING()
-        name = str(Name())
-        Benchmark.Start()
-        data = provider.status(name=name)
-        if type(data) == list:
-            data = data[0]
-        print(data)
-        Benchmark.Stop()
-        if cloud == 'oracle':
-            assert data["cm.status"] in ['STARTING', 'RUNNING', 'STOPPING',
-                                         'STOPPED']
-        else:
-            assert data["cm.status"] in ['ACTIVE', 'BOOTING', 'TERMINATED',
-                                         'STOPPED']
-
-    #
-    # start a vm also so we do attach but do this ins a different test file
-    #
-    #
-    def test_provider_volume_detach(self):
-        HEADING()
-        name = str(Name())
-        Benchmark.Start()
-        data = provider.detach(name=name)
-        Benchmark.Stop()
-        stop_timeout = 360
-        time = 0
-        while time <= stop_timeout:
-            sleep(5)
-            time += 5
-            status = provider.status(name=name)[0]
-            if status["cm.status"] in ['STOPPED', 'SHUTOFF']:
-                break
-        VERBOSE(data)
-        print(status)
-        assert status["cm.status"] in ['STOPPED', 'SHUTOFF']
-
-    def test_provider_vm_atatch(self):
-        HEADING()
-        name = str(Name())
-        Benchmark.Start()
-        data = provider.start(name=name)
+        NAMES = []
+        NAMES.append(name)
+        provider.attach(NAMES=NAMES,vm=name)
         Benchmark.Stop()
         start_timeout = 360
         time = 0
         while time <= start_timeout:
             sleep(5)
             time += 5
-            status = provider.status(name=name)[0]
-            # print(f'status {str(status)}')
-            if status["cm.status"] in ['ACTIVE', 'BOOTING', 'RUNNING']:
+            status = provider.status(NAME=NAMES[0])[0]['status']
+            #In case of Oracle, status is AVAILABLE after attach
+            if status in ['in-use','AVAILABLE']:
                 break
-        VERBOSE(data)
-        print(status)
-        assert status["cm.status"] in ['ACTIVE', 'BOOTING', 'RUNNING']
+        assert status in ['in-use','AVAILABLE']
 
-    # do other tests before terminationg, keys, metadata, .... =>
-    # keys is already implemented in test02
-
-    def test_provider_vm_terminate(self):
+    def test_provider_volume_detach(self):
+        # test detach one volume
+        # os.system("cms volume detach {name} ")
         HEADING()
-        name = str(Name())
         Benchmark.Start()
-        data = provider.destroy(name=name)
+        provider.detach(NAME=name)
         Benchmark.Stop()
-
-        pprint(data)
-
-        termination_timeout = 360
+        start_timeout = 360
         time = 0
-        while time <= termination_timeout:
+        while time <= start_timeout:
             sleep(5)
             time += 5
-            if cloud == 'chameleon' and len(provider.info(name=name)) == 0:
+            status = provider.status(NAME=name)[0]['status']
+            if status in ['available','AVAILABLE']:
                 break
-            elif cloud == 'aws' and (len(provider.info(name=name)) == 0 or
-                                     provider.info(name=name)[0]["cm"][
-                                         "status"] in ['TERMINATED']):
-                break
-            elif cloud == 'azure':
-                try:
-                    provider.info(name=name)
-                except Exception:
-                    # if there is an exception that means the group has been
-                    # deleted
-                    break
+        assert status in ['available','AVAILABLE']
 
-        # print(provider.info(name=name))
-        if cloud == 'chameleon':
-            assert len(provider.info(name=name)) == 0
-        elif cloud == 'aws':
-            assert len(data) == 0 if data else True \
-                                               or (data[0]["cm"]["status"] in [
-                'BOOTING', 'TERMINATED']
-                                                   if data and data[0].get('cm',
-                                                                           None) is not None
-                                                   else True)
-        elif cloud == 'azure':
-            try:
-                provider.info(name=name)
-            except Exception:
-                # if there is an exception that means the group has been
-                # deleted
-                pass
-        elif cloud == 'oracle':
-            info = provider.info(name)
-            assert info is None or info[0]['_lifecycle_state'] in ['TERMINATED']
-        else:
-            raise NotImplementedError
-        # data = provider.info(name=name)
-        # below cm.status check required as in aws it takes a while to clear
-        # list from you account after terminating vm
-        # assert len(data) == 0 or ( data[0]["cm"]["status"] in
-        # ['BOOTING','TERMINATED'] if data and data[0].get('cm',None) is not
-        # None else True)
+    def test_provider_volume_delete(self):
+        HEADING()
+        Benchmark.Start()
+        provider.delete(NAME=name)
+        Benchmark.Stop()
+        result = provider.info(name=name)
+        assert result is None
+
+    def test_cms_terminate(self):
+        HEADING()
+        cmd = "cms vm terminate"
+        Benchmark.Start()
+        result = Shell.run(cmd)
+        Benchmark.Stop()
+        print(result)
+        assert "vm" in result
 
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)
+

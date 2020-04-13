@@ -1,4 +1,7 @@
 from azure.common.credentials import ServicePrincipalCredentials
+from azure.mgmt.resource import ResourceManagementClient
+from azure.mgmt.network import NetworkManagementClient
+from azure.mgmt.compute.models import DiskCreateOption
 # from azure.common.client_factory import get_client_from_auth_file
 from azure.mgmt.compute import ComputeManagementClient
 from cloudmesh.common.Printer import Printer
@@ -108,7 +111,7 @@ class Provider(VolumeABC):
 
         self.user = Config()["cloudmesh"]["profile"]["user"]
 
-        self.spec = conf["cloud"][name]
+        self.spec = conf["volume"][name]
         self.cloud = name
 
         cred = self.spec["credentials"]
@@ -153,11 +156,11 @@ class Provider(VolumeABC):
 
     def Print(self, data, output=None, kind=None):
         """
-        TODO: missing
+        Print out the result dictionary as table(by default) or json.
 
-        :param data:
-        :param output:
-        :param kind:
+        :param data: dic returned from volume functions
+        :param kind: kind of provider
+        :param output: "table" or "json"
         :return:
         """
         order = self.output["volume"]['order']
@@ -287,6 +290,23 @@ class Provider(VolumeABC):
         disk_list = self.compute_client.disks.list()
         return disk_list
 
+    def create_nic(network_client):
+        """Create a Network Interface for a VM.
+        """
+        LOCATION = 'eastus'
+        GROUP_NAME = 'cloudmesh'
+        async_vnet_creation = network_client.virtual_networks.create_or_update(
+            GROUP_NAME,
+            'vnet',
+            {
+                'location': LOCATION,
+                'address_space': {
+                    'address_prefixes': ['10.0.0.0/16']
+                }
+            }
+        )
+        async_vnet_creation.wait()
+
 
     def attach(self, NAME=None, vm=None):
         """
@@ -301,7 +321,8 @@ class Provider(VolumeABC):
         """
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
-        VM_NAME = 'ashthorn-vm-3'
+        VM_NAME = 'ashthorn-vm-3' #need to fix
+        self.vms = self.compute_client.virtual_machines
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
             "test",
@@ -314,7 +335,6 @@ class Provider(VolumeABC):
             }
         )
         data_disk = disk_creation.result()
-        self.vms = self.compute_client.virtual_machines
         virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
         disk_attach = virtual_machine.storage_profile.data_disks.append({
             'lun': 0,
@@ -337,8 +357,9 @@ class Provider(VolumeABC):
 
     def detach(self, NAME=None):
         """
-        This function detaches a disk from a vm. It returns result to list the
-        updated disk.
+        This function detaches a single disk from a vm. I did not find any
+        documentation about deleting multiple disks from a vm at the same
+        time. It returns result to list the updated disk.
 
         :param VM_NAME (string): name of vm
         :param LOCATION (string): datacenter region
@@ -347,7 +368,7 @@ class Provider(VolumeABC):
         """
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
-        VM_NAME = 'ashthorn-vm-3'
+        VM_NAME = 'ashthorn-vm-3' #need to fix
         self.vms = self.compute_client.virtual_machines
         virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
         data_disks = virtual_machine.storage_profile.data_disks
@@ -389,8 +410,7 @@ class Provider(VolumeABC):
             {
                 'location': LOCATION,
                 'tags': {
-                    'who-rocks': 'python',
-                    'where': 'on azure'
+                    'volumeproject': 'test'
                 }
             }
         )

@@ -321,7 +321,8 @@ class Provider(VolumeABC):
         """
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
-        VM_NAME = 'ashthorn-vm-3' #need to fix
+        # VM_NAME = 'ashthorn-vm-3' #need to fix
+        VM_NAME = self.vm
         self.vms = self.compute_client.virtual_machines
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,

@@ -1,5 +1,5 @@
 ###############################################################
-# pytest -v --capture=no tests/test_volume_openstack.py
+# pytest -v --capture=no tests/test_01_volume_provider.py
 ###############################################################
 
 # TODO: start this with cloud init, e.g, empty mongodb
@@ -27,6 +27,7 @@ variables = Variables()
 VERBOSE(variables.dict())
 
 key = variables['key']
+# cms set key=
 
 #
 # cms set cloud=openstack
@@ -72,9 +73,20 @@ class Test_provider_volume:
         params = {"NAME":name}
         data = provider.create(**params)
         Benchmark.Stop()
-        for v in data:
-            status = v['status']
-        assert status in ['available','STARTING', 'RUNNING','ACTIVE']
+        if cloud =='aws1':
+            start_timeout = 360
+            time = 0
+            while time <= start_timeout:
+                sleep(5)
+                time += 5
+                status = provider.status(NAME=name)[0]['State']
+                if status == "available":
+                    break
+        elif cloud == 'openstack' or cloud =='oracle':
+            for v in data:
+                print("v: ", v)
+                status = v['status']
+            assert status in ['available','STARTING', 'RUNNING','ACTIVE']
 
     def test_provider_volume_list(self):
         HEADING()

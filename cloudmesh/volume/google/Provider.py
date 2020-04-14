@@ -429,16 +429,14 @@ class Provider(VolumeABC):
         :param name: name of disk
         :return: status of disk
         """
-        compute_service = self._get_compute_service()
         disk_list = self.list()
-        vol = None
+        vol = []
         for disk in disk_list:
             if disk['name'] == name:
-                vol = disk
-        volume_status = vol['status']
-        volume_vm = vol['users']
-        print(volume_status)
-        print(volume_vm)
+                vol.append(disk)
+                break
+        result = self.update_dict(vol)
+        return result
 
     def migrate(self,
                 name=None,

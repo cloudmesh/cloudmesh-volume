@@ -94,7 +94,7 @@ class Provider(VolumeABC):
                        ],
         }
     }
-
+# need to update output
 
     def __init__(self, name="azure", configuration=None, credentials=None):
         """
@@ -235,9 +235,10 @@ class Provider(VolumeABC):
            :param description (string)
            :return: dict
         """
+        print(kwargs)
         GROUP_NAME = 'cloudmesh'
         LOCATION = 'eastus'
-        DISK_NAME = NAME
+        DISK_NAME = kwargs['NAME']
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
             DISK_NAME,
@@ -279,7 +280,6 @@ class Provider(VolumeABC):
         return result
 
 
-#not working, figure out why
     def list(self, **kwargs):
         """
         This command list all volumes as follows:
@@ -301,8 +301,15 @@ class Provider(VolumeABC):
         :param refresh: If refresh the information is taken from the cloud
         :return: dict
         """
-        disk_list = self.compute_client.disks.list()
-        return disk_list
+        GROUP_NAME = 'cloudmesh'
+        disk_list = self.compute_client.disks.list_by_resource_group(GROUP_NAME)
+        # return disk_list
+        found = []
+        for disk in disk_list:
+            results = disk.as_dict()
+            result = self.update_dict([results])
+            found.append(result)
+        return found
 
 
     def attach(self, NAMES=None, vm=None):
@@ -330,17 +337,10 @@ class Provider(VolumeABC):
                 }
             }
         )
-        luns = [
-                  "0",
-                  "1",
-                  "2",
-                  "3",
-                  "4",
-                  "5"]
         data_disk = disk_creation.result()
         virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
         disk_attach = virtual_machine.storage_profile.data_disks.append({
-            'lun': luns,
+            'lun': 0,
             'name': data_disk.name,
             'create_option': 'Attach',
             'managed_disk': {
@@ -387,14 +387,26 @@ class Provider(VolumeABC):
         return result
 
 
+#this is get info
     def status(self, NAME=None):
         """
-        TODO: missing
+        This function returns status of volume, such as "available", "in-use"
+        and etc..
 
-        :param NAME:
-        :return:
+        :param NAME: name of volume
+        :return: string
         """
-        print("update me")
+        GROUP_NAME = 'cloudmesh'
+        LOCATION = 'eastus'
+        DISK_NAME = 'test'
+        disk_status = self.compute_client.disks.get(
+            GROUP_NAME,
+            DISK_NAME
+        )
+        # return after getting status
+        results = disk_status.as_dict()
+        result = self.update_dict([results])
+        return result
 
 
     def add_tag(self,**kwargs):

@@ -326,17 +326,16 @@ class Provider(VolumeABC):
             zone=zone,
             instance=vm).execute()
         for disk in get_instance['disks']:
-            attached_disks.append(disk['diskName'])
+            attached_disks.append(disk['deviceName'])
         # wait for disks to be attached
         while names not in attached_disks:
             self._wait(1)
-            attached_disks = []
             get_instance = compute_service.instances().get(
                 project=self.credentials["project_id"],
                 zone=zone,
                 instance=vm).execute()
             for disk in get_instance['disks']:
-                attached_disks.append(disk['diskName'])
+                attached_disks.append(disk['deviceName'])
 
         result = self.list()
 
@@ -369,22 +368,19 @@ class Provider(VolumeABC):
 
         detached_disk = compute_service.disks().get(
             project=self.credentials["project_id"],
-            zone=self.default['zone'],
+            zone=zone,
             disk=name).execute()
         # wait for disk to be detached
-        while detached_disk['users']:
+        while 'users' in detached_disk:
             self._wait(1)
-            try:
-                detached_disk = compute_service.disks().get(
-                    project=self.credentials["project_id"],
-                    zone=zone,
-                    disk=name).execute()
-            except KeyError:
-                pass
+            detached_disk = compute_service.disks().get(
+                project=self.credentials["project_id"],
+                zone=zone,
+                disk=name).execute()
 
         result = self.update_dict(detached_disk)
 
-        return result
+        return result[0]
 
     def add_tag(self, **kwargs):
         """

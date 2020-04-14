@@ -456,6 +456,9 @@ class Provider(VolumeABC):
         print(to_vm)
         self.detach(name)
         self.attach(name, vm=to_vm)
+        result = self.status(name)
+        return result
+
 
     def sync(self,
              from_volume=None,

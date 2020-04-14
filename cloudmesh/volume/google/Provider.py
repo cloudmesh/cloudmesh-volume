@@ -330,12 +330,12 @@ class Provider(VolumeABC):
         # wait for disks to be attached
         while names not in attached_disks:
             self._wait(1)
+            for disk in get_instance['disks']:
+                attached_disks.append([disk['deviceName']])
             get_instance = compute_service.instances().get(
                 project=self.credentials["project_id"],
                 zone=zone,
                 instance=vm).execute()
-            for disk in get_instance['disks']:
-                attached_disks.append(disk['deviceName'])
 
         result = self.list()
 

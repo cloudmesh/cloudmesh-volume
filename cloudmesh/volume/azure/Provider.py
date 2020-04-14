@@ -104,8 +104,8 @@ class Provider(VolumeABC):
         :param name: The name of the provider as defined in the yaml file
         :param configuration: The location of the yaml configuration file
         """
-        configuration = configuration if configuration is not None \
-            else CLOUDMESH_YAML_PATH
+        # configuration = configuration if configuration is not None \
+            # else CLOUDMESH_YAML_PATH
 
         conf = Config(configuration)["cloudmesh"]
 
@@ -275,13 +275,8 @@ class Provider(VolumeABC):
         return result
 
 
-    def list(self,
-             NAMES=None,
-             vm=None,
-             region=None,
-             cloud=None,
-             refresh=None,
-             dryrun=None):
+#not working, figure out why
+    def list(self, **kwargs):
         """
         This function lists all disks.
 
@@ -290,39 +285,36 @@ class Provider(VolumeABC):
         disk_list = self.compute_client.disks.list()
         return disk_list
 
-    def create_nic(network_client):
-        """Create a Network Interface for a VM.
+    # def create_nic(network_client):
+    #     """Create a Network Interface for a VM.
+    #     """
+    #     LOCATION = 'eastus'
+    #     GROUP_NAME = 'cloudmesh'
+    #     async_vnet_creation = network_client.virtual_networks.create_or_update(
+    #         GROUP_NAME,
+    #         'vnet',
+    #         {
+    #             'location': LOCATION,
+    #             'address_space': {
+    #                 'address_prefixes': ['10.0.0.0/16']
+    #             }
+    #         }
+    #     )
+    #     async_vnet_creation.wait()
+
+
+    def attach(self, NAMES=None, vm=None):
+        """
+        This function attaches a given volume to a given instance
+
+        :param NAMES: Names of Volumes
+        :param vm: Instance name
+        :return: Dictionary of volumes
         """
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
-        async_vnet_creation = network_client.virtual_networks.create_or_update(
-            GROUP_NAME,
-            'vnet',
-            {
-                'location': LOCATION,
-                'address_space': {
-                    'address_prefixes': ['10.0.0.0/16']
-                }
-            }
-        )
-        async_vnet_creation.wait()
-
-
-    def attach(self, NAME=None, vm=None):
-        """
-        This function attaches a disk to a vm. It returns result to list the
-        updated disk that includes the name of the vm where the disk is now
-        attached.
-
-        :param VM_NAME (string): name of vm
-        :param LOCATION (string): datacenter region
-        :param GROUP_NAME (string): name of resource group
-        :return: result
-        """
-        LOCATION = 'eastus'
-        GROUP_NAME = 'cloudmesh'
-        # VM_NAME = 'ashthorn-vm-3' #need to fix
-        VM_NAME = self.vm
+        # VM_NAME = 'ashthorn-vm-3'
+        VM_NAME = vm
         self.vms = self.compute_client.virtual_machines
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
@@ -335,10 +327,17 @@ class Provider(VolumeABC):
                 }
             }
         )
+        luns = [
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5"]
         data_disk = disk_creation.result()
         virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
         disk_attach = virtual_machine.storage_profile.data_disks.append({
-            'lun': 0,
+            'lun': luns,
             'name': data_disk.name,
             'create_option': 'Attach',
             'managed_disk': {
@@ -405,16 +404,26 @@ class Provider(VolumeABC):
         """
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
-        async_vm_update = compute_client.virtual_machines.create_or_update(
+        async_vm_update = self.compute_client.disks.create_or_update(
             GROUP_NAME,
-            VM_NAME,
+            "test",
             {
                 'location': LOCATION,
+                'disk_size_gb': 1,
+                'creation_data': {
+                    'create_option': 'Empty',
+                },
                 'tags': {
-                    'volumeproject': 'test'
+                    'volumeproject': 'test',
+                    'tag2': 'test2'
                 }
             }
         )
+        async_vm_update.wait()
+        # return after adding tags
+        results = async_vm_update.result().as_dict()
+        result = self.update_dict([results])
+        return result
 
 
     def migrate(self,

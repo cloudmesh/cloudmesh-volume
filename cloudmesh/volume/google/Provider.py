@@ -410,16 +410,14 @@ class Provider(VolumeABC):
             project=self.credentials["project_id"],
             zone=self.default['zone'],
             disk=kwargs['NAME']).execute()
+
         # wait for tag to be applied
-        while tagged_disk['labels']:
+        while 'labels' not in tagged_disk:
             self._wait(1)
-            try:
-                tagged_disk = compute_service.disks().get(
-                    project=self.credentials["project_id"],
-                    zone=self.default['zone'],
-                    disk=kwargs['NAME']).execute()
-            except KeyError:
-                pass
+            tagged_disk = compute_service.disks().get(
+                project=self.credentials["project_id"],
+                zone=self.default['zone'],
+                disk=kwargs['NAME']).execute()
 
         updated_disk = self.update_dict(tagged_disk)
         return updated_disk[0]

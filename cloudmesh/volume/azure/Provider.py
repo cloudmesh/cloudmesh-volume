@@ -94,7 +94,7 @@ class Provider(VolumeABC):
                        ],
         }
     }
-
+# need to update output
 
     def __init__(self, name="azure", configuration=None, credentials=None):
         """
@@ -104,8 +104,8 @@ class Provider(VolumeABC):
         :param name: The name of the provider as defined in the yaml file
         :param configuration: The location of the yaml configuration file
         """
-        configuration = configuration if configuration is not None \
-            else CLOUDMESH_YAML_PATH
+        # configuration = configuration if configuration is not None \
+            # else CLOUDMESH_YAML_PATH
 
         conf = Config(configuration)["cloudmesh"]
 
@@ -154,7 +154,7 @@ class Provider(VolumeABC):
             credentials, subscription)
 
 
-    def Print(self, data, output=None, kind=None):
+    def Print(self, data, kind=None, output="table"):
         """
         Print out the result dictionary as table(by default) or json.
 
@@ -226,17 +226,22 @@ class Provider(VolumeABC):
 
     def create(self, **kwargs):
         """
-        This function creates a disk. It returns result to list the new disk.
+        Create a volume.
 
-        :param LOCATION (string): datacenter region
-        :param GROUP_NAME (string): name of resource group
-        :return: result
+           :param NAME (string): name of volume
+           :param region (string): availability-zone
+           :param size (integer): size of volume
+           :param volume_type (string): type of volume.
+           :param description (string)
+           :return: dict
         """
+        print(kwargs)
         GROUP_NAME = 'cloudmesh'
         LOCATION = 'eastus'
+        DISK_NAME = kwargs['NAME']
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
-            "cloudmesh-os-disk",
+            DISK_NAME,
             {
                 'location': LOCATION,
                 'disk_size_gb': 1,
@@ -251,20 +256,20 @@ class Provider(VolumeABC):
         return result
 
 
-    def delete (self, NAMES=None):
+    def delete (self, NAME=None):
         """
-        This function deletes a disk. It returns result to list outcome of
-        disk deletion, which is nothing since the disk is now gone.
+        Delete volumes.
+        If NAMES is not given, delete the most recent volume.
 
-        :param LOCATION (string): datacenter region
-        :param GROUP_NAME (string): name of resource group
-        :return: result
+        :param NAMES: List of volume names
+        :return:
         """
         GROUP_NAME = 'cloudmesh'
         LOCATION = 'eastus'
+        DISK_NAME = NAME
         disk_deletion = self.compute_client.disks.delete(
             GROUP_NAME,
-            "cloudmesh-os-disk",
+            DISK_NAME,
             {
                 'location': LOCATION
             }
@@ -275,58 +280,55 @@ class Provider(VolumeABC):
         return result
 
 
-    def list(self,
-             NAMES=None,
-             vm=None,
-             region=None,
-             cloud=None,
-             refresh=None,
-             dryrun=None):
+    def list(self, **kwargs):
         """
-        This function lists all disks.
+        This command list all volumes as follows:
 
-        :return: result
+        If NAMES are given, search through all the active clouds and list all
+        the volumes.
+        If NAMES and cloud are given, list all volumes under the cloud.
+        If cloud is given, list all the volumes under the cloud.
+        If cloud is not given, list all the volumes under current cloud.
+        If vm is given, under the current cloud, list all the volumes attaching
+        to the vm.
+        If region is given, under the current cloud, list all volumes in that
+        region.
+
+        :param NAMES: List of volume names
+        :param vm: The name of the virtual machine
+        :param region:  The name of the region
+        :param cloud: The name of the cloud
+        :param refresh: If refresh the information is taken from the cloud
+        :return: dict
         """
-        disk_list = self.compute_client.disks.list()
-        return disk_list
+        GROUP_NAME = 'cloudmesh'
+        disk_list = self.compute_client.disks.list_by_resource_group(GROUP_NAME)
+        # return disk_list
+        found = []
+        for disk in disk_list:
+            results = disk.as_dict()
+            result = self.update_dict([results])
+            found.append(result)
+        return found
 
-    def create_nic(network_client):
-        """Create a Network Interface for a VM.
+
+    def attach(self, NAMES=None, vm=None):
+        """
+        This function attaches a given volume to a given instance
+
+        :param NAMES: Names of Volumes
+        :param vm: Instance name
+        :return: Dictionary of volumes
         """
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
-        async_vnet_creation = network_client.virtual_networks.create_or_update(
-            GROUP_NAME,
-            'vnet',
-            {
-                'location': LOCATION,
-                'address_space': {
-                    'address_prefixes': ['10.0.0.0/16']
-                }
-            }
-        )
-        async_vnet_creation.wait()
-
-
-    def attach(self, NAME=None, vm=None):
-        """
-        This function attaches a disk to a vm. It returns result to list the
-        updated disk that includes the name of the vm where the disk is now
-        attached.
-
-        :param VM_NAME (string): name of vm
-        :param LOCATION (string): datacenter region
-        :param GROUP_NAME (string): name of resource group
-        :return: result
-        """
-        LOCATION = 'eastus'
-        GROUP_NAME = 'cloudmesh'
-        # VM_NAME = 'ashthorn-vm-3' #need to fix
-        VM_NAME = self.vm
+        # VM_NAME = 'ashthorn-vm-3'
+        VM_NAME = vm
+        DISK_NAME = NAME
         self.vms = self.compute_client.virtual_machines
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
-            "test",
+            DISK_NAME,
             {
                 'location': LOCATION,
                 'disk_size_gb': 1,
@@ -358,23 +360,22 @@ class Provider(VolumeABC):
 
     def detach(self, NAME=None):
         """
-        This function detaches a single disk from a vm. I did not find any
-        documentation about deleting multiple disks from a vm at the same
-        time. It returns result to list the updated disk.
+        Detach volumes from vm.
+        If success, the last volume will be saved as the most recent volume.
 
-        :param VM_NAME (string): name of vm
-        :param LOCATION (string): datacenter region
-        :param GROUP_NAME (string): name of resource group
-        :return: result
+        :param NAMES: names of volumes to detach
+        :return: dict
         """
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
-        VM_NAME = 'ashthorn-vm-3' #need to fix
+        # VM_NAME = 'ashthorn-vm-3'
+        VM_NAME = vm
+        DISK_NAME = NAME
         self.vms = self.compute_client.virtual_machines
         virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
         data_disks = virtual_machine.storage_profile.data_disks
         data_disks[:] = [
-            disk for disk in data_disks if disk.name != 'test']
+            disk for disk in data_disks if disk.name != DISK_NAME]
         async_vm_update = self.compute_client.virtual_machines.create_or_update(
             GROUP_NAME,
             VM_NAME,
@@ -386,35 +387,63 @@ class Provider(VolumeABC):
         return result
 
 
+#this is get info
     def status(self, NAME=None):
         """
-        TODO: missing
+        This function returns status of volume, such as "available", "in-use"
+        and etc..
 
-        :param NAME:
-        :return:
+        :param NAME: name of volume
+        :return: string
         """
-        print("update me")
+        GROUP_NAME = 'cloudmesh'
+        LOCATION = 'eastus'
+        DISK_NAME = 'test'
+        disk_status = self.compute_client.disks.get(
+            GROUP_NAME,
+            DISK_NAME
+        )
+        # return after getting status
+        results = disk_status.as_dict()
+        result = self.update_dict([results])
+        return result
 
 
     def add_tag(self,**kwargs):
         """
-        TODO: missing
+        This function add tag to a volume.
+        If NAME is not specified, then tag will be added to the last volume.
+        If success, the volume will be saved as the most recent volume.
 
+        :param NAME: name of volume
         :param kwargs:
-        :return:
+                     key: name of tag
+                     value: value of tag
+        :return: self.list()
         """
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
-        async_vm_update = compute_client.virtual_machines.create_or_update(
+        DISK_NAME = NAME
+        async_vm_update = self.compute_client.disks.create_or_update(
             GROUP_NAME,
-            VM_NAME,
+            DISK_NAME,
             {
                 'location': LOCATION,
+                'disk_size_gb': 1,
+                'creation_data': {
+                    'create_option': 'Empty',
+                },
                 'tags': {
-                    'volumeproject': 'test'
+                    'volumeproject': 'test',
+                    'tag2': 'test2'
                 }
             }
         )
+        async_vm_update.wait()
+        # return after adding tags
+        results = async_vm_update.result().as_dict()
+        result = self.update_dict([results])
+        return result
 
 
     def migrate(self,

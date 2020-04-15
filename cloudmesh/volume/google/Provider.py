@@ -79,8 +79,7 @@ class Provider(VolumeABC):
             'https://www.googleapis.com/auth/cloud-platform',
             'https://www.googleapis.com/auth/compute.readonly']
 
-    def _wait(self,
-             time=None):
+    def _wait(self, time=None):
         """
         This function waiting for volume to be updated
 
@@ -167,6 +166,21 @@ class Provider(VolumeABC):
 
         return compute_service
 
+    def _get_disk(self, zone, disk):
+        """
+        Get the specified persistent disk from the cloud
+
+        :param zone: name of the zone in which the disk is located
+        :param disk: name of the disk
+        :return: a dict representing the disk
+        """
+        compute_service = self._get_compute_service()
+        disk = compute_service.disks().get(
+                project=self.credentials["project_id"],
+                zone=zone,
+                disk=disk).execute()
+        return disk
+
     def list(self, **kwargs):
         """
         Retrieves an aggregated list of persistent disks.
@@ -218,17 +232,11 @@ class Provider(VolumeABC):
                   'name': kwargs['NAME'],
                   'sizeGb': str(size),
                   'description': description}).execute()
-        new_disk = compute_service.disks().get(
-                project=self.credentials["project_id"],
-                zone=self.default['zone'],
-                disk=kwargs['NAME']).execute()
+        new_disk = self._get_disk(self.default['zone'], kwargs['NAME'])
         # wait for disk to finish being created
         while new_disk['status'] != 'READY':
             self._wait(1)
-            new_disk = compute_service.disks().get(
-                project=self.credentials["project_id"],
-                zone=self.default['zone'],
-                disk=kwargs['NAME']).execute()
+            new_disk = self._get_disk(self.default['zone'], kwargs['NAME'])
 
         update_new_disk = self.update_dict(new_disk)
 
@@ -255,18 +263,12 @@ class Provider(VolumeABC):
             project=self.credentials["project_id"],
             zone=zone,
             disk=name).execute()
-        deleted_disk = compute_service.disks().get(
-            project=self.credentials["project_id"],
-            zone=zone,
-            disk=name).execute()
+        deleted_disk = self._get_disk(zone, name)
         # wait for disk to be deleted
         while deleted_disk['status'] == 'DELETING':
             self._wait(1)
             try:
-                deleted_disk = compute_service.disks().get(
-                    project=self.credentials["project_id"],
-                    zone=zone,
-                    disk=name).execute()
+                deleted_disk = self._get_disk(zone, name)
             except HttpError:
                 return
 
@@ -289,6 +291,21 @@ class Provider(VolumeABC):
                     # Add instance details to found_instance.
                     found_instances.append(instance)
         return found_instances
+
+    def _get_instance(self, zone, instance):
+        """
+        Get the specified instance from the cloud
+
+        :param zone: zone in which the instance is located
+        :param instance: name of the instance
+        :return: a dict representing the instance
+        """
+        compute_service = self._get_compute_service()
+        vm = compute_service.instances().get(
+            project=self.credentials["project_id"],
+            zone=zone,
+            instance=instance).execute()
+        return vm
 
     def attach(self, names, vm=None):
         """
@@ -319,12 +336,9 @@ class Provider(VolumeABC):
                 instance=vm,
                 body={'source': source,
                       'deviceName': name}).execute()
-
+        # Get disks attached to specified vm
         attached_disks = []
-        get_instance = compute_service.instances().get(
-            project=self.credentials["project_id"],
-            zone=zone,
-            instance=vm).execute()
+        get_instance = self._get_instance(zone, vm)
         for disk in get_instance['disks']:
             attached_disks.append(disk['deviceName'])
         # wait for disks to be attached
@@ -332,10 +346,7 @@ class Provider(VolumeABC):
             self._wait(1)
             for disk in get_instance['disks']:
                 attached_disks.append([disk['deviceName']])
-            get_instance = compute_service.instances().get(
-                project=self.credentials["project_id"],
-                zone=zone,
-                instance=vm).execute()
+            get_instance = self._get_instance(zone, vm)
 
         result = self.list()
 
@@ -366,17 +377,11 @@ class Provider(VolumeABC):
                 instance=instance,
                 deviceName=name).execute()
 
-        detached_disk = compute_service.disks().get(
-            project=self.credentials["project_id"],
-            zone=zone,
-            disk=name).execute()
+        detached_disk = self._get_disk(zone, name)
         # wait for disk to be detached
         while 'users' in detached_disk:
             self._wait(1)
-            detached_disk = compute_service.disks().get(
-                project=self.credentials["project_id"],
-                zone=zone,
-                disk=name).execute()
+            detached_disk = self._get_disk(zone, name)
 
         result = self.update_dict(detached_disk)
 
@@ -406,18 +411,12 @@ class Provider(VolumeABC):
             body={'labelFingerprint': labelfingerprint,
                   'labels': {kwargs['key']: str(kwargs['value'])}}).execute()
 
-        tagged_disk = compute_service.disks().get(
-            project=self.credentials["project_id"],
-            zone=self.default['zone'],
-            disk=kwargs['NAME']).execute()
+        tagged_disk = self._get_disk(self.default['zone'], kwargs['NAME'])
 
         # wait for tag to be applied
         while 'labels' not in tagged_disk:
             self._wait(1)
-            tagged_disk = compute_service.disks().get(
-                project=self.credentials["project_id"],
-                zone=self.default['zone'],
-                disk=kwargs['NAME']).execute()
+            tagged_disk = self._get_disk(self.default['zone'], kwargs['NAME'])
 
         updated_disk = self.update_dict(tagged_disk)
         return updated_disk[0]

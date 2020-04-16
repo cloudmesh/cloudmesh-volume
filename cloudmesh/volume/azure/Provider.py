@@ -324,7 +324,7 @@ class Provider(VolumeABC):
         GROUP_NAME = 'cloudmesh'
         # VM_NAME = 'ashthorn-vm-3'
         VM_NAME = vm
-        DISK_NAME = NAME
+        DISK_NAME = NAMES
         self.vms = self.compute_client.virtual_machines
         disk_creation = self.compute_client.disks.create_or_update(
             GROUP_NAME,
@@ -358,7 +358,7 @@ class Provider(VolumeABC):
         return result
 
 
-    def detach(self, NAME=None):
+    def detach(self, NAME=None, vm=None):
         """
         Detach volumes from vm.
         If success, the last volume will be saved as the most recent volume.
@@ -387,7 +387,6 @@ class Provider(VolumeABC):
         return result
 
 
-#this is get info
     def status(self, NAME=None):
         """
         This function returns status of volume, such as "available", "in-use"
@@ -409,7 +408,27 @@ class Provider(VolumeABC):
         return result
 
 
-    def add_tag(self,**kwargs):
+    def info(self, NAME=None):
+        """
+        Search through the list of volumes, find the matching volume with name, return the dict of matched volume
+
+        :param name: volume name to match
+        :return: dict
+        """
+        GROUP_NAME = 'cloudmesh'
+        LOCATION = 'eastus'
+        DISK_NAME = NAME
+        disk_status = self.compute_client.disks.get(
+            GROUP_NAME,
+            DISK_NAME
+        )
+        # return after getting status
+        results = disk_status.as_dict()
+        result = self.update_dict([results])
+        return result
+
+
+    def add_tag(self, **kwargs):
         """
         This function add tag to a volume.
         If NAME is not specified, then tag will be added to the last volume.
@@ -423,7 +442,7 @@ class Provider(VolumeABC):
         """
         LOCATION = 'eastus'
         GROUP_NAME = 'cloudmesh'
-        DISK_NAME = NAME
+        DISK_NAME = kwargs['NAME']
         async_vm_update = self.compute_client.disks.create_or_update(
             GROUP_NAME,
             DISK_NAME,

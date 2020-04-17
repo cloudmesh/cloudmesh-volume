@@ -116,7 +116,6 @@ class VolumeABC(metaclass=ABCMeta):
                     value: value of tag
         :return: self.list()
         """
-
         raise NotImplementedError
 
     @abstractmethod
@@ -147,6 +146,15 @@ class VolumeABC(metaclass=ABCMeta):
         synchronize one volume with another volume
 
         :param NAMES (list): list of volume names
+        :return: dict
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def purge(self,**kwargs):
+        """
+        purge all the deleted volume in MongoDB database
+
         :return: dict
         """
         raise NotImplementedError

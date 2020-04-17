@@ -13,34 +13,36 @@ class Provider(VolumeABC):
     sample = """
     cloudmesh:
       cloud:
-        {name}:
+        aws:
           cm:
             active: true
             heading: AWS
             host: TBD
-            label: {name}
+            label: VAWAS1
             kind: aws
             version: TBD
             service: volume
           default:
-            volume_type: "gp2"
+            volume_type: gp2
             size: 2
             iops: 1000
             encrypted: False
+            region: us-east-2a
             multi_attach_enabled: True
-            region: 'us-east-2'
+            snapshot: "None"
           credentials:
             EC2_SECURITY_GROUP: cloudmesh
-            EC2_ACCESS_ID: {EC2_ACCESS_ID}
-            EC2_SECRET_KEY: {EC2_SECRET_KEY}
-            EC2_PRIVATE_KEY_FILE_PATH: 
-            EC2_PRIVATE_KEY_FILE_NAME: 
+            EC2_ACCESS_ID: 
+            EC2_SECRET_KEY: 
+            EC2_PRIVATE_KEY_FILE_PATH: ~/cm/aws_ec2_cert.pem
+            EC2_PRIVATE_KEY_FILE_NAME: aws_ec2_cert
     """
 
     volume_status = [
         'in-use',
         'available',
-        'creating'
+        'creating',
+        'deleting'
     ]
 
     output = {
@@ -53,12 +55,12 @@ class Provider(VolumeABC):
                       "cm.region",
                       #"AvailabilityZone",
                       "CreateTime",
-                      "Encrypted",
+                      #"Encrypted",
                       "Size",
                       #"SnapshotId",
                       "State",
                       #"VolumeId",
-                      "Iops",
+                      #"Iops",
                       #"Tags",
                       "VolumeType",
                       #"created",
@@ -70,16 +72,16 @@ class Provider(VolumeABC):
                        "Region",
                        #"AvailabilityZone",
                        "CreateTime",
-                       "Encrypted",
+                       #"Encrypted",
                        "Size",
                        #"SnapshotId",
                        "Status",
                         #"VolumeId",
-                       "Iops",
+                       #"Iops",
                        #"Tags",
                        "VolumeType",
                        #"Created",
-                       "AttachedToVm"
+                       "AttachedToVm",
                        ],
         }
     }
@@ -222,7 +224,7 @@ class Provider(VolumeABC):
                     for tag in instance['Reservations'][0]['Instances'][0]['Tags']:
                         if tag['Key'] == 'Name':
                             vm_name = tag['Value']
-                            print("vm_name: ", vm_name)
+                            #print("vm_name: ", vm_name)
                         return vm_name
             except:
                 Console.error(f"{volume_name} does not attach to any vm")
@@ -302,7 +304,7 @@ class Provider(VolumeABC):
 
     def status(self, volume_name):
         """
-        This function get volume status, such as "in-use", "available"
+        This function get volume status, such as "in-use", "available", "deleting"
 
         :param volume_name
         :return: volume_status
@@ -341,6 +343,7 @@ class Provider(VolumeABC):
 
         result = self._create(**kwargs)
         result = self.update_dict(result)
+        #print(result)
         return result
 
     def _create(self,
@@ -380,6 +383,7 @@ class Provider(VolumeABC):
         :return: volume dict
 
         """
+        #print("kwargs", kwargs)
 
         if kwargs['volume_type']=='io1':
 
@@ -389,7 +393,7 @@ class Provider(VolumeABC):
             if int(kwargs['size']) < 500:
                 raise Exception("minimum volume size for sc1 is 500 GB")
 
-        if kwargs['snapshot'] is not None:
+        if kwargs['snapshot'] != "None":
             r = self.client.create_volume(
                 AvailabilityZone=kwargs['region'],
                 Encrypted=kwargs['encrypted'],
@@ -457,11 +461,7 @@ class Provider(VolumeABC):
         :param region: name of availability zone
         :return:
         """
-
-        # if len(kwargs)==0:
-        #     dryrun = False
-        # else:
-        #     dryrun = kwargs['--dryrun']
+        #print("kwargs", kwargs)
         if kwargs:
             result = self.client.describe_volumes()
             for key in kwargs:
@@ -519,17 +519,34 @@ class Provider(VolumeABC):
 
     def delete(self, NAME):
         """
-        This function delete one volume. It will call self.list() to return a
-        dict of all the volumes under the cloud.
+        This function delete one volume.
+        It will return the info of volume with "state" updated as "deleted" and will show in Database.
 
         :param NAME (string): volume name
-        :return: self.list()
+        :return: dict
         """
-
+        result = self.client.describe_volumes(
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': [NAME]
+                },
+            ],)
         banner(f"delete volume {NAME}")
         volume_id = self.find_volume_id(NAME)
         response = self.client.delete_volume(VolumeId=volume_id)
-        return self.list()
+        stop_timeout = 360
+        time = 0
+        while time <= stop_timeout:
+            sleep(5)
+            time += 5
+            try:
+                volume_status = self.status(volume_name=NAME)[0]['State']
+            except:
+                break
+        result['Volumes'][0]['State']='deleted'
+        result = self.update_dict(result)
+        return result
 
     def attach(self,
                NAMES,
@@ -540,7 +557,7 @@ class Provider(VolumeABC):
         """
         This function attach one or more volumes to vm. It returns self.list()
         to list the updated volume. The updated dict with "AttachedToVm" showing
-        the name of vm where the volume attached to
+        the name of vm where the volume attached to.
 
         :param NAMES (string): names of volumes
         :param vm (string): name of vm

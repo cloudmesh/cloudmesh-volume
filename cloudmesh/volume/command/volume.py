@@ -33,6 +33,7 @@ class VolumeCommand(PluginCommand):
                         [--description=DESCRIPTION]
                         [--dryrun]
                         [--region=REGION]
+                        [--path=PATH]
             volume attach [NAMES] [--vm=VM]
             volume detach [NAMES]
             volume delete [NAMES]
@@ -45,32 +46,27 @@ class VolumeCommand(PluginCommand):
                         [--cloud=CLOUD]
             volume sync [NAMES]
                         [--cloud=CLOUD]
+            volume purge [--cloud=CLOUD]
 
           This command manages volumes across different clouds
 
           Arguments:
               NAME   the name of the volume
               NAMES  the names of multiple volumes
-              vm     the name of the vm
 
           Options:
-              --vm=VMNAME        The name of the virtual machine
-              --region=REGION    The name of the region
-              --cloud=CLOUD      The name of the cloud
-              --refresh          If refresh the info is taken from the cloud
-              --volume_type=TYPE  The type of the volume
-              --output=FORMAT    Output format [default: table]
-              --key=KEY          The tag key
-              --value=VALUE      The value of tag key
-              --snapshot         The snapshot of volume
+              --vm=VMNAME          The name of the virtual machine
+              --region=REGION      The name of the region
+              --cloud=CLOUD        The name of the cloud
+              --refresh            If refresh the info is taken from the cloud
+              --volume_type=TYPE   The type of the volume
+              --output=FORMAT      Output format [default: table]
+              --key=KEY            The tag key
+              --value=VALUE        The value of tag key
+              --snapshot           The snapshot of volume
+              --path=PATH          The path of local volume
 
           Description:
-
-            volume register which
-                TODO: describe
-
-            volume register [NAME] [--cloud=CLOUD] [ARGUMENTS...]
-                TODO: describe
 
             volume list [NAMES]
                         [--vm=VM]
@@ -110,6 +106,10 @@ class VolumeCommand(PluginCommand):
             volume sync [NAMES]
                         [--cloud=CLOUD]
                 Volume sync allows for data to shared between two volumes.
+
+            volume purge [--cloud=CLOUD]
+                Volume purge delete all the "deleted" volumes in MongoDB database
+
         """
 
         VERBOSE(arguments)
@@ -117,9 +117,9 @@ class VolumeCommand(PluginCommand):
 
         def get_last_volume():
             """
-            TODO: missing
+            get the last volume name
 
-            :return:
+            :return: string
             """
             config = Config()
 
@@ -135,9 +135,9 @@ class VolumeCommand(PluginCommand):
 
         def create_name():
             """
-            TODO: missing
+            Create volume name if name is not specified
 
-            :return:
+            :return: string
             """
 
             config = Config()
@@ -163,7 +163,8 @@ class VolumeCommand(PluginCommand):
                        "description",
                        "key",
                        "value",
-                       "snapshot"
+                       "snapshot",
+                       "path"
                        )
 
         arguments.output = Parameter.find("output",
@@ -172,6 +173,7 @@ class VolumeCommand(PluginCommand):
                                           )
 
         cloud = variables['cloud']
+        #print(arguments)
 
         if arguments.list:
             if arguments.NAMES:
@@ -336,7 +338,6 @@ class VolumeCommand(PluginCommand):
             arguments.NAME = name
             provider = Provider(name=arguments.cloud)
             result = provider.status(NAME=name)
-            # print(f"{name} is {result[0]['State']}")
             print(provider.Print(result, kind='volume', output=arguments.output)
                   )
 
@@ -356,19 +357,6 @@ class VolumeCommand(PluginCommand):
 
             else:
                 raise NotImplementedError
-                # "cms volume migrate NAME vm"
-                # search through clouds, find cloud of vm???????
-                config = Config()
-                clouds = ["multipass", "aws", "azure", "google", "openstack",
-                          "oracle"]
-                # clouds = list(config["cloudmesh.cloud"].keys())
-                # ['docker', 'azure', 'aws', 'google', 'chameleon', 'jetstream',
-                # 'cybera', 'vagrant', 'vagrant_remote']
-                for cloud in clouds:
-                    provider = Provider(name=cloud)
-                    result = provider.migrate(**arguments)
-                    print(provider.Print(result, kind='volume',
-                                         output=arguments.output))
 
         elif arguments.sync:
             # "cms volume sync NAMES"
@@ -393,25 +381,10 @@ class VolumeCommand(PluginCommand):
                                      output=arguments.output))
             else:
                 raise NotImplementedError
-                config = Config()
-                clouds = list(config["cloudmesh.volume"].keys())
-                volumes = Parameter.expand(volumes)
-                for cloud in clouds:
-                    active = config[f"cloudmesh.volume.{cloud}.cm.active"]
-                    if active:
-                        detached = []
-                        provider = Provider(name=cloud)
-                        for name in volumes:
-                            # returns volume name if found in the cloud,
-                            # None if it is not in the cloud
-                            volume = provider.search(name=name)
-                            if volume:
-                                banner(f"synchronizing {name} from {cloud}")
-                                result = provider.detach(NAME=name)
-                                detached.append(name)
-                                print(provider.Print(result, kind='volume',
-                                                     output=arguments.output))
-                        if len(detached) > 0:
-                            # delete all detached volumes in volumes
-                            for name in detached:
-                                volumes.remove(name)
+
+        elif arguments.purge:
+            arguments.cloud = arguments.cloud or cloud
+            provider = Provider(name=arguments.cloud)
+            result = provider.list()
+            print(provider.Print(result, kind='volume', output=arguments.output))
+

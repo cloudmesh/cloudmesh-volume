@@ -293,4 +293,19 @@ class Provider(object):  # broken
             raise ValueError("Volume could not be synchronized")
         return result
 
+    @DatabaseUpdate()
+    def purge(self,**kwargs):
+        """
+        purge deleted volumes in MongoDB database
+
+        :return:
+        """
+        try:
+            result = self.provider.purge(**kwargs)
+        except:
+            raise ValueError("Volume could not be synchronized")
+        return result
+
+
+
 

@@ -11,7 +11,7 @@ import glob
 from cloudmesh.mongo.CmDatabase import CmDatabase
 
 class Provider(VolumeABC):
-    kind = "multipass"
+    kind = "volume"
 
     sample = """
     cloudmesh:
@@ -36,6 +36,7 @@ class Provider(VolumeABC):
                       "cm.kind",
                       "state",
                       "path",
+                      'machine_path',
                       "AttachedToVm"
                       ],
             "header": ["Name",
@@ -43,15 +44,20 @@ class Provider(VolumeABC):
                        "Kind",
                        "State",
                        "Path",
+                       'Machine Path',
                        "AttachedToVm"
                        ]
         }
     }
 
-    def update_volume_info(self, NAME, mount=[]):
+    def update_volume_info(self, NAME, path, mount=[]):
         info = {}
         info['name'] = NAME
-        info['path'] = self.path
+        info['path'] = path
+        path_list = path.split(sep='/')
+        machine_path_list = ["~", "Home"]
+        machine_path_list.extend(path_list[3:])
+        info['machine_path'] = "/".join(machine_path_list)
         info['AttachedToVm'] = mount
         if len(mount) != 0:
             info['state'] = 'In-Use'
@@ -71,8 +77,7 @@ class Provider(VolumeABC):
         self.cloud = name
         self.cloudtype = "multipass"
         config = Config()
-        default = config[f"cloudmesh.volume.{self.cloud}.default"]
-        self.path = default['path']
+        self.default = config[f"cloudmesh.volume.{self.cloud}.default"]
         self.cm = CmDatabase()
 
     def update_dict(self, elements, kind=None):
@@ -94,7 +99,7 @@ class Provider(VolumeABC):
             if "cm" not in element.keys():
                 element['cm'] = {}
             element["cm"].update({
-                        "kind": "multipass",
+                        "kind": "volume",
                         "cloud": self.cloud,
                         "name": element['name'],
                     })
@@ -102,41 +107,39 @@ class Provider(VolumeABC):
         return d
 
     def create(self,**kwargs):
+        banner(f"**kwargs,{kwargs}")
+        for key in self.default.keys():
+            if key not in kwargs.keys():
+                kwargs[key] = self.default[key]
+            elif kwargs[key] == None:
+                kwargs[key] = self.default[key]
         NAME = kwargs['NAME']
-        print("kwargs.....", kwargs)
-        result = os.system(f"mkdir {self.path}/{NAME}")
+        path = kwargs['path']
+        print(path)
+        result = os.system(f"mkdir {path}/{NAME}")
         if result == 0:
-            result = self.update_volume_info(NAME=NAME)
+            result = self.update_volume_info(NAME=NAME, path=path)
 
         result = self.update_dict([result])
         return result
 
     def delete(self, NAME):
+        result = self.cm.find_name(NAME)
+        path = result[0]['path']
         try:
-            re = os.system(f"rmdir {self.path}/{NAME}")
+            re = os.system(f"rmdir {path}/{NAME}")
+            result[0]['state'] = 'deleted'
+            result = self.update_dict(result)
+            #cmulti = cm.collection("multipass-volume")
+            #cmulti.delete_one(f"{'name': {NAME}}")
         except:
             Console.error("volume is either not empty or not exist")
-        return self.list()
+        return result
 
     def list(self, **kwargs):
-        #raise NotImplementedError
+
         #refresh = kwargs['refresh']
-        #search through all the multipass vm??? then get all the info about volumes
-
-
-        result = glob.glob(f'{self.path}/*')
-        list = []
-        volumes =[]
-        for i in range(len(result)):
-            list.append(result[i][23:])
-        for j in range(len(list)):
-            try:
-                volume = self.cm.find_name(list[j])
-                volumes.append(volume[0])
-            except:
-                pass
-
-        result = self.update_dict(volumes)
+        result = self.cm.find(cloud='multipass', kind='volume')
         return result
 
     def attach(self,
@@ -144,18 +147,24 @@ class Provider(VolumeABC):
                vm,
                device=None,
                dryrun=False):
-        cm = CmDatabase()
+
         results = []
         for name in NAMES:
-            vms = cm.find_name(name)[0]['AttachedToVm']
-
-            result = self.mount(path=f"{self.path}/{name}", vm=vm)
-            mounts = result['mounts']
-            if f"{self.path}/{name}" in mounts.keys():
-                vms.append(vm)
-
-            result = self.update_volume_info(NAME=name, mount=vms)
-            results.append(result)
+            volume_info = self.cm.find_name(name)
+            if volume_info and volume_info['state'] != "deleted":
+                vms = volume_info[0]['AttachedToVm']
+                path = volume_info[0]['path']
+                if vm in vms:
+                    Console.error(f"{name} already attached to {vm}")
+                else:
+                    result = self.mount(path=f"{path}/{name}", vm=vm)
+                    mounts = result['mounts']
+                    if f"{path}/{name}" in mounts.keys():
+                        vms.append(vm)
+                result = self.update_volume_info(NAME=name, path=path, mount=vms)
+                results.append(result)
+            else:
+                Console.error("volume is not existed or volume had been deleted")
         results = self.update_dict(results)
         return results
 
@@ -205,34 +214,41 @@ class Provider(VolumeABC):
 
 
     def detach(self, NAME):
-
-        vms = cm.find_name(NAME)[0]['AttachedToVm']
-        print(vms)
-        if len(vms) == 0:
-            Console.error(f"{NAME} does not attach to any vm")
-        else:
-            for vm in vms:
-                print(vm)
-                result = self.unmount(path=f"{self.path}/{NAME}", vm=vm)
-
-            for vm in vms:
-                mounts = result['mounts']
-                print("mounts",mounts)
-                if f"{self.path}/{NAME}" not in mounts.keys():
+        #will detach from all vms
+        volume_info = self.cm.find_name(NAME)
+        if volume_info and volume_info[0]['state'] != "deleted":
+            vms = volume_info[0]['AttachedToVm']
+            path = volume_info[0]['path']
+            if len(vms) == 0:
+                Console.error(f"{NAME} does not attach to any vm")
+            else:
+                removed = []
+                for vm in vms:
+                    print(vm)
+                    result = self.unmount(path=f"{path}/{NAME}", vm=vm)
+                    mounts = result['mounts']
+                    print("mounts",mounts)
+                    if f"{path}/{NAME}" not in mounts.keys():
+                        removed.append(vm)
+                for vm in removed:
                     vms.remove(vm)
-        result = self.update_volume_info(NAME=NAME, mount=vms)
-        result = self.update_dict([result])
-        return result[0]
-
-
+                result = self.update_volume_info(NAME=NAME, path=path, mount=vms)
+                result = self.update_dict([result])
+                return result[0]
+        else:
+            Console.error("volume is not existed or volume had been deleted")
 
     def add_tag(self, **kwargs):
 
         raise NotImplementedError
 
     def status(self, name=None):
-
-        raise NotImplementedError
+        volume_info = self.cm.find_name(name)
+        if volume_info:
+            status = volume_info[0]['state']
+        else:
+            Console.error("volume is not existed")
+        return print(status)
 
     def migrate(self,
                 name=None,

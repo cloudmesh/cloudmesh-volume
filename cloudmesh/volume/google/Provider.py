@@ -263,14 +263,19 @@ class Provider(VolumeABC):
             project=self.credentials["project_id"],
             zone=zone,
             disk=name).execute()
-        deleted_disk = self._get_disk(zone, name)
-        # wait for disk to be deleted
-        while deleted_disk['status'] == 'DELETING':
-            self._wait(1)
-            try:
-                deleted_disk = self._get_disk(zone, name)
-            except HttpError:
-                return
+        # attempt to call disk from cloud
+        try:
+            deleted_disk = self._get_disk(zone, name)
+            # wait for disk to be deleted if found in cloud
+            if deleted_disk['status'] == 'DELETING':
+                while deleted_disk['status'] == 'DELETING':
+                    self._wait(1)
+                    try:
+                        deleted_disk = self._get_disk(zone, name)
+                    except HttpError:
+                        pass
+        except HttpError:
+            pass
 
     def _list_instances(self):
         """
@@ -336,19 +341,16 @@ class Provider(VolumeABC):
                 instance=vm,
                 body={'source': source,
                       'deviceName': name}).execute()
-        # Get disks attached to specified vm
-        attached_disks = []
-        get_instance = self._get_instance(zone, vm)
-        for disk in get_instance['disks']:
-            attached_disks.append(disk['deviceName'])
-        # wait for disks to be attached
-        while names not in attached_disks:
-            self._wait(1)
-            for disk in get_instance['disks']:
-                attached_disks.append([disk['deviceName']])
-            get_instance = self._get_instance(zone, vm)
-
-        result = self.list()
+        new_attached_disks = []
+        for name in names:
+            get_disk = self._get_disk(zone, name)
+            # wait for disk to finish attaching
+            while 'users' not in get_disk:
+                self._wait(1)
+                get_disk = self._get_disk(zone, name)
+            new_attached_disks.append(get_disk)
+        # update newly attached disks
+        result = self.update_dict(new_attached_disks)
 
         return result
 
@@ -376,13 +378,12 @@ class Provider(VolumeABC):
                 zone=zone,
                 instance=instance,
                 deviceName=name).execute()
-
         detached_disk = self._get_disk(zone, name)
         # wait for disk to be detached
         while 'users' in detached_disk:
             self._wait(1)
             detached_disk = self._get_disk(zone, name)
-
+        # update newly detached disk
         result = self.update_dict(detached_disk)
 
         return result[0]

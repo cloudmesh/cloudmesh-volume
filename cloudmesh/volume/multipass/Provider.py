@@ -73,6 +73,7 @@ class Provider(VolumeABC):
         config = Config()
         default = config[f"cloudmesh.volume.{self.cloud}.default"]
         self.path = default['path']
+        self.cm = CmDatabase()
 
     def update_dict(self, elements, kind=None):
         """
@@ -110,25 +111,30 @@ class Provider(VolumeABC):
         result = self.update_dict([result])
         return result
 
-    def delete(self, **kwargs):
-        raise NotImplementedError
+    def delete(self, NAME):
+        try:
+            re = os.system(f"rmdir {self.path}/{NAME}")
+        except:
+            Console.error("volume is either not empty or not exist")
+        return self.list()
 
     def list(self, **kwargs):
         #raise NotImplementedError
         #refresh = kwargs['refresh']
-        cm = CmDatabase()
-        result = glob.glob(f'{self.path}/*')
+        #search through all the multipass vm??? then get all the info about volumes
 
+
+        result = glob.glob(f'{self.path}/*')
         list = []
         volumes =[]
         for i in range(len(result)):
-            result[i][19:]
             list.append(result[i][23:])
-
         for j in range(len(list)):
-            volume = cm.find_name(list[j])
-
-            volumes.append(volume[0])
+            try:
+                volume = self.cm.find_name(list[j])
+                volumes.append(volume[0])
+            except:
+                pass
 
         result = self.update_dict(volumes)
         return result
@@ -200,21 +206,24 @@ class Provider(VolumeABC):
 
     def detach(self, NAME):
 
-        cm = CmDatabase()
         vms = cm.find_name(NAME)[0]['AttachedToVm']
+        print(vms)
         if len(vms) == 0:
             Console.error(f"{NAME} does not attach to any vm")
         else:
             for vm in vms:
+                print(vm)
                 result = self.unmount(path=f"{self.path}/{NAME}", vm=vm)
+
+            for vm in vms:
                 mounts = result['mounts']
+                print("mounts",mounts)
                 if f"{self.path}/{NAME}" not in mounts.keys():
                     vms.remove(vm)
         result = self.update_volume_info(NAME=NAME, mount=vms)
         result = self.update_dict([result])
         return result[0]
 
-        raise NotImplementedError
 
 
     def add_tag(self, **kwargs):

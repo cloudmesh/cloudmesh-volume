@@ -54,8 +54,22 @@ class Test_provider_volume:
         data = provider.create(**params)
         Benchmark.Stop()
         status = None
-        for v in data:
-            status = v['status']
+        if cloud == "openstack" or cloud == "oracle":
+            for v in data:
+                status = v['status']
+        elif cloud == "aws" or cloud == "multipass":
+            start_timeout = 360
+            time = 0
+            while time <= start_timeout:
+                sleep(15)
+                time += 5
+                status = provider.status(NAME=name)[0]['State']
+                if status == "available":
+                    break
+        elif cloud == "azure":
+            pass
+        elif cloud == "google":
+            pass
         assert status in ['available', 'STARTING', 'RUNNING', 'ACTIVE']
 
     def test_provider_volume_list(self):
@@ -80,7 +94,14 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            status = provider.status(NAME=NAMES[0])[0]['status']
+            if cloud == "openstack" or cloud == "oracle":
+                status = provider.status(NAME=NAMES[0])[0]['status']
+            elif cloud == "aws" or cloud == "multipass":
+                status = provider.status(NAME=name)[0]['State']
+            elif cloud == "azure":
+                pass
+            elif cloud == "google":
+                pass
             # In case of Oracle, status is AVAILABLE after attach
             if status in ['in-use', 'AVAILABLE']:
                 break
@@ -98,7 +119,14 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            status = provider.status(NAME=name)[0]['status']
+            if cloud == "openstack" or cloud == "oracle":
+                status = provider.status(NAME=NAMES[0])[0]['status']
+            elif cloud == "aws" or cloud == "multipass":
+                status = provider.status(NAME=name)[0]['State']
+            elif cloud == "azure":
+                pass
+            elif cloud == "google":
+                pass
             if status in ['available', 'AVAILABLE']:
                 break
         assert status in ['available', 'AVAILABLE']

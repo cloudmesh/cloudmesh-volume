@@ -1,5 +1,5 @@
 ###############################################################
-# pytest -v --capture=no tests/test_volume_openstack.py
+# pytest -v --capture=no tests/test_01_setup.py
 ###############################################################
 
 # TODO: start this with cloud init, e.g, empty mongodb

@@ -54,15 +54,8 @@ class Test_provider_volume:
         data = provider.create(**params)
         Benchmark.Stop()
         status = None
-        if cloud == "openstack" or cloud == "oracle":
-            for v in data:
-                status = v['status']
-        elif cloud == "aws" or cloud == "multipass":
-            status = provider.status(NAME=name)[0]['State']
-        elif cloud == "azure":
-            pass
-        elif cloud == "google":
-            pass
+        for v in data:
+            status = v['status']
         assert status in ['available', 'STARTING', 'RUNNING', 'ACTIVE']
 
     def test_provider_volume_list(self):

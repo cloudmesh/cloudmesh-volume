@@ -106,6 +106,15 @@ functions that are deployed on different clouds.
     volume delete [NAMES] 
 ```
 
+* volume purge
+
+    Purge deleted volumes.
+    
+    If cloud is not given, delete the volumes under current cloud.
+```
+    volume purge [--cloud=CLOUD] 
+```
+
 * volume add_tag
 
     Add tag for a volume. For example: key="Name", value="user-volume-1".

@@ -116,7 +116,6 @@ class VolumeABC(metaclass=ABCMeta):
                     value: value of tag
         :return: self.list()
         """
-
         raise NotImplementedError
 
     @abstractmethod
@@ -134,9 +133,9 @@ class VolumeABC(metaclass=ABCMeta):
         """
         Migrate volume from one vm to another vm.
 
-        :param name: name of volume
-        :param from_vm: name of vm where volume will be moved from
-        :param to_vm: name of vm where volume will be moved to
+        :param NAME (string): the volume name
+        :param vm (string): the vm name
+        :param region (string): the availability zone
         :return: dict
         """
         raise NotImplementedError
@@ -150,3 +149,12 @@ class VolumeABC(metaclass=ABCMeta):
         :return: dict
         """
         raise NotImplementedError
+    #
+    # @abstractmethod
+    # def purge(self,**kwargs):
+    #     """
+    #     purge all the deleted volume in MongoDB database
+    #
+    #     :return: dict
+    #     """
+    #     raise NotImplementedError

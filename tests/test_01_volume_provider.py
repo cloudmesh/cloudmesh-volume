@@ -50,11 +50,12 @@ class Test_provider_volume:
         os.system(f"cms volume list --cloud={cloud}")
         name_generator.incr()
         Benchmark.Start()
-        params = {"NAME": name}
+        params = {"NAME": name, 'size': None, 'volume_type': None,
+                  'description': None, 'region': None, 'path': None}
         data = provider.create(**params)
         Benchmark.Stop()
         status = None
-        if cloud == "openstack" or cloud == "oracle":
+        if cloud == "openstack" or cloud == "oracle" or cloud == "google":
             for v in data:
                 status = v['status']
         elif cloud == "aws" or cloud == "multipass":
@@ -68,9 +69,7 @@ class Test_provider_volume:
                     break
         elif cloud == "azure":
             pass
-        elif cloud == "google":
-            pass
-        assert status in ['available', 'STARTING', 'RUNNING', 'ACTIVE']
+        assert status in ['available', 'STARTING', 'RUNNING', 'ACTIVE', 'READY']
 
     def test_provider_volume_list(self):
         HEADING()
@@ -101,11 +100,11 @@ class Test_provider_volume:
             elif cloud == "azure":
                 pass
             elif cloud == "google":
-                pass
+                status = provider.status(NAME=name)[0]['status']
             # In case of Oracle, status is AVAILABLE after attach
-            if status in ['in-use', 'AVAILABLE']:
+            if status in ['in-use', 'AVAILABLE', 'READY']:
                 break
-        assert status in ['in-use', 'AVAILABLE']
+        assert status in ['in-use', 'AVAILABLE', 'READY']
 
     def test_provider_volume_detach(self):
         # test detach one volume
@@ -126,10 +125,10 @@ class Test_provider_volume:
             elif cloud == "azure":
                 pass
             elif cloud == "google":
-                pass
-            if status in ['available', 'AVAILABLE']:
+                status = provider.status(NAME=name)[0]['status']
+            if status in ['available', 'AVAILABLE', 'READY']:
                 break
-        assert status in ['available', 'AVAILABLE']
+        assert status in ['available', 'AVAILABLE', 'READY']
 
     def test_provider_volume_delete(self):
         HEADING()

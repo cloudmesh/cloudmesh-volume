@@ -354,7 +354,6 @@ class VolumeCommand(PluginCommand):
                 print(provider.Print(result,
                                      kind='volume',
                                      output=arguments.output))
-
             else:
                 raise NotImplementedError
 
@@ -373,14 +372,16 @@ class VolumeCommand(PluginCommand):
                 volumes = arguments.NAMES
             else:
                 Console.error("Two volumes should be specified")
-            if arguments.cloud:
-                provider = Provider(name=arguments.cloud)
-                result = provider.sync(NAMES=volumes)
-                print(provider.Print(result,
-                                     kind='volume',
-                                     output=arguments.output))
-            else:
-                raise NotImplementedError
+            #if arguments.cloud:
+            arguments.cloud = cloud
+            provider = Provider(name=arguments.cloud)
+            print(arguments.NAMES)
+            result = provider.sync(NAMES=arguments.NAMES)
+            print(provider.Print(result,
+                                 kind='volume',
+                                 output=arguments.output))
+            # else:
+            #     raise NotImplementedError
 
         elif arguments.purge:
             arguments.cloud = arguments.cloud or cloud

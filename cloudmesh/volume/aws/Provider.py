@@ -302,18 +302,18 @@ class Provider(VolumeABC):
         sleep(time)
         return False
 
-    def status(self, volume_name):
+    def status(self, NAME):
         """
         This function get volume status, such as "in-use", "available", "deleting"
 
-        :param volume_name
+        :param NAME
         :return: volume_status
         """
         result = self.client.describe_volumes(
             Filters=[
                 {
                     'Name': 'tag:Name',
-                    'Values': [volume_name, ]
+                    'Values': [NAME, ]
                 },
             ],
         )
@@ -449,8 +449,8 @@ class Provider(VolumeABC):
 
         """
         This function list all volumes as following:
-        If NAME (volume_name) is specified, it will print out info of NAME
-        If NAME (volume_name) is not specified, it will print out info of all
+        If NAME (volume name) is specified, it will print out info of NAME
+        If NAME (volume name) is not specified, it will print out info of all
           volumes
         If vm is specified, it will print out all the volumes attached to vm
         If region(availability zone) is specified, it will print out
@@ -541,7 +541,7 @@ class Provider(VolumeABC):
             sleep(5)
             time += 5
             try:
-                volume_status = self.status(volume_name=NAME)[0]['State']
+                volume_status = self.status(NAME=NAME)[0]['State']
             except:
                 break
         result['Volumes'][0]['State']='deleted'
@@ -602,7 +602,7 @@ class Provider(VolumeABC):
         :return: self.list()
         """
 
-        volume_status = self.status(volume_name=NAME)[0]['State']
+        volume_status = self.status(NAME=NAME)[0]['State']
         if volume_status == 'in-use':
             volume_id = self.find_volume_id(volume_name=NAME)
             rresponse = self.client.detach_volume(VolumeId=volume_id)
@@ -611,7 +611,7 @@ class Provider(VolumeABC):
         while time <= stop_timeout:
             sleep(5)
             time += 5
-            volume_status = self.status(volume_name=NAME)[0]['State']
+            volume_status = self.status(NAME=NAME)[0]['State']
             if volume_status == "available":
                 break
         return self.list(NAME=NAME)[0]
@@ -660,11 +660,12 @@ class Provider(VolumeABC):
 
         :param NAME (string): the volume name
         :param vm (string): the vm name
+        :param region (string): the availability zone
         :return: dict
         """
         volume_name = kwargs['NAME']
         vm = kwargs['vm']
-        volume_status = self.status(volume_name=volume_name)[0]['State']
+        volume_status = self.status(NAME=volume_name)[0]['State']
         volume_region = self.list(NAME=volume_name)[0]['cm']['region']
         volume_id = self.find_volume_id(volume_name=volume_name)
         vm_info = self.vm_info(vm=vm)
@@ -707,7 +708,7 @@ class Provider(VolumeABC):
                 while time <= start_timeout:
                     sleep(5)
                     time += 5
-                    status = self.status(volume_name=volume_name)[0]['State']
+                    status = self.status(NAME=volume_name)[0]['State']
                     if status == "available":
                         break
                 self.attach(NAMES=[volume_name,], vm=vm)
@@ -754,7 +755,7 @@ class Provider(VolumeABC):
         while time <= start_timeout:
             sleep(5)
             time += 5
-            status = self.status(volume_name=volume_1)[0]['State']
+            status = self.status(NAME=volume_1)[0]['State']
             if status == "available":
                 break
         return self.list(NAME=volume_1)[0]

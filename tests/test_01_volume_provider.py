@@ -143,7 +143,11 @@ class Test_provider_volume:
         provider.delete(NAME=name)
         Benchmark.Stop()
         result = provider.info(name=name)
-        assert result is None
+        if cloud == 'oracle':
+            status = result['lifecycle_state']
+            assert status in ['TERMINATED']
+        else:
+            assert result is None
 
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)

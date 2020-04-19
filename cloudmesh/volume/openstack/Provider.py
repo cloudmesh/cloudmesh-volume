@@ -1,4 +1,5 @@
 import openstack
+from cloudmesh.common.console import Console
 from cloudmesh.common.dotdict import dotdict
 from cloudmesh.configuration.Config import Config
 from cloudmesh.volume.VolumeABC import VolumeABC
@@ -116,7 +117,7 @@ class Provider(VolumeABC):
         """
         This function get volume status, such as "in-use", "available"
 
-        :param name: Volume name
+        :param volume_name: Volume name
         :return: Volume_status
         """
         con = openstack.connect(**self.config)
@@ -144,18 +145,23 @@ class Provider(VolumeABC):
         :param kwargs: Contains Volume name,size
         :return: Volume dictionary
         """
-        con = openstack.connect(**self.config)
-        arguments = dotdict(kwargs)
-        if arguments.volume_type is None:
-            arguments.volume_type = self.defaults["volume_type"]
-        if arguments.size is None:
-            arguments.size = self.defaults["size"]
-        r = con.create_volume(name=arguments.NAME,
-                              size=arguments.size,
-                              volume_type=arguments.volume_type
-                              )
-        r = [r]
-        result = self.update_dict(r)
+        try:
+            con = openstack.connect(**self.config)
+            arguments = dotdict(kwargs)
+            if arguments.volume_type is None:
+                arguments.volume_type = self.defaults["volume_type"]
+            if arguments.size is None:
+                arguments.size = self.defaults["size"]
+            r = con.create_volume(name=arguments.NAME,
+                                  size=arguments.size,
+                                  volume_type=arguments.volume_type
+                                  )
+            r = [r]
+            result = self.update_dict(r)
+        except Exception as e:
+            Console.error("Problem creating volume", traceflag=True)
+            print(e)
+            raise RuntimeError
         return result
 
     def delete(self, name=None):
@@ -165,29 +171,41 @@ class Provider(VolumeABC):
         :param name: Volume name
         :return: Dictionary of volumes
         """
-        con = openstack.connect(**self.config)
-        con.delete_volume(name_or_id=name)
-        results = con.list_volumes()
-        result = self.update_dict(results)
+        try:
+            con = openstack.connect(**self.config)
+            con.delete_volume(name_or_id=name)
+            results = con.list_volumes()
+            result = self.update_dict(results)
+        except Exception as e:
+            Console.error("Problem deleting volume", traceflag=True)
+            print(e)
+            raise RuntimeError
         return result
 
     def list(self, **kwargs):
         """
-        TODO: MISSING
+        This function list all volumes as following:
+        If NAME (volume_name) is specified, it will print out info of NAME
+        If NAME (volume_name) is not specified, it will print out info of all
+          volumes
 
-        :param kwargs:
-        :return:
+        :param kwargs: contains name of volume
+        :return: Dictionary of volumes
         """
-        con = openstack.connect(**self.config)
-        results = con.list_volumes()
-        if kwargs and kwargs['NAME']:
-            result = con.get_volume(name_or_id=kwargs["NAME"])
-            result = [result]
-            result = self.update_dict(result)
-            return result
-        else:
-            result = self.update_dict(results)
-            return result
+        try:
+            con = openstack.connect(**self.config)
+            results = con.list_volumes()
+            if kwargs and kwargs['NAME']:
+                result = con.get_volume(name_or_id=kwargs["NAME"])
+                result = [result]
+                result = self.update_dict(result)
+            else:
+                result = self.update_dict(results)
+        except Exception as e:
+            Console.error("Problem listing volumes", traceflag=True)
+            print(e)
+            raise RuntimeError
+        return result
 
     def attach(self, NAMES=None, vm=None):
         """
@@ -197,10 +215,16 @@ class Provider(VolumeABC):
         :param vm: Instance name
         :return: Dictionary of volumes
         """
-        con = openstack.connect(**self.config)
-        server = con.get_server(vm)
-        volume = con.get_volume(name_or_id=NAMES[0])
-        con.attach_volume(server, volume, device=None, wait=True, timeout=None)
+        try:
+            con = openstack.connect(**self.config)
+            server = con.get_server(vm)
+            volume = con.get_volume(name_or_id=NAMES[0])
+            con.attach_volume(server, volume, device=None, wait=True,
+                              timeout=None)
+        except Exception as e:
+            Console.error("Problem attaching volume", traceflag=True)
+            print(e)
+            raise RuntimeError
         return self.list(NAME=NAMES[0])
 
     def detach(self, NAME=None):
@@ -210,12 +234,17 @@ class Provider(VolumeABC):
         :param NAME: Volume name
         :return: Dictionary of volumes
         """
-        con = openstack.connect(**self.config)
-        volume = con.get_volume(name_or_id=NAME)
-        attachments = volume['attachments']
-        server = con.get_server(attachments[0]['server_id'])
-        con.detach_volume(server, volume, wait=True,
-                          timeout=None)
+        try:
+            con = openstack.connect(**self.config)
+            volume = con.get_volume(name_or_id=NAME)
+            attachments = volume['attachments']
+            server = con.get_server(attachments[0]['server_id'])
+            con.detach_volume(server, volume, wait=True,
+                              timeout=None)
+        except Exception as e:
+            Console.error("Problem detaching volume", traceflag=True)
+            print(e)
+            raise RuntimeError
         return self.list(NAME=NAME)[0]
 
     def migrate(self,

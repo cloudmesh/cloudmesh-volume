@@ -71,7 +71,7 @@ class Test_provider_volume:
                     break
         elif cloud == "azure":
             pass
-        assert status in ['available', 'AVAILABLE','PROVISIONING']
+        assert status in ['available', 'AVAILABLE','PROVISIONING', 'READY']
 
     def test_provider_volume_list(self):
         HEADING()

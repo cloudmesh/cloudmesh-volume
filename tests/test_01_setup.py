@@ -75,12 +75,6 @@ class Test_provider_volume:
                 status = response["info"][name]['state']
                 if status == "running":
                     break
-            #print("status", status)
-            #Shell.run(f"multipass shell {name}")
-            #print("done with open shell")
-            #result = Shell.run("sudo apt-get install sshfs")
-            #print("install sshfs", result)
-            #Shell.run("exit")
         else:
             cmd = "cms vm boot --name=" + name
             Benchmark.Start()

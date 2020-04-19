@@ -2,7 +2,6 @@
 # pytest -v --capture=no tests/test_01_volume_provider.py
 ###############################################################
 
-# TODO: start this with cloud init, e.g, empty mongodb
 # TODO: assertuons need to be added
 
 import os

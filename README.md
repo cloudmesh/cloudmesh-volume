@@ -476,8 +476,9 @@ Required Parameters:
 
 ## Test cases
 
- * [test_01_volume_provider](tests/test_01_volume_provider.py)
- * [test_02_volume_vm_management](tests/test_02_volume_vm_management.py)
+ * [test_01_setup](tests/test_01_setup.py)
+ * [test_02_volume_provider](tests/test_02_volume_provider.py)
+ * [test_03_teardown](tests/test_03_teardown.py)
 
 ## Active Developments
 
@@ -486,5 +487,5 @@ Required Parameters:
 * Google - Peter & Xin
 * Oracle - Ashok & Peter
 * Openstack - Peter & Ashok
-* Multipass - Ashok & Ashley
+* Multipass - Xin
 

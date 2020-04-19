@@ -6,6 +6,9 @@
 # TODO: assertuons need to be added
 
 import pytest
+import json
+import os
+from time import sleep
 from cloudmesh.common.Benchmark import Benchmark
 from cloudmesh.common.Shell import Shell
 from cloudmesh.common.debug import VERBOSE
@@ -44,6 +47,8 @@ provider = Provider(name=cloud)
 current_vms = 0
 
 
+
+
 @pytest.mark.incremental
 class Test_provider_volume:
 
@@ -55,10 +60,33 @@ class Test_provider_volume:
 
     def test_cms_vm(self):
         HEADING()
-        cmd = "cms vm boot --name=" + name
-        Benchmark.Start()
-        result = Shell.run(cmd)
-        Benchmark.Stop()
+        if cloud=="multipass":
+            cmd = f"multipass launch -n={name}"
+            Benchmark.Start()
+            result = os.system(cmd)
+            Benchmark.Stop()
+            start_timeout = 360
+            time = 0
+            while time <= start_timeout:
+                sleep(10)
+                time += 10
+                response = Shell.run(f"multipass info {name} --format=json")
+                response = json.loads(response)
+                status = response["info"][name]['state']
+                if status == "running":
+                    break
+            #print("status", status)
+            #Shell.run(f"multipass shell {name}")
+            #print("done with open shell")
+            #result = Shell.run("sudo apt-get install sshfs")
+            #print("install sshfs", result)
+            #Shell.run("exit")
+        else:
+            cmd = "cms vm boot --name=" + name
+            Benchmark.Start()
+            result = Shell.run(cmd)
+            Benchmark.Stop()
+
         print(result)
         assert "vm" in result
 

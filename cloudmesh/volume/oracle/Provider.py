@@ -1,4 +1,5 @@
 import oci
+from cloudmesh.common.console import Console
 from cloudmesh.common.dotdict import dotdict
 from cloudmesh.configuration.Config import Config
 from cloudmesh.volume.VolumeABC import VolumeABC
@@ -158,17 +159,22 @@ class Provider(VolumeABC):
         :param name: Volume name
         :return: Volume_status
         """
-        block_storage = oci.core.BlockstorageClient(self.config)
-        v = block_storage.list_volumes(self.config['compartment_id'])
-        volumes = v.data
-        result = []
-        entry = None
-        for entry in volumes:
-            display_name = entry.__getattribute__("display_name")
-            if name == display_name:
-                break
-        result.append(entry)
-        result = self.update_dict(result)
+        try:
+            block_storage = oci.core.BlockstorageClient(self.config)
+            v = block_storage.list_volumes(self.config['compartment_id'])
+            volumes = v.data
+            result = []
+            entry = None
+            for entry in volumes:
+                display_name = entry.__getattribute__("display_name")
+                if name == display_name:
+                    break
+            result.append(entry)
+            result = self.update_dict(result)
+        except Exception as e:
+            Console.error("Problem finding status", traceflag=True)
+            print(e)
+            raise RuntimeError
         return result
 
     def create(self, **kwargs):
@@ -179,25 +185,30 @@ class Provider(VolumeABC):
         :param kwargs: Contains Volume name
         :return: Volume dictionary
         """
-        arguments = dotdict(kwargs)
-        block_storage = oci.core.BlockstorageClient(self.config)
-        result = block_storage.create_volume(
-            oci.core.models.CreateVolumeDetails(
-                compartment_id=self.config['compartment_id'],
-                availability_domain=self.config['availability_domain'],
-                display_name=arguments.NAME
-            ))
-        # wait for availability of volume
-        oci.wait_until(
-            block_storage,
-            block_storage.get_volume(result.data.id),
-            'lifecycle_state',
-            'AVAILABLE'
-        ).data
+        try:
+            arguments = dotdict(kwargs)
+            block_storage = oci.core.BlockstorageClient(self.config)
+            result = block_storage.create_volume(
+                oci.core.models.CreateVolumeDetails(
+                    compartment_id=self.config['compartment_id'],
+                    availability_domain=self.config['availability_domain'],
+                    display_name=arguments.NAME
+                ))
+            # wait for availability of volume
+            oci.wait_until(
+                block_storage,
+                block_storage.get_volume(result.data.id),
+                'lifecycle_state',
+                'AVAILABLE'
+            ).data
 
-        v = block_storage.list_volumes(self.config['compartment_id'])
-        results = v.data
-        result = self.update_dict(results)
+            v = block_storage.list_volumes(self.config['compartment_id'])
+            results = v.data
+            result = self.update_dict(results)
+        except Exception as e:
+            Console.error("Problem creating volume", traceflag=True)
+            print(e)
+            raise RuntimeError
         return result
 
     def delete(self, name=None):
@@ -207,20 +218,25 @@ class Provider(VolumeABC):
         :param name: Volume name
         :return: Dictionary of volumes
         """
-        block_storage = oci.core.BlockstorageClient(self.config)
-        volume_id = self.get_volume_id_from_name(block_storage, name)
-        if volume_id is not None:
-            block_storage.delete_volume(volume_id=volume_id)
-            # wait for termination
-            oci.wait_until(
-                block_storage,
-                block_storage.get_volume(volume_id),
-                'lifecycle_state',
-                'TERMINATED'
-            ).data
-        v = block_storage.list_volumes(self.config['compartment_id'])
-        results = v.data
-        result = self.update_dict(results)
+        try:
+            block_storage = oci.core.BlockstorageClient(self.config)
+            volume_id = self.get_volume_id_from_name(block_storage, name)
+            if volume_id is not None:
+                block_storage.delete_volume(volume_id=volume_id)
+                # wait for termination
+                oci.wait_until(
+                    block_storage,
+                    block_storage.get_volume(volume_id),
+                    'lifecycle_state',
+                    'TERMINATED'
+                ).data
+            v = block_storage.list_volumes(self.config['compartment_id'])
+            results = v.data
+            result = self.update_dict(results)
+        except Exception as e:
+            Console.error("Problem deleting volume", traceflag=True)
+            print(e)
+            raise RuntimeError
         return result
 
     def attach(self, NAMES=None, vm=None):
@@ -231,48 +247,53 @@ class Provider(VolumeABC):
         :param vm: Instance name
         :return: Dictionary of volumes
         """
-        compute_client = oci.core.ComputeClient(self.config)
-        # get instance id from VM name
-        i = compute_client.list_instances(self.config['compartment_id'])
-        instances = i.data
-        instance_id = None
-        for entry in instances:
-            display_name = entry.__getattribute__("display_name")
-            if vm == display_name:
-                instance_id = entry.__getattribute__("id")
-                break
+        try:
+            compute_client = oci.core.ComputeClient(self.config)
+            # get instance id from VM name
+            i = compute_client.list_instances(self.config['compartment_id'])
+            instances = i.data
+            instance_id = None
+            for entry in instances:
+                display_name = entry.__getattribute__("display_name")
+                if vm == display_name:
+                    instance_id = entry.__getattribute__("id")
+                    break
 
-        # get volumeId from Volume name
-        block_storage = oci.core.BlockstorageClient(self.config)
-        volume_id = self.get_volume_id_from_name(block_storage, NAMES[0])
-        # attach volume to vm
-        a = compute_client.attach_volume(
-            oci.core.models.AttachIScsiVolumeDetails(
-                display_name='IscsiVolAttachment',
-                instance_id=instance_id,
-                volume_id=volume_id
+            # get volumeId from Volume name
+            block_storage = oci.core.BlockstorageClient(self.config)
+            volume_id = self.get_volume_id_from_name(block_storage, NAMES[0])
+            # attach volume to vm
+            a = compute_client.attach_volume(
+                oci.core.models.AttachIScsiVolumeDetails(
+                    display_name='IscsiVolAttachment',
+                    instance_id=instance_id,
+                    volume_id=volume_id
+                )
             )
-        )
 
-        # tag volume with attachment id. This needed during detach.
-        block_storage.update_volume(
-            volume_id,
-            oci.core.models.UpdateVolumeDetails(
-                freeform_tags={'attachment_id': a.data.id},
-            ))
+            # tag volume with attachment id. This needed during detach.
+            block_storage.update_volume(
+                volume_id,
+                oci.core.models.UpdateVolumeDetails(
+                    freeform_tags={'attachment_id': a.data.id},
+                ))
 
-        # wait until attached
-        oci.wait_until(
-            compute_client,
-            compute_client.get_volume_attachment(
-                a.data.id),
-            'lifecycle_state',
-            'ATTACHED'
-        )
-        # return result after attach
-        v = block_storage.list_volumes(self.config['compartment_id'])
-        results = v.data
-        results = self.update_dict(results)
+            # wait until attached
+            oci.wait_until(
+                compute_client,
+                compute_client.get_volume_attachment(
+                    a.data.id),
+                'lifecycle_state',
+                'ATTACHED'
+            )
+            # return result after attach
+            v = block_storage.list_volumes(self.config['compartment_id'])
+            results = v.data
+            results = self.update_dict(results)
+        except Exception as e:
+            Console.error("Problem attaching volume", traceflag=True)
+            print(e)
+            raise RuntimeError
         return results
 
     def detach(self, NAME=None):
@@ -282,21 +303,27 @@ class Provider(VolumeABC):
         :param NAME: Volume name
         :return: Dictionary of volumes
         """
-        compute_client = oci.core.ComputeClient(self.config)
-        block_storage = oci.core.BlockstorageClient(self.config)
-        attachment_id = self.get_attachment_id_from_name(block_storage, NAME)
-        compute_client.detach_volume(attachment_id)
-        # wait for detachment
-        oci.wait_until(
-            compute_client,
-            compute_client.get_volume_attachment(attachment_id),
-            'lifecycle_state',
-            'DETACHED'
-        )
-        # return result after detach
-        v = block_storage.list_volumes(self.config['compartment_id'])
-        results = v.data
-        results = self.update_dict(results)
+        try:
+            compute_client = oci.core.ComputeClient(self.config)
+            block_storage = oci.core.BlockstorageClient(self.config)
+            attachment_id = self.get_attachment_id_from_name(block_storage,
+                                                             NAME)
+            compute_client.detach_volume(attachment_id)
+            # wait for detachment
+            oci.wait_until(
+                compute_client,
+                compute_client.get_volume_attachment(attachment_id),
+                'lifecycle_state',
+                'DETACHED'
+            )
+            # return result after detach
+            v = block_storage.list_volumes(self.config['compartment_id'])
+            results = v.data
+            results = self.update_dict(results)
+        except Exception as e:
+            Console.error("Problem detaching volume", traceflag=True)
+            print(e)
+            raise RuntimeError
         return results[0]
 
     def list(self, **kwargs):
@@ -309,23 +336,27 @@ class Provider(VolumeABC):
         :param kwargs: contains name of volume
         :return: Dictionary of volumes
         """
-        block_storage = oci.core.BlockstorageClient(self.config)
-        if kwargs and kwargs['NAME']:
-            v = block_storage.list_volumes(self.config['compartment_id'])
-            results = v.data
-            entry = None
-            for entry in results:
-                display_name = entry.__getattribute__("display_name")
-                if kwargs["NAME"] == display_name:
-                    break
-            result = [entry]
-            result = self.update_dict(result)
-            return result
-        else:
-            v = block_storage.list_volumes(self.config['compartment_id'])
-            results = v.data
-            results = self.update_dict(results)
-            return results
+        try:
+            block_storage = oci.core.BlockstorageClient(self.config)
+            if kwargs and kwargs['NAME']:
+                v = block_storage.list_volumes(self.config['compartment_id'])
+                results = v.data
+                entry = None
+                for entry in results:
+                    display_name = entry.__getattribute__("display_name")
+                    if kwargs["NAME"] == display_name:
+                        break
+                result = [entry]
+                results = self.update_dict(result)
+            else:
+                v = block_storage.list_volumes(self.config['compartment_id'])
+                results = v.data
+                results = self.update_dict(results)
+        except Exception as e:
+            Console.error("Problem listing volume", traceflag=True)
+            print(e)
+            raise RuntimeError
+        return results
 
     def mount(self, path=None, name=None):
         """
@@ -395,15 +426,20 @@ class Provider(VolumeABC):
                     value: value of tag
         :return: Dictionary of volume
         """
-        key = kwargs['key']
-        value = kwargs['value']
-        block_storage = oci.core.BlockstorageClient(self.config)
-        volume_id = self.get_volume_id_from_name(block_storage, NAME)
-        block_storage.update_volume(
-            volume_id,
-            oci.core.models.UpdateVolumeDetails(
-                freeform_tags={key: value},
+        try:
+            key = kwargs['key']
+            value = kwargs['value']
+            block_storage = oci.core.BlockstorageClient(self.config)
+            volume_id = self.get_volume_id_from_name(block_storage, NAME)
+            block_storage.update_volume(
+                volume_id,
+                oci.core.models.UpdateVolumeDetails(
+                    freeform_tags={key: value},
+                )
             )
-        )
-        result = self.list(NAME=NAME)[0]
+            result = self.list(NAME=NAME)[0]
+        except Exception as e:
+            Console.error("Problem adding tag", traceflag=True)
+            print(e)
+            raise RuntimeError
         return result

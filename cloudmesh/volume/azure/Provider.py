@@ -9,6 +9,8 @@ from cloudmesh.common.console import Console
 from cloudmesh.common.debug import VERBOSE
 from cloudmesh.configuration.Config import Config
 from cloudmesh.volume.VolumeABC import VolumeABC
+import json
+import ast
 
 
 # client = get_client_from_auth_file(ComputeManagementClient, auth_path=C:\Users\plj2861\Documents\AshleyPersonal\School\IndianaUniversity\CloudComputing\azure_credentials.json)
@@ -397,20 +399,22 @@ class Provider(VolumeABC):
         """
         GROUP_NAME = 'cloudmesh'
         LOCATION = 'eastus'
-        DISK_NAME = 'test'
+        DISK_NAME = NAME
         disk_status = self.compute_client.disks.get(
             GROUP_NAME,
             DISK_NAME
         )
         # return after getting status
         results = disk_status.as_dict()
-        result = self.update_dict([results])
-        return result
+        res = dict((k, results[k]) for k in ['disk_state']
+                   if k in results)
+        return res
 
 
     def info(self, NAME=None):
         """
-        Search through the list of volumes, find the matching volume with name, return the dict of matched volume
+        Search through the list of volumes, find the matching volume with name,
+        return the dict of matched volume
 
         :param name: volume name to match
         :return: dict
@@ -422,7 +426,7 @@ class Provider(VolumeABC):
             GROUP_NAME,
             DISK_NAME
         )
-        # return after getting status
+        # return after getting info
         results = disk_status.as_dict()
         result = self.update_dict([results])
         return result
@@ -465,34 +469,23 @@ class Provider(VolumeABC):
         return result
 
 
-    def migrate(self,
-                name=None,
-                from_vm=None,
-                to_vm=None):
+    def migrate(self,**kwargs):
         """
-        TODO: missing
+        Migrate volume from one vm to another vm.
 
-        :param name:
-        :param from_vm:
-        :param to_vm:
-        :return:
+        :param NAME (string): the volume name
+        :param vm (string): the vm name
+        :param region (string): the availability zone
+        :return: dict
         """
-        print("update me")
+        raise NotImplementedError
 
 
-    def sync(self,
-             from_volume=None,
-             to_volume=None):
+    def sync(self,NAMES):
         """
-        TODO: missing
+        synchronize one volume with another volume
 
-        :param from_volume:
-        :param to_volume:
-        :return:
+        :param NAMES (list): list of volume names
+        :return: dict
         """
-        print("update me")
-
-
-
-#every cloud needs a function called search (per Xin) such as describe or
-# list volume
+        raise NotImplementedError

@@ -1,8 +1,7 @@
 ###############################################################
-# pytest -v --capture=no tests/test_01_volume_provider.py
+# pytest -v --capture=no tests/test_02_volume_provider.py
 ###############################################################
 
-# TODO: start this with cloud init, e.g, empty mongodb
 # TODO: assertuons need to be added
 
 import os
@@ -50,13 +49,17 @@ class Test_provider_volume:
         os.system(f"cms volume list --cloud={cloud}")
         name_generator.incr()
         Benchmark.Start()
-        params = {"NAME": name}
+        params = {"NAME": name, 'size': None, 'volume_type': None,
+                  'description': None, 'region': None, 'path': None}
         data = provider.create(**params)
         Benchmark.Stop()
         status = None
-        if cloud == "openstack" or cloud == "oracle":
+        if cloud == "openstack" or cloud == "google":
             for v in data:
                 status = v['status']
+        elif cloud == "oracle":
+            for v in data:
+                status = v['lifecycle_state']
         elif cloud == "aws" or cloud == "multipass":
             start_timeout = 360
             time = 0
@@ -68,9 +71,7 @@ class Test_provider_volume:
                     break
         elif cloud == "azure":
             pass
-        elif cloud == "google":
-            pass
-        assert status in ['available', 'STARTING', 'RUNNING', 'ACTIVE']
+        assert status in ['available', 'AVAILABLE','PROVISIONING']
 
     def test_provider_volume_list(self):
         HEADING()
@@ -94,18 +95,20 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            if cloud == "openstack" or cloud == "oracle":
+            if cloud == "oracle":
+                status = provider.status(NAME=NAMES[0])[0]['lifecycle_state']
+            if cloud == "openstack":
                 status = provider.status(NAME=NAMES[0])[0]['status']
             elif cloud == "aws" or cloud == "multipass":
                 status = provider.status(NAME=name)[0]['State']
             elif cloud == "azure":
                 pass
             elif cloud == "google":
-                pass
+                status = provider.status(NAME=name)[0]['status']
             # In case of Oracle, status is AVAILABLE after attach
-            if status in ['in-use', 'AVAILABLE']:
+            if status in ['in-use', 'AVAILABLE', 'READY']:
                 break
-        assert status in ['in-use', 'AVAILABLE']
+        assert status in ['in-use', 'AVAILABLE', 'READY']
 
     def test_provider_volume_detach(self):
         # test detach one volume
@@ -119,17 +122,19 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            if cloud == "openstack" or cloud == "oracle":
-                status = provider.status(NAME=NAMES[0])[0]['status']
+            if cloud == "oracle":
+                status = provider.status(NAME=name)[0]['lifecycle_state']
+            if cloud == "openstack":
+                status = provider.status(NAME=name)[0]['status']
             elif cloud == "aws" or cloud == "multipass":
                 status = provider.status(NAME=name)[0]['State']
             elif cloud == "azure":
                 pass
             elif cloud == "google":
-                pass
-            if status in ['available', 'AVAILABLE']:
+                status = provider.status(NAME=name)[0]['status']
+            if status in ['available', 'AVAILABLE', 'READY']:
                 break
-        assert status in ['available', 'AVAILABLE']
+        assert status in ['available', 'AVAILABLE', 'READY']
 
     def test_provider_volume_delete(self):
         HEADING()
@@ -137,7 +142,11 @@ class Test_provider_volume:
         provider.delete(NAME=name)
         Benchmark.Stop()
         result = provider.info(name=name)
-        assert result is None
+        if cloud == 'oracle':
+            status = result['lifecycle_state']
+            assert status in ['TERMINATED']
+        else:
+            assert result is None
 
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)

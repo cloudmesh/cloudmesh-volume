@@ -112,12 +112,16 @@ class Provider(VolumeABC):
                 name = entry['targetLink'].rsplit('/', 1)[1]
             else:
                 name = entry['name']
-            vm_list = []
             if 'users' in entry:
+                _users = []
                 for user in entry['users']:
-                    user = user.rsplit('/', 1)[1]
-                    vm_list.append(user)
-            entry['users'] = vm_list
+                    _users.append(user)
+                    for item in _users:
+                        if '/' in item:
+                            _users = []
+                            remove_user_url = user.rsplit('/', 1)[1]
+                            _users.append(remove_user_url)
+                entry['users'] = _users
             _labels = []
             if 'labels' in entry:
                 for label in entry['labels']:

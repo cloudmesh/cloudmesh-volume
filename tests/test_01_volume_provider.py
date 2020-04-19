@@ -50,16 +50,26 @@ class Test_provider_volume:
         os.system(f"cms volume list --cloud={cloud}")
         name_generator.incr()
         Benchmark.Start()
-        params = {"NAME": name}
+        params = {"NAME": name, 'size': None, 'volume_type': None,
+                  'description': None, 'region': None, 'path': None}
         data = provider.create(**params)
         Benchmark.Stop()
         status = None
-        for v in data:
-            if cloud == 'oracle':
-                status = v['lifecycle_state']
-            else:
+        if cloud == "openstack" or cloud == "oracle" or cloud == "google":
+            for v in data:
                 status = v['status']
-        assert status in ['available', 'AVAILABLE']
+        elif cloud == "aws" or cloud == "multipass":
+            start_timeout = 360
+            time = 0
+            while time <= start_timeout:
+                sleep(15)
+                time += 5
+                status = provider.status(NAME=name)[0]['State']
+                if status == "available":
+                    break
+        elif cloud == "azure":
+            pass
+        assert status in ['available', 'STARTING', 'RUNNING', 'ACTIVE', 'READY']
 
     def test_provider_volume_list(self):
         HEADING()
@@ -83,15 +93,18 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            result = provider.status(NAME=NAMES[0])[0]
-            if cloud == 'oracle':
-                status = result['lifecycle_state']
-            else:
-                status = result['status']
+            if cloud == "openstack" or cloud == "oracle":
+                status = provider.status(NAME=NAMES[0])[0]['status']
+            elif cloud == "aws" or cloud == "multipass":
+                status = provider.status(NAME=name)[0]['State']
+            elif cloud == "azure":
+                pass
+            elif cloud == "google":
+                status = provider.status(NAME=name)[0]['status']
             # In case of Oracle, status is AVAILABLE after attach
-            if status in ['in-use', 'AVAILABLE']:
+            if status in ['in-use', 'AVAILABLE', 'READY']:
                 break
-        assert status in ['in-use', 'AVAILABLE']
+        assert status in ['in-use', 'AVAILABLE', 'READY']
 
     def test_provider_volume_detach(self):
         # test detach one volume
@@ -105,14 +118,17 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            result = provider.status(NAME=name)[0]
-            if cloud == 'oracle':
-                status = result['lifecycle_state']
-            else:
-                status = result['status']
-            if status in ['available', 'AVAILABLE']:
+            if cloud == "openstack" or cloud == "oracle":
+                status = provider.status(NAME=NAMES[0])[0]['status']
+            elif cloud == "aws" or cloud == "multipass":
+                status = provider.status(NAME=name)[0]['State']
+            elif cloud == "azure":
+                pass
+            elif cloud == "google":
+                status = provider.status(NAME=name)[0]['status']
+            if status in ['available', 'AVAILABLE', 'READY']:
                 break
-        assert status in ['available', 'AVAILABLE']
+        assert status in ['available', 'AVAILABLE', 'READY']
 
     def test_provider_volume_delete(self):
         HEADING()
@@ -120,11 +136,7 @@ class Test_provider_volume:
         provider.delete(NAME=name)
         Benchmark.Stop()
         result = provider.info(name=name)
-        if cloud == 'oracle':
-            status = result['lifecycle_state']
-            assert status in ['TERMINATED']
-        else:
-            assert result is None
+        assert result is None
 
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)

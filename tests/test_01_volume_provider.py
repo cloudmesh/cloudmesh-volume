@@ -55,8 +55,11 @@ class Test_provider_volume:
         Benchmark.Stop()
         status = None
         for v in data:
-            status = v['status']
-        assert status in ['available', 'STARTING', 'RUNNING', 'ACTIVE']
+            if cloud == 'oracle':
+                status = v['lifecycle_state']
+            else:
+                status = v['status']
+        assert status in ['available', 'AVAILABLE']
 
     def test_provider_volume_list(self):
         HEADING()
@@ -80,7 +83,11 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            status = provider.status(NAME=NAMES[0])[0]['status']
+            result = provider.status(NAME=NAMES[0])[0]
+            if cloud == 'oracle':
+                status = result['lifecycle_state']
+            else:
+                status = result['status']
             # In case of Oracle, status is AVAILABLE after attach
             if status in ['in-use', 'AVAILABLE']:
                 break
@@ -98,7 +105,11 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            status = provider.status(NAME=name)[0]['status']
+            result = provider.status(NAME=name)[0]
+            if cloud == 'oracle':
+                status = result['lifecycle_state']
+            else:
+                status = result['status']
             if status in ['available', 'AVAILABLE']:
                 break
         assert status in ['available', 'AVAILABLE']
@@ -109,7 +120,11 @@ class Test_provider_volume:
         provider.delete(NAME=name)
         Benchmark.Stop()
         result = provider.info(name=name)
-        assert result is None
+        if cloud == 'oracle':
+            status = result['lifecycle_state']
+            assert status in ['TERMINATED']
+        else:
+            assert result is None
 
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)

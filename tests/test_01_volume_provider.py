@@ -55,9 +55,12 @@ class Test_provider_volume:
         data = provider.create(**params)
         Benchmark.Stop()
         status = None
-        if cloud == "openstack" or cloud == "oracle" or cloud == "google":
+        if cloud == "openstack" or cloud == "google":
             for v in data:
                 status = v['status']
+        elif cloud == "oracle":
+            for v in data:
+                status = v['lifecycle_state']
         elif cloud == "aws" or cloud == "multipass":
             start_timeout = 360
             time = 0
@@ -69,7 +72,7 @@ class Test_provider_volume:
                     break
         elif cloud == "azure":
             pass
-        assert status in ['available', 'STARTING', 'RUNNING', 'ACTIVE', 'READY']
+        assert status in ['available', 'AVAILABLE','PROVISIONING']
 
     def test_provider_volume_list(self):
         HEADING()
@@ -93,7 +96,9 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            if cloud == "openstack" or cloud == "oracle":
+            if cloud == "oracle":
+                status = provider.status(NAME=NAMES[0])[0]['lifecycle_state']
+            if cloud == "openstack":
                 status = provider.status(NAME=NAMES[0])[0]['status']
             elif cloud == "aws" or cloud == "multipass":
                 status = provider.status(NAME=name)[0]['State']
@@ -118,8 +123,10 @@ class Test_provider_volume:
         while time <= start_timeout:
             sleep(5)
             time += 5
-            if cloud == "openstack" or cloud == "oracle":
-                status = provider.status(NAME=NAMES[0])[0]['status']
+            if cloud == "oracle":
+                status = provider.status(NAME=name)[0]['lifecycle_state']
+            if cloud == "openstack":
+                status = provider.status(NAME=name)[0]['status']
             elif cloud == "aws" or cloud == "multipass":
                 status = provider.status(NAME=name)[0]['State']
             elif cloud == "azure":

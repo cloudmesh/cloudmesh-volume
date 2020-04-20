@@ -183,7 +183,119 @@ Required Parameters:
 
 #### Azure volume management functions
 
-:o2: Add functions from provider with descriptions of required parameters
+
+Create Volume
+```
+create(**kwargs)
+
+    Creates a disk in the specified location and resource group.
+
+Required Parameters: 
+
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+        disk_size_gb: The size of the disk.
+        creation_data: Information about the disk, including the create
+        option. For this project, a create option of 'Empty' was used.
+
+```
+
+Delete Volume
+```
+delete(NAME)
+
+    Deletes the specified disk. The volume cannot have be attached to a
+    virtual machine.
+
+    Warning: All data on the volume will be permanently lost when the volume is 
+    deleted.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+```
+
+List Volumes
+```
+list(**kwargs):
+    Lists the disks in the specified resource group.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.       
+```
+
+Attach Volume
+```
+attach(NAMES,vm)
+    Attaches the specified disk to the specified VM instance.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+        VM_NAME: The name of the vm to attach the disk to.
+        lun: Logical unit number used to attach the disk to the vm. Any lun
+        can only be used for one disk being attached to any given vm. All
+        disks attached to any given vm must have a unique lun.
+        create_option: Set to 'Attach'.
+        id: ID of the disk.
+```
+
+Detach Volume
+```
+Detach(NAME)
+    Detaches the specified disk from a VM instance.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+        VM_NAME: The name of the vm to attach the disk to.
+        
+```
+
+Get Volume Status
+```
+Status(NAME)
+    Gets the status of a disk, either attached or unattached.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+        
+```
+
+Get Volume Info
+```
+Info(NAME)
+    Gets information about a disk.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+        
+```
+
+Add Tag to Volume
+```
+Add_tag(**kwargs)
+    Tags a disk.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+        disk_size_gb: The size of the disk.
+        creation_data: Information about the disk, including the create
+        option. For this project, a create option of 'Empty' was used.
+        tags: Tags to be added to the disk.
+        
+```
+
 
 ### OpenStack
 

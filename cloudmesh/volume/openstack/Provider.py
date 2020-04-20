@@ -239,13 +239,25 @@ class Provider(VolumeABC):
             volume = con.get_volume(name_or_id=NAME)
             attachments = volume['attachments']
             server = con.get_server(attachments[0]['server_id'])
-            con.detach_volume(server, volume, wait=True,
-                              timeout=None)
+            con.detach_volume(server, volume, wait=True,timeout=None)
         except Exception as e:
             Console.error("Problem detaching volume", traceflag=True)
             print(e)
             raise RuntimeError
-        return self.list(NAME=NAME)[0]
+        # return of self.list(NAME=NAME)[0] throwing error:cm attribute
+        # not found inside CmDatabase.py. So manipulating result as below
+        t = self.list(NAME=NAME)[0]
+        result = {}
+        result.update(
+            {"cm":t["cm"],
+             "availability_zone":t["availability_zone"],
+             "created_at":t["created_at"],
+             "size":t["size"],"id":t["id"],
+             "status":t["status"],
+             "volume_type":t["volume_type"]
+             }
+            )
+        return result
 
     def migrate(self,
                 name=None,

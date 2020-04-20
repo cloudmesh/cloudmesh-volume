@@ -226,12 +226,12 @@ class Provider(VolumeABC):
         If NAME (volume name) is not specified, it will print out info of all
           volumes under current cloud.
         If vm is specified, it will print out all the volumes attached to vm.
-        If region(availability zone) is specified, it will print out
-          all the volumes in that region.
+        If region(path) is specified, it will print out
+          all the volumes in that region. i.e. /Users/username/multipass
 
         :param NAME: name of volume
         :param vm: name of vm
-        :param region: for multipass, region is path
+        :param region: for multipass, please give path
         :return:
         """
 
@@ -243,15 +243,16 @@ class Provider(VolumeABC):
                 elif key=='NAMES' and kwargs['NAMES']:
                     result = self.cm.find_names(names=kwargs['NAMES'])
                 elif key =='vm' and kwargs['vm']:
-                    result = []
-                    response = self._get_mount_status(vm=kwargs['vm'])
-                    mounts = response['mounts']
-                    for key in mounts.keys():
-                        volume_name = key.split(sep="/")[-1]
-                        r = self.cm.find_name(name=volume_name)
-                        result.append(r)
+                    result = self.cm.find(collection=f"{self.cloud}-volume", query={'AttachedToVm': kwargs['vm']})
+                    # result = []
+                    # response = self._get_mount_status(vm=kwargs['vm'])
+                    # mounts = response['mounts']
+                    # for key in mounts.keys():
+                    #     volume_name = key.split(sep="/")[-1]
+                    #     r = self.cm.find_name(name=volume_name)
+                    #     result.append(r)
                 elif key =='region' and kwargs['region']:
-                    result = self.cm.find(collection="multipass-volume", query={'path': kwargs['region']})
+                    result = self.cm.find(collection=f"{self.cloud}-volume", query={'path': kwargs['region']})
         else:
             result = self.cm.find(cloud='multipass', kind='volume')
         return result

@@ -145,6 +145,9 @@ class Test_provider_volume:
         if cloud == 'oracle':
             status = result['lifecycle_state']
             assert status in ['TERMINATED']
+        elif cloud == 'multipass':
+            status = result['State']
+            assert status in ['deleted']
         else:
             assert result is None
 

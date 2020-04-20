@@ -294,7 +294,7 @@ class Provider(object):  # broken
         return result
 
     # @DatabaseUpdate()
-    # def purge(self,**kwargs):
+    # def purgee(self,**kwargs):
     #     """
     #     purge deleted volumes in MongoDB database
     #

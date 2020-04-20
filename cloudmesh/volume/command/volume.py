@@ -255,10 +255,10 @@ class VolumeCommand(PluginCommand):
             config = Config()
             clouds = list(config["cloudmesh.volume"].keys())
             for cloud in clouds:
-                if len(names) != 0:
-                    banner(f"Deleting volumes from {cloud}")
-                else:
-                    banner("End of Deleting Volumes")
+                # if len(names) != 0:
+                #     banner(f"Deleting volumes from {cloud}")
+                # else:
+                #     banner("End of Deleting Volumes")
                 active = config[f"cloudmesh.volume.{cloud}.cm.active"]
                 if active:
                     provider = Provider(name=cloud)
@@ -284,7 +284,7 @@ class VolumeCommand(PluginCommand):
                 Console.error("No vm specified or found")
                 return ""
             names = Parameter.expand(names)
-            banner(f"Attaching {names} to {arguments.vm}")
+            #banner(f"Attaching {names} to {arguments.vm}")
             provider = Provider(name=arguments.cloud)
             result = provider.attach(names, vm)
             print(provider.Print(result, kind='volume', output=arguments.output)
@@ -299,11 +299,11 @@ class VolumeCommand(PluginCommand):
                 return ""
             volumes = Parameter.expand(volumes)
             for cloud in clouds:
-                if len(volumes) != 0:
-                    banner(f"Detaching volumes from {cloud}")
-                else:
-                    banner("End of Detaching Volumes")
-                    break
+                # if len(volumes) != 0:
+                #     banner(f"Detaching volumes from {cloud}")
+                # else:
+                #     banner("End of Detaching Volumes")
+                #     break
                 active = config[f"cloudmesh.volume.{cloud}.cm.active"]
                 if active:
                     detached = []
@@ -313,7 +313,7 @@ class VolumeCommand(PluginCommand):
                         # None if it is not in the cloud
                         volume = provider.search(name=name)
                         if volume:
-                            banner(f"Detaching {name} from {cloud}")
+                            #banner(f"Detaching {name} from {cloud}")
                             result = provider.detach(NAME=name)
                             detached.append(name)
                             print(provider.Print(result, kind='volume',

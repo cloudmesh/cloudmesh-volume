@@ -65,13 +65,13 @@ class Test_provider_volume:
             time = 0
             while time <= start_timeout:
                 sleep(15)
-                time += 5
+                time += 15
                 status = provider.status(NAME=name)[0]['State']
                 if status == "available":
                     break
         elif cloud == "azure":
             pass
-        assert status in ['available', 'AVAILABLE','PROVISIONING']
+        assert status in ['available', 'AVAILABLE','PROVISIONING', 'READY']
 
     def test_provider_volume_list(self):
         HEADING()

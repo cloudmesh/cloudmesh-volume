@@ -5,7 +5,7 @@ from cloudmesh.common.console import Console
 from cloudmesh.common.util import banner
 from cloudmesh.configuration.Config import Config
 from cloudmesh.volume.VolumeABC import VolumeABC
-
+import datetime
 
 class Provider(VolumeABC):
     kind = "volume"
@@ -61,27 +61,29 @@ class Provider(VolumeABC):
                       "State",
                       #"VolumeId",
                       #"Iops",
-                      #"Tags",
+                      "Tags",
                       "VolumeType",
                       #"created",
-                      "AttachedToVm"
+                      "AttachedToVm",
+                      #"UpdateTime"
                       ],
             "header": ["Name",
                        "Cloud",
                        "Kind",
                        "Region",
                        #"AvailabilityZone",
-                       "CreateTime",
+                       "Create Time",
                        #"Encrypted",
-                       "Size",
+                       "Size(GB)",
                        #"SnapshotId",
                        "Status",
                         #"VolumeId",
                        #"Iops",
-                       #"Tags",
-                       "VolumeType",
+                       "Tags",
+                       "Volume Type",
                        #"Created",
-                       "AttachedToVm",
+                       "Attached To Vm",
+                       #"Update Time"
                        ],
         }
     }
@@ -144,25 +146,27 @@ class Provider(VolumeABC):
             return None
 
         d = []
-
         elements = results['Volumes']
         for entry in elements:
+
             try:
+                tags = entry['Tags']
                 for item in entry['Tags']:
                     if item['Key'] == 'Name':
                         if item['Value'] == "":
-                            Console.error(f"Please name volume {entry['VolumeId']}")
+                            #Console.error(f"Please name volume {entry['VolumeId']}")
                             volume_name = " "
                         elif item['Value'] == " ":
-                            Console.error(f"Please name volume {entry['VolumeId']}")
+                           # Console.error(f"Please name volume {entry['VolumeId']}")
                             volume_name = " "
                         else:
                             volume_name = item['Value']
+                            tags.remove(item)
                     else:
-                        Console.error(f"Please name volume {entry['VolumeId']}")
+                        #Console.error(f"Please name volume {entry['VolumeId']}")
                         volume_name = " "
             except:
-                Console.error(f"Please name volume {entry['VolumeId']}")
+                #Console.error(f"Please name volume {entry['VolumeId']}")
                 volume_name = " "
 
             if "cm" not in entry:
@@ -173,6 +177,7 @@ class Provider(VolumeABC):
                 "kind": "volume",
                 "name": volume_name,
                 "region": entry["AvailabilityZone"],
+                "tags": tags
             })
 
             d.append(entry)
@@ -235,6 +240,8 @@ class Provider(VolumeABC):
         result['Volumes'][i]['AttachedToVm'] = vm_name. "i" chould be more than
         0 if volume could attach to multiple vm, but for now, one volume only
         attach to one vm.
+        Only IOPS io1 volumes can attach to multiple vms (creating of io1 volume
+        is not implemented)
 
         :param data: returned volume dict
         :return: data: updated volume dict
@@ -307,7 +314,7 @@ class Provider(VolumeABC):
         This function get volume status, such as "in-use", "available", "deleting"
 
         :param NAME
-        :return: volume_status
+        :return: dict
         """
         result = self.client.describe_volumes(
             Filters=[
@@ -325,8 +332,15 @@ class Provider(VolumeABC):
 
     def create(self, **kwargs):
         """
-        This function create a new volume, with defalt parameters in self.default (size: 2, iops: 1000,
-        encrypted: False, multi_attach_enabled: True).
+        This function create a new volume, with defalt parameters in self.default.
+        default:
+            {volume_type: gp2
+            size: 2
+            iops: 1000
+            encrypted: False
+            region: us-east-2a
+            multi_attach_enabled: True
+            snapshot: "None"}
 
         :param NAME (string): the name of volume
         :param size (int): the size of volume (GB)
@@ -352,38 +366,16 @@ class Provider(VolumeABC):
         Create a volume.
 
         :param name (string): name of volume
-        :param zone (string): availability-zone
+        :param region (string): availability-zone
         :param encrypted (boolean): True|False
         :param size (integer): size of volume
-
         :param volume_type (string): type of volume. This can be gp2 for General
-                                     Purpose SSD, io1 for Provisioned IOPS SSD,
+                                     Purpose SSD, io1 for Provisioned IOPS SSD (not implemented),
                                     st1 for Throughput Optimized HDD, sc1 for
                                     Cold HDD, or standard for Magnetic volumes.
-        :param iops (integer): NOT IMPLEMENTED. The number of I/O operations
-                                   per second (IOPS) that the volume supports
-                                   (from 100 to 64,000 for io1 type volume).
-                                   If iops is specified, the volume_type must
-                                   be io1.
-        :param kms_key_id (string): NOT IMPLEMENTED. The identifier of the AWS
-                                    Key Management Service (AWS KMS) customer
-                                    master key (CMK) to use for Amazon EBS
-                                    encryption. If KmsKeyId is specified,
-                                    the encrypted state must be true.
-        :param outpost_arn (string): The Amazon Resource Name (ARN) of the Outpost.
         :param snapshot (string): snapshot id
-        :param source:
-        :param description (string):
-        :param tag_key (string): Tag keys are case-sensitive and accept a
-                                 maximum of 127 Unicode characters.
-                                 May not begin with aws.
-        :param tag_value (string): Tag values are case-sensitive and accept a
-                                   maximum of 255 Unicode characters.
-        :param multi_attach_enabled (boolean): True by default
-        :return: volume dict
-
+        :return: dict
         """
-        #print("kwargs", kwargs)
 
         if kwargs['volume_type']=='io1':
 
@@ -397,13 +389,9 @@ class Provider(VolumeABC):
             r = self.client.create_volume(
                 AvailabilityZone=kwargs['region'],
                 Encrypted=kwargs['encrypted'],
-                #Iops=kwargs['iops'],
-                #KmsKeyId=None,
-                #OutpostArn=None,
                 Size=int(kwargs['size']),
                 SnapshotId=kwargs['snapshot'],
                 VolumeType=kwargs['volume_type'],
-                #DryRun=kwargs['dryrun'],
                 TagSpecifications=[
                     {
                         'ResourceType': 'volume',
@@ -415,7 +403,6 @@ class Provider(VolumeABC):
                         ]
                     },
                 ],
-                #MultiAttachEnabled=kwargs['multi_attach_enabled']
             )
         else:
             r = self.client.create_volume(
@@ -449,19 +436,19 @@ class Provider(VolumeABC):
 
         """
         This function list all volumes as following:
-        If NAME (volume name) is specified, it will print out info of NAME
+        If NAME (volume name) is specified, it will print out info of NAME.
         If NAME (volume name) is not specified, it will print out info of all
-          volumes
-        If vm is specified, it will print out all the volumes attached to vm
+          volumes under current cloud.
+        If vm is specified, it will print out all the volumes attached to vm.
         If region(availability zone) is specified, it will print out
-          all the volumes in that region
+          all the volumes in that region.
 
         :param NAME: name of volume
         :param vm: name of vm
         :param region: name of availability zone
         :return:
         """
-        #print("kwargs", kwargs)
+
         if kwargs:
             result = self.client.describe_volumes()
             for key in kwargs:
@@ -532,19 +519,22 @@ class Provider(VolumeABC):
                     'Values': [NAME]
                 },
             ],)
-        banner(f"delete volume {NAME}")
+        #banner(f"delete volume {NAME}")
         volume_id = self.find_volume_id(NAME)
-        response = self.client.delete_volume(VolumeId=volume_id)
-        stop_timeout = 360
-        time = 0
-        while time <= stop_timeout:
-            sleep(5)
-            time += 5
-            try:
-                volume_status = self.status(NAME=NAME)[0]['State']
-            except:
-                break
-        result['Volumes'][0]['State']='deleted'
+        if result['Volumes'][0]['State'] == 'available':
+            response = self.client.delete_volume(VolumeId=volume_id)
+            stop_timeout = 360
+            time = 0
+            while time <= stop_timeout:
+                sleep(5)
+                time += 5
+                try:
+                    volume_status = self.status(NAME=NAME)[0]['State']
+                except:
+                    break
+            result['Volumes'][0]['State']='deleted'
+        else:
+            Console.error("volume is not available")
         result = self.update_dict(result)
         return result
 
@@ -634,7 +624,6 @@ class Provider(VolumeABC):
 
         key = kwargs['key']
         value = kwargs['value']
-
         volume_id = self.find_volume_id(volume_name=NAME)
         result = self.client.create_tags(
             Resources=[

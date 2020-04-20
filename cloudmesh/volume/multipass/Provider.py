@@ -33,7 +33,7 @@ class Provider(VolumeABC):
             "order": ["cm.name",
                       "cm.cloud",
                       "cm.kind",
-                      "state",
+                      "State",
                       "path",
                       'machine_path',
                       "AttachedToVm",
@@ -53,45 +53,90 @@ class Provider(VolumeABC):
         }
     }
 
-    def create_volume_info(self, NAME, path):
+    def generate_volume_info(self, NAME, path):
+        """
+        generate volume info dict.
+        info['AttachedToVm'] is a list of vm names where the volume is attached to. (volume can attach to multiple vm and vm
+        can have multiple attachments)
+        info['machine_path'] is the volume path in vm
+        info['time"] is the created time, will be updated as updated time
+
+        :param NAME: volume name
+        :param path: volume path
+        :return: dict
+        """
         info = {}
         info['tags'] = []
         info['name'] = NAME
         info['path'] = path
         info['AttachedToVm'] = []
-        info['state'] = 'available'
+        info['State'] = 'available'
         info['machine_path'] = None
         info['time'] = datetime.datetime.now()
         return info
 
     def update_volume_after_attached_to_vm(self, info, vms):
+        """
+        Update volume info after attached to a vm.
+        info['AttachedToVm'] is a list of vm names where the volume is attached to.
+        info['machine_path'] is the volume path in vm
+        info['time"] is the updated as updated time
+
+        :param info: volume info got from MongoDB database
+        :param vms: attached to vms
+        :return: list of one dict
+        """
         path = info[0]['path']
         path_list = path.split(sep='/')
         machine_path_list = ["~", "Home"]
         machine_path_list.extend(path_list[3:])
         info[0]['machine_path'] = "/".join(machine_path_list)
         info[0]['AttachedToVm'] = vms
-        info[0]['state'] = 'in-use'
+        info[0]['State'] = 'in-use'
         info[0]['time'] = datetime.datetime.now()
         return info
 
     def update_volume_after_detach(self, info,vms):
+        """
+        update volume info after detaching from a vm
+        info['AttachedToVm'] is a list of vm names where the volume is attached to.
+        info['time"] is the updated time
+
+        :param info: volume info
+        :param vms: attached to vms
+        :return: list of one dict
+        """
         info[0]['AttachedToVm'] = vms
         if len(vms)==0:
             info[0]['machine_path'] = None
-            info[0]['state'] = 'available'
+            info[0]['State'] = 'available'
         info[0]['time'] = datetime.datetime.now()
         return info
 
     def update_volume_tag(self,info, key, value):
+        """
+        Update volume tag.
+        Tags is a key-value pair, with key as tag name and value as tag value, tag = {key: value}.
+        A volume can have multipale tags.
+        If given duplicated tag name, update the value to the current tag value.
+        Can do "cms volume add_tag --key=good --value=''" to delete a tag
+
+        :param info: volume info
+        :param vms: attached to vms
+        :return: list of one dict
+        """
         keys = []
-        #tag = {key: value}
-        # if given duplicated tag name, update the value to the current tag value
-        # can set value="" to delete value of a tag
         for tag in info[0]['tags']:
             if key == list(tag.keys())[0]:
-                tag.update({key:value})
-            keys.append(list(tag.keys())[0])
+                if len(value)==0:
+                    print("here1")
+                    info[0]['tags'].remove(tag)
+                    print(info[0]['tags'])
+                    keys.append(list(tag.keys())[0])
+                else:
+                    tag.update({key:value})
+                    keys.append(list(tag.keys())[0])
+        print("keys",keys)
         if key not in keys:
             tag = {key: value}
             info[0]['tags'].append(tag)
@@ -100,8 +145,10 @@ class Provider(VolumeABC):
 
     def __init__(self,name):
         """
-        TODO: MISSING
-        :param name:
+        Initialize provider.
+        set cloudtype to "multipass", get the default dict, create a cloudmesh database object.
+
+        :param name: name of cloud
         """
         self.cloud = name
         self.cloudtype = "multipass"
@@ -111,12 +158,11 @@ class Provider(VolumeABC):
 
     def update_dict(self, elements, kind=None):
         """
-        converts the dict into a list
+        converts the dict into a list.
 
         :param elements: the list of original dicts. If elements is a single
                          dict a list with a single element is returned.
-        :param kind: for some kinds special attributes are added. This includes
-                     key, vm, image, flavor.
+        :param kind: "multipass"
         :return: The list with the modified dicts
         """
 
@@ -136,7 +182,15 @@ class Provider(VolumeABC):
         return d
 
     def create(self,**kwargs):
-        banner(f"**kwargs,{kwargs}")
+        """
+        This function create a new volume.
+        Defalt parameters from self.default, such as: path="/Users/username/multipass".
+
+        :param NAME (string): the name of volume
+        :param path (string): path of volume
+        :return: dict
+        """
+
         for key in self.default.keys():
             if key not in kwargs.keys():
                 kwargs[key] = self.default[key]
@@ -146,7 +200,7 @@ class Provider(VolumeABC):
         path = kwargs['path']
         result = os.system(f"mkdir {path}/{NAME}")
         if result == 0:
-            result = self.create_volume_info(NAME=NAME, path=path)
+            result = self.generate_volume_info(NAME=NAME, path=path)
 
         result = self.update_dict([result])
         return result
@@ -156,7 +210,7 @@ class Provider(VolumeABC):
         path = result[0]['path']
         try:
             re = os.system(f"rmdir {path}/{NAME}")
-            result[0]['state'] = 'deleted'
+            result[0]['State'] = 'deleted'
             result = self.update_dict(result)
             #cmulti = cm.collection("multipass-volume")
             #cmulti.delete_one(f"{'name': {NAME}}")
@@ -166,9 +220,59 @@ class Provider(VolumeABC):
 
     def list(self, **kwargs):
 
-        #refresh = kwargs['refresh']
-        result = self.cm.find(cloud='multipass', kind='volume')
+        """
+        This function list all volumes as following:
+        If NAME (volume name) is specified, it will print out info of NAME.
+        If NAME (volume name) is not specified, it will print out info of all
+          volumes under current cloud.
+        If vm is specified, it will print out all the volumes attached to vm.
+        If region(availability zone) is specified, it will print out
+          all the volumes in that region.
+
+        :param NAME: name of volume
+        :param vm: name of vm
+        :param region: for multipass, region is path
+        :return:
+        """
+
+        if kwargs:
+            result = self.cm.find(cloud='multipass', kind='volume')
+            for key in kwargs:
+                if key == 'NAME' and kwargs['NAME']:
+                    result = self.cm.find_name(name=kwargs['NAME'])
+                elif key=='NAMES' and kwargs['NAMES']:
+                    result = self.cm.find_names(names=kwargs['NAMES'])
+                elif key =='vm' and kwargs['vm']:
+                    result = []
+                    response = self._get_mount_status(vm=kwargs['vm'])
+                    mounts = response['mounts']
+                    for key in mounts.keys():
+                        volume_name = key.split(sep="/")[-1]
+                        r = self.cm.find_name(name=volume_name)
+                        result.append(r)
+                elif key =='region' and kwargs['region']:
+                    result = self.cm.find(collection="multipass-volume", query={'path': kwargs['region']})
+        else:
+            result = self.cm.find(cloud='multipass', kind='volume')
         return result
+
+    def _get_vm_status(self, name=None) -> dict:
+        dict_result = {}
+        result = Shell.run(f"multipass info {name} --format=json")
+
+        if f'instance "{name}" does not exist' in result:
+            dict_result = {
+                'name': name,
+                'status': "instance does not exist"
+            }
+        else:
+            result = json.loads(result)
+            dict_result = {
+                'name': name,
+                'status': result["info"][name]['State']
+            }
+
+        return dict_result
 
     def attach(self,
                NAMES,
@@ -179,8 +283,7 @@ class Provider(VolumeABC):
         results = []
         for name in NAMES:
             volume_info = self.cm.find_name(name)
-            print(volume_info)
-            if volume_info and volume_info[0]['state'] != "deleted":
+            if volume_info and volume_info[0]['State'] != "deleted":
                 vms = volume_info[0]['AttachedToVm']
                 path = volume_info[0]['path']
                 if vm in vms:
@@ -192,7 +295,6 @@ class Provider(VolumeABC):
                         vms.append(vm)
                 result = self.update_volume_after_attached_to_vm(info=volume_info, vms=vms)
                 results.append(result)
-                print(results)
             else:
                 Console.error("volume is not existed or volume had been deleted")
         #results = self.update_dict([results])
@@ -246,7 +348,7 @@ class Provider(VolumeABC):
     def detach(self, NAME):
         #will detach from all vms
         volume_info = self.cm.find_name(NAME)
-        if volume_info and volume_info[0]['state'] != "deleted":
+        if volume_info and volume_info[0]['State'] != "deleted":
             vms = volume_info[0]['AttachedToVm']
             path = volume_info[0]['path']
             if len(vms) == 0:
@@ -276,7 +378,7 @@ class Provider(VolumeABC):
     def status(self, name=None):
         volume_info = self.cm.find_name(name)
         if volume_info:
-            status = volume_info[0]['state']
+            status = volume_info[0]['State']
         else:
             Console.error("volume is not existed")
         return volume_info

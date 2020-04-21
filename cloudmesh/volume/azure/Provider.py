@@ -239,7 +239,7 @@ class Provider(VolumeABC):
         return result
 
 
-    def delete (self, name=None):
+    def delete (self, NAME=None):
         """
         Delete volumes.
         If NAMES is not given, delete the most recent volume.
@@ -249,7 +249,7 @@ class Provider(VolumeABC):
         """
         disk_deletion = self.compute_client.disks.delete(
             self.group_name,
-            name,
+            cm["name"],
             {
                 'location': self.location
             }
@@ -304,7 +304,7 @@ class Provider(VolumeABC):
         self.vms = self.compute_client.virtual_machines
         disk_creation = self.compute_client.disks.create_or_update(
             self.group_name,
-            NAMES,
+            cm["name"],
             {
                 'location': self.location,
                 'disk_size_gb': self.size,

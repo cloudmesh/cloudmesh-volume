@@ -356,7 +356,10 @@ class Provider(VolumeABC):
 
     def attach(self, names, vm=None):
         """
-        Attach one or more disks to an instance
+        Attach one or more disks to an instance.  Google cloud requires that the
+         instance be stopped when attaching a disk.  The function will stop the
+         instance if necessary and then restart the instance after attaching
+         the disk.
 
         :param names: name(s) of disk(s) to attach
         :param vm: instance name which the volume(s) will be attached to
@@ -366,10 +369,17 @@ class Provider(VolumeABC):
         # get zone of vm from list of vm
         instance_list = self._list_instances()
         zone_url = None
+        instance_status = None
         for instance in instance_list:
             if instance['name'] == vm:
                 zone_url = instance['zone']
+                instance_status = instance['status']
         zone = zone_url.rsplit('/', 1)[1]
+
+        # Stop the instance if necessary
+        if instance_status == 'RUNNING':
+            self._stop_instance(vm, zone)
+
         # get URL source to disk(s) from list of disks
         disk_list = self.list()
         for name in names:
@@ -394,6 +404,10 @@ class Provider(VolumeABC):
         # update newly attached disks
         result = self.update_dict(new_attached_disks)
 
+        # Restart the instance if previously running
+        if instance_status == 'RUNNING':
+            self._start_instance(vm, zone)
+
         return result
 
     def detach(self, name=None):
@@ -413,20 +427,36 @@ class Provider(VolumeABC):
                 zone = disk['zone']
                 for user in disk['users']:
                     instances.append(user)
+
         # detach disk from all instances
+        result = None
         for instance in instances:
+            vm = self._get_instance(zone, instance)
+            instance_status = vm['status']
+
+            # Stop the instance if necessary
+            if instance_status == 'RUNNING':
+                self._stop_instance(instance, zone)
+
             compute_service.instances().detachDisk(
                 project=self.credentials['project_id'],
                 zone=zone,
                 instance=instance,
                 deviceName=name).execute()
-        detached_disk = self._get_disk(zone, name)
-        # wait for disk to be detached
-        while 'users' in detached_disk:
-            self._wait(1)
+
+            # Wait for disk to detach
             detached_disk = self._get_disk(zone, name)
-        # update newly detached disk
-        result = self.update_dict(detached_disk)
+            if 'users' in detached_disk:
+                while instance in detached_disk['users']:
+                    self._wait(1)
+                    detached_disk = self._get_disk(zone, name)
+
+            # Restart the instance if necessary
+            if instance_status == 'RUNNING':
+                self._start_instance(instance, zone)
+
+            # update newly detached disk
+            result = self.update_dict(detached_disk)
 
         return result[0]
 

@@ -316,6 +316,44 @@ class Provider(VolumeABC):
             instance=instance).execute()
         return vm
 
+    def _stop_instance(self, name=None, zone=None):
+        """
+        stops the instance with the given name
+
+        :param name: name of the instance
+        :zone: zone in which the instance is located
+        """
+        compute_service = self._get_compute_service()
+        compute_service.instances().stop(
+            project=self.credentials['project_id'],
+            zone=zone,
+            instance=name).execute()
+
+        vm = self._get_instance(zone, name)
+        # Wait for the instance to stop
+        while vm['status'] != 'TERMINATED':
+            self._wait(1)
+            vm = self._get_instance(zone, name)
+
+    def _start_instance(self, name=None, zone=None):
+        """
+        stops the instance with the given name
+
+        :param name: name of the instance
+        :zone: zone in which the instance is located
+        """
+        compute_service = self._get_compute_service()
+        compute_service.instances().start(
+            project=self.credentials['project_id'],
+            zone=zone,
+            instance=name).execute()
+
+        vm = self._get_instance(zone, name)
+        # Wait for the instance to start
+        while vm['status'] != 'RUNNING':
+            self._wait(1)
+            vm = self._get_instance(zone, name)
+
     def attach(self, names, vm=None):
         """
         Attach one or more disks to an instance

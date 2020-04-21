@@ -4,6 +4,8 @@ from cloudmesh.common.dotdict import dotdict
 from cloudmesh.configuration.Config import Config
 from cloudmesh.volume.VolumeABC import VolumeABC
 
+from cloudmesh.mongo.CmDatabase import CmDatabase
+
 
 class Provider(VolumeABC):
     kind = "opensatck"
@@ -136,6 +138,7 @@ class Provider(VolumeABC):
         self.cloud = name
         self.config = Config()["cloudmesh.volume.openstack.credentials"]
         self.defaults = Config()["cloudmesh.volume.openstack.default"]
+        self.cm = CmDatabase()
 
     def create(self, **kwargs):
         """
@@ -193,14 +196,23 @@ class Provider(VolumeABC):
         :return: Dictionary of volumes
         """
         try:
-            con = openstack.connect(**self.config)
-            results = con.list_volumes()
-            if kwargs and kwargs['NAME']:
-                result = con.get_volume(name_or_id=kwargs["NAME"])
-                result = [result]
-                result = self.update_dict(result)
+            if kwargs and kwargs['refresh'] is False:
+                result = self.cm.find(cloud=self.cloud, kind='volume')
+                for key in kwargs:
+                    if key == 'NAME' and kwargs['NAME']:
+                        result = self.cm.find_name(name=kwargs['NAME'])
+                    elif key == 'NAMES' and kwargs['NAMES']:
+                        result = self.cm.find_names(names=kwargs['NAMES'])
             else:
-                result = self.update_dict(results)
+                con = openstack.connect(**self.config)
+                results = con.list_volumes()
+                if kwargs and kwargs['NAME']:
+                    result = con.get_volume(name_or_id=kwargs["NAME"])
+                    result = [result]
+                    result = self.update_dict(result)
+                else:
+                    result = self.update_dict(results)
+
         except Exception as e:
             Console.error("Problem listing volumes", traceflag=True)
             print(e)
@@ -225,7 +237,7 @@ class Provider(VolumeABC):
             Console.error("Problem attaching volume", traceflag=True)
             print(e)
             raise RuntimeError
-        return self.list(NAME=NAMES[0])
+        return self.list(NAME=NAMES[0], refresh=True)
 
     def detach(self, NAME=None):
         """
@@ -239,24 +251,24 @@ class Provider(VolumeABC):
             volume = con.get_volume(name_or_id=NAME)
             attachments = volume['attachments']
             server = con.get_server(attachments[0]['server_id'])
-            con.detach_volume(server, volume, wait=True,timeout=None)
+            con.detach_volume(server, volume, wait=True, timeout=None)
         except Exception as e:
             Console.error("Problem detaching volume", traceflag=True)
             print(e)
             raise RuntimeError
         # return of self.list(NAME=NAME)[0] throwing error:cm attribute
         # not found inside CmDatabase.py. So manipulating result as below
-        t = self.list(NAME=NAME)[0]
+        t = self.list(NAME=NAME, refresh=True)[0]
         result = {}
         result.update(
-            {"cm":t["cm"],
-             "availability_zone":t["availability_zone"],
-             "created_at":t["created_at"],
-             "size":t["size"],"id":t["id"],
-             "status":t["status"],
-             "volume_type":t["volume_type"]
+            {"cm": t["cm"],
+             "availability_zone": t["availability_zone"],
+             "created_at": t["created_at"],
+             "size": t["size"], "id": t["id"],
+             "status": t["status"],
+             "volume_type": t["volume_type"]
              }
-            )
+        )
         return result
 
     def migrate(self,

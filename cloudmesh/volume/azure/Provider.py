@@ -41,7 +41,7 @@ class Provider(VolumeABC):
              AZURE_SUBSCRIPTION_ID: {subscriptionid}
              AZURE_APPLICATION_ID: {applicationid}
              AZURE_SECRET_KEY: {secretkey}
-             AZURE_REGION: westus
+             AZURE_REGION: eastus
           default:
             size: Basic_A0
             volume_type: __DEFAULT__
@@ -77,22 +77,18 @@ class Provider(VolumeABC):
             "order": ["cm.name",
                       "cm.cloud",
                       "cm.kind",
-                      "availability_zone",
-                      "created_at",
-                      "size",
-                      "status",
+                      "cm.location",
+                      "cm.size",
+                      "cm.group_name",
                       "id",
-                      "volume_type"
                       ],
             "header": ["Name",
                        "Cloud",
                        "Kind",
-                       "Availability Zone",
-                       "Created At",
+                       "Region",
                        "Size",
-                       "Status",
+                       "Group_Name",
                        "Id",
-                       "Volume Type"
                        ],
         }
     }
@@ -115,6 +111,9 @@ class Provider(VolumeABC):
 
         self.spec = conf["volume"][name]
         self.cloud = name
+        self.location = 'eastus'
+        self.size = 1
+        self.group_name = 'cloudmesh'
 
         cred = self.spec["credentials"]
         self.default = self.spec["default"]
@@ -204,26 +203,12 @@ class Provider(VolumeABC):
                 "cloud": self.cloud,
                 "kind": "volume",
                 "name": volume_name,
+                "location": self.location,
+                "size": self.size,
+                "group_name": self.group_name,
             })
             d.append(entry)
         return d
-
-
-    # def _get_resource_group(self):
-    #     groups = self.resource_client.resource_groups
-    #     if groups.check_existence(self.GROUP_NAME):
-    #         return groups.get(self.GROUP_NAME)
-    #     else:
-    #         # Create or Update Resource groupCreating new public IP
-    #         Console.info('Creating Azure Resource Group')
-    #         res = groups.create_or_update(self.GROUP_NAME,
-    #                                       {'location': self.LOCATION})
-    #         Console.info('Azure Resource Group created: ' + res.name)
-    #         return res
-    #
-    #
-    # # Azure Resource Group
-    # self.GROUP_NAME = self.default["resource_group"]
 
 
     def create(self, **kwargs):
@@ -237,16 +222,12 @@ class Provider(VolumeABC):
            :param description (string)
            :return: dict
         """
-        print(kwargs)
-        GROUP_NAME = 'cloudmesh'
-        LOCATION = 'eastus'
-        DISK_NAME = kwargs['NAME']
         disk_creation = self.compute_client.disks.create_or_update(
-            GROUP_NAME,
-            DISK_NAME,
+            self.group_name,
+            kwargs['NAME'],
             {
-                'location': LOCATION,
-                'disk_size_gb': 1,
+                'location': self.location,
+                'disk_size_gb': self.size,
                 'creation_data': {
                     'create_option': 'Empty'
                 }
@@ -258,7 +239,7 @@ class Provider(VolumeABC):
         return result
 
 
-    def delete (self, NAME=None):
+    def delete (self, name=None):
         """
         Delete volumes.
         If NAMES is not given, delete the most recent volume.
@@ -266,14 +247,11 @@ class Provider(VolumeABC):
         :param NAMES: List of volume names
         :return:
         """
-        GROUP_NAME = 'cloudmesh'
-        LOCATION = 'eastus'
-        DISK_NAME = NAME
         disk_deletion = self.compute_client.disks.delete(
-            GROUP_NAME,
-            DISK_NAME,
+            self.group_name,
+            name,
             {
-                'location': LOCATION
+                'location': self.location
             }
         )
         # return after deleting
@@ -303,8 +281,8 @@ class Provider(VolumeABC):
         :param refresh: If refresh the information is taken from the cloud
         :return: dict
         """
-        GROUP_NAME = 'cloudmesh'
-        disk_list = self.compute_client.disks.list_by_resource_group(GROUP_NAME)
+        disk_list = \
+            self.compute_client.disks.list_by_resource_group(self.group_name)
         # return disk_list
         found = []
         for disk in disk_list:
@@ -322,25 +300,21 @@ class Provider(VolumeABC):
         :param vm: Instance name
         :return: Dictionary of volumes
         """
-        LOCATION = 'eastus'
-        GROUP_NAME = 'cloudmesh'
         # VM_NAME = 'ashthorn-vm-3'
-        VM_NAME = vm
-        DISK_NAME = NAMES
         self.vms = self.compute_client.virtual_machines
         disk_creation = self.compute_client.disks.create_or_update(
-            GROUP_NAME,
-            DISK_NAME,
+            self.group_name,
+            NAMES,
             {
-                'location': LOCATION,
-                'disk_size_gb': 1,
+                'location': self.location,
+                'disk_size_gb': self.size,
                 'creation_data': {
                     'create_option': 'Empty'
                 }
             }
         )
         data_disk = disk_creation.result()
-        virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
+        virtual_machine = self.vms.get(self.group_name, vm)
         disk_attach = virtual_machine.storage_profile.data_disks.append({
             'lun': 0,
             'name': data_disk.name,
@@ -350,8 +324,8 @@ class Provider(VolumeABC):
             }
         })
         updated_vm = self.vms.create_or_update(
-            GROUP_NAME,
-            VM_NAME,
+            self.group_name,
+            vm,
             virtual_machine
         )
         # return after attaching
@@ -368,19 +342,14 @@ class Provider(VolumeABC):
         :param NAMES: names of volumes to detach
         :return: dict
         """
-        LOCATION = 'eastus'
-        GROUP_NAME = 'cloudmesh'
-        # VM_NAME = 'ashthorn-vm-3'
-        VM_NAME = vm
-        DISK_NAME = NAME
         self.vms = self.compute_client.virtual_machines
-        virtual_machine = self.vms.get(GROUP_NAME, VM_NAME)
+        virtual_machine = self.vms.get(self.group_name, vm)
         data_disks = virtual_machine.storage_profile.data_disks
         data_disks[:] = [
-            disk for disk in data_disks if disk.name != DISK_NAME]
+            disk for disk in data_disks if disk.name != NAME]
         async_vm_update = self.compute_client.virtual_machines.create_or_update(
-            GROUP_NAME,
-            VM_NAME,
+            self.group_name,
+            vm,
             virtual_machine
         )
         # return after detaching
@@ -397,12 +366,9 @@ class Provider(VolumeABC):
         :param NAME: name of volume
         :return: string
         """
-        GROUP_NAME = 'cloudmesh'
-        LOCATION = 'eastus'
-        DISK_NAME = NAME
         disk_status = self.compute_client.disks.get(
-            GROUP_NAME,
-            DISK_NAME
+            self.group_name,
+            NAME
         )
         # return after getting status
         results = disk_status.as_dict()
@@ -419,12 +385,9 @@ class Provider(VolumeABC):
         :param name: volume name to match
         :return: dict
         """
-        GROUP_NAME = 'cloudmesh'
-        LOCATION = 'eastus'
-        DISK_NAME = NAME
         disk_status = self.compute_client.disks.get(
-            GROUP_NAME,
-            DISK_NAME
+            self.group_name,
+            NAME
         )
         # return after getting info
         results = disk_status.as_dict()
@@ -444,15 +407,12 @@ class Provider(VolumeABC):
                      value: value of tag
         :return: self.list()
         """
-        LOCATION = 'eastus'
-        GROUP_NAME = 'cloudmesh'
-        DISK_NAME = kwargs['NAME']
         async_vm_update = self.compute_client.disks.create_or_update(
-            GROUP_NAME,
-            DISK_NAME,
+            self.group_name,
+            kwargs['NAME'],
             {
-                'location': LOCATION,
-                'disk_size_gb': 1,
+                'location': self.location,
+                'disk_size_gb': self.size,
                 'creation_data': {
                     'create_option': 'Empty',
                 },

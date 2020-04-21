@@ -25,13 +25,7 @@ class VolumeABC(metaclass=ABCMeta):
             print(e)
 
     @abstractmethod
-    def list(self,
-             NAMES=None,
-             vm=None,
-             region=None,
-             cloud=None,
-             refresh=None,
-             dryrun=None):
+    def list(self):
         """
         This command list all volumes as follows:
 
@@ -55,7 +49,7 @@ class VolumeABC(metaclass=ABCMeta):
     # BUG ARCHOTECTURE DOCUMENT MISSING. EG what is create in each provider
     #
     @abstractmethod
-    def create(self, NAME=None, **kwargs):
+    def create(self, **kwargs):
         """
         Create a volume.
 
@@ -149,9 +143,9 @@ class VolumeABC(metaclass=ABCMeta):
         :return: dict
         """
         raise NotImplementedError
-    #
+
     # @abstractmethod
-    # def purge(self,**kwargs):
+    # def purgee(self,**kwargs):
     #     """
     #     purge all the deleted volume in MongoDB database
     #

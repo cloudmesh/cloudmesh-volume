@@ -5,6 +5,7 @@
 # TODO: start this with cloud init, e.g, empty mongodb
 # TODO: assertuons need to be added
 
+import json
 import pytest
 from cloudmesh.common.Benchmark import Benchmark
 from cloudmesh.common.Shell import Shell
@@ -30,12 +31,18 @@ class Test_provider_volume:
 
     def test_cms_terminate(self):
         HEADING()
-        cmd = "cms vm terminate " + variables.__getitem__("vm_name")
+        if cloud == "multipass":
+            cmd = f"multipass delete {variables.__getitem__('vm_name')}"
+        else:
+            cmd = "cms vm terminate " + variables.__getitem__("vm_name")
         Benchmark.Start()
         result = Shell.run(cmd)
         Benchmark.Stop()
-        print(result)
-        assert "vm" in result
+        print("result", result)
+        if cloud == "multipass":
+            assert result == ''
+        else:
+            assert "vm" in result
 
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)

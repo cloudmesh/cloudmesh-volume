@@ -288,7 +288,7 @@ class Provider(VolumeABC):
         for disk in disk_list:
             results = disk.as_dict()
             result = self.update_dict([results])
-            found.append(result)
+            found.extend(result)
         return found
 
 

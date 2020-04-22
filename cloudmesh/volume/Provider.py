@@ -298,10 +298,9 @@ class Provider(object):  # broken
         """
         purge deleted volumes in MongoDB database
 
-        :return:
+        :return: list
         """
         collection = f"{self.cloud}-volume"
-        print(collection)
         self.cm = CmDatabase()
         if self.cloud== 'aws' or self.cloud == 'multipass':
             self.cm.collection(collection).delete_many({"State": "deleted"})

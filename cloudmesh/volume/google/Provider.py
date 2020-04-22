@@ -378,6 +378,7 @@ class Provider(VolumeABC):
 
         # Stop the instance if necessary
         if instance_status == 'RUNNING':
+            banner(f"Stopping VM {vm}")
             self._stop_instance(vm, zone)
 
         # get URL source to disk(s) from list of disks
@@ -387,6 +388,7 @@ class Provider(VolumeABC):
             for disk in disk_list:
                 if disk['name'] == name:
                     source = disk['selfLink']
+            banner(f"Attaching {name}")
             compute_service.instances().attachDisk(
                 project=self.credentials['project_id'],
                 zone=zone,
@@ -406,6 +408,7 @@ class Provider(VolumeABC):
 
         # Restart the instance if previously running
         if instance_status == 'RUNNING':
+            banner(f"Restarting VM {vm}")
             self._start_instance(vm, zone)
 
         return result
@@ -436,8 +439,10 @@ class Provider(VolumeABC):
 
             # Stop the instance if necessary
             if instance_status == 'RUNNING':
+                banner(f"Stopping VM {instance}")
                 self._stop_instance(instance, zone)
 
+            banner(f"Detaching {name}")
             compute_service.instances().detachDisk(
                 project=self.credentials['project_id'],
                 zone=zone,
@@ -453,6 +458,7 @@ class Provider(VolumeABC):
 
             # Restart the instance if necessary
             if instance_status == 'RUNNING':
+                banner(f"Restarting VM {instance}")
                 self._start_instance(instance, zone)
 
             # update newly detached disk

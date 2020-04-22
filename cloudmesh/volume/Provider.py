@@ -4,7 +4,7 @@ from cloudmesh.common.util import banner
 from cloudmesh.common.variables import Variables
 from cloudmesh.configuration.Config import Config
 from cloudmesh.mongo.DataBaseDecorator import DatabaseUpdate
-
+from cloudmesh.mongo.CmDatabase import CmDatabase
 
 # class Provider(VolumeABC): # correct
 class Provider(object):  # broken
@@ -130,7 +130,7 @@ class Provider(object):  # broken
         """
         Create a volume.
 
-           :param NAME (string): name of volume
+           :param name (string): name of volume
            :param region (string): availability-zone
            :param size (integer): size of volume
            :param volume_type (string): type of volume.
@@ -147,15 +147,15 @@ class Provider(object):  # broken
         return data
 
     @DatabaseUpdate()
-    def delete(self, NAME=None):
+    def delete(self, name=None):
         """
         Delete volumes.
-        If NAMES is not given, delete the most recent volume.
+        If name is not given, delete the most recent volume.
 
-        :param NAMES: List of volume names
+        :param name: List of volume name
         :return:
         """
-        d = self.provider.delete(NAME)
+        d = self.provider.delete(name)
         return d
 
     @DatabaseUpdate()
@@ -163,14 +163,14 @@ class Provider(object):  # broken
         """
         This command list all volumes as follows:
 
-        If NAMES are given, search through all the active clouds and list all the volumes.
-        If NAMES and cloud are given, list all volumes under the cloud.
+        If names are given, search through all the active clouds and list all the volumes.
+        If names and cloud are given, list all volumes under the cloud.
         If cloud is given, list all the volumes under the cloud.
         If cloud is not given, list all the volumes under current cloud.
         If vm is given, under the current cloud, list all the volumes attaching to the vm.
         If region is given, under the current cloud, list all volumes in that region.
 
-        :param NAMES: List of volume names
+        :param names: List of volume names
         :param vm: The name of the virtual machine
         :param region:  The name of the region
         :param cloud: The name of the cloud
@@ -203,40 +203,40 @@ class Provider(object):  # broken
         return self.info(name=name)
 
     @DatabaseUpdate()
-    def status(self, NAME=None):
+    def status(self, name=None):
         """
         This function returns status of volume, such as "available", "in-use" and etc..
 
-        :param NAME: name of volume
+        :param name: name of volume
         :return: string
         """
-        volume_status = self.provider.status(NAME)
+        volume_status = self.provider.status(name)
         return volume_status
 
     @DatabaseUpdate()
-    def attach(self, NAMES=None, vm=None):
+    def attach(self, names=None, vm=None):
         """
         Attatch volume to a vm.
-        If NAMES is not specified, attach the most recent volume to vm.
+        If names is not specified, attach the most recent volume to vm.
 
-        :param NAME: volume name
+        :param name: volume name
         :param vm: vm name which the volume will be attached to
         :return: dict
         """
-        result = self.provider.attach(NAMES, vm)
+        result = self.provider.attach(names, vm)
         return result
 
     @DatabaseUpdate()
-    def detach(self, NAME=None):
+    def detach(self, name=None):
         """
         Dettach volumes from vm.
         If success, the last volume will be saved as the most recent volume.
 
-        :param NAMES: names of volumes to dettach
+        :param names: names of volumes to dettach
         :return: dict
         """
         try:
-            result = self.provider.detach(NAME)
+            result = self.provider.detach(name)
             variables = Variables()
             variables["volume"] = result["cm"]["name"]
         except:
@@ -247,10 +247,10 @@ class Provider(object):  # broken
     def add_tag(self, **kwargs):
         """
         This function add tag to a volume.
-        If NAME is not specified, then tag will be added to the last volume.
+        If name is not specified, then tag will be added to the last volume.
         If success, the volume will be saved as the most recent volume.
 
-        :param NAME: name of volume
+        :param name: name of volume
         :param kwargs:
                      key: name of tag
                      value: value of tag
@@ -269,7 +269,7 @@ class Provider(object):  # broken
         """
         Migrate volume from one vm to another vm.
 
-        :param NAME (string): the volume name
+        :param name (string): the volume name
         :param vm (string): the vm name
         :return: dict
         """
@@ -280,31 +280,38 @@ class Provider(object):  # broken
         return result
 
     @DatabaseUpdate()
-    def sync(self,NAMES):
+    def sync(self,names):
         """
         synchronize one volume with another volume
 
-        :param NAMES (list): list of volume names
+        :param names (list): list of volume names
         :return: dict
         """
         try:
-            result = self.provider.sync(NAMES)
+            result = self.provider.sync(names)
         except:
             raise ValueError("Volume could not be synchronized")
         return result
 
-    # @DatabaseUpdate()
-    # def purgee(self,**kwargs):
-    #     """
-    #     purge deleted volumes in MongoDB database
-    #
-    #     :return:
-    #     """
-    #     try:
-    #         result = self.provider.purge(**kwargs)
-    #     except:
-    #         raise ValueError("Volume could not be synchronized")
-    #     return result
+    @DatabaseUpdate()
+    def purge(self,**kwargs):
+        """
+        purge deleted volumes in MongoDB database
+
+        :return:
+        """
+        collection = f"{self.cloud}-volume"
+        print(collection)
+        self.cm = CmDatabase()
+        if self.cloud== 'aws' or self.cloud == 'multipass':
+            self.cm.collection(collection).delete_many({"State": "deleted"})
+        elif self.cloud == 'oracle':
+            self.cm.collection(collection).delete_many({"lifecycle_state": "deleted"})
+        elif self.cloud == 'azure':
+            self.cm.collection(collection).delete_many({"disk_state": "deleted"})
+        elif slef.cm.cloud == 'google' or self.cloud == 'openstack':
+            self.cm.collection(collection).delete_many({"status": "deleted"})
+        return self.provider.list()
 
 
 

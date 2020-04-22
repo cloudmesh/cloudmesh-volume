@@ -144,11 +144,10 @@ class VolumeABC(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-    # @abstractmethod
-    # def purgee(self,**kwargs):
-    #     """
-    #     purge all the deleted volume in MongoDB database
-    #
-    #     :return: dict
-    #     """
-    #     raise NotImplementedError
+    def purge(self,**kwargs):
+        """
+        purge all the deleted volume in MongoDB database
+
+        :return: dict
+        """
+        raise NotImplementedError

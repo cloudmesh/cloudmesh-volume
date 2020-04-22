@@ -35,10 +35,10 @@ cloud = variables.parameter('cloud')
 print(f"Test run for {cloud}")
 
 if cloud is None:
-    raise ValueError("cloud is not not set")
+    raise ValueError("cloud is not set")
 
 name_generator = Name()
-name_generator.set(f"test-{user}-volume-" + "{counter}")
+name_generator.set(f"test-{user}-vm-" + "{counter}")
 
 name = str(name_generator)
 variables.__setitem__("vm_name", name)

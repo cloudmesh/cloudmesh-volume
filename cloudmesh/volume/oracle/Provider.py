@@ -4,6 +4,7 @@ from cloudmesh.common.dotdict import dotdict
 from cloudmesh.configuration.Config import Config
 from cloudmesh.volume.VolumeABC import VolumeABC
 
+from cloudmesh.mongo.CmDatabase import CmDatabase
 
 class Provider(VolumeABC):
     kind = "oracle"
@@ -114,6 +115,7 @@ class Provider(VolumeABC):
         self.cloud = name
         self.config = Config()["cloudmesh.volume.oracle.credentials"]
         self.defaults = Config()["cloudmesh.volume.oracle.default"]
+        self.cm = CmDatabase()
 
     def get_volume_id_from_name(self, block_storage, name):
         """
@@ -337,26 +339,34 @@ class Provider(VolumeABC):
         :return: Dictionary of volumes
         """
         try:
-            block_storage = oci.core.BlockstorageClient(self.config)
-            if kwargs and kwargs['NAME']:
-                v = block_storage.list_volumes(self.config['compartment_id'])
-                results = v.data
-                entry = None
-                for entry in results:
-                    display_name = entry.__getattribute__("display_name")
-                    if kwargs["NAME"] == display_name:
-                        break
-                result = [entry]
-                results = self.update_dict(result)
+            if kwargs and kwargs['refresh'] is False:
+                result = self.cm.find(cloud=self.cloud, kind='volume')
+                for key in kwargs:
+                    if key == 'NAME' and kwargs['NAME']:
+                        result = self.cm.find_name(name=kwargs['NAME'])
+                    elif key == 'NAMES' and kwargs['NAMES']:
+                        result = self.cm.find_names(names=kwargs['NAMES'])
             else:
-                v = block_storage.list_volumes(self.config['compartment_id'])
-                results = v.data
-                results = self.update_dict(results)
+                block_storage = oci.core.BlockstorageClient(self.config)
+                if kwargs and kwargs['NAME']:
+                    v = block_storage.list_volumes(self.config['compartment_id'])
+                    results = v.data
+                    entry = None
+                    for entry in results:
+                        display_name = entry.__getattribute__("display_name")
+                        if kwargs["NAME"] == display_name:
+                            break
+                    result = [entry]
+                    result = self.update_dict(result)
+                else:
+                    v = block_storage.list_volumes(self.config['compartment_id'])
+                    results = v.data
+                    result = self.update_dict(results)
         except Exception as e:
             Console.error("Problem listing volume", traceflag=True)
             print(e)
             raise RuntimeError
-        return results
+        return result
 
     def mount(self, path=None, name=None):
         """

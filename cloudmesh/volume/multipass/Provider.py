@@ -183,7 +183,7 @@ class Provider(VolumeABC):
     def create(self,**kwargs):
         """
         This function create a new volume.
-        Defalt parameters from self.default, such as: path="/Users/username/multipass".
+        Default parameters from self.default, such as: path="/Users/username/multipass".
 
         :param NAME (string): the name of volume
         :param path (string): path of volume
@@ -204,22 +204,20 @@ class Provider(VolumeABC):
         result = self.update_dict([result])
         return result
 
-    def delete(self, NAME):
+    def delete(self, name):
         """
         Delete volumes.
         If name is not given, delete the most recent volume.
 
-        :param name: List of volume name
+        :param name: volume name
         :return:
         """
-        result = self.cm.find_name(NAME)
+        result = self.cm.find_name(name)
         path = result[0]['path']
         try:
-            re = os.system(f"rmdir {path}/{NAME}")
+            re = os.system(f"rmdir {path}/{name}")
             result[0]['State'] = 'deleted'
             result = self.update_dict(result)
-            #cmulti = cm.collection("multipass-volume")
-            #cmulti.delete_one(f"{'name': {NAME}}")
         except:
             Console.error("volume is either not empty or not exist")
         return result
@@ -237,7 +235,7 @@ class Provider(VolumeABC):
 
         :param NAME: name of volume
         :param vm: name of vm
-        :param region: for multipass, please give path
+        :param region: for multipass, it is the same with "path"
         :return: dict
         """
 
@@ -265,6 +263,13 @@ class Provider(VolumeABC):
 
     def _get_vm_status(self, name=None) -> dict:
 
+        """
+        Get vm status.
+
+        :param name (string): vm name
+        :return: dict
+        """
+
         dict_result = {}
         result = Shell.run(f"multipass info {name} --format=json")
 
@@ -284,9 +289,7 @@ class Provider(VolumeABC):
 
     def attach(self,
                names,
-               vm,
-               device=None,
-               dryrun=False):
+               vm):
         """
         This function attach one or more volumes to vm. It returns info of
         updated volume. The updated dict with "AttachedToVm" showing
@@ -294,7 +297,6 @@ class Provider(VolumeABC):
 
         :param names (string): names of volumes
         :param vm (string): name of vm
-        :param dryrun (boolean): True|False
         :return: dict
         """
 
@@ -378,7 +380,7 @@ class Provider(VolumeABC):
         volume is successfully detached.
         Will detach volume from all vms.
 
-        :param name: name of volume to dettach
+        :param name: name of volume to be dettached
         :return: dict
         """
 

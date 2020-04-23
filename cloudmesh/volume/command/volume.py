@@ -266,7 +266,7 @@ class VolumeCommand(PluginCommand):
                     for name in names:
                         volume = provider.search(name=name)
                         if volume:
-                            result = provider.delete(NAME=name)
+                            result = provider.delete(name=name)
                             deleted.append(name)
                     if len(deleted) > 0:
                         # delete all deleted volumes in names
@@ -386,6 +386,7 @@ class VolumeCommand(PluginCommand):
         elif arguments.purge:
             arguments.cloud = arguments.cloud or cloud
             provider = Provider(name=arguments.cloud)
+            provider.purge(**arguments)
             result = provider.list()
             print(provider.Print(result, kind='volume', output=arguments.output))
 

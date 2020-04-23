@@ -311,18 +311,18 @@ class Provider(VolumeABC):
         sleep(time)
         return False
 
-    def status(self, NAME):
+    def status(self, name):
         """
         This function get volume status, such as "in-use", "available", "deleting"
 
-        :param NAME
+        :param name
         :return: dict
         """
         result = self.client.describe_volumes(
             Filters=[
                 {
                     'Name': 'tag:Name',
-                    'Values': [NAME, ]
+                    'Values': [name, ]
                 },
             ],
         )
@@ -508,16 +508,18 @@ class Provider(VolumeABC):
                 elif key == 'NAMES' and kwargs['NAMES']:
                     result = self.cm.find_names(names=kwargs['NAMES'])
                 elif key == 'vm' and kwargs['vm']:
-                    result = self.cm.find(collection=f"{self.cloud}-volume", query={'AttachedToVm': kwargs['vm']})
+                    result = self.cm.find(collection=f"{self.cloud}-volume",
+                                          query={'AttachedToVm': kwargs['vm']})
                 elif key == 'region' and kwargs['region']:
-                    result = self.cm.find(collection=f"{self.cloud}-volume", query={'AvailabilityZone': kwargs['region']})
+                    result = self.cm.find(collection=f"{self.cloud}-volume",
+                                          query={'AvailabilityZone': kwargs['region']})
         else:
             result = self.client.describe_volumes()
             result = self.update_AttachedToVm(result)
             result = self.update_dict(result)
         return result
 
-    def delete(self, NAME):
+    def delete(self, name):
         """
         This function delete one volume.
         It will return the info of volume with "state" updated as "deleted" and will show in Database.
@@ -529,11 +531,11 @@ class Provider(VolumeABC):
             Filters=[
                 {
                     'Name': 'tag:Name',
-                    'Values': [NAME]
+                    'Values': [name]
                 },
             ],)
         #banner(f"delete volume {NAME}")
-        volume_id = self.find_volume_id(NAME)
+        volume_id = self.find_volume_id(name)
         if result['Volumes'][0]['State'] == 'available':
             response = self.client.delete_volume(VolumeId=volume_id)
             stop_timeout = 360
@@ -542,7 +544,7 @@ class Provider(VolumeABC):
                 sleep(5)
                 time += 5
                 try:
-                    volume_status = self.status(NAME=NAME)[0]['State']
+                    volume_status = self.status(name=name)[0]['State']
                 except:
                     break
             result['Volumes'][0]['State']='deleted'
@@ -552,7 +554,7 @@ class Provider(VolumeABC):
         return result
 
     def attach(self,
-               NAMES,
+               names,
                vm,
                device=None,
                dryrun=False):
@@ -578,7 +580,7 @@ class Provider(VolumeABC):
                   "/dev/sdh",]
 
         vm_id = self.find_vm_id(vm)
-        for name in NAMES:
+        for name in names:
             volume_id = self.find_volume_id(name)
             for device in devices:
                 try:
@@ -591,10 +593,10 @@ class Provider(VolumeABC):
                 except:
                     pass
 
-        return self.list(NAMES=NAMES,refresh=True)
+        return self.list(names=names,refresh=True)
 
     def detach(self,
-                NAME):
+                name):
 
         """
         This function detach a volume from vm. It returns self.list() to list
@@ -605,21 +607,21 @@ class Provider(VolumeABC):
         :return: self.list()
         """
 
-        volume_status = self.status(NAME=NAME)[0]['State']
+        volume_status = self.status(name=name)[0]['State']
         if volume_status == 'in-use':
-            volume_id = self.find_volume_id(volume_name=NAME)
+            volume_id = self.find_volume_id(volume_name=name)
             rresponse = self.client.detach_volume(VolumeId=volume_id)
         stop_timeout = 360
         time = 0
         while time <= stop_timeout:
             sleep(5)
             time += 5
-            volume_status = self.status(NAME=NAME)[0]['State']
+            volume_status = self.status(name=name)[0]['State']
             if volume_status == "available":
                 break
-        return self.list(NAME=NAME, refresh=True)[0]
+        return self.list(name=name, refresh=True)[0]
 
-    def add_tag(self, NAME, **kwargs):
+    def add_tag(self, name, **kwargs):
 
         """
         This function add tag to a volume.
@@ -632,12 +634,12 @@ class Provider(VolumeABC):
         :param kwargs:
                     key: name of tag
                     value: value of tag
-        :return: self.list(NAME)
+        :return: self.list(name)
         """
 
         key = kwargs['key']
         value = kwargs['value']
-        volume_id = self.find_volume_id(volume_name=NAME)
+        volume_id = self.find_volume_id(volume_name=name)
         result = self.client.create_tags(
             Resources=[
                 volume_id,
@@ -650,9 +652,9 @@ class Provider(VolumeABC):
             ],
         )
         if key == 'Name':
-            result = self.list(NAME=value, refresh=True)[0]
+            result = self.list(name=value, refresh=True)[0]
         else:
-            result = self.list(NAME=NAME, refresh=True)[0]
+            result = self.list(name=name, refresh=True)[0]
         return result
 
 
@@ -681,12 +683,12 @@ class Provider(VolumeABC):
                 #if volume and vm are in the same zone,
                 if volume_status == "in-use":
                     # if volume is attached to a vm, first detach and than attach to vm
-                    self.detach(NAME=volume_name)
-                    self.attach(NAMES=[volume_name,],vm=vm)
+                    self.detach(name=volume_name)
+                    self.attach(names=[volume_name,],vm=vm)
                 elif volume_status == "available":
                     #if volume is available, attach to vm
-                    self.attach(NAMES=[volume_name,], vm=vm)
-                return self.list(NAME=volume_name, refresh=True)
+                    self.attach(names=[volume_name,], vm=vm)
+                return self.list(name=volume_name, refresh=True)
             else:
                 #if volume and vm are not in the same zone, create a snapshot, create a new volume with the snapshot
                 # and in the same zone as vm, delete old volume
@@ -710,26 +712,26 @@ class Provider(VolumeABC):
                 while time <= start_timeout:
                     sleep(5)
                     time += 5
-                    status = self.status(NAME=volume_name)[0]['State']
+                    status = self.status(name=volume_name)[0]['State']
                     if status == "available":
                         break
-                self.attach(NAMES=[volume_name,], vm=vm)
+                self.attach(names=[volume_name,], vm=vm)
                 response = self.client.delete_volume(VolumeId=volume_id)
 
         else:
             Console.error("vm is not available")
         return self.list()
 
-    def sync(self, NAMES):
+    def sync(self, names):
         """
         sync contents of one volume to another volume
 
         :param NAMES (list): list of volume names
         :return: dict
         """
-        volume_1 = NAMES[0]
-        volume_1_region = self.list(NAME=volume_1, refresh=True)[0]['cm']['region']
-        volume_2 = NAMES[1]
+        volume_1 = names[0]
+        volume_1_region = self.list(name=volume_1, refresh=True)[0]['cm']['region']
+        volume_2 = names[1]
         volume_2_id = self.find_volume_id(volume_name=volume_2)
         # make a snapshot of volume_2
         snapshot_id = self.client.create_snapshot(
@@ -744,7 +746,7 @@ class Provider(VolumeABC):
             if snapshot.state == "completed":
                 break
         # delete volume_1
-        self.delete(NAME=volume_1)
+        self.delete(name=volume_1)
         # create volume_1 with snapshot of volume_2
         kwargs = {}
         kwargs['region'] = volume_1_region
@@ -757,7 +759,7 @@ class Provider(VolumeABC):
         while time <= start_timeout:
             sleep(5)
             time += 5
-            status = self.status(NAME=volume_1)[0]['State']
+            status = self.status(name=volume_1)[0]['State']
             if status == "available":
                 break
-        return self.list(NAME=volume_1, refresh=True)[0]
+        return self.list(name=volume_1, refresh=True)[0]

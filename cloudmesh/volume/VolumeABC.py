@@ -63,7 +63,7 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def delete(self, NAMES=None):
+    def delete(self, names=None):
         """
         Delete volumes.
         If NAMES is not given, delete the most recent volume.
@@ -74,7 +74,7 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def attach(self, NAME=None, vm=None):
+    def attach(self, name=None, vm=None):
         """
         Attatch volume to a vm.
         If NAMES is not specified, attach the most recent volume to vm.
@@ -87,7 +87,7 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def detach(self,NAMES=None):
+    def detach(self,names=None):
         """
         Dettach volumes from vm.
         If success, the last volume will be saved as the most recent volume.
@@ -113,7 +113,7 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def status(self, NAME=None):
+    def status(self, name=None):
         """
         This function returns status of volume, such as "available", "in-use" and etc..
 
@@ -135,7 +135,7 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def sync(self,NAMES):
+    def sync(self,names):
         """
         synchronize one volume with another volume
 
@@ -144,11 +144,10 @@ class VolumeABC(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-    # @abstractmethod
-    # def purgee(self,**kwargs):
-    #     """
-    #     purge all the deleted volume in MongoDB database
-    #
-    #     :return: dict
-    #     """
-    #     raise NotImplementedError
+    def purge(self,**kwargs):
+        """
+        purge all the deleted volume in MongoDB database
+
+        :return: dict
+        """
+        raise NotImplementedError

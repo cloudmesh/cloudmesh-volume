@@ -219,7 +219,7 @@ class Provider(VolumeABC):
             raise RuntimeError
         return result
 
-    def attach(self, NAMES=None, vm=None):
+    def attach(self, names=None, vm=None):
         """
         This function attaches a given volume to a given instance
 
@@ -230,16 +230,16 @@ class Provider(VolumeABC):
         try:
             con = openstack.connect(**self.config)
             server = con.get_server(vm)
-            volume = con.get_volume(name_or_id=NAMES[0])
+            volume = con.get_volume(name_or_id=names[0])
             con.attach_volume(server, volume, device=None, wait=True,
                               timeout=None)
         except Exception as e:
             Console.error("Problem attaching volume", traceflag=True)
             print(e)
             raise RuntimeError
-        return self.list(NAME=NAMES[0], refresh=True)
+        return self.list(NAME=names[0], refresh=True)
 
-    def detach(self, NAME=None):
+    def detach(self, name=None):
         """
         This function detaches a given volume from an instance
 
@@ -248,7 +248,7 @@ class Provider(VolumeABC):
         """
         try:
             con = openstack.connect(**self.config)
-            volume = con.get_volume(name_or_id=NAME)
+            volume = con.get_volume(name_or_id=name)
             attachments = volume['attachments']
             server = con.get_server(attachments[0]['server_id'])
             con.detach_volume(server, volume, wait=True, timeout=None)
@@ -258,7 +258,7 @@ class Provider(VolumeABC):
             raise RuntimeError
         # return of self.list(NAME=NAME)[0] throwing error:cm attribute
         # not found inside CmDatabase.py. So manipulating result as below
-        t = self.list(NAME=NAME, refresh=True)[0]
+        t = self.list(NAME=name, refresh=True)[0]
         result = {}
         result.update(
             {"cm": t["cm"],

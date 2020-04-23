@@ -28,63 +28,6 @@ See also: [Volume man page](https://cloudmesh.github.io/cloudmesh-manual/manual/
 
 #### Multipass volume management functions
 
-generate_volume_info(name, path):
-
-```
-generate volume info dict.
-info['AttachedToVm'] is a list of vm names where the volume is attached to. (volume can attach to multiple vm and vm
-        can have multiple attachments)
-info['machine_path'] is the volume path in vm
-info['time"] is the created time, will be updated as updated time
-
-
-Required Parameters: 
-
-        name: volume name
-        path: volume path
-```
-
-update_volume_after_attached_to_vm(info, vms):
-
-```
-Update volume info after attached to a vm.
-info['AttachedToVm'] is a list of vm names where the volume is attached to.
-info['machine_path'] is the volume path in vm
-info['time"] is the updated as updated time
-        
-Required Parameters: 
-
-        info: volume info got from MongoDB database
-        vms: attached to vms
-```
-
-update_volume_after_detach(info,vms):
-
-```
-update volume info after detaching from a vm.
-info['AttachedToVm'] is a list of vm names where the volume is attached to.
-info['time"] is the updated time
-        
-Required Parameters: 
-
-        info: volume info
-        vms: attached to vms
-```
-
-update_volume_tag(info, key, value):
-
-```
-Update volume tag.
-Tags is a key-value pair, with key as tag name and value as tag value, tag = {key: value}.
-A volume can have multipale tags.
-If given duplicated tag name, update the value to the current tag value.
-
-Required Parameters:
-
-        info: volume info
-        vms: attached to vms
-```
-
 create(**kwargs):
 
 ```
@@ -123,7 +66,7 @@ Required Parameters:
 
         NAME: name of volume
         vm: name of vm
-        region: for multipass, it is the same with "path"
+        path: volume path
 ```
 
 attach(names, vm):
@@ -216,7 +159,7 @@ If vm and volume are in different regions, migrate between two regions (path)
 
 Required Parameters:
 
-        NAME (string): the volume name
+        name (string): the volume name
         vm (string): the vm name
 ```
 
@@ -236,7 +179,7 @@ Required Parameters:
   <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
 * Amazon EBS:   
   <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-volume.html>
-* Amazon python api:   
+* Amazon python boto3:   
   <https://boto3.amazonaws.com/v1/documentation/api/latest/index.html>
 * REST api:   
   <https://docs.aws.amazon.com/apigateway/api-reference/>
@@ -549,9 +492,11 @@ Required Parameters:
 
 ## Documentation on how to move volumes from one provider to the next 
 
-* from Amazon S3
+* from Amazon EBS volume
+ 
+    create a copy of EBS volume content into Amazon S3, and then migration could be done as follows:
 
-  * Migrating from Amazon S3 to Cloud Storage
+  * Migrating from Amazon S3 to Google Cloud Storage
 
     <https://cloud.google.com/storage/docs/migrating#storage-list-buckets-s3-python>
 
@@ -562,6 +507,8 @@ Required Parameters:
     <https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/master/README.md>
 
   * Migrating from Amazon S3 to OpenStack
+  
+  * Migrating from Amazon S3 to Oracle
 
 * from Cloud Storage
 

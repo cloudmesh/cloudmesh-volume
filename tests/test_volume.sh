@@ -1,3 +1,9 @@
+###############################################################
+# Consolidated shell script to run pytests
+#   ./tests/test_volume.sh
+###############################################################
+
+
 #!/bin/bash
 
 cms debug on

@@ -28,51 +28,207 @@ See also: [Volume man page](https://cloudmesh.github.io/cloudmesh-manual/manual/
 
 #### Multipass volume management functions
 
+generate_volume_info(name, path):
 
-mount(self, name="cloudmesh", source=None, destination=None)
 ```
-mounts the source into the instance at the given destination
+generate volume info dict.
+info['AttachedToVm'] is a list of vm names where the volume is attached to. (volume can attach to multiple vm and vm
+        can have multiple attachments)
+info['machine_path'] is the volume path in vm
+info['time"] is the created time, will be updated as updated time
+
 
 Required Parameters: 
 
-        source --
-    
-            The name of source (volume?)
-
-        destination --
-
-            The name of vm???
+        name: volume name
+        path: volume path
 ```
 
-umount(self, name="cloudmesh", path=None)
+update_volume_after_attached_to_vm(info, vms):
+
 ```
-Unmount a volume from an instance.
+Update volume info after attached to a vm.
+info['AttachedToVm'] is a list of vm names where the volume is attached to.
+info['machine_path'] is the volume path in vm
+info['time"] is the updated as updated time
+        
+Required Parameters: 
+
+        info: volume info got from MongoDB database
+        vms: attached to vms
+```
+
+update_volume_after_detach(info,vms):
+
+```
+update volume info after detaching from a vm.
+info['AttachedToVm'] is a list of vm names where the volume is attached to.
+info['time"] is the updated time
+        
+Required Parameters: 
+
+        info: volume info
+        vms: attached to vms
+```
+
+update_volume_tag(info, key, value):
+
+```
+Update volume tag.
+Tags is a key-value pair, with key as tag name and value as tag value, tag = {key: value}.
+A volume can have multipale tags.
+If given duplicated tag name, update the value to the current tag value.
 
 Required Parameters:
 
-        source --
-
-             The name of source (volume?)
+        info: volume info
+        vms: attached to vms
 ```
 
-transfer(self, name="cloudmesh", source=None, destination=None,
-recursive=True):
+create(**kwargs):
 
-``` Copies files or entire directories into the vm
+```
+This function create a new volume.
+Default parameters from self.default, such as: path="/Users/username/multipass".
 
-Required Parameters: 
+Required Parameters:
 
-        source --
-    
-            The name of source (volume?)
-
-        destination --
-
-            The name of vm???
+        name: the name of volume
+        path: path of volume
 ```
 
-:o2: Add functions from provider with descriptions of required
-parameters
+delete(name):
+
+```
+Delete volumes.
+If name is not given, delete the most recent volume.
+
+Required Parameters:
+
+        name: volume name
+```
+
+list(**kwargs):
+
+```
+This function list all volumes as following:
+If NAME (volume name) is specified, it will print out info of NAME.
+If NAME (volume name) is not specified, it will print out info of all
+          volumes under current cloud.
+If vm is specified, it will print out all the volumes attached to vm.
+If region(path) is specified, it will print out
+          all the volumes in that region. i.e. /Users/username/multipass
+
+Required Parameters:
+
+        NAME: name of volume
+        vm: name of vm
+        region: for multipass, it is the same with "path"
+```
+
+attach(names, vm):
+
+```
+This function attach one or more volumes to vm. It returns info of
+updated volume. The updated dict with "AttachedToVm" showing
+the name of vm where the volume attached to.
+
+Required Parameters:
+
+        names (string): names of volumes
+        vm (string): name of vm
+```
+
+mount(path=None,vm=None):
+
+```
+mount volume to vm
+
+Required Parameters:
+
+        path (string): path of volume
+        vm (string): name of vm
+```
+
+_get_mount_status(vm=None):
+
+```
+Get mount status of vm
+
+Required Parameters:
+
+        vm (string): name of vm
+```
+
+unmount(path=None, vm=None):
+
+```
+Unmount volume from vm
+
+Required Parameters:
+
+        path (string): path of volume
+        vm (string): name of vm
+```
+
+detach(name):
+
+```
+This function detach a volume from vm. It returns the info of the updated volume.
+The vm under "AttachedToVm" will be removed if volume is successfully detached.
+Will detach volume from all vms.
+
+Required Parameters:
+
+        name: name of volume to be dettached
+```
+
+add_tag(name, **kwargs):
+
+```
+This function add tag to a volume.
+If volume name is not specified, then tag will be added to the last volume.
+
+Required Parameters:
+
+        NAME: name of volume
+        kwargs:
+                key: name of tag
+                value: value of tag
+```
+
+status(name=None):
+
+```
+This function get volume status, such as "in-use", "available", "deleted"
+
+Required Parameters:
+
+        name (string): volume name
+```
+
+migrate(**kwargs):
+
+```
+Migrate volume from one vm to another vm. "region" is volume path.
+If vm and volume are in the same region (path), migrate within the same region (path)
+If vm and volume are in different regions, migrate between two regions (path)
+
+Required Parameters:
+
+        NAME (string): the volume name
+        vm (string): the vm name
+```
+
+sync(names):
+
+```
+sync contents of one volume to another volume
+
+Required Parameters:
+
+        names (list): list of volume names
+```
 
 ### AWS
 
@@ -101,9 +257,7 @@ Availability Zone.
 Required Parameters: 
 
 
-        AvailabilityZone (string) -- 
-
-            The Availability Zone in which to create the volume.
+        AvailabilityZone (string): The Availability Zone in which to create the volume.
 ```
 
 describe_volumes(**kwargs)
@@ -120,9 +274,7 @@ state (not attached to an instance).
 
 Required Parameters: 
 
-        VolumeId (string) --
-
-            The ID of the volume.
+        VolumeId (string): The ID of the volume.
 ```
 
 attach_volume(**kwargs)
@@ -133,31 +285,42 @@ to the instance with the specified device name.
 
 Required Parameters:
 
-        Device (string) --
+        Device (string): The device name (for example, /dev/sdh or xvdh ).
 
-            The device name (for example, /dev/sdh or xvdh ).
+        InstanceId (string): The ID of the instance.
 
-        InstanceId (string) --
-
-            The ID of the instance.
-
-        VolumeId (string) --
-
-            The ID of the volume.
+        VolumeId (string): The ID of the volume.
 ```
 
 detach_volume(**kwargs)
+
 ```
 Detaches an EBS volume from an instance.
 
 Required Parameters:
 
-        VolumeId (string) --
-
-            The ID of the volume.
+        VolumeId (string): The ID of the volume.
 ```
 
-:o2: Add functions from provider with descriptions of required parameters
+migrate(**kwargs):
+
+```
+Migrate EBS volume from one instance to another instance.
+
+Required Parameters:
+
+        VolumeId (string): The ID of the volume.
+
+        InstanceId (string): The ID of the instance.
+```
+
+sync(names):
+
+```
+sync contents of one volume to another volume
+
+        VolumeId (string): The ID of the volume.
+```
 
 ### Google
 

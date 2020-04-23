@@ -241,7 +241,7 @@ class Provider(VolumeABC):
             raise RuntimeError
         return result
 
-    def attach(self, NAMES=None, vm=None):
+    def attach(self, names=None, vm=None):
         """
         This function attaches a given volume to a given instance
 
@@ -263,7 +263,7 @@ class Provider(VolumeABC):
 
             # get volumeId from Volume name
             block_storage = oci.core.BlockstorageClient(self.config)
-            volume_id = self.get_volume_id_from_name(block_storage, NAMES[0])
+            volume_id = self.get_volume_id_from_name(block_storage, names[0])
             # attach volume to vm
             a = compute_client.attach_volume(
                 oci.core.models.AttachIScsiVolumeDetails(
@@ -298,7 +298,7 @@ class Provider(VolumeABC):
             raise RuntimeError
         return results
 
-    def detach(self, NAME=None):
+    def detach(self, name=None):
         """
         This function detaches a given volume from an instance
 
@@ -309,7 +309,7 @@ class Provider(VolumeABC):
             compute_client = oci.core.ComputeClient(self.config)
             block_storage = oci.core.BlockstorageClient(self.config)
             attachment_id = self.get_attachment_id_from_name(block_storage,
-                                                             NAME)
+                                                             name)
             compute_client.detach_volume(attachment_id)
             # wait for detachment
             oci.wait_until(

@@ -173,7 +173,6 @@ class VolumeCommand(PluginCommand):
                                           )
 
         cloud = variables['cloud']
-        #print(arguments)
 
         if arguments.list:
             if arguments.NAMES:
@@ -375,7 +374,6 @@ class VolumeCommand(PluginCommand):
             #if arguments.cloud:
             arguments.cloud = cloud
             provider = Provider(name=arguments.cloud)
-            print(arguments.NAMES)
             result = provider.sync(NAMES=arguments.NAMES)
             print(provider.Print(result,
                                  kind='volume',

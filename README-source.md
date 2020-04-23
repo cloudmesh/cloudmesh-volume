@@ -28,51 +28,150 @@ See also: [Volume man page](https://cloudmesh.github.io/cloudmesh-manual/manual/
 
 #### Multipass volume management functions
 
+create(**kwargs):
 
-mount(self, name="cloudmesh", source=None, destination=None)
 ```
-mounts the source into the instance at the given destination
-
-Required Parameters: 
-
-        source --
-    
-            The name of source (volume?)
-
-        destination --
-
-            The name of vm???
-```
-
-umount(self, name="cloudmesh", path=None)
-```
-Unmount a volume from an instance.
+This function create a new volume.
+Default parameters from self.default, such as: path="/Users/username/multipass".
 
 Required Parameters:
 
-        source --
-
-             The name of source (volume?)
+        name: the name of volume
+        path: path of volume
 ```
 
-transfer(self, name="cloudmesh", source=None, destination=None,
-recursive=True):
+delete(name):
 
-``` Copies files or entire directories into the vm
+```
+Delete volumes.
+If name is not given, delete the most recent volume.
 
-Required Parameters: 
+Required Parameters:
 
-        source --
-    
-            The name of source (volume?)
-
-        destination --
-
-            The name of vm???
+        name: volume name
 ```
 
-:o2: Add functions from provider with descriptions of required
-parameters
+list(**kwargs):
+
+```
+This function list all volumes as following:
+If NAME (volume name) is specified, it will print out info of NAME.
+If NAME (volume name) is not specified, it will print out info of all
+          volumes under current cloud.
+If vm is specified, it will print out all the volumes attached to vm.
+If region(path) is specified, it will print out
+          all the volumes in that region. i.e. /Users/username/multipass
+
+Required Parameters:
+
+        NAME: name of volume
+        vm: name of vm
+        path: volume path
+```
+
+attach(names, vm):
+
+```
+This function attach one or more volumes to vm. It returns info of
+updated volume. The updated dict with "AttachedToVm" showing
+the name of vm where the volume attached to.
+
+Required Parameters:
+
+        names (string): names of volumes
+        vm (string): name of vm
+```
+
+mount(path=None,vm=None):
+
+```
+mount volume to vm
+
+Required Parameters:
+
+        path (string): path of volume
+        vm (string): name of vm
+```
+
+_get_mount_status(vm=None):
+
+```
+Get mount status of vm
+
+Required Parameters:
+
+        vm (string): name of vm
+```
+
+unmount(path=None, vm=None):
+
+```
+Unmount volume from vm
+
+Required Parameters:
+
+        path (string): path of volume
+        vm (string): name of vm
+```
+
+detach(name):
+
+```
+This function detach a volume from vm. It returns the info of the updated volume.
+The vm under "AttachedToVm" will be removed if volume is successfully detached.
+Will detach volume from all vms.
+
+Required Parameters:
+
+        name: name of volume to be dettached
+```
+
+add_tag(name, **kwargs):
+
+```
+This function add tag to a volume.
+If volume name is not specified, then tag will be added to the last volume.
+
+Required Parameters:
+
+        NAME: name of volume
+        kwargs:
+                key: name of tag
+                value: value of tag
+```
+
+status(name=None):
+
+```
+This function get volume status, such as "in-use", "available", "deleted"
+
+Required Parameters:
+
+        name (string): volume name
+```
+
+migrate(**kwargs):
+
+```
+Migrate volume from one vm to another vm. "region" is volume path.
+If vm and volume are in the same region (path), migrate within the same region (path)
+If vm and volume are in different regions, migrate between two regions (path)
+
+Required Parameters:
+
+        name (string): the volume name
+        vm (string): the vm name
+```
+
+sync(names):
+
+```
+sync contents of one volume to another volume
+
+Required Parameters:
+
+        names (list): list of volume names
+```
 
 ### AWS
 
@@ -80,7 +179,7 @@ parameters
   <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
 * Amazon EBS:   
   <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-volume.html>
-* Amazon python api:   
+* Amazon python boto3:   
   <https://boto3.amazonaws.com/v1/documentation/api/latest/index.html>
 * REST api:   
   <https://docs.aws.amazon.com/apigateway/api-reference/>
@@ -101,9 +200,7 @@ Availability Zone.
 Required Parameters: 
 
 
-        AvailabilityZone (string) -- 
-
-            The Availability Zone in which to create the volume.
+        AvailabilityZone (string): The Availability Zone in which to create the volume.
 ```
 
 describe_volumes(**kwargs)
@@ -120,9 +217,7 @@ state (not attached to an instance).
 
 Required Parameters: 
 
-        VolumeId (string) --
-
-            The ID of the volume.
+        VolumeId (string): The ID of the volume.
 ```
 
 attach_volume(**kwargs)
@@ -133,31 +228,42 @@ to the instance with the specified device name.
 
 Required Parameters:
 
-        Device (string) --
+        Device (string): The device name (for example, /dev/sdh or xvdh ).
 
-            The device name (for example, /dev/sdh or xvdh ).
+        InstanceId (string): The ID of the instance.
 
-        InstanceId (string) --
-
-            The ID of the instance.
-
-        VolumeId (string) --
-
-            The ID of the volume.
+        VolumeId (string): The ID of the volume.
 ```
 
 detach_volume(**kwargs)
+
 ```
 Detaches an EBS volume from an instance.
 
 Required Parameters:
 
-        VolumeId (string) --
-
-            The ID of the volume.
+        VolumeId (string): The ID of the volume.
 ```
 
-:o2: Add functions from provider with descriptions of required parameters
+migrate(**kwargs):
+
+```
+Migrate EBS volume from one instance to another instance.
+
+Required Parameters:
+
+        VolumeId (string): The ID of the volume.
+
+        InstanceId (string): The ID of the instance.
+```
+
+sync(names):
+
+```
+sync contents of one volume to another volume
+
+        VolumeId (string): The ID of the volume.
+```
 
 ### Google
 
@@ -386,9 +492,11 @@ Required Parameters:
 
 ## Documentation on how to move volumes from one provider to the next 
 
-* from Amazon S3
+* from Amazon EBS volume
+ 
+    create a copy of EBS volume content into Amazon S3, and then migration could be done as follows:
 
-  * Migrating from Amazon S3 to Cloud Storage
+  * Migrating from Amazon S3 to Google Cloud Storage
 
     <https://cloud.google.com/storage/docs/migrating#storage-list-buckets-s3-python>
 
@@ -399,6 +507,8 @@ Required Parameters:
     <https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/master/README.md>
 
   * Migrating from Amazon S3 to OpenStack
+  
+  * Migrating from Amazon S3 to Oracle
 
 * from Cloud Storage
 

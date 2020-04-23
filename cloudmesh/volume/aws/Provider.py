@@ -210,7 +210,7 @@ class Provider(VolumeABC):
         iol volume could attach to multiple vms, not implemented)
 
         :param volume_name: the name of volume.
-        :return: vm_name: the name of vm
+        :return: string
         """
         volume = self.client.describe_volumes(
             Filters=[
@@ -245,8 +245,8 @@ class Provider(VolumeABC):
         Only IOPS io1 volumes can attach to multiple vms (creating of io1 volume
         is not implemented)
 
-        :param data: returned volume dict
-        :return: data: updated volume dict
+        :param data: volume dict
+        :return: dict
         """
         elements = data['Volumes']
         for i in range(len(elements)):
@@ -268,7 +268,7 @@ class Provider(VolumeABC):
         This function find volume_id through volume_name
 
         :param volume_name: the name of volume
-        :return: volume_id
+        :return: string
         """
         volume = self.client.describe_volumes(
             Filters=[
@@ -286,7 +286,7 @@ class Provider(VolumeABC):
         This function find vm_id through vm_name
 
         :param vm_name: the name of vom
-        :return: vm_id
+        :return: string
         """
         instance = self.client.describe_instances(
             Filters=[
@@ -328,7 +328,6 @@ class Provider(VolumeABC):
         )
         result = self.update_dict(result)
         #volume_status = volume['Volumes'][0]['State']
-
         return result
 
 
@@ -348,7 +347,7 @@ class Provider(VolumeABC):
         :param size (int): the size of volume (GB)
         :param volume_type: volume type
         :param region (string): availability zone of volume
-        :return: volume dict
+        :return: dict
         """
 
         for key in self.default.keys():
@@ -359,7 +358,6 @@ class Provider(VolumeABC):
 
         result = self._create(**kwargs)
         result = self.update_dict(result)
-        #print(result)
         return result
 
     def _create(self,
@@ -428,7 +426,6 @@ class Provider(VolumeABC):
         result = {}
         result['Volumes']= r
         result['Volumes'][0]['AttachedToVm'] = []
-
         return result
 
 
@@ -448,7 +445,7 @@ class Provider(VolumeABC):
         :param NAME: name of volume
         :param vm: name of vm
         :param region: name of availability zone
-        :return:
+        :return: dict
         """
 
         if kwargs and kwargs['refresh']==True:
@@ -527,6 +524,7 @@ class Provider(VolumeABC):
         :param NAME (string): volume name
         :return: dict
         """
+
         result = self.client.describe_volumes(
             Filters=[
                 {
@@ -534,7 +532,6 @@ class Provider(VolumeABC):
                     'Values': [name]
                 },
             ],)
-        #banner(f"delete volume {NAME}")
         volume_id = self.find_volume_id(name)
         if result['Volumes'][0]['State'] == 'available':
             response = self.client.delete_volume(VolumeId=volume_id)
@@ -556,7 +553,6 @@ class Provider(VolumeABC):
     def attach(self,
                names,
                vm,
-               device=None,
                dryrun=False):
 
         """
@@ -564,11 +560,10 @@ class Provider(VolumeABC):
         to list the updated volume. The updated dict with "AttachedToVm" showing
         the name of vm where the volume attached to.
 
-        :param NAMES (string): names of volumes
+        :param names (string): names of volumes
         :param vm (string): name of vm
-        :param device (string): The device name which is the attaching point to vm
         :param dryrun (boolean): True|False
-        :return: self.list()
+        :return: list of dict
         """
 
         devices = [
@@ -604,7 +599,7 @@ class Provider(VolumeABC):
         volume is successfully detached.
 
         :param NAME: name of volume to dettach
-        :return: self.list()
+        :return: dict
         """
 
         volume_status = self.status(name=name)[0]['State']
@@ -634,7 +629,7 @@ class Provider(VolumeABC):
         :param kwargs:
                     key: name of tag
                     value: value of tag
-        :return: self.list(name)
+        :return: dict
         """
 
         key = kwargs['key']

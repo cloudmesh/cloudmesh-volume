@@ -119,7 +119,6 @@ class Provider(VolumeABC):
         Tags is a key-value pair, with key as tag name and value as tag value, tag = {key: value}.
         A volume can have multipale tags.
         If given duplicated tag name, update the value to the current tag value.
-        Can do "cms volume add_tag --key=good --value=''" to delete a tag
 
         :param info: volume info
         :param vms: attached to vms
@@ -206,6 +205,13 @@ class Provider(VolumeABC):
         return result
 
     def delete(self, NAME):
+        """
+        Delete volumes.
+        If name is not given, delete the most recent volume.
+
+        :param name: List of volume name
+        :return:
+        """
         result = self.cm.find_name(NAME)
         path = result[0]['path']
         try:
@@ -232,7 +238,7 @@ class Provider(VolumeABC):
         :param NAME: name of volume
         :param vm: name of vm
         :param region: for multipass, please give path
-        :return:
+        :return: dict
         """
 
         if kwargs:
@@ -258,6 +264,7 @@ class Provider(VolumeABC):
         return result
 
     def _get_vm_status(self, name=None) -> dict:
+
         dict_result = {}
         result = Shell.run(f"multipass info {name} --format=json")
 
@@ -276,13 +283,23 @@ class Provider(VolumeABC):
         return dict_result
 
     def attach(self,
-               NAMES,
+               names,
                vm,
                device=None,
                dryrun=False):
+        """
+        This function attach one or more volumes to vm. It returns info of
+        updated volume. The updated dict with "AttachedToVm" showing
+        the name of vm where the volume attached to.
+
+        :param names (string): names of volumes
+        :param vm (string): name of vm
+        :param dryrun (boolean): True|False
+        :return: dict
+        """
 
         results = []
-        for name in NAMES:
+        for name in names:
             volume_info = self.cm.find_name(name)
             if volume_info and volume_info[0]['State'] != "deleted":
                 vms = volume_info[0]['AttachedToVm']
@@ -303,13 +320,13 @@ class Provider(VolumeABC):
 
     def mount(self,path=None,vm=None):
         """
-        TODO: MISSING
+        mount volume to vm
 
-        :param path:
-        :param vm:
-        :return:
+        :param path (string): path of volume
+        :param vm (string): name of vm
+        :return: dict
         """
-        #banner(f"mount {self.path} {vm}")
+
         os.system(f"multipass mount {path} {vm}")
         dict_result = self._get_mount_status(vm=vm)
 
@@ -317,9 +334,9 @@ class Provider(VolumeABC):
 
     def _get_mount_status(self,vm=None):
         """
-        TODO: MISSING
+        Get mount status of vm
 
-        :param name:
+        :param vm (string): name of vm
         :return:
         """
         result = Shell.run(f"multipass info {vm} --format=json")
@@ -339,37 +356,63 @@ class Provider(VolumeABC):
         return dict_result
 
     def unmount(self, path=None, vm=None):
-        #banner(f"unmount {vm}:{path}")
+        """
+        Unmount volume from vm
+
+        :param path (string): path of volume
+        :param vm (string): name of vm
+        :return:
+        """
+
         os.system(f"multipass unmount {vm}:{path}")
         dict_result = self._get_mount_status(vm=vm)
 
         return dict_result
 
 
-    def detach(self, NAME):
-        #will detach from all vms
-        volume_info = self.cm.find_name(NAME)
+    def detach(self, name):
+        """
+        This function detach a volume from vm. It returns the info of
+        the updated volume.
+        The vm under "AttachedToVm" will be removed if
+        volume is successfully detached.
+        Will detach volume from all vms.
+
+        :param name: name of volume to dettach
+        :return: dict
+        """
+
+        volume_info = self.cm.find_name(name)
         if volume_info and volume_info[0]['State'] != "deleted":
             vms = volume_info[0]['AttachedToVm']
             path = volume_info[0]['path']
             if len(vms) == 0:
-                Console.error(f"{NAME} does not attach to any vm")
+                Console.error(f"{name} does not attach to any vm")
             else:
                 removed = []
                 for vm in vms:
-                    result = self.unmount(path=f"{path}/{NAME}", vm=vm)
+                    result = self.unmount(path=f"{path}/{name}", vm=vm)
                     mounts = result['mounts']
-                    if f"{path}/{NAME}" not in mounts.keys():
+                    if f"{path}/{name}" not in mounts.keys():
                         removed.append(vm)
                 for vm in removed:
                     vms.remove(vm)
                 result = self.update_volume_after_detach(volume_info, vms)
-                #result = self.update_dict([result])
                 return result[0]
         else:
             Console.error("volume is not existed or volume had been deleted")
 
-    def add_tag(self, NAME, **kwargs):
+    def add_tag(self, name, **kwargs):
+        """
+        This function add tag to a volume.
+        If volume name is not specified, then tag will be added to the last volume.
+
+        :param NAME: name of volume
+        :param kwargs:
+                    key: name of tag
+                    value: value of tag
+        :return: dict
+        """
         key = kwargs['key']
         value = kwargs['value']
         volume_info = self.cm.find_name(name=NAME)
@@ -377,6 +420,12 @@ class Provider(VolumeABC):
         return volume_info[0]
 
     def status(self, name=None):
+        """
+        This function get volume status, such as "in-use", "available", "deleted"
+
+        :param name (string): volume name
+        :return: dict
+        """
         volume_info = self.cm.find_name(name)
         if volume_info:
             status = volume_info[0]['State']
@@ -387,8 +436,8 @@ class Provider(VolumeABC):
     def migrate(self, **kwargs):
         """
         Migrate volume from one vm to another vm. "region" is volume path.
-        If vm and volume are in the same region, migrate within the same region
-        If vm and volume are in different regions, migrate between two regions
+        If vm and volume are in the same region (path), migrate within the same region (path)
+        If vm and volume are in different regions, migrate between two regions (path)
 
         :param NAME (string): the volume name
         :param vm (string): the vm name
@@ -416,20 +465,20 @@ class Provider(VolumeABC):
 
         return volume_info
 
-    def sync(self, NAMES):
+    def sync(self, names):
         """
         sync contents of one volume to another volume
 
-        :param NAMES (list): list of volume names
-        :return: dict
+        :param names (list): list of volume names
+        :return: list of dict
         """
-        path1 = f"{self.cm.find_name(name=NAMES[0])[0]['path']}/{NAMES[0]}/"
-        path2 = f"{self.cm.find_name(name=NAMES[1])[0]['path']}/{NAMES[1]}/"
+        path1 = f"{self.cm.find_name(name=names[0])[0]['path']}/{names[0]}/"
+        path2 = f"{self.cm.find_name(name=names[1])[0]['path']}/{names[1]}/"
         os.system(f"rsync -avzh {path2} {path1}")
         kwargs1={}
         kwargs1['key'] = "sync_with"
-        kwargs1['value'] = NAMES[1]
-        volume_info1 = self.add_tag(NAMES[0],**kwargs1)
+        kwargs1['value'] = names[1]
+        volume_info1 = self.add_tag(names[0],**kwargs1)
         result = [volume_info1]
         return result
 

@@ -298,7 +298,7 @@ class Provider(object):  # broken
         """
         purge deleted volumes in MongoDB database
 
-        :return: list
+        :return: dict
         """
         collection = f"{self.cloud}-volume"
         self.cm = CmDatabase()

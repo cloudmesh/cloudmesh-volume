@@ -5,7 +5,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from time import sleep
 from googleapiclient.errors import HttpError
-from cloudmesh.common.console import Console
+from cloudmesh.mongo.CmDatabase import CmDatabase
 from pprint import pprint
 
 class Provider(VolumeABC):
@@ -72,6 +72,7 @@ class Provider(VolumeABC):
         """
         self.cloud = name
         config = Config()
+        self.cm = CmDatabase()
         self.default = config[f"cloudmesh.volume.{name}.default"]
         self.credentials = config[f"cloudmesh.volume.{name}.credentials"]
         self.compute_scopes = [
@@ -218,69 +219,109 @@ class Provider(VolumeABC):
 
         :return: an array of dicts representing the disks
         """
-        # add kwargs['NAMES']
-        # add kwargs['NAME']
         compute_service = self._get_compute_service()
-        # if --region=REGION
-        if kwargs['region'] is not None:
+        if kwargs and kwargs['refresh'] is False:
+            result = self.cm.find(cloud=self.cloud, kind='volume')
+            for key in kwargs:
+                if key == 'NAME' and kwargs['NAME']:
+                    result = self.cm.find_name(name=kwargs['NAME'])
+                elif key == 'NAMES' and kwargs['NAMES']:
+                    result = self.cm.find_names(names=kwargs['NAMES'])
+
             found = []
-            disk_list = compute_service.disks().list(
-                project=self.credentials['project_id'],
-                zone=kwargs['region'],
-                orderBy='creationTimestamp desc').execute()
-            if 'items' in disk_list:
-                disks = disk_list['items']
-                for disk in disks:
-                    found.append(disk)
+            if kwargs['region'] is not None:
+                disk_list = compute_service.disks().list(
+                    project=self.credentials['project_id'],
+                    zone=kwargs['region'],
+                    orderBy='creationTimestamp desc').execute()
+                if 'items' in disk_list:
+                    disks = disk_list['items']
+                    for disk in disks:
+                        found.append(disk)
+
+            if kwargs['NAMES'] is not None or kwargs['vm'] is not None:
+                disk_list = compute_service.disks().aggregatedList(
+                    project=self.credentials["project_id"],
+                    orderBy='creationTimestamp desc').execute()
+
+                if kwargs['NAMES'] is not None:
+                    items = disk_list["items"]
+                    for item in items:
+                        if "disks" in items[item]:
+                            disks = items[item]["disks"]
+                            for disk in disks:
+                                if disk in kwargs['NAMES']:
+                                    found.append(disk)
+
+                if kwargs['vm'] is not None:
+                    items = disk_list["items"]
+                    for item in items:
+                        if "disks" in items[item]:
+                            disks = items[item]["disks"]
+                            for disk in disks:
+                                if 'users' in disk:
+                                    users = disk['users']
+                                    for user in users:
+                                        remove_user_url = user.rsplit('/', 1)[1]
+                                        if remove_user_url == kwargs['vm']:
+                                            found.append(disk)
+                else:
+                    items = disk_list["items"]
+                    for item in items:
+                        if "disks" in items[item]:
+                            disks = items[item]["disks"]
+                            for disk in disks:
+                                found.append(disk)
 
             result = self.update_dict(found)
             return result
 
-        if kwargs['NAMES'] is not None or kwargs['vm'] is not None:
-            disk_list = compute_service.disks().aggregatedList(
-                project=self.credentials["project_id"],
-                orderBy='creationTimestamp desc').execute()
+        elif kwargs and kwargs['refresh'] is True:
 
             found = []
-            #if kwargs['NAME'] is not None:
-            #    items = disk_list["items"]
-            #    for item in items:
-            #        if "disks" in items[item]:
-            #            disks = items[item]["disks"]
-            #            for disk in disks:
-            #                if disk == kwargs['NAME']:
-            #                    found.append(disk)
-            #                    continue
-            # if list of names was given
-            if kwargs['NAMES'] is not None:
-                items = disk_list["items"]
-                for item in items:
-                    if "disks" in items[item]:
-                        disks = items[item]["disks"]
-                        for disk in disks:
-                            if disk in kwargs['NAMES']:
+            if kwargs['region'] is not None:
+                disk_list = compute_service.disks().list(
+                    project=self.credentials['project_id'],
+                    zone=kwargs['region'],
+                    orderBy='creationTimestamp desc').execute()
+                if 'items' in disk_list:
+                    disks = disk_list['items']
+                    for disk in disks:
+                        found.append(disk)
+
+            elif kwargs['NAMES'] is not None or kwargs['vm'] is not None:
+                disk_list = compute_service.disks().aggregatedList(
+                    project=self.credentials["project_id"],
+                    orderBy='creationTimestamp desc').execute()
+
+                if kwargs['NAMES'] is not None:
+                    items = disk_list["items"]
+                    for item in items:
+                        if "disks" in items[item]:
+                            disks = items[item]["disks"]
+                            for disk in disks:
+                                if disk in kwargs['NAMES']:
+                                    found.append(disk)
+
+                elif kwargs['vm'] is not None:
+                    items = disk_list["items"]
+                    for item in items:
+                        if "disks" in items[item]:
+                            disks = items[item]["disks"]
+                            for disk in disks:
+                                if 'users' in disk:
+                                    users = disk['users']
+                                    for user in users:
+                                        remove_user_url = user.rsplit('/', 1)[1]
+                                        if remove_user_url == kwargs['vm']:
+                                            found.append(disk)
+                else:
+                    items = disk_list["items"]
+                    for item in items:
+                        if "disks" in items[item]:
+                            disks = items[item]["disks"]
+                            for disk in disks:
                                 found.append(disk)
-            # if --vm=VM
-            if kwargs['vm'] is not None:
-                items = disk_list["items"]
-                for item in items:
-                    if "disks" in items[item]:
-                        disks = items[item]["disks"]
-                        for disk in disks:
-                            if 'users' in disk:
-                                pprint(disk)
-                                users = disk['users']
-                                for user in users:
-                                    remove_user_url = user.rsplit('/', 1)[1]
-                                    if remove_user_url == kwargs['vm']:
-                                        found.append(disk)
-            else:
-                items = disk_list["items"]
-                for item in items:
-                    if "disks" in items[item]:
-                        disks = items[item]["disks"]
-                        for disk in disks:
-                            found.append(disk)
 
             result = self.update_dict(found)
             return result

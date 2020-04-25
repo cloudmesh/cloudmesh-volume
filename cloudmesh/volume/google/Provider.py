@@ -592,16 +592,16 @@ class Provider(VolumeABC):
         disk_list = self.list()
         # find disk in list and get zone
         zone = None
-        labelfingerprint = None
+        label_fingerprint = None
         for disk in disk_list:
             if disk['name'] == kwargs['NAME']:
                 zone = str(disk['zone'])
-                labelfingerprint = disk['labelFingerprint']
+                label_fingerprint = disk['labelFingerprint']
         compute_service.disks().setLabels(
             project=self.credentials['project_id'],
             zone=zone,
             resource=kwargs['NAME'],
-            body={'labelFingerprint': labelfingerprint,
+            body={'labelFingerprint': label_fingerprint,
                   'labels': {kwargs['key']: str(kwargs['value'])}}).execute()
 
         tagged_disk = self._get_disk(self.default['zone'], kwargs['NAME'])

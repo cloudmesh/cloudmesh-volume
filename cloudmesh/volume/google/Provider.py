@@ -185,34 +185,123 @@ class Provider(VolumeABC):
                 disk=disk).execute()
         return disk
 
+    def _list_instances(self, instance=None):
+        """
+        Gets a list of available VM instances
+
+        :return: list of dicts representing VM instances
+        """
+        compute_service = self._get_compute_service()
+        instance_list = compute_service.instances().aggregatedList(
+            project=self.credentials["project_id"],
+            orderBy='creationTimestamp desc').execute()
+        found_instances = []
+        items = instance_list["items"]
+        for item in items:
+            if "instances" in items[item]:
+                instances = items[item]["instances"]
+                pprint(instances)
+                if instance is not None:
+                    for vm in instances:
+                        if vm == instance:
+                            found_instances.append(vm)
+                            continue
+                else:
+                    for vm in instances:
+                        found_instances.append(vm)
+        return found_instances
+
     def list(self, **kwargs):
         """
-        Retrieves an aggregated list of persistent disks.
-        Currently, only sorting by "name" or "creationTimestamp desc"
-        is supported.
+        Retrieves an aggregated list of persistent disks with most recently
+        created disks list first.
 
         :return: an array of dicts representing the disks
         """
         # add kwargs['NAMES']
         # add kwargs['NAME']
         compute_service = self._get_compute_service()
-        disk_list = compute_service.disks().aggregatedList(
-            project=self.credentials["project_id"],
-            orderBy='creationTimestamp desc').execute()
-        # look thought all disk list zones and find zones w/ 'disks'
-        # then get disk details and add to found
-        found = []
-        items = disk_list["items"]
-        for item in items:
-            if "disks" in items[item]:
-                disks = items[item]["disks"]
+        # if --region=REGION
+        if kwargs['region'] is not None:
+            found = []
+            disk_list = compute_service.disks().list(
+                project=self.credentials['project_id'],
+                zone=kwargs['region'],
+                orderBy='creationTimestamp desc').execute()
+            if 'items' in disk_list:
+                disks = disk_list['items']
                 for disk in disks:
-                    # Add disk details to found.
                     found.append(disk)
 
-        result = self.update_dict(found)
+            result = self.update_dict(found)
+            return result
 
-        return result
+        if kwargs['NAMES'] is not None or kwargs['vm'] is not None:
+            disk_list = compute_service.disks().aggregatedList(
+                project=self.credentials["project_id"],
+                orderBy='creationTimestamp desc').execute()
+            # look thought all disk list zones and find zones w/ 'disks'
+            # then get disk details and add to found
+            found = []
+            #if kwargs['NAME'] is not None:
+            #    items = disk_list["items"]
+            #    for item in items:
+            #        if "disks" in items[item]:
+            #            disks = items[item]["disks"]
+            #            for disk in disks:
+            #                if disk == kwargs['NAME']:
+            #                    found.append(disk)
+            #                    continue
+            # if list of names was given
+            if kwargs['NAMES'] is not None:
+                items = disk_list["items"]
+                for item in items:
+                    if "disks" in items[item]:
+                        disks = items[item]["disks"]
+                        for disk in disks:
+                            if disk in kwargs['NAMES']:
+                                found.append(disk)
+            # if --vm=VM
+            if kwargs['vm'] is not None:
+                items = disk_list["items"]
+                for item in items:
+                    if "disks" in items[item]:
+                        disks = items[item]["disks"]
+                        for disk in disks:
+                            if 'users' in disk:
+                                pprint(disk)
+                                users = disk['users']
+                                for user in users:
+                                    remove_user_url = user.rsplit('/', 1)[1]
+                                    if remove_user_url == kwargs['vm']:
+                                        found.append(disk)
+            else:
+                items = disk_list["items"]
+                for item in items:
+                    if "disks" in items[item]:
+                        disks = items[item]["disks"]
+                        for disk in disks:
+                            found.append(disk)
+
+            result = self.update_dict(found)
+
+            return result
+
+        else:
+            disk_list = compute_service.disks().aggregatedList(
+                project=self.credentials["project_id"],
+                orderBy='creationTimestamp desc').execute()
+
+            found = []
+            items = disk_list["items"]
+            for item in items:
+                if "disks" in items[item]:
+                    disks = items[item]["disks"]
+                    for disk in disks:
+                        found.append(disk)
+
+            result = self.update_dict(found)
+            return result
 
     def create(self, **kwargs):
         """
@@ -225,10 +314,13 @@ class Provider(VolumeABC):
         volume_type = kwargs['volume_type']
         size = kwargs['size']
         description = kwargs['description']
+        zone = kwargs['region']
         if volume_type is None:
             volume_type = self.default["type"]
         if size is None:
             size = self.default["sizeGb"]
+        if zone is None:
+            zone = self.default['zone']
         compute_service.disks().insert(
             project=self.credentials["project_id"],
             zone=self.default['zone'],
@@ -240,8 +332,7 @@ class Provider(VolumeABC):
         # wait for disk to finish being created
         while new_disk['status'] != 'READY':
             self._wait(1)
-            new_disk = self._get_disk(self.default['zone'], kwargs['NAME'])
-
+            new_disk = self._get_disk(zone, kwargs['NAME'])
         update_new_disk = self.update_dict(new_disk)
 
         return update_new_disk
@@ -280,26 +371,6 @@ class Provider(VolumeABC):
                         pass
         except HttpError:
             pass
-
-    def _list_instances(self):
-        """
-        Gets a list of available VM instances
-
-        :return: list of dicts representing VM instances
-        """
-        compute_service = self._get_compute_service()
-        instance_list = compute_service.instances().aggregatedList(
-            project=self.credentials["project_id"],
-            orderBy='creationTimestamp desc').execute()
-        found_instances = []
-        items = instance_list["items"]
-        for item in items:
-            if "instances" in items[item]:
-                instances = items[item]["instances"]
-                for instance in instances:
-                    # Add instance details to found_instance.
-                    found_instances.append(instance)
-        return found_instances
 
     def _get_instance(self, zone, instance):
         """

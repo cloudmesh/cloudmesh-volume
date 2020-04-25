@@ -240,8 +240,7 @@ class Provider(VolumeABC):
             disk_list = compute_service.disks().aggregatedList(
                 project=self.credentials["project_id"],
                 orderBy='creationTimestamp desc').execute()
-            # look thought all disk list zones and find zones w/ 'disks'
-            # then get disk details and add to found
+
             found = []
             #if kwargs['NAME'] is not None:
             #    items = disk_list["items"]
@@ -284,7 +283,6 @@ class Provider(VolumeABC):
                             found.append(disk)
 
             result = self.update_dict(found)
-
             return result
 
         else:
@@ -329,12 +327,13 @@ class Provider(VolumeABC):
                   'sizeGb': str(size),
                   'description': description}).execute()
         new_disk = self._get_disk(self.default['zone'], kwargs['NAME'])
+
         # wait for disk to finish being created
         while new_disk['status'] != 'READY':
             self._wait(1)
             new_disk = self._get_disk(zone, kwargs['NAME'])
-        update_new_disk = self.update_dict(new_disk)
 
+        update_new_disk = self.update_dict(new_disk)
         return update_new_disk
 
     def delete(self, name=None):
@@ -346,9 +345,8 @@ class Provider(VolumeABC):
         """
         compute_service = self._get_compute_service()
         disk_list = self.list()
-        # find disk in list and get zone
         zone = None
-        for disk in disk_list:
+        for disk in disk_list: # find disk in list and get zone
             if disk['name'] == name:
                 zone = str(disk['zone'])
         if zone is None:
@@ -358,6 +356,7 @@ class Provider(VolumeABC):
             project=self.credentials["project_id"],
             zone=zone,
             disk=name).execute()
+
         # attempt to call disk from cloud
         try:
             deleted_disk = self._get_disk(zone, name)
@@ -437,7 +436,6 @@ class Provider(VolumeABC):
         :return: updated disks with current status
         """
         compute_service = self._get_compute_service()
-        # get zone of vm from list of vm
         instance_list = self._list_instances()
         zone_url = None
         instance_status = None
@@ -492,7 +490,6 @@ class Provider(VolumeABC):
         :return: dict representing updated status of detached disk
         """
         compute_service = self._get_compute_service()
-        # Get name of attached instance(s) from list of disks
         instances = []
         zone = None
         disk_list = self.list()

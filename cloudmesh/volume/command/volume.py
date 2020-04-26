@@ -55,7 +55,7 @@ class VolumeCommand(PluginCommand):
               NAMES  the names of multiple volumes
 
           Options:
-              --vm=VMNAME          The name of the virtual machine
+              --vm=VM              The name of the virtual machine
               --region=REGION      The name of the region
               --cloud=CLOUD        The name of the cloud
               --refresh            If refresh the info is taken from the cloud
@@ -105,10 +105,11 @@ class VolumeCommand(PluginCommand):
 
             volume sync [NAMES]
                         [--cloud=CLOUD]
-                Volume sync allows for data to shared between two volumes.
+                Volume sync allows for data to be shared between two volumes.
 
             volume purge [--cloud=CLOUD]
-                Volume purge delete all the "deleted" volumes in MongoDB database
+                Volume purge delete all the "deleted" volumes in MongoDB
+                database
 
         """
 
@@ -386,5 +387,6 @@ class VolumeCommand(PluginCommand):
             provider = Provider(name=arguments.cloud)
             provider.purge(**arguments)
             result = provider.list()
-            print(provider.Print(result, kind='volume', output=arguments.output))
+            print(provider.Print(result, kind='volume', output=arguments.output)
+                  )
 

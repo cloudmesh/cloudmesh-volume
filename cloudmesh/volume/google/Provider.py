@@ -5,8 +5,9 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from time import sleep
 from googleapiclient.errors import HttpError
-from cloudmesh.common.console import Console
+from cloudmesh.mongo.CmDatabase import CmDatabase
 from pprint import pprint
+
 
 class Provider(VolumeABC):
     kind = "google"
@@ -72,6 +73,7 @@ class Provider(VolumeABC):
         """
         self.cloud = name
         config = Config()
+        self.cm = CmDatabase()
         self.default = config[f"cloudmesh.volume.{name}.default"]
         self.credentials = config[f"cloudmesh.volume.{name}.credentials"]
         self.compute_scopes = [
@@ -180,108 +182,12 @@ class Provider(VolumeABC):
         """
         compute_service = self._get_compute_service()
         disk = compute_service.disks().get(
-                project=self.credentials["project_id"],
-                zone=zone,
-                disk=disk).execute()
-        return disk
-
-    def list(self, **kwargs):
-        """
-        Retrieves an aggregated list of persistent disks.
-        Currently, only sorting by "name" or "creationTimestamp desc"
-        is supported.
-
-        :return: an array of dicts representing the disks
-        """
-        # add kwargs['NAMES']
-        # add kwargs['NAME']
-        compute_service = self._get_compute_service()
-        disk_list = compute_service.disks().aggregatedList(
-            project=self.credentials["project_id"],
-            orderBy='creationTimestamp desc').execute()
-        # look thought all disk list zones and find zones w/ 'disks'
-        # then get disk details and add to found
-        found = []
-        items = disk_list["items"]
-        for item in items:
-            if "disks" in items[item]:
-                disks = items[item]["disks"]
-                for disk in disks:
-                    # Add disk details to found.
-                    found.append(disk)
-
-        result = self.update_dict(found)
-
-        return result
-
-    def create(self, **kwargs):
-        """
-        Creates a persistent disk in the specified project using the data in
-        the request.
-
-        :return: a list containing the newly created disk
-        """
-        compute_service = self._get_compute_service()
-        volume_type = kwargs['volume_type']
-        size = kwargs['size']
-        description = kwargs['description']
-        if volume_type is None:
-            volume_type = self.default["type"]
-        if size is None:
-            size = self.default["sizeGb"]
-        compute_service.disks().insert(
-            project=self.credentials["project_id"],
-            zone=self.default['zone'],
-            body={'type': volume_type,
-                  'name': kwargs['NAME'],
-                  'sizeGb': str(size),
-                  'description': description}).execute()
-        new_disk = self._get_disk(self.default['zone'], kwargs['NAME'])
-        # wait for disk to finish being created
-        while new_disk['status'] != 'READY':
-            self._wait(1)
-            new_disk = self._get_disk(self.default['zone'], kwargs['NAME'])
-
-        update_new_disk = self.update_dict(new_disk)
-
-        return update_new_disk
-
-    def delete(self, name=None):
-        """
-        Deletes the specified persistent disk.
-        Deleting a disk removes its data permanently and is irreversible.
-
-        :param name: Name of the disk to delete
-        """
-        compute_service = self._get_compute_service()
-        disk_list = self.list()
-        # find disk in list and get zone
-        zone = None
-        for disk in disk_list:
-            if disk['name'] == name:
-                zone = str(disk['zone'])
-        if zone is None:
-            banner(f'{name} was not found')
-            return
-        compute_service.disks().delete(
             project=self.credentials["project_id"],
             zone=zone,
-            disk=name).execute()
-        # attempt to call disk from cloud
-        try:
-            deleted_disk = self._get_disk(zone, name)
-            # wait for disk to be deleted if found in cloud
-            if deleted_disk['status'] == 'DELETING':
-                while deleted_disk['status'] == 'DELETING':
-                    self._wait(1)
-                    try:
-                        deleted_disk = self._get_disk(zone, name)
-                    except HttpError:
-                        pass
-        except HttpError:
-            pass
+            disk=disk).execute()
+        return disk
 
-    def _list_instances(self):
+    def _list_instances(self, instance=None):
         """
         Gets a list of available VM instances
 
@@ -296,10 +202,220 @@ class Provider(VolumeABC):
         for item in items:
             if "instances" in items[item]:
                 instances = items[item]["instances"]
-                for instance in instances:
-                    # Add instance details to found_instance.
-                    found_instances.append(instance)
+                if instance is not None:
+                    for vm in instances:
+                        if vm == instance:
+                            found_instances.append(vm)
+                            continue
+                else:
+                    for vm in instances:
+                        found_instances.append(vm)
         return found_instances
+
+    def list(self, **kwargs):
+        """
+        Retrieves an aggregated list of persistent disks with most recently
+        created disks list first.
+
+        :return: an array of dicts representing the disks
+        """
+        compute_service = self._get_compute_service()
+        if kwargs and kwargs['refresh'] is False:
+            result = self.cm.find(cloud=self.cloud, kind='volume')
+            for key in kwargs:
+                if key == 'NAME' and kwargs['NAME']:
+                    result = self.cm.find_name(name=kwargs['NAME'])
+                elif key == 'NAMES' and kwargs['NAMES']:
+                    result = self.cm.find_names(names=kwargs['NAMES'])
+
+            found = []
+            if kwargs['region'] is not None:
+                disk_list = compute_service.disks().list(
+                    project=self.credentials['project_id'],
+                    zone=kwargs['region'],
+                    orderBy='creationTimestamp desc').execute()
+                if 'items' in disk_list:
+                    disks = disk_list['items']
+                    for disk in disks:
+                        found.append(disk)
+
+                result = self.update_dict(found)
+
+            if kwargs['NAMES'] is not None or kwargs['vm'] is not None:
+                disk_list = compute_service.disks().aggregatedList(
+                    project=self.credentials["project_id"],
+                    orderBy='creationTimestamp desc').execute()
+
+                if kwargs['NAMES'] is not None:
+                    items = disk_list["items"]
+                    for item in items:
+                        if "disks" in items[item]:
+                            disks = items[item]["disks"]
+                            for disk in disks:
+                                if disk in kwargs['NAMES']:
+                                    found.append(disk)
+
+                if kwargs['vm'] is not None:
+                    items = disk_list["items"]
+                    for item in items:
+                        if "disks" in items[item]:
+                            disks = items[item]["disks"]
+                            for disk in disks:
+                                if 'users' in disk:
+                                    users = disk['users']
+                                    for user in users:
+                                        remove_user_url = user.rsplit('/', 1)[1]
+                                        if remove_user_url == kwargs['vm']:
+                                            found.append(disk)
+
+                else:
+                    items = disk_list["items"]
+                    for item in items:
+                        if "disks" in items[item]:
+                            disks = items[item]["disks"]
+                            for disk in disks:
+                                found.append(disk)
+
+                result = self.update_dict(found)
+
+            return result
+
+        elif kwargs and kwargs['refresh'] is True:
+
+            found = []
+            if kwargs['region'] is not None:
+                disk_list = compute_service.disks().list(
+                    project=self.credentials['project_id'],
+                    zone=kwargs['region'],
+                    orderBy='creationTimestamp desc').execute()
+                if 'items' in disk_list:
+                    disks = disk_list['items']
+                    for disk in disks:
+                        found.append(disk)
+
+            elif kwargs['NAMES'] is not None or kwargs['vm'] is not None:
+                disk_list = compute_service.disks().aggregatedList(
+                    project=self.credentials["project_id"],
+                    orderBy='creationTimestamp desc').execute()
+
+                if kwargs['NAMES'] is not None:
+                    items = disk_list["items"]
+                    for item in items:
+                        if "disks" in items[item]:
+                            disks = items[item]["disks"]
+                            for disk in disks:
+                                if disk in kwargs['NAMES']:
+                                    found.append(disk)
+
+                elif kwargs['vm'] is not None:
+                    items = disk_list["items"]
+                    for item in items:
+                        if "disks" in items[item]:
+                            disks = items[item]["disks"]
+                            for disk in disks:
+                                if 'users' in disk:
+                                    users = disk['users']
+                                    for user in users:
+                                        remove_user_url = user.rsplit('/', 1)[1]
+                                        if remove_user_url == kwargs['vm']:
+                                            found.append(disk)
+                else:
+                    items = disk_list["items"]
+                    for item in items:
+                        if "disks" in items[item]:
+                            disks = items[item]["disks"]
+                            for disk in disks:
+                                found.append(disk)
+
+            result = self.update_dict(found)
+
+            return result
+
+        else:
+            disk_list = compute_service.disks().aggregatedList(
+                project=self.credentials["project_id"],
+                orderBy='creationTimestamp desc').execute()
+
+            found = []
+            items = disk_list["items"]
+            for item in items:
+                if "disks" in items[item]:
+                    disks = items[item]["disks"]
+                    for disk in disks:
+                        found.append(disk)
+
+            result = self.update_dict(found)
+            return result
+
+    def create(self, **kwargs):
+        """
+        Creates a persistent disk in the specified project using the data in
+        the request.
+
+        :return: a list containing the newly created disk
+        """
+        compute_service = self._get_compute_service()
+        volume_type = kwargs['volume_type']
+        size = kwargs['size']
+        description = kwargs['description']
+        zone = kwargs['region']
+        if volume_type is None:
+            volume_type = self.default["type"]
+        if size is None:
+            size = self.default["sizeGb"]
+        if zone is None:
+            zone = self.default['zone']
+        compute_service.disks().insert(
+            project=self.credentials["project_id"],
+            zone=self.default['zone'],
+            body={'type': volume_type,
+                  'name': kwargs['NAME'],
+                  'sizeGb': str(size),
+                  'description': description}).execute()
+        new_disk = self._get_disk(self.default['zone'], kwargs['NAME'])
+
+        # wait for disk to finish being created
+        while new_disk['status'] != 'READY':
+            self._wait(1)
+            new_disk = self._get_disk(zone, kwargs['NAME'])
+
+        update_new_disk = self.update_dict(new_disk)
+        return update_new_disk
+
+    def delete(self, name=None):
+        """
+        Deletes the specified persistent disk.
+        Deleting a disk removes its data permanently and is irreversible.
+
+        :param name: Name of the disk to delete
+        """
+        compute_service = self._get_compute_service()
+        disk_list = self.list()
+        zone = None
+        for disk in disk_list:  # find disk in list and get zone
+            if disk['name'] == name:
+                zone = str(disk['zone'])
+        if zone is None:
+            banner(f'{name} was not found')
+            return
+        compute_service.disks().delete(
+            project=self.credentials["project_id"],
+            zone=zone,
+            disk=name).execute()
+
+        # attempt to call disk from cloud
+        try:
+            deleted_disk = self._get_disk(zone, name)
+            # wait for disk to be deleted if found in cloud
+            if deleted_disk['status'] == 'DELETING':
+                while deleted_disk['status'] == 'DELETING':
+                    self._wait(1)
+                    try:
+                        deleted_disk = self._get_disk(zone, name)
+                    except HttpError:
+                        pass
+        except HttpError:
+            pass
 
     def _get_instance(self, zone, instance):
         """
@@ -366,7 +482,6 @@ class Provider(VolumeABC):
         :return: updated disks with current status
         """
         compute_service = self._get_compute_service()
-        # get zone of vm from list of vm
         instance_list = self._list_instances()
         zone_url = None
         instance_status = None
@@ -421,7 +536,6 @@ class Provider(VolumeABC):
         :return: dict representing updated status of detached disk
         """
         compute_service = self._get_compute_service()
-        # Get name of attached instance(s) from list of disks
         instances = []
         zone = None
         disk_list = self.list()
@@ -478,16 +592,16 @@ class Provider(VolumeABC):
         disk_list = self.list()
         # find disk in list and get zone
         zone = None
-        labelfingerprint = None
+        label_fingerprint = None
         for disk in disk_list:
             if disk['name'] == kwargs['NAME']:
                 zone = str(disk['zone'])
-                labelfingerprint = disk['labelFingerprint']
+                label_fingerprint = disk['labelFingerprint']
         compute_service.disks().setLabels(
             project=self.credentials['project_id'],
             zone=zone,
             resource=kwargs['NAME'],
-            body={'labelFingerprint': labelfingerprint,
+            body={'labelFingerprint': label_fingerprint,
                   'labels': {kwargs['key']: str(kwargs['value'])}}).execute()
 
         tagged_disk = self._get_disk(self.default['zone'], kwargs['NAME'])
@@ -536,7 +650,6 @@ class Provider(VolumeABC):
         self.attach(name, vm=to_vm)
         result = self.status(name)
         return result
-
 
     def sync(self,
              from_volume=None,

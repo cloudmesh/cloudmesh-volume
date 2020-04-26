@@ -8,6 +8,7 @@ from googleapiclient.errors import HttpError
 from cloudmesh.mongo.CmDatabase import CmDatabase
 from pprint import pprint
 
+
 class Provider(VolumeABC):
     kind = "google"
 
@@ -181,9 +182,9 @@ class Provider(VolumeABC):
         """
         compute_service = self._get_compute_service()
         disk = compute_service.disks().get(
-                project=self.credentials["project_id"],
-                zone=zone,
-                disk=disk).execute()
+            project=self.credentials["project_id"],
+            zone=zone,
+            disk=disk).execute()
         return disk
 
     def _list_instances(self, instance=None):
@@ -201,7 +202,6 @@ class Provider(VolumeABC):
         for item in items:
             if "instances" in items[item]:
                 instances = items[item]["instances"]
-                pprint(instances)
                 if instance is not None:
                     for vm in instances:
                         if vm == instance:
@@ -239,6 +239,8 @@ class Provider(VolumeABC):
                     for disk in disks:
                         found.append(disk)
 
+                result = self.update_dict(found)
+
             if kwargs['NAMES'] is not None or kwargs['vm'] is not None:
                 disk_list = compute_service.disks().aggregatedList(
                     project=self.credentials["project_id"],
@@ -265,6 +267,7 @@ class Provider(VolumeABC):
                                         remove_user_url = user.rsplit('/', 1)[1]
                                         if remove_user_url == kwargs['vm']:
                                             found.append(disk)
+
                 else:
                     items = disk_list["items"]
                     for item in items:
@@ -273,7 +276,8 @@ class Provider(VolumeABC):
                             for disk in disks:
                                 found.append(disk)
 
-            result = self.update_dict(found)
+                result = self.update_dict(found)
+
             return result
 
         elif kwargs and kwargs['refresh'] is True:
@@ -324,6 +328,7 @@ class Provider(VolumeABC):
                                 found.append(disk)
 
             result = self.update_dict(found)
+
             return result
 
         else:
@@ -387,7 +392,7 @@ class Provider(VolumeABC):
         compute_service = self._get_compute_service()
         disk_list = self.list()
         zone = None
-        for disk in disk_list: # find disk in list and get zone
+        for disk in disk_list:  # find disk in list and get zone
             if disk['name'] == name:
                 zone = str(disk['zone'])
         if zone is None:
@@ -587,16 +592,16 @@ class Provider(VolumeABC):
         disk_list = self.list()
         # find disk in list and get zone
         zone = None
-        labelfingerprint = None
+        label_fingerprint = None
         for disk in disk_list:
             if disk['name'] == kwargs['NAME']:
                 zone = str(disk['zone'])
-                labelfingerprint = disk['labelFingerprint']
+                label_fingerprint = disk['labelFingerprint']
         compute_service.disks().setLabels(
             project=self.credentials['project_id'],
             zone=zone,
             resource=kwargs['NAME'],
-            body={'labelFingerprint': labelfingerprint,
+            body={'labelFingerprint': label_fingerprint,
                   'labels': {kwargs['key']: str(kwargs['value'])}}).execute()
 
         tagged_disk = self._get_disk(self.default['zone'], kwargs['NAME'])
@@ -645,7 +650,6 @@ class Provider(VolumeABC):
         self.attach(name, vm=to_vm)
         result = self.status(name)
         return result
-
 
     def sync(self,
              from_volume=None,

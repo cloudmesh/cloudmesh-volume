@@ -334,7 +334,7 @@ class Provider(VolumeABC):
         return result
 
 
-    def detach(self, name=None, vm=None):
+    def detach(self, name=None):
         """
         Detach volumes from vm.
         If success, the last volume will be saved as the most recent volume.
@@ -345,7 +345,13 @@ class Provider(VolumeABC):
         group = 'cloudmesh'
         disk_list = \
             self.compute_client.disks.list_by_resource_group(group)
-        print(disk_list)
+        found = []
+        for disk in disk_list :
+            results = disk.as_dict()
+            result = self.update_dict([results])
+            if 'name' == 'test':
+                found.extend(result)
+        return found
         # self.vms = self.compute_client.virtual_machines
         # virtual_machine = self.vms.get(self.group_name, vm)
         # data_disks = virtual_machine.storage_profile.data_disks
@@ -397,6 +403,24 @@ class Provider(VolumeABC):
         results = disk_status.as_dict()
         result = self.update_dict([results])
         return result
+
+    #
+    # def show(self, name=None):
+    #     """
+    #     Search through the list of volumes, find the matching volume with name,
+    #     return the dict of matched volume
+    #
+    #     :param name: volume name to match
+    #     :return: dict
+    #     """
+    #     disk_status = self.compute_client.disks.show(
+    #         self.group_name,
+    #         'test'
+    #     )
+    #     # return after getting info
+    #     results = disk_status.as_dict()
+    #     result = self.update_dict([results])
+    #     return result
 
 
     def add_tag(self, **kwargs):

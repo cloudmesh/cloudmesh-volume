@@ -215,7 +215,7 @@ class Provider(VolumeABC):
         """
         Create a volume.
 
-           :param NAME (string): name of volume
+           :param name (string): name of volume
            :param region (string): availability-zone
            :param size (integer): size of volume
            :param volume_type (string): type of volume.
@@ -224,7 +224,7 @@ class Provider(VolumeABC):
         """
         disk_creation = self.compute_client.disks.create_or_update(
             self.group_name,
-            kwargs['NAME'],
+            kwargs['name'],
             {
                 'location': self.location,
                 'disk_size_gb': self.size,
@@ -239,12 +239,12 @@ class Provider(VolumeABC):
         return result
 
 
-    def delete (self, NAME=None):
+    def delete (self, name=None):
         """
         Delete volumes.
-        If NAMES is not given, delete the most recent volume.
+        If name is not given, delete the most recent volume.
 
-        :param NAMES: List of volume names
+        :param name: List of volume name
         :return:
         """
         disk_deletion = self.compute_client.disks.delete(
@@ -274,7 +274,7 @@ class Provider(VolumeABC):
         If region is given, under the current cloud, list all volumes in that
         region.
 
-        :param NAMES: List of volume names
+        :param names: List of volume names
         :param vm: The name of the virtual machine
         :param region:  The name of the region
         :param cloud: The name of the cloud
@@ -292,11 +292,11 @@ class Provider(VolumeABC):
         return found
 
 
-    def attach(self, NAMES=None, vm=None):
+    def attach(self, names=None, vm=None):
         """
         This function attaches a given volume to a given instance
 
-        :param NAMES: Names of Volumes
+        :param names: Names of Volumes
         :param vm: Instance name
         :return: Dictionary of volumes
         """
@@ -334,41 +334,51 @@ class Provider(VolumeABC):
         return result
 
 
-    def detach(self, NAME=None, vm=None):
+    def detach(self, name=None):
         """
         Detach volumes from vm.
         If success, the last volume will be saved as the most recent volume.
 
-        :param NAMES: names of volumes to detach
+        :param name: name of volumes to detach
         :return: dict
         """
-        self.vms = self.compute_client.virtual_machines
-        virtual_machine = self.vms.get(self.group_name, vm)
-        data_disks = virtual_machine.storage_profile.data_disks
-        data_disks[:] = [
-            disk for disk in data_disks if disk.name != NAME]
-        async_vm_update = self.compute_client.virtual_machines.create_or_update(
-            self.group_name,
-            vm,
-            virtual_machine
-        )
-        # return after detaching
-        results = async_vm_update.result().as_dict()
-        result = self.update_dict([results])
-        return result
+        group = 'cloudmesh'
+        disk_list = \
+            self.compute_client.disks.list_by_resource_group(group)
+        found = []
+        for disk in disk_list :
+            results = disk.as_dict()
+            result = self.update_dict([results])
+            if 'name' == 'test':
+                found.extend(result)
+        return found
+        # self.vms = self.compute_client.virtual_machines
+        # virtual_machine = self.vms.get(self.group_name, vm)
+        # data_disks = virtual_machine.storage_profile.data_disks
+        # data_disks[:] = [
+        #     disk for disk in data_disks if disk.name != NAME]
+        # async_vm_update = self.compute_client.virtual_machines.create_or_update(
+        #     self.group_name,
+        #     vm,
+        #     virtual_machine
+        # )
+        # # return after detaching
+        # results = async_vm_update.result().as_dict()
+        # result = self.update_dict([results])
+        # return result
 
 
-    def status(self, NAME=None):
+    def status(self, name=None):
         """
         This function returns status of volume, such as "available", "in-use"
         and etc..
 
-        :param NAME: name of volume
+        :param name: name of volume
         :return: string
         """
         disk_status = self.compute_client.disks.get(
             self.group_name,
-            NAME
+            name
         )
         # return after getting status
         results = disk_status.as_dict()
@@ -377,7 +387,7 @@ class Provider(VolumeABC):
         return res
 
 
-    def info(self, NAME=None):
+    def info(self, name=None):
         """
         Search through the list of volumes, find the matching volume with name,
         return the dict of matched volume
@@ -387,7 +397,7 @@ class Provider(VolumeABC):
         """
         disk_status = self.compute_client.disks.get(
             self.group_name,
-            NAME
+            name
         )
         # return after getting info
         results = disk_status.as_dict()
@@ -401,7 +411,7 @@ class Provider(VolumeABC):
         If NAME is not specified, then tag will be added to the last volume.
         If success, the volume will be saved as the most recent volume.
 
-        :param NAME: name of volume
+        :param name: name of volume
         :param kwargs:
                      key: name of tag
                      value: value of tag
@@ -409,7 +419,7 @@ class Provider(VolumeABC):
         """
         async_vm_update = self.compute_client.disks.create_or_update(
             self.group_name,
-            kwargs['NAME'],
+            kwargs['name'],
             {
                 'location': self.location,
                 'disk_size_gb': self.size,
@@ -433,7 +443,7 @@ class Provider(VolumeABC):
         """
         Migrate volume from one vm to another vm.
 
-        :param NAME (string): the volume name
+        :param name (string): the volume name
         :param vm (string): the vm name
         :param region (string): the availability zone
         :return: dict
@@ -441,11 +451,11 @@ class Provider(VolumeABC):
         raise NotImplementedError
 
 
-    def sync(self,NAMES):
+    def sync(self,names):
         """
         synchronize one volume with another volume
 
-        :param NAMES (list): list of volume names
+        :param names (list): list of volume names
         :return: dict
         """
         raise NotImplementedError

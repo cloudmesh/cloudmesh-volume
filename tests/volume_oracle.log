@@ -1,0 +1,430 @@
+oracle
+============================= test session starts ==============================
+platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/ashok/ENV3/bin/python3.8
+cachedir: .pytest_cache
+rootdir: /Users/ashok/cm/cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 26:<module> ./tests/test_01_setup.py
+# ----------------------------------------------------------------------
+# {'cloud': 'oracle',
+#  'debug': 'True',
+#  'key': 'ashok1',
+#  'test': 'test',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-ashok1-volume-200',
+#  'vm_name': 'test-ashok1-volume-200',
+#  'volume': 'test-ashok1-volume-200'}
+# ----------------------------------------------------------------------
+[0m
+Test run for oracle
+collected 2 items
+
+tests/test_01_setup.py::Test_provider_volume::test_cms_vm 
+[35m
+# ######################################################################
+# test_cms_vm /tests/test_01_setup.py 61
+# ######################################################################
+[0m
+vm boot --name=test-ashok1-volume-201
+
+# ----------------------------------------------------------------------
+# Create Server
+# ----------------------------------------------------------------------
+
+    Name:     test-ashok1-volume-201
+    User:     ubuntu
+    IP:       None
+    Image:    Canonical-Ubuntu-18.04-2020.03.17-0
+    Size:     VM.Standard2.1
+    Public:   True
+    Key:      ashok1
+    location: None
+    timeout:  360
+    secgroup: default
+    group:    default
+    groups:   ['default']
+
+Created VCN
+Created subnet
+Created gateway
+Launched instance
+ERROR: oracle reported the following error
+ERROR: -------------------------------------------------------------------------------
+set_server_metadata() got an unexpected keyword argument 'image'
+ERROR: -------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# created
+# ----------------------------------------------------------------------
+# 220:create /Users/ashok/cm/cloudmesh-cloud/cloudmesh/compute/vm/Provider.py
+# ----------------------------------------------------------------------
+# [{'_agent_config': {'_is_management_disabled': False,
+#                     '_is_monitoring_disabled': False,
+#                     'attribute_map': {'is_management_disabled': 'isManagementDisabled',
+#                                       'is_monitoring_disabled': 'isMonitoringDisabled'},
+#                     'swagger_types': {'is_management_disabled': 'bool',
+#                                       'is_monitoring_disabled': 'bool'}},
+#   '_availability_domain': 'MTBc:PHX-AD-1',
+#   '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaavxlwlidodnngucvhnucjacibqid4n4ctgu2ddhek2cno2raxb3yq',
+#   '_dedicated_vm_host_id': None,
+#   '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/asingam@iu.edu',
+#                                     'CreatedOn': '2020-04-23T00:54:00.366Z'}},
+#   '_display_name': 'test-ashok1-volume-201',
+#   '_extended_metadata': {},
+#   '_fault_domain': 'FAULT-DOMAIN-3',
+#   '_freeform_tags': {},
+#   '_id': ObjectId('5ea0e7253db282ba7992d7f8'),
+#   '_image': 'Canonical-Ubuntu-18.04-2020.03.17-0',
+#   '_image_id': 'ocid1.image.oc1.phx.aaaaaaaajqblum4knqfeogw6c4o5ikldcaxiif2vh4scntgxh6zgpps4jmpq',
+#   '_ipxe_script': None,
+#   '_launch_mode': 'NATIVE',
+#   '_launch_options': {'_boot_volume_type': 'PARAVIRTUALIZED',
+#                       '_firmware': 'UEFI_64',
+#                       '_is_consistent_volume_naming_enabled': True,
+#                       '_is_pv_encryption_in_transit_enabled': False,
+#                       '_network_type': 'PARAVIRTUALIZED',
+#                       '_remote_data_volume_type': 'PARAVIRTUALIZED',
+#                       'attribute_map': {'boot_volume_type': 'bootVolumeType',
+#                                         'firmware': 'firmware',
+#                                         'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled',
+#                                         'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled',
+#                                         'network_type': 'networkType',
+#                                         'remote_data_volume_type': 'remoteDataVolumeType'},
+#                       'swagger_types': {'boot_volume_type': 'str',
+#                                         'firmware': 'str',
+#                                         'is_consistent_volume_naming_enabled': 'bool',
+#                                         'is_pv_encryption_in_transit_enabled': 'bool',
+#                                         'network_type': 'str',
+#                                         'remote_data_volume_type': 'str'}},
+#   '_lifecycle_state': 'RUNNING',
+#   '_metadata': {'ssh_authorized_keys': 'ssh-rsa '
+#                                        'AAAAB3NzaC1yc2EAAAADAQABAAABAQDLL4KkjpVDOer7VTaA2GASp5NG4I2nM46SVeGoZJ590OPECW5Zu/WEYwXa4P9KgvIlfHLdXJa33QhF2w7ZdBLa+xg0wS4M7DhvI7VMgDxyrqadkD+3DzVgxZRscTGrnvW9wz1GkMmMm+R1EDTdrtjh1cbEBnDD3VTkEFlSPFoXirnObshFHXCbgu5p98pZ08Lcpj+77m5o+q42jZxVWOQ+MOhF/V6SZ78jqCfpI7pA1AswLmzL3o34LLDBtx8AjlPlBdusYz0kx4PB4o1QV62d36lWNyRjDyO3P7lnq/jr6dUrZqPIpRBes/pc/6dRGuIAqIBKNDd2VObqcnUUQqbr '
+#                                        'asingam@iu.edu\n'},
+#   '_region': 'phx',
+#   '_shape': 'VM.Standard2.1',
+#   '_source_details': {'_boot_volume_size_in_gbs': None,
+#                       '_image_id': 'ocid1.image.oc1.phx.aaaaaaaajqblum4knqfeogw6c4o5ikldcaxiif2vh4scntgxh6zgpps4jmpq',
+#                       '_kms_key_id': None,
+#                       '_source_type': 'image',
+#                       'attribute_map': {'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs',
+#                                         'image_id': 'imageId',
+#                                         'kms_key_id': 'kmsKeyId',
+#                                         'source_type': 'sourceType'},
+#                       'swagger_types': {'boot_volume_size_in_gbs': 'int',
+#                                         'image_id': 'str',
+#                                         'kms_key_id': 'str',
+#                                         'source_type': 'str'}},
+#   '_system_tags': {},
+#   '_time_created': datetime.datetime(2020, 4, 23, 0, 54, 1, 755000, tzinfo=tzutc()),
+#   '_time_maintenance_reboot_due': None,
+#   'attribute_map': {'agent_config': 'agentConfig',
+#                     'availability_domain': 'availabilityDomain',
+#                     'compartment_id': 'compartmentId',
+#                     'dedicated_vm_host_id': 'dedicatedVmHostId',
+#                     'defined_tags': 'definedTags',
+#                     'display_name': 'displayName',
+#                     'extended_metadata': 'extendedMetadata',
+#                     'fault_domain': 'faultDomain',
+#                     'freeform_tags': 'freeformTags',
+#                     'id': 'id',
+#                     'image_id': 'imageId',
+#                     'ipxe_script': 'ipxeScript',
+#                     'launch_mode': 'launchMode',
+#                     'launch_options': 'launchOptions',
+#                     'lifecycle_state': 'lifecycleState',
+#                     'metadata': 'metadata',
+#                     'region': 'region',
+#                     'shape': 'shape',
+#                     'source_details': 'sourceDetails',
+#                     'system_tags': 'systemTags',
+#                     'time_created': 'timeCreated',
+#                     'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'},
+#   'cm': {'cloud': 'oracle',
+#          'collection': 'oracle-vm',
+#          'created': '2020-04-23 00:53:57.222197',
+#          'creation': '99.00',
+#          'group': 'default',
+#          'kind': 'vm',
+#          'label': 'test-ashok1-volume-201',
+#          'modified': '2020-04-23 00:55:36.410240',
+#          'name': 'test-ashok1-volume-201',
+#          'status': 'available'},
+#   'ip_private': '11.0.0.2',
+#   'ip_public': '129.146.127.71',
+#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': '
+#               "'test-ashok1-volume-201', 'label': 'test-ashok1-volume-201', "
+#               "'group': 'default', 'cloud': 'oracle', 'status': 'available', "
+#               "'collection': 'oracle-vm', 'created': '2020-04-23 "
+#               "00:53:57.222197', 'modified': '2020-04-23 00:53:57.222197', "
+#               '\'creation\': \'99.00\'}", \'image\': '
+#               "'Canonical-Ubuntu-18.04-2020.03.17-0', 'size': "
+#               "'VM.Standard2.1'}",
+#   'name': 'test-ashok1-volume-201',
+#   'oracle_id': 'ocid1.instance.oc1.phx.anyhqljsr3dcp7ycrjslok3zytuxqfwcrp7xgqf6rulskcpvsbqezobpx3yq',
+#   'status': 'RUNNING',
+#   'swagger_types': {'agent_config': 'InstanceAgentConfig',
+#                     'availability_domain': 'str',
+#                     'compartment_id': 'str',
+#                     'dedicated_vm_host_id': 'str',
+#                     'defined_tags': 'dict(str, dict(str, object))',
+#                     'display_name': 'str',
+#                     'extended_metadata': 'dict(str, object)',
+#                     'fault_domain': 'str',
+#                     'freeform_tags': 'dict(str, str)',
+#                     'id': 'str',
+#                     'image_id': 'str',
+#                     'ipxe_script': 'str',
+#                     'launch_mode': 'str',
+#                     'launch_options': 'LaunchOptions',
+#                     'lifecycle_state': 'str',
+#                     'metadata': 'dict(str, str)',
+#                     'region': 'str',
+#                     'shape': 'str',
+#                     'source_details': 'InstanceSourceDetails',
+#                     'system_tags': 'dict(str, dict(str, object))',
+#                     'time_created': 'datetime',
+#                     'time_maintenance_reboot_due': 'datetime'}}]
+# ----------------------------------------------------------------------
+
+Timer: 101.0000s Load: 0.0000s (line_strip)
+
+PASSED
+tests/test_01_setup.py::Test_provider_volume::test_benchmark 
++------------------+--------------------------------------------------------------------------------------------------+
+| Attribute        | Value                                                                                            |
+|------------------+--------------------------------------------------------------------------------------------------|
+| cpu_count        | 8                                                                                                |
+| mem.active       | 2.7 GiB                                                                                          |
+| mem.available    | 2.8 GiB                                                                                          |
+| mem.free         | 142.3 MiB                                                                                        |
+| mem.inactive     | 2.7 GiB                                                                                          |
+| mem.percent      | 64.5 %                                                                                           |
+| mem.total        | 8.0 GiB                                                                                          |
+| mem.used         | 4.3 GiB                                                                                          |
+| mem.wired        | 1.6 GiB                                                                                          |
+| platform.version | 10.15.1                                                                                          |
+| python           | 3.8.1 (v3.8.1:1b293b6006, Dec 18 2019, 14:08:53)                                                 |
+|                  | [Clang 6.0 (clang-600.0.57)]                                                                     |
+| python.pip       | 20.0.2                                                                                           |
+| python.version   | 3.8.1                                                                                            |
+| sys.platform     | darwin                                                                                           |
+| uname.machine    | x86_64                                                                                           |
+| uname.node       | Ashoks-MacBook-Pro.local                                                                         |
+| uname.processor  | i386                                                                                             |
+| uname.release    | 19.0.0                                                                                           |
+| uname.system     | Darwin                                                                                           |
+| uname.version    | Darwin Kernel Version 19.0.0: Thu Oct 17 16:17:15 PDT 2019; root:xnu-6153.41.3~29/RELEASE_X86_64 |
+| user             | ashok                                                                                            |
++------------------+--------------------------------------------------------------------------------------------------+
+
++---------------------------+----------+---------+---------------------+--------+--------------------------+--------+--------+-----------+
+| Name                      | Status   |    Time | Start               | tag    | Node                     | User   | OS     | Version   |
+|---------------------------+----------+---------+---------------------+--------+--------------------------+--------+--------+-----------|
+| test_01_setup/test_cms_vm | ok       | 102.972 | 2020-04-23 00:53:55 | oracle | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
++---------------------------+----------+---------+---------------------+--------+--------------------------+--------+--------+-----------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_01_setup/test_cms_vm,ok,102.972,2020-04-23 00:53:55,oracle,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
+
+PASSED
+
+======================== 2 passed in 105.09s (0:01:45) =========================
+============================= test session starts ==============================
+platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/ashok/ENV3/bin/python3.8
+cachedir: .pytest_cache
+rootdir: /Users/ashok/cm/cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 24:<module> ./tests/test_02_volume_provider.py
+# ----------------------------------------------------------------------
+# {'cloud': 'oracle',
+#  'debug': 'True',
+#  'key': 'ashok1',
+#  'test': 'test',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-ashok1-volume-201',
+#  'vm_name': 'test-ashok1-volume-201',
+#  'volume': 'test-ashok1-volume-200'}
+# ----------------------------------------------------------------------
+[0m
+Test run for oracle
+collected 6 items
+
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_create volume list --cloud=oracle
+
+# ----------------------------------------------------------------------
+# arguments
+# ----------------------------------------------------------------------
+# 115:do_volume ./cloudmesh/volume/command/volume.py
+# ----------------------------------------------------------------------
+# {'--cloud': 'oracle',
+#  '--description': None,
+#  '--dryrun': False,
+#  '--key': None,
+#  '--output': 'table',
+#  '--path': None,
+#  '--refresh': False,
+#  '--region': None,
+#  '--size': None,
+#  '--value': None,
+#  '--vm': None,
+#  '--volume_type': None,
+#  'NAME': None,
+#  'NAMES': None,
+#  'add_tag': False,
+#  'attach': False,
+#  'create': False,
+#  'delete': False,
+#  'detach': False,
+#  'list': True,
+#  'migrate': False,
+#  'purge': False,
+#  'status': False,
+#  'sync': False}
+# ----------------------------------------------------------------------
+
++------------------------+--------+--------+-------------------+----------------------------+----------+------------+--------------------------------------------------+
+| Name                   | Cloud  | Kind   | Availability Zone | Created At                 | Size(Gb) | Status     | Id                                               |
++------------------------+--------+--------+-------------------+----------------------------+----------+------------+--------------------------------------------------+
+| AshTest                | oracle | volume | MTBc:PHX-AD-1     | 2020-03-14 23:50:46.640000 | 50       | AVAILABLE  | ocid1.volume.oc1.phx.abyhqljspfi2abhcn35ktn44nwn |
+|                        |        |        |                   |                            |          |            | pbnewhgne7xnndqislly3h6bl5g6u4weq                |
+| AshTest2               | oracle | volume | MTBc:PHX-AD-1     | 2020-04-19 01:01:51.471000 | 50       | TERMINATED | ocid1.volume.oc1.phx.abyhqljsixvdnim247xz6raiddi |
+|                        |        |        |                   |                            |          |            | u4dfgondhgcplbinyjnyqxu43i32a36xa                |
+| test-ashok1-volume-191 | oracle | volume | MTBc:PHX-AD-1     | 2020-04-22 00:08:09.125000 | 50       | TERMINATED | ocid1.volume.oc1.phx.abyhqljs46g4q7vfsgnm6mpufto |
+|                        |        |        |                   |                            |          |            | 2lqlzhrs3jxp2wz5ghslf72m72cjvyyoq                |
+| test-ashok1-volume-192 | oracle | volume | MTBc:PHX-AD-1     | 2020-04-22 00:38:51.229000 | 50       | TERMINATED | ocid1.volume.oc1.phx.abyhqljsthdsh75vbh7p4rt6vxp |
+|                        |        |        |                   |                            |          |            | 6x4eyihegqqh6b4lxpyxaxalugiofkloa                |
+| test-ashok1-volume-195 | oracle | volume | MTBc:PHX-AD-1     | 2020-04-22 01:39:39.588000 | 50       | TERMINATED | ocid1.volume.oc1.phx.abyhqljsvnmu5f4qg6eyvt6rsm5 |
+|                        |        |        |                   |                            |          |            | vbj2ivxuxsab44wmgzwehalz6zzynxkra                |
+| test-ashok1-volume-197 | oracle | volume | MTBc:PHX-AD-1     | 2020-04-22 02:37:25.866000 | 50       | TERMINATED | ocid1.volume.oc1.phx.abyhqljsebbbpyv7opyiabjc7z5 |
+|                        |        |        |                   |                            |          |            | 2qkolkjqwj3jgyjjceoa4enz74tdwbm2a                |
++------------------------+--------+--------+-------------------+----------------------------+----------+------------+--------------------------------------------------+
+None
+Timer: 1.0000s Load: 0.0000s (line_strip)
+
+[35m
+# ######################################################################
+# test_provider_volume_create /tests/test_02_volume_provider.py 47
+# ######################################################################
+[0m
+Running test_provider_volume_create
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_list 
+[35m
+# ######################################################################
+# test_provider_volume_list /tests/test_02_volume_provider.py 77
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach 
+[35m
+# ######################################################################
+# test_provider_volume_attach /tests/test_02_volume_provider.py 87
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach 
+[35m
+# ######################################################################
+# test_provider_volume_detach /tests/test_02_volume_provider.py 116
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete 
+[35m
+# ######################################################################
+# test_provider_volume_delete /tests/test_02_volume_provider.py 140
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_benchmark 
+
++-----------------------------------------------------+----------+---------+---------------------+--------+--------------------------+--------+--------+-----------+
+| Name                                                | Status   |    Time | Start               | tag    | Node                     | User   | OS     | Version   |
+|-----------------------------------------------------+----------+---------+---------------------+--------+--------------------------+--------+--------+-----------|
+| test_02_volume_provider/test_provider_volume_create | ok       |  15.808 | 2020-04-23 00:55:42 | oracle | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
+| test_02_volume_provider/test_provider_volume_list   | ok       |   0.454 | 2020-04-23 00:55:58 | oracle | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
+| test_02_volume_provider/test_provider_volume_attach | ok       | 310.777 | 2020-04-23 00:55:58 | oracle | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
+| test_02_volume_provider/test_provider_volume_detach | ok       |  64.628 | 2020-04-23 01:01:14 | oracle | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
+| test_02_volume_provider/test_provider_volume_delete | ok       |   4.184 | 2020-04-23 01:02:24 | oracle | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
++-----------------------------------------------------+----------+---------+---------------------+--------+--------------------------+--------+--------+-----------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_02_volume_provider/test_provider_volume_create,ok,15.808,2020-04-23 00:55:42,oracle,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
+# csv,test_02_volume_provider/test_provider_volume_list,ok,0.454,2020-04-23 00:55:58,oracle,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
+# csv,test_02_volume_provider/test_provider_volume_attach,ok,310.777,2020-04-23 00:55:58,oracle,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
+# csv,test_02_volume_provider/test_provider_volume_detach,ok,64.628,2020-04-23 01:01:14,oracle,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
+# csv,test_02_volume_provider/test_provider_volume_delete,ok,4.184,2020-04-23 01:02:24,oracle,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
+
+PASSED
+
+======================== 6 passed in 409.75s (0:06:49) =========================
+============================= test session starts ==============================
+platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/ashok/ENV3/bin/python3.8
+cachedir: .pytest_cache
+rootdir: /Users/ashok/cm/cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 21:<module> ./tests/test_03_teardown.py
+# ----------------------------------------------------------------------
+# {'cloud': 'oracle',
+#  'debug': 'True',
+#  'key': 'ashok1',
+#  'test': 'test',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-ashok1-volume-201',
+#  'vm_name': 'test-ashok1-volume-201',
+#  'volume': 'AshTest'}
+# ----------------------------------------------------------------------
+[0m
+collected 2 items
+
+tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate 
+[35m
+# ######################################################################
+# test_cms_terminate /tests/test_03_teardown.py 32
+# ######################################################################
+[0m
+result vm terminate test-ashok1-volume-201
+Terminating instance...
+Instance terminated.
+Deleting associated resources...
+Associated resources deleted
++------------------------+---------+------------+------------+--------+-------------------------------------+----------------+--------------+---------------+--------------+----------------------------------+--------+
+| Name                   | Cloud   | State      | Status     | Task   | Image                               | Flavor         | Public IPs   | Private IPs   | Project ID   | Started at                       | Kind   |
+|------------------------+---------+------------+------------+--------+-------------------------------------+----------------+--------------+---------------+--------------+----------------------------------+--------|
+| test-ashok1-volume-201 | oracle  | TERMINATED | TERMINATED |        | Canonical-Ubuntu-18.04-2020.03.17-0 | VM.Standard2.1 |              |               |              | 2020-04-23 00:54:01.755000+00:00 | vm     |
++------------------------+---------+------------+------------+--------+-------------------------------------+----------------+--------------+---------------+--------------+----------------------------------+--------+
+Timer: 99.0000s Load: 0.0000s (line_strip)
+
+PASSED
+tests/test_03_teardown.py::Test_provider_volume::test_benchmark 
+
++-------------------------------------+----------+---------+---------------------+--------+--------------------------+--------+--------+-----------+
+| Name                                | Status   |    Time | Start               | tag    | Node                     | User   | OS     | Version   |
+|-------------------------------------+----------+---------+---------------------+--------+--------------------------+--------+--------+-----------|
+| test_03_teardown/test_cms_terminate | ok       | 100.192 | 2020-04-23 01:02:30 | oracle | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
++-------------------------------------+----------+---------+---------------------+--------+--------------------------+--------+--------+-----------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_03_teardown/test_cms_terminate,ok,100.192,2020-04-23 01:02:30,oracle,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
+
+PASSED
+
+======================== 2 passed in 100.80s (0:01:40) =========================

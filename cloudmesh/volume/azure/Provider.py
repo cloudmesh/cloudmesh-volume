@@ -404,24 +404,6 @@ class Provider(VolumeABC):
         result = self.update_dict([results])
         return result
 
-    #
-    # def show(self, name=None):
-    #     """
-    #     Search through the list of volumes, find the matching volume with name,
-    #     return the dict of matched volume
-    #
-    #     :param name: volume name to match
-    #     :return: dict
-    #     """
-    #     disk_status = self.compute_client.disks.show(
-    #         self.group_name,
-    #         'test'
-    #     )
-    #     # return after getting info
-    #     results = disk_status.as_dict()
-    #     result = self.update_dict([results])
-    #     return result
-
 
     def add_tag(self, **kwargs):
         """

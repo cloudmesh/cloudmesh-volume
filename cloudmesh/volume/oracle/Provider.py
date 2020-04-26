@@ -426,11 +426,11 @@ class Provider(VolumeABC):
         """
         raise NotImplementedError
 
-    def add_tag(self, NAME, **kwargs):
+    def add_tag(self, name, **kwargs):
         """
         This function add tag to a volume.
 
-        :param NAME: name of volume
+        :param name: name of volume
         :param kwargs:
                     key: name of tag
                     value: value of tag
@@ -440,14 +440,14 @@ class Provider(VolumeABC):
             key = kwargs['key']
             value = kwargs['value']
             block_storage = oci.core.BlockstorageClient(self.config)
-            volume_id = self.get_volume_id_from_name(block_storage, NAME)
+            volume_id = self.get_volume_id_from_name(block_storage, name)
             block_storage.update_volume(
                 volume_id,
                 oci.core.models.UpdateVolumeDetails(
                     freeform_tags={key: value},
                 )
             )
-            result = self.list(NAME=NAME)[0]
+            result = self.list(NAME=name)[0]
         except Exception as e:
             Console.error("Problem adding tag", traceflag=True)
             print(e)

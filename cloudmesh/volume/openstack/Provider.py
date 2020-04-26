@@ -319,14 +319,39 @@ class Provider(VolumeABC):
         """
         raise NotImplementedError
 
-    def add_tag(self, NAME, **kwargs):
+    def add_tag(self, **kwargs):
         """
         This function add tag to a volume.
-
-        :param NAME: name of volume
         :param kwargs:
+                    NAME: name of volume
                     key: name of tag
                     value: value of tag
         :return: Dictionary of volume
         """
-        raise NotImplemented
+        try:
+            con = openstack.connect(**self.config)
+            name = kwargs['NAME']
+            key = kwargs['key']
+            value = kwargs['value']
+            metadata = {}
+            metadata[key] = value
+            con.update_volume(name_or_id=name,metadata=metadata)
+        except Exception as e:
+            Console.error("Problem in tagging volume", traceflag=True)
+            print(e)
+            raise RuntimeError
+        # return of self.list(NAME=NAME)[0] throwing error:cm attribute
+        # not found inside CmDatabase.py. So manipulating result as below
+        t = self.list(NAME=name, refresh=True)[0]
+        result = {}
+        result.update(
+            {"cm": t["cm"],
+             "availability_zone": t["availability_zone"],
+             "created_at": t["created_at"],
+             "size": t["size"], "id": t["id"],
+             "status": t["status"],
+             "volume_type": t["volume_type"]
+             }
+        )
+        return result
+

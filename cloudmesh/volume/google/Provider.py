@@ -22,8 +22,8 @@ class Provider(VolumeABC):
             host: https://console.cloud.google.com/compute/instances?project={project_id}
             label: {name}
             kind: google
-            version: v1
-            service: compute
+            version: TBD
+            service: volume
           default:
             zone: us-central1-a
             type: projects/{project_id}/zones/{zone}/diskTypes/pd-standard

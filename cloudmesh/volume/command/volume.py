@@ -88,6 +88,8 @@ class VolumeCommand(PluginCommand):
 
             volume status [NAMES]
                           [--cloud=CLOUD]
+                Get the status (e.g. 'available', 'READY', 'in-use') of a volume
+
             volume attach [NAMES]
                           [--vm=VM]
                 Attach volume to a vm

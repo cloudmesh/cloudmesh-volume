@@ -113,7 +113,7 @@ class Provider(VolumeABC):
         self.cloud = name
         self.location = 'eastus'
         self.size = 1
-        self.group_name = 'cloudmesh'
+        self.group_name = 'default'
 
         cred = self.spec["credentials"]
         self.default = self.spec["default"]
@@ -224,7 +224,7 @@ class Provider(VolumeABC):
         """
         disk_creation = self.compute_client.disks.create_or_update(
             self.group_name,
-            kwargs['name'],
+            kwargs['NAME'],
             {
                 'location': self.location,
                 'disk_size_gb': self.size,
@@ -249,7 +249,7 @@ class Provider(VolumeABC):
         """
         disk_deletion = self.compute_client.disks.delete(
             self.group_name,
-            cm["name"],
+            name,
             {
                 'location': self.location
             }
@@ -304,7 +304,7 @@ class Provider(VolumeABC):
         self.vms = self.compute_client.virtual_machines
         disk_creation = self.compute_client.disks.create_or_update(
             self.group_name,
-            cm["name"],
+            names,
             {
                 'location': self.location,
                 'disk_size_gb': self.size,
@@ -342,16 +342,19 @@ class Provider(VolumeABC):
         :param name: name of volumes to detach
         :return: dict
         """
-        group = 'cloudmesh'
-        disk_list = \
-            self.compute_client.disks.list_by_resource_group(group)
-        found = []
-        for disk in disk_list :
-            results = disk.as_dict()
-            result = self.update_dict([results])
-            if 'name' == 'test':
-                found.extend(result)
-        return found
+        group = 'default'
+        # disk_list = \
+        #     self.compute_client.disks.list_by_resource_group(group)
+        # found = []
+        # for disk in disk_list :
+        #     results = disk.as_dict()
+        #     result = self.update_dict([results])
+        #     if 'name' == 'test':
+        #         found.extend(result)
+        # return found
+        vm_info = self.compute_client.disks.get(group, 'test').as_dict()[
+            'managed_by']
+        VM_NAME = vm_info.split(sep="/")[-1]
         # self.vms = self.compute_client.virtual_machines
         # virtual_machine = self.vms.get(self.group_name, vm)
         # data_disks = virtual_machine.storage_profile.data_disks
@@ -381,11 +384,14 @@ class Provider(VolumeABC):
             name
         )
         # return after getting status
-        results = disk_status.as_dict()
-        res = dict((k, results[k]) for k in ['disk_state']
-                   if k in results)
-        return res
+        # results = disk_status.as_dict()
+        # res = dict((k, results[k]) for k in ['disk_state']
+        #            if k in results)
+        # return res
 
+        results = disk_status.as_dict()
+        result = self.update_dict([results])
+        return result
 
     def info(self, name=None):
         """
@@ -419,7 +425,7 @@ class Provider(VolumeABC):
         """
         async_vm_update = self.compute_client.disks.create_or_update(
             self.group_name,
-            kwargs['name'],
+            name,
             {
                 'location': self.location,
                 'disk_size_gb': self.size,

@@ -215,7 +215,7 @@ class Provider(VolumeABC):
     def list(self, **kwargs):
         """
         Retrieves an aggregated list of persistent disks with most recently
-        created disks list first.
+        created disks listed first.
 
         :return: an array of dicts representing the disks
         """
@@ -472,10 +472,10 @@ class Provider(VolumeABC):
 
     def attach(self, names, vm=None):
         """
-        Attach one or more disks to an instance.  Google cloud requires that the
-         instance be stopped when attaching a disk.  The function will stop the
-         instance if necessary and then restart the instance after attaching
-         the disk.
+        Attach one or more disks to an instance.  GCP requires that the
+        instance be stopped when attaching a disk.  If the instance is running
+        when the attach function is called, the function will stop the instance
+        and then restart the instance after attaching the disk.
 
         :param names: name(s) of disk(s) to attach
         :param vm: instance name which the volume(s) will be attached to
@@ -530,7 +530,10 @@ class Provider(VolumeABC):
 
     def detach(self, name=None):
         """
-        Detach a disk from all instances
+        Detach a disk from all instances.  GCP requires that the
+        instance be stopped when detaching a disk.  If the instance is running
+        when the detach function is called, the function will stop the instance
+        and then restart the instance after detaching the disk.
 
         :param name: name of disk to detach
         :return: dict representing updated status of detached disk
@@ -616,10 +619,10 @@ class Provider(VolumeABC):
 
     def status(self, name=None):
         """
-        Gets status of specified disk
+        Get status of specified disk, such as 'READY'
 
         :param name: name of disk
-        :return: status of disk
+        :return: list containing dict representing the disk
         """
         disk_list = self.list()
         vol = []

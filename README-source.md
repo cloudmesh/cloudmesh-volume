@@ -269,7 +269,7 @@ sync contents of one volume to another volume
 
 * python api:   
   <http://googleapis.github.io/google-api-python-client/docs/dyn/compute_v1.html>
-* REST api for cumpute disks documentation:   
+* REST api for compute disks documentation:   
   <https://cloud.google.com/compute/docs/reference/rest/v1/disks?hl=en_US>
 * Documentation about volume cost:   
   <https://cloud.google.com/compute/disks-image-pricing>
@@ -278,7 +278,141 @@ sync contents of one volume to another volume
 
 #### Google volume management functions
 
-:o2: Add functions from provider with descriptions of required parameters
+In Google Cloud Platform (GCP), volumes are referred to as 'disks'.  There are 
+regional disks, which replicate data between two zones in the same region, and 
+zonal disks, which only store data in a single zone.  Currently, only management
+functions for zonal disks are supported.
+
+Also, the GCP project ID is required to be set in the configuration file.  In 
+order to use multiple projects, copy the google section in the configuration 
+file under each of the cloud, storage, and volume sections and create 
+additional google sections named google2, google3, ... for each of the 
+additional GCP projects.    
+
+* Create volume
+
+    ```
+    create(self, **kwargs)
+    
+    Creates a persistent disk in the specified project using the data in the 
+    request.
+    
+    Required Parameters for API function::
+      project: project ID for the project in which the volume is being created
+      zone: the zone in which the volume is being created
+      body: a dictionary in which several parameters for the disk can be set 
+            such as size, name, type, and description
+    ```            
+
+* List volumes
+
+    Note: Even though only zonal disks are currently supported, it is possible 
+    to get a list of disks in a specific zone by setting the argument 
+    --region=zone
+    
+    ```
+    cms volume list --region=us-central1-a
+    ```  
+   
+    ```
+    list(self, **kwargs)
+    
+    Retrieves an aggregated list of persistent disks with most recently created 
+    disks listed first.
+    
+    Required Parameters for API function(vary by argument):
+      For no arguments, NAMES, --vm, --cloud: 
+        project: project ID for the project being worked in
+      For argument --region:
+        project: project ID for the project being worked in
+        zone: zone from which to get list of disks
+    ```   
+ 
+* Delete volumes
+  
+  ```
+  delete(self, name=None)
+  
+    Deletes the specified persistent disk.
+    Deleting a disk removes its data permanently and is irreversible.
+    
+    Required Parameters for API function:
+      project: project ID for the project in which the volume is located
+      zone: the zone in which the volume is located
+      disk: name of the disk to be deleted
+    ```
+
+* Attach volumes
+
+  The disk being attached needs to located in the same zone as the virtual 
+  machine.
+  
+  ```
+  attach(self, names, vm=None)
+
+    Attach one or more disks to an instance.  GCP requires that the
+    instance be stopped when attaching a disk.  If the instance is running when 
+    the attach function is called, the function will stop the instance and then 
+    restart the instance after attaching the disk.
+    
+    Required Parameters for API function:
+      project: project ID for the project in which the instance is located
+      zone: the zone in which the instance is located
+      instance: the name of the instance to attach the volume to
+      body: a dictionary in which several parameters for the attahment can be 
+            set such as the source of the disk to be attached and the 
+            'deviceName' given to identify the disk once attached.  Keep the 
+            'deviceName' the same as the name of the volume (this is important 
+            for detach).
+    ```
+  
+* Detach volumes
+  
+  ```
+  detach(self, name=None)
+
+    Detach a disk from all instances.  GCP requires that the instance be stopped
+    when detaching a disk.  If the instance is running when the detach function 
+    is called, the function will stop the instance and then restart the instance
+    after detaching the disk.
+    
+    Required Parameters for API function:
+      project: project ID for the project in which the instance is located
+      zone: the zone in which the instance is located
+      instance: the name of the instance to attach the volume to
+      deviceName: name given to identify the disk when attached to the instance.
+    ```
+
+* Add a tag to a volume
+
+  ```
+  add_tag(self, **kwargs)
+  
+    Add a key:value label to the disk
+    Unable to change the name of a disk in Google Cloud
+  
+    Required Parameters for API function:
+      project: project ID for the project in which the volume is located
+      zone: zone in which the volume is located
+      resource: name of the volume
+      body: dictionary containing the the keys 'labelFingerprint' and 'labels'.
+            'labels' is the key:value pair to be added to the disk, while 
+            an up-to-date 'labelFingerprint' hash is required to update the 
+            labels
+  ```
+
+* Status of volume
+
+  ```
+  status(self, name=None)
+  
+    Get status of specified disk, such as 'READY'
+    Calls self.list() to get disk info
+  
+    Required Parameters for API function:
+      project: project ID for the project being worked in
+  ```
+  
 
 ### Azure
 

@@ -28,9 +28,10 @@ See also: [Volume man page](https://cloudmesh.github.io/cloudmesh-manual/manual/
 
 #### Multipass volume management functions
 
+* Create Volume
+```
 create(**kwargs):
 
-```
 This function create a new volume.
 Default parameters from self.default, such as: path="/Users/username/multipass".
 
@@ -40,10 +41,12 @@ Required Parameters:
         path: path of volume
 ```
 
+* Delete Volume
+```
 delete(name):
 
-```
-Delete volumes.
+Delete volume.
+
 If name is not given, delete the most recent volume.
 
 Required Parameters:
@@ -51,9 +54,11 @@ Required Parameters:
         name: volume name
 ```
 
+
+* List Volume
+```
 list(**kwargs):
 
-```
 This function list all volumes as following:
 If NAME (volume name) is specified, it will print out info of NAME.
 If NAME (volume name) is not specified, it will print out info of all
@@ -69,9 +74,11 @@ Required Parameters:
         path: volume path
 ```
 
+
+* Attach Volume
+```
 attach(names, vm):
 
-```
 This function attach one or more volumes to vm. It returns info of
 updated volume. The updated dict with "AttachedToVm" showing
 the name of vm where the volume attached to.
@@ -82,41 +89,11 @@ Required Parameters:
         vm (string): name of vm
 ```
 
-mount(path=None,vm=None):
 
+* Detach Volume
 ```
-mount volume to vm
-
-Required Parameters:
-
-        path (string): path of volume
-        vm (string): name of vm
-```
-
-_get_mount_status(vm=None):
-
-```
-Get mount status of vm
-
-Required Parameters:
-
-        vm (string): name of vm
-```
-
-unmount(path=None, vm=None):
-
-```
-Unmount volume from vm
-
-Required Parameters:
-
-        path (string): path of volume
-        vm (string): name of vm
-```
-
 detach(name):
 
-```
 This function detach a volume from vm. It returns the info of the updated volume.
 The vm under "AttachedToVm" will be removed if volume is successfully detached.
 Will detach volume from all vms.
@@ -126,23 +103,25 @@ Required Parameters:
         name: name of volume to be dettached
 ```
 
-add_tag(name, **kwargs):
-
+* Add Tags for Volume
 ```
+add_tag(**kwargs):
+
 This function add tag to a volume.
 If volume name is not specified, then tag will be added to the last volume.
 
 Required Parameters:
 
         NAME: name of volume
-        kwargs:
-                key: name of tag
-                value: value of tag
+        key: name of tag
+        value: value of tag
 ```
 
+
+* Volume Status
+```
 status(name=None):
 
-```
 This function get volume status, such as "in-use", "available", "deleted"
 
 Required Parameters:
@@ -150,9 +129,11 @@ Required Parameters:
         name (string): volume name
 ```
 
+
+* Migrate Volume
+```
 migrate(**kwargs):
 
-```
 Migrate volume from one vm to another vm. "region" is volume path.
 If vm and volume are in the same region (path), migrate within the same region (path)
 If vm and volume are in different regions, migrate between two regions (path)
@@ -163,9 +144,11 @@ Required Parameters:
         vm (string): the vm name
 ```
 
+
+* Sync Volumes
+```
 sync(names):
 
-```
 sync contents of one volume to another volume
 
 Required Parameters:
@@ -191,78 +174,133 @@ Required Parameters:
 
 #### AWS volume management functions
 
+* Create Volume
 ```
-create_volume(**kwargs)
+create(**kwargs):
 
-Creates an EBS volume that can be attached to an instance in the same
-Availability Zone.
+This function create a new volume, with defalt parameters in self.default.
 
-Required Parameters: 
+Optional Parameters:
 
-
-        AvailabilityZone (string): The Availability Zone in which to create the volume.
-```
-
-describe_volumes(**kwargs)
-
-```
-Describes the specified EBS volumes or all of your EBS volumes.
+        NAME (string): the name of volume
+        size (int): the size of volume (GB)
+        volume_type: volume type, gp2 for General Purpose SSD
+        region (string): availability zone of volume
+        snapshot (string): snapshot id
+        encrypted (boolean): True|False
 ```
 
-delete_volume(**kwargs)
-
+* Delete Volume
 ```
-Deletes the specified EBS volume. The volume must be in the available
-state (not attached to an instance).
+delete(name):
 
-Required Parameters: 
+This function delete one volume. 
+It will return the info of volume with "state" updated as "deleted" 
+and will show in Database.
 
-        VolumeId (string): The ID of the volume.
+Required Parameters:
+ 
+        name (string): names of volume
 ```
 
-attach_volume(**kwargs)
-
+* List Volume
 ```
-Attaches an EBS volume to a running or stopped instance and exposes it
-to the instance with the specified device name.
+list(**kwargs):
+
+This function list all volumes as following:
+If NAME (volume name) is specified, it will print out info of NAME.
+        If NAME (volume name) is not specified, it will print out info of all
+          volumes under current cloud.
+        If vm is specified, it will print out all the volumes attached to vm.
+        If region(availability zone) is specified, it will print out
+          all the volumes in that region.
+
+Optional Parameters:
+
+        NAME: name of volume
+        vm: name of vm
+        region: name of availability zone
+```
+
+* Attach Volume
+```
+attach(names,vm,dryrun=False):
+
+This function attach one or more volumes to vm.  It returns self.list()
+        to list the updated volume. The updated dict with "AttachedToVm" showing
+        the name of vm where the volume attached to.
+
+Required Parameters:
+ 
+        names (string): names of volumes
+
+        vm (string): name of vm
+```
+
+* Detach Volume
+```
+detach(name):
+
+This function detach a volume from vm. It returns self.list() to list
+the updated volume. The vm under "AttachedToVm" will be removed if
+volume is successfully detached.
+
+Required Parameters:
+        name: name of volume to dettach
+```
+
+* Add Tags for Volume
+```
+add_tag(**kwargs):
+
+This function add tag to a volume.
+In aws Boto3, key for volume name is "Name". For example,
+key="Name", value="user-volume-1".
+It could also be used to rename or name a volume.
+If NAME is not specified, then tag will be added to the last volume.
 
 Required Parameters:
 
-        Device (string): The device name (for example, /dev/sdh or xvdh ).
-
-        InstanceId (string): The ID of the instance.
-
-        VolumeId (string): The ID of the volume.
+        NAME: name of volume
+        key: name of tag
+        value: value of tag
 ```
 
-detach_volume(**kwargs)
-
+* Volume Status
 ```
-Detaches an EBS volume from an instance.
+status(name):
+
+This function get volume status, such as "in-use", "available", "deleted"
 
 Required Parameters:
 
-        VolumeId (string): The ID of the volume.
+        name (string): volume name
 ```
 
+* Migrate Volume
+```
 migrate(**kwargs):
 
-```
-Migrate EBS volume from one instance to another instance.
+Migrate volume from one vm to another vm.
 
 Required Parameters:
 
-        VolumeId (string): The ID of the volume.
+        NAME (string): the volume name
 
-        InstanceId (string): The ID of the instance.
+        vm (string): the vm name
+
+        region (string): the availability zone
 ```
 
+* Sync Volumes
+```
 sync(names):
 
-```
 sync contents of one volume to another volume
 
-        VolumeId (string): The ID of the volume.
+Required Parameters:
+
+        names (list): list of volume names
 ```
 
 ### Google

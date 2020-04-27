@@ -334,6 +334,13 @@ additional GCP projects.
     
     Creates a persistent disk in the specified project using the data in the 
     request.
+  
+    Optional Parameters:
+        NAME (string): the name of volume
+        size (int): the size of volume (GB)
+        volume_type (string): pd-standard or pd-ssd
+        region (string): zone of volume
+        description (string): additional description of volume
     
     Required Parameters for API function::
       project: project ID for the project in which the volume is being created
@@ -355,8 +362,18 @@ additional GCP projects.
     ```
     list(self, **kwargs)
     
-    Retrieves an aggregated list of persistent disks with most recently created 
-    disks listed first.
+    This function list all volumes as following:
+      If NAME (volume name) is specified, it will print out info of NAME.
+      If NAME (volume name) is not specified, it will print out info of all
+      volumes under current cloud.
+      If vm is specified, it will print out all the volumes attached to vm.
+      If region(zone) is specified, it will print out all the 
+      volumes in that zone.
+
+      Optional Parameters:
+        NAME (string): name of volume
+        vm (string): name of vm
+        region (string): name of availability zone
     
     Required Parameters for API function(vary by argument):
       For no arguments, NAMES, --vm, --cloud: 
@@ -373,7 +390,12 @@ additional GCP projects.
   
     Deletes the specified persistent disk.
     Deleting a disk removes its data permanently and is irreversible.
+    The volume will be updated in the database with status set to 'deleted'. 
+    (Use purge to remove deleted volumes from database) 
     
+    Required Parameters:
+        name (string): names of volume
+  
     Required Parameters for API function:
       project: project ID for the project in which the volume is located
       zone: the zone in which the volume is located
@@ -382,7 +404,7 @@ additional GCP projects.
 
 * Attach volumes
 
-  The disk being attached needs to located in the same zone as the virtual 
+  Note: The disk being attached needs to located in the same zone as the virtual 
   machine.
   
   ```
@@ -393,6 +415,10 @@ additional GCP projects.
     the attach function is called, the function will stop the instance and then 
     restart the instance after attaching the disk.
     
+    Required Parameters:
+        names (string): name(s) of volume(s)
+        vm (string): name of vm
+
     Required Parameters for API function:
       project: project ID for the project in which the instance is located
       zone: the zone in which the instance is located
@@ -413,6 +439,9 @@ additional GCP projects.
     when detaching a disk.  If the instance is running when the detach function 
     is called, the function will stop the instance and then restart the instance
     after detaching the disk.
+   
+    Required Parameters:
+        name (string): name of volume to dettach
     
     Required Parameters for API function:
       project: project ID for the project in which the instance is located
@@ -428,6 +457,11 @@ additional GCP projects.
   
     Add a key:value label to the disk
     Unable to change the name of a disk in Google Cloud
+    
+    Required Parameters:
+        NAME (string): name of volume
+        key: name of tag
+        value: value of tag  
   
     Required Parameters for API function:
       project: project ID for the project in which the volume is located
@@ -446,6 +480,9 @@ additional GCP projects.
   
     Get status of specified disk, such as 'READY'
     Calls self.list() to get disk info
+    
+    Required Parameters:
+        name (string): volume nams
   
     Required Parameters for API function:
       project: project ID for the project being worked in

@@ -6,6 +6,7 @@ from cloudmesh.volume.VolumeABC import VolumeABC
 
 from cloudmesh.mongo.CmDatabase import CmDatabase
 
+
 class Provider(VolumeABC):
     kind = "oracle"
 
@@ -179,6 +180,48 @@ class Provider(VolumeABC):
             raise RuntimeError
         return result
 
+    def list(self, **kwargs):
+        """
+        This function list all volumes as following:
+        If NAME (volume_name) is specified, it will print out info of NAME
+        If NAME (volume_name) is not specified, it will print out info of all
+          volumes
+
+        :param kwargs: contains name of volume
+        :return: Dictionary of volumes
+        """
+        try:
+            if kwargs and kwargs['refresh'] is False:
+                result = self.cm.find(cloud=self.cloud, kind='volume')
+                for key in kwargs:
+                    if key == 'NAME' and kwargs['NAME']:
+                        result = self.cm.find_name(name=kwargs['NAME'])
+                    elif key == 'NAMES' and kwargs['NAMES']:
+                        result = self.cm.find_names(names=kwargs['NAMES'])
+            else:
+                block_storage = oci.core.BlockstorageClient(self.config)
+                if kwargs and kwargs['NAME']:
+                    v = block_storage.list_volumes(
+                        self.config['compartment_id'])
+                    results = v.data
+                    entry = None
+                    for entry in results:
+                        display_name = entry.__getattribute__("display_name")
+                        if kwargs["NAME"] == display_name:
+                            break
+                    result = [entry]
+                    result = self.update_dict(result)
+                else:
+                    v = block_storage.list_volumes(
+                        self.config['compartment_id'])
+                    results = v.data
+                    result = self.update_dict(results)
+        except Exception as e:
+            Console.error("Problem listing volume", traceflag=True)
+            print(e)
+            raise RuntimeError
+        return result
+
     def create(self, **kwargs):
         """
         This function creates a new volume with default size of 50gb.
@@ -213,39 +256,11 @@ class Provider(VolumeABC):
             raise RuntimeError
         return result
 
-    def delete(self, name=None):
-        """
-        This function delete one volume.
-
-        :param name: Volume name
-        :return: Dictionary of volumes
-        """
-        try:
-            block_storage = oci.core.BlockstorageClient(self.config)
-            volume_id = self.get_volume_id_from_name(block_storage, name)
-            if volume_id is not None:
-                block_storage.delete_volume(volume_id=volume_id)
-                # wait for termination
-                oci.wait_until(
-                    block_storage,
-                    block_storage.get_volume(volume_id),
-                    'lifecycle_state',
-                    'TERMINATED'
-                ).data
-            v = block_storage.list_volumes(self.config['compartment_id'])
-            results = v.data
-            result = self.update_dict(results)
-        except Exception as e:
-            Console.error("Problem deleting volume", traceflag=True)
-            print(e)
-            raise RuntimeError
-        return result
-
     def attach(self, names=None, vm=None):
         """
         This function attaches a given volume to a given instance
 
-        :param NAMES: Names of Volumes
+        :param names: Names of Volumes
         :param vm: Instance name
         :return: Dictionary of volumes
         """
@@ -302,7 +317,7 @@ class Provider(VolumeABC):
         """
         This function detaches a given volume from an instance
 
-        :param NAME: Volume name
+        :param name: Volume name
         :return: Dictionary of volumes
         """
         try:
@@ -328,55 +343,62 @@ class Provider(VolumeABC):
             raise RuntimeError
         return results[0]
 
-    def list(self, **kwargs):
+    def delete(self, name=None):
         """
-        This function list all volumes as following:
-        If NAME (volume_name) is specified, it will print out info of NAME
-        If NAME (volume_name) is not specified, it will print out info of all
-          volumes
+        This function delete one volume.
 
-        :param kwargs: contains name of volume
+        :param name: Volume name
         :return: Dictionary of volumes
         """
         try:
-            if kwargs and kwargs['refresh'] is False:
-                result = self.cm.find(cloud=self.cloud, kind='volume')
-                for key in kwargs:
-                    if key == 'NAME' and kwargs['NAME']:
-                        result = self.cm.find_name(name=kwargs['NAME'])
-                    elif key == 'NAMES' and kwargs['NAMES']:
-                        result = self.cm.find_names(names=kwargs['NAMES'])
-            else:
-                block_storage = oci.core.BlockstorageClient(self.config)
-                if kwargs and kwargs['NAME']:
-                    v = block_storage.list_volumes(self.config['compartment_id'])
-                    results = v.data
-                    entry = None
-                    for entry in results:
-                        display_name = entry.__getattribute__("display_name")
-                        if kwargs["NAME"] == display_name:
-                            break
-                    result = [entry]
-                    result = self.update_dict(result)
-                else:
-                    v = block_storage.list_volumes(self.config['compartment_id'])
-                    results = v.data
-                    result = self.update_dict(results)
+            block_storage = oci.core.BlockstorageClient(self.config)
+            volume_id = self.get_volume_id_from_name(block_storage, name)
+            if volume_id is not None:
+                block_storage.delete_volume(volume_id=volume_id)
+                # wait for termination
+                oci.wait_until(
+                    block_storage,
+                    block_storage.get_volume(volume_id),
+                    'lifecycle_state',
+                    'TERMINATED'
+                ).data
+            v = block_storage.list_volumes(self.config['compartment_id'])
+            results = v.data
+            result = self.update_dict(results)
         except Exception as e:
-            Console.error("Problem listing volume", traceflag=True)
+            Console.error("Problem deleting volume", traceflag=True)
             print(e)
             raise RuntimeError
         return result
 
-    def mount(self, path=None, name=None):
+    def add_tag(self, **kwargs):
         """
-        This method is not applicable to Oracle
+        This function add tag to a volume.
 
-        :param path:
-        :param name:
-        :return:
+        :param kwargs:
+                    NAME: name of volume
+                    key: name of tag
+                    value: value of tag
+        :return: Dictionary of volume
         """
-        raise NotImplementedError
+        try:
+            name = kwargs['NAME']
+            key = kwargs['key']
+            value = kwargs['value']
+            block_storage = oci.core.BlockstorageClient(self.config)
+            volume_id = self.get_volume_id_from_name(block_storage, name)
+            block_storage.update_volume(
+                volume_id,
+                oci.core.models.UpdateVolumeDetails(
+                    freeform_tags={key: value},
+                )
+            )
+            result = self.list(NAME=name, refresh=True)[0]
+        except Exception as e:
+            Console.error("Problem adding tag", traceflag=True)
+            print(e)
+            raise RuntimeError
+        return result
 
     def migrate(self,
                 name=None,
@@ -425,32 +447,3 @@ class Provider(VolumeABC):
         :return: str
         """
         raise NotImplementedError
-
-    def add_tag(self, **kwargs):
-        """
-        This function add tag to a volume.
-
-        :param kwargs:
-                    NAME: name of volume
-                    key: name of tag
-                    value: value of tag
-        :return: Dictionary of volume
-        """
-        try:
-            name = kwargs['NAME']
-            key = kwargs['key']
-            value = kwargs['value']
-            block_storage = oci.core.BlockstorageClient(self.config)
-            volume_id = self.get_volume_id_from_name(block_storage, name)
-            block_storage.update_volume(
-                volume_id,
-                oci.core.models.UpdateVolumeDetails(
-                    freeform_tags={key: value},
-                )
-            )
-            result = self.list(NAME=name, refresh=True)[0]
-        except Exception as e:
-            Console.error("Problem adding tag", traceflag=True)
-            print(e)
-            raise RuntimeError
-        return result

@@ -73,16 +73,17 @@ class Test_provider_volume:
                 response = Shell.run(f"multipass info {name} --format=json")
                 response = json.loads(response)
                 status = response["info"][name]['state']
-                if status == "running":
+                if status == "Running":
                     break
+            assert status =='Running'
         else:
             cmd = "cms vm boot --name=" + name
             Benchmark.Start()
             result = Shell.run(cmd)
             Benchmark.Stop()
 
-        print(result)
-        assert "vm" in result
+            print(result)
+            assert "vm" in result
 
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)

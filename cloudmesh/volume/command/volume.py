@@ -88,6 +88,8 @@ class VolumeCommand(PluginCommand):
 
             volume status [NAMES]
                           [--cloud=CLOUD]
+                Get the status (e.g. 'available', 'READY', 'in-use') of a volume
+
             volume attach [NAMES]
                           [--vm=VM]
                 Attach volume to a vm
@@ -337,7 +339,7 @@ class VolumeCommand(PluginCommand):
             name = arguments.NAME or variables["volume"] or get_last_volume()
             arguments.NAME = name
             provider = Provider(name=arguments.cloud)
-            result = provider.status(NAME=name)
+            result = provider.status(name=name)
             print(provider.Print(result, kind='volume', output=arguments.output)
                   )
 

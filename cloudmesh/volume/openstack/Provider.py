@@ -21,7 +21,7 @@ class Provider(VolumeABC):
             label: chameleon
             kind: openstack
             version: train
-            service: compute
+            service: volume
           credentials:
             auth:
               username: TBD
@@ -87,6 +87,18 @@ class Provider(VolumeABC):
         }
     }
 
+    def __init__(self, name):
+        """
+        Initialize provider. The default parameters are read from the
+        configuration file that is defined in yaml format.
+
+        :param name: name of cloud
+        """
+        self.cloud = name
+        self.config = Config()["cloudmesh.volume.openstack.credentials"]
+        self.defaults = Config()["cloudmesh.volume.openstack.default"]
+        self.cm = CmDatabase()
+
     def update_dict(self, results):
         """
         This function adds a cloudmesh cm dict to each dict in the list
@@ -128,63 +140,6 @@ class Provider(VolumeABC):
         result = self.update_dict(result)
         return result
 
-    def __init__(self, name):
-        """
-        Initialize provider. The default parameters are read from the
-        configuration file that is defined in yaml format.
-
-        :param name: name of cloud
-        """
-        self.cloud = name
-        self.config = Config()["cloudmesh.volume.openstack.credentials"]
-        self.defaults = Config()["cloudmesh.volume.openstack.default"]
-        self.cm = CmDatabase()
-
-    def create(self, **kwargs):
-        """
-        This function creates a new volume with default volume type __DEFAULT__.
-        Default parameters are read from self.config.
-
-        :param kwargs: Contains Volume name,size
-        :return: Volume dictionary
-        """
-        try:
-            con = openstack.connect(**self.config)
-            arguments = dotdict(kwargs)
-            if arguments.volume_type is None:
-                arguments.volume_type = self.defaults["volume_type"]
-            if arguments.size is None:
-                arguments.size = self.defaults["size"]
-            r = con.create_volume(name=arguments.NAME,
-                                  size=arguments.size,
-                                  volume_type=arguments.volume_type
-                                  )
-            r = [r]
-            result = self.update_dict(r)
-        except Exception as e:
-            Console.error("Problem creating volume", traceflag=True)
-            print(e)
-            raise RuntimeError
-        return result
-
-    def delete(self, name=None):
-        """
-        This function delete one volume.
-
-        :param name: Volume name
-        :return: Dictionary of volumes
-        """
-        try:
-            con = openstack.connect(**self.config)
-            con.delete_volume(name_or_id=name)
-            results = con.list_volumes()
-            result = self.update_dict(results)
-        except Exception as e:
-            Console.error("Problem deleting volume", traceflag=True)
-            print(e)
-            raise RuntimeError
-        return result
-
     def list(self, **kwargs):
         """
         This function list all volumes as following:
@@ -219,11 +174,38 @@ class Provider(VolumeABC):
             raise RuntimeError
         return result
 
+    def create(self, **kwargs):
+        """
+        This function creates a new volume with default volume type __DEFAULT__.
+        Default parameters are read from self.config.
+
+        :param kwargs: Contains Volume name,size
+        :return: Volume dictionary
+        """
+        try:
+            con = openstack.connect(**self.config)
+            arguments = dotdict(kwargs)
+            if arguments.volume_type is None:
+                arguments.volume_type = self.defaults["volume_type"]
+            if arguments.size is None:
+                arguments.size = self.defaults["size"]
+            r = con.create_volume(name=arguments.NAME,
+                                  size=arguments.size,
+                                  volume_type=arguments.volume_type
+                                  )
+            r = [r]
+            result = self.update_dict(r)
+        except Exception as e:
+            Console.error("Problem creating volume", traceflag=True)
+            print(e)
+            raise RuntimeError
+        return result
+
     def attach(self, names=None, vm=None):
         """
         This function attaches a given volume to a given instance
 
-        :param NAMES: Names of Volumes
+        :param names: Names of Volumes
         :param vm: Instance name
         :return: Dictionary of volumes
         """
@@ -243,7 +225,7 @@ class Provider(VolumeABC):
         """
         This function detaches a given volume from an instance
 
-        :param NAME: Volume name
+        :param name: Volume name
         :return: Dictionary of volumes
         """
         try:
@@ -254,6 +236,59 @@ class Provider(VolumeABC):
             con.detach_volume(server, volume, wait=True, timeout=None)
         except Exception as e:
             Console.error("Problem detaching volume", traceflag=True)
+            print(e)
+            raise RuntimeError
+        # return of self.list(NAME=NAME)[0] throwing error:cm attribute
+        # not found inside CmDatabase.py. So manipulating result as below
+        t = self.list(NAME=name, refresh=True)[0]
+        result = {}
+        result.update(
+            {"cm": t["cm"],
+             "availability_zone": t["availability_zone"],
+             "created_at": t["created_at"],
+             "size": t["size"], "id": t["id"],
+             "status": t["status"],
+             "volume_type": t["volume_type"]
+             }
+        )
+        return result
+
+    def delete(self, name=None):
+        """
+        This function delete one volume.
+
+        :param name: Volume name
+        :return: Dictionary of volumes
+        """
+        try:
+            con = openstack.connect(**self.config)
+            con.delete_volume(name_or_id=name)
+            results = con.list_volumes()
+            result = self.update_dict(results)
+        except Exception as e:
+            Console.error("Problem deleting volume", traceflag=True)
+            print(e)
+            raise RuntimeError
+        return result
+
+    def add_tag(self, **kwargs):
+        """
+        This function add tag to a volume.
+        :param kwargs:
+                    NAME: name of volume
+                    key: name of tag
+                    value: value of tag
+        :return: Dictionary of volume
+        """
+        try:
+            con = openstack.connect(**self.config)
+            name = kwargs['NAME']
+            key = kwargs['key']
+            value = kwargs['value']
+            metadata = {key: value}
+            con.update_volume(name_or_id=name, metadata=metadata)
+        except Exception as e:
+            Console.error("Problem in tagging volume", traceflag=True)
             print(e)
             raise RuntimeError
         # return of self.list(NAME=NAME)[0] throwing error:cm attribute
@@ -300,9 +335,7 @@ class Provider(VolumeABC):
         :param region: the region where the volume will be moved within
         :param service: the service where the volume will be moved within
         :return: dict
-
         """
-
         raise NotImplementedError
 
     def sync(self,
@@ -319,39 +352,4 @@ class Provider(VolumeABC):
         """
         raise NotImplementedError
 
-    def add_tag(self, **kwargs):
-        """
-        This function add tag to a volume.
-        :param kwargs:
-                    NAME: name of volume
-                    key: name of tag
-                    value: value of tag
-        :return: Dictionary of volume
-        """
-        try:
-            con = openstack.connect(**self.config)
-            name = kwargs['NAME']
-            key = kwargs['key']
-            value = kwargs['value']
-            metadata = {}
-            metadata[key] = value
-            con.update_volume(name_or_id=name,metadata=metadata)
-        except Exception as e:
-            Console.error("Problem in tagging volume", traceflag=True)
-            print(e)
-            raise RuntimeError
-        # return of self.list(NAME=NAME)[0] throwing error:cm attribute
-        # not found inside CmDatabase.py. So manipulating result as below
-        t = self.list(NAME=name, refresh=True)[0]
-        result = {}
-        result.update(
-            {"cm": t["cm"],
-             "availability_zone": t["availability_zone"],
-             "created_at": t["created_at"],
-             "size": t["size"], "id": t["id"],
-             "status": t["status"],
-             "volume_type": t["volume_type"]
-             }
-        )
-        return result
 

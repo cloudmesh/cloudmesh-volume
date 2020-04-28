@@ -28,9 +28,10 @@ See also: [Volume man page](https://cloudmesh.github.io/cloudmesh-manual/manual/
 
 #### Multipass volume management functions
 
+* Create Volume
+```
 create(**kwargs):
 
-```
 This function create a new volume.
 Default parameters from self.default, such as: path="/Users/username/multipass".
 
@@ -40,10 +41,12 @@ Required Parameters:
         path: path of volume
 ```
 
+* Delete Volume
+```
 delete(name):
 
-```
-Delete volumes.
+Delete volume.
+
 If name is not given, delete the most recent volume.
 
 Required Parameters:
@@ -51,9 +54,11 @@ Required Parameters:
         name: volume name
 ```
 
+
+* List Volume
+```
 list(**kwargs):
 
-```
 This function list all volumes as following:
 If NAME (volume name) is specified, it will print out info of NAME.
 If NAME (volume name) is not specified, it will print out info of all
@@ -69,9 +74,11 @@ Required Parameters:
         path: volume path
 ```
 
+
+* Attach Volume
+```
 attach(names, vm):
 
-```
 This function attach one or more volumes to vm. It returns info of
 updated volume. The updated dict with "AttachedToVm" showing
 the name of vm where the volume attached to.
@@ -82,41 +89,11 @@ Required Parameters:
         vm (string): name of vm
 ```
 
-mount(path=None,vm=None):
 
+* Detach Volume
 ```
-mount volume to vm
-
-Required Parameters:
-
-        path (string): path of volume
-        vm (string): name of vm
-```
-
-_get_mount_status(vm=None):
-
-```
-Get mount status of vm
-
-Required Parameters:
-
-        vm (string): name of vm
-```
-
-unmount(path=None, vm=None):
-
-```
-Unmount volume from vm
-
-Required Parameters:
-
-        path (string): path of volume
-        vm (string): name of vm
-```
-
 detach(name):
 
-```
 This function detach a volume from vm. It returns the info of the updated volume.
 The vm under "AttachedToVm" will be removed if volume is successfully detached.
 Will detach volume from all vms.
@@ -126,23 +103,25 @@ Required Parameters:
         name: name of volume to be dettached
 ```
 
-add_tag(name, **kwargs):
-
+* Add Tags for Volume
 ```
+add_tag(**kwargs):
+
 This function add tag to a volume.
 If volume name is not specified, then tag will be added to the last volume.
 
 Required Parameters:
 
         NAME: name of volume
-        kwargs:
-                key: name of tag
-                value: value of tag
+        key: name of tag
+        value: value of tag
 ```
 
+
+* Volume Status
+```
 status(name=None):
 
-```
 This function get volume status, such as "in-use", "available", "deleted"
 
 Required Parameters:
@@ -150,9 +129,11 @@ Required Parameters:
         name (string): volume name
 ```
 
+
+* Migrate Volume
+```
 migrate(**kwargs):
 
-```
 Migrate volume from one vm to another vm. "region" is volume path.
 If vm and volume are in the same region (path), migrate within the same region (path)
 If vm and volume are in different regions, migrate between two regions (path)
@@ -163,9 +144,11 @@ Required Parameters:
         vm (string): the vm name
 ```
 
+
+* Sync Volumes
+```
 sync(names):
 
-```
 sync contents of one volume to another volume
 
 Required Parameters:
@@ -191,85 +174,140 @@ Required Parameters:
 
 #### AWS volume management functions
 
+* Create Volume
 ```
-create_volume(**kwargs)
+create(**kwargs):
 
-Creates an EBS volume that can be attached to an instance in the same
-Availability Zone.
+This function create a new volume, with defalt parameters in self.default.
 
-Required Parameters: 
+Optional Parameters:
 
-
-        AvailabilityZone (string): The Availability Zone in which to create the volume.
-```
-
-describe_volumes(**kwargs)
-
-```
-Describes the specified EBS volumes or all of your EBS volumes.
+        NAME (string): the name of volume
+        size (int): the size of volume (GB)
+        volume_type: volume type, gp2 for General Purpose SSD
+        region (string): availability zone of volume
+        snapshot (string): snapshot id
+        encrypted (boolean): True|False
 ```
 
-delete_volume(**kwargs)
-
+* Delete Volume
 ```
-Deletes the specified EBS volume. The volume must be in the available
-state (not attached to an instance).
+delete(name):
 
-Required Parameters: 
+This function delete one volume. 
+It will return the info of volume with "state" updated as "deleted" 
+and will show in Database.
 
-        VolumeId (string): The ID of the volume.
+Required Parameters:
+ 
+        name (string): names of volume
 ```
 
-attach_volume(**kwargs)
-
+* List Volume
 ```
-Attaches an EBS volume to a running or stopped instance and exposes it
-to the instance with the specified device name.
+list(**kwargs):
+
+This function list all volumes as following:
+If NAME (volume name) is specified, it will print out info of NAME.
+        If NAME (volume name) is not specified, it will print out info of all
+          volumes under current cloud.
+        If vm is specified, it will print out all the volumes attached to vm.
+        If region(availability zone) is specified, it will print out
+          all the volumes in that region.
+
+Optional Parameters:
+
+        NAME: name of volume
+        vm: name of vm
+        region: name of availability zone
+```
+
+* Attach Volume
+```
+attach(names,vm,dryrun=False):
+
+This function attach one or more volumes to vm.  It returns self.list()
+        to list the updated volume. The updated dict with "AttachedToVm" showing
+        the name of vm where the volume attached to.
+
+Required Parameters:
+ 
+        names (string): names of volumes
+
+        vm (string): name of vm
+```
+
+* Detach Volume
+```
+detach(name):
+
+This function detach a volume from vm. It returns self.list() to list
+the updated volume. The vm under "AttachedToVm" will be removed if
+volume is successfully detached.
+
+Required Parameters:
+        name: name of volume to dettach
+```
+
+* Add Tags for Volume
+```
+add_tag(**kwargs):
+
+This function add tag to a volume.
+In aws Boto3, key for volume name is "Name". For example,
+key="Name", value="user-volume-1".
+It could also be used to rename or name a volume.
+If NAME is not specified, then tag will be added to the last volume.
 
 Required Parameters:
 
-        Device (string): The device name (for example, /dev/sdh or xvdh ).
-
-        InstanceId (string): The ID of the instance.
-
-        VolumeId (string): The ID of the volume.
+        NAME: name of volume
+        key: name of tag
+        value: value of tag
 ```
 
-detach_volume(**kwargs)
-
+* Volume Status
 ```
-Detaches an EBS volume from an instance.
+status(name):
+
+This function get volume status, such as "in-use", "available", "deleted"
 
 Required Parameters:
 
-        VolumeId (string): The ID of the volume.
+        name (string): volume name
 ```
 
+* Migrate Volume
+```
 migrate(**kwargs):
 
-```
-Migrate EBS volume from one instance to another instance.
+Migrate volume from one vm to another vm.
 
 Required Parameters:
 
-        VolumeId (string): The ID of the volume.
+        NAME (string): the volume name
 
-        InstanceId (string): The ID of the instance.
+        vm (string): the vm name
+
+        region (string): the availability zone
 ```
 
+* Sync Volumes
+```
 sync(names):
 
-```
 sync contents of one volume to another volume
 
-        VolumeId (string): The ID of the volume.
+Required Parameters:
+
+        names (list): list of volume names
 ```
 
 ### Google
 
 * python api:   
   <http://googleapis.github.io/google-api-python-client/docs/dyn/compute_v1.html>
-* REST api for cumpute disks documentation:   
+* REST api for compute disks documentation:   
   <https://cloud.google.com/compute/docs/reference/rest/v1/disks?hl=en_US>
 * Documentation about volume cost:   
   <https://cloud.google.com/compute/disks-image-pricing>
@@ -278,7 +316,178 @@ sync contents of one volume to another volume
 
 #### Google volume management functions
 
-:o2: Add functions from provider with descriptions of required parameters
+In Google Cloud Platform (GCP), volumes are referred to as 'disks'.  There are 
+regional disks, which replicate data between two zones in the same region, and 
+zonal disks, which only store data in a single zone.  Currently, only management
+functions for zonal disks are supported.
+
+Also, the GCP project ID is required to be set in the configuration file.  In 
+order to use multiple projects, copy the google section in the configuration 
+file under each of the cloud, storage, and volume sections and create 
+additional google sections named google2, google3, ... for each of the 
+additional GCP projects.    
+
+* Create volume
+
+    ```
+    create(self, **kwargs)
+    
+    Creates a persistent disk in the specified project using the data in the 
+    request.
+  
+    Optional Parameters:
+        NAME (string): the name of volume
+        size (int): the size of volume (GB)
+        volume_type (string): pd-standard or pd-ssd
+        region (string): zone of volume
+        description (string): additional description of volume
+    
+    Required Parameters for API function::
+      project: project ID for the project in which the volume is being created
+      zone: the zone in which the volume is being created
+      body: a dictionary in which several parameters for the disk can be set 
+            such as size, name, type, and description
+    ```            
+
+* List volumes
+
+    Note: Even though only zonal disks are currently supported, it is possible 
+    to get a list of disks in a specific zone by setting the argument 
+    --region=zone
+    
+    ```
+    cms volume list --region=us-central1-a
+    ```  
+   
+    ```
+    list(self, **kwargs)
+    
+    This function list all volumes as following:
+      If NAME (volume name) is specified, it will print out info of NAME.
+      If NAME (volume name) is not specified, it will print out info of all
+      volumes under current cloud.
+      If vm is specified, it will print out all the volumes attached to vm.
+      If region(zone) is specified, it will print out all the 
+      volumes in that zone.
+
+      Optional Parameters:
+        NAME (string): name of volume
+        vm (string): name of vm
+        region (string): name of availability zone
+    
+    Required Parameters for API function(vary by argument):
+      For no arguments, NAMES, --vm, --cloud: 
+        project: project ID for the project being worked in
+      For argument --region:
+        project: project ID for the project being worked in
+        zone: zone from which to get list of disks
+    ```   
+ 
+* Delete volumes
+  
+  ```
+  delete(self, name=None)
+  
+    Deletes the specified persistent disk.
+    Deleting a disk removes its data permanently and is irreversible.
+    The volume will be updated in the database with status set to 'deleted'. 
+    (Use purge to remove deleted volumes from database) 
+    
+    Required Parameters:
+        name (string): names of volume
+  
+    Required Parameters for API function:
+      project: project ID for the project in which the volume is located
+      zone: the zone in which the volume is located
+      disk: name of the disk to be deleted
+    ```
+
+* Attach volumes
+
+  Note: The disk being attached needs to located in the same zone as the virtual 
+  machine.
+  
+  ```
+  attach(self, names, vm=None)
+
+    Attach one or more disks to an instance.  GCP requires that the
+    instance be stopped when attaching a disk.  If the instance is running when 
+    the attach function is called, the function will stop the instance and then 
+    restart the instance after attaching the disk.
+    
+    Required Parameters:
+        names (string): name(s) of volume(s)
+        vm (string): name of vm
+
+    Required Parameters for API function:
+      project: project ID for the project in which the instance is located
+      zone: the zone in which the instance is located
+      instance: the name of the instance to attach the volume to
+      body: a dictionary in which several parameters for the attahment can be 
+            set such as the source of the disk to be attached and the 
+            'deviceName' given to identify the disk once attached.  Keep the 
+            'deviceName' the same as the name of the volume (this is important 
+            for detach).
+    ```
+  
+* Detach volumes
+  
+  ```
+  detach(self, name=None)
+
+    Detach a disk from all instances.  GCP requires that the instance be stopped
+    when detaching a disk.  If the instance is running when the detach function 
+    is called, the function will stop the instance and then restart the instance
+    after detaching the disk.
+   
+    Required Parameters:
+        name (string): name of volume to dettach
+    
+    Required Parameters for API function:
+      project: project ID for the project in which the instance is located
+      zone: the zone in which the instance is located
+      instance: the name of the instance to attach the volume to
+      deviceName: name given to identify the disk when attached to the instance.
+    ```
+
+* Add a tag to a volume
+
+  ```
+  add_tag(self, **kwargs)
+  
+    Add a key:value label to the disk
+    Unable to change the name of a disk in Google Cloud
+    
+    Required Parameters:
+        NAME (string): name of volume
+        key: name of tag
+        value: value of tag  
+  
+    Required Parameters for API function:
+      project: project ID for the project in which the volume is located
+      zone: zone in which the volume is located
+      resource: name of the volume
+      body: dictionary containing the the keys 'labelFingerprint' and 'labels'.
+            'labels' is the key:value pair to be added to the disk, while 
+            an up-to-date 'labelFingerprint' hash is required to update the 
+            labels
+  ```
+
+* Status of volume
+
+  ```
+  status(self, name=None)
+  
+    Get status of specified disk, such as 'READY'
+    Calls self.list() to get disk info
+    
+    Required Parameters:
+        name (string): volume nams
+  
+    Required Parameters for API function:
+      project: project ID for the project being worked in
+  ```
+  
 
 ### Azure
 
@@ -536,12 +745,4 @@ Required Parameters:
 
 {tests}
 
-## Active Developments
-
-* Azure - Ashley & Xin
-* AWS - Ashley & Xin
-* Google - Peter & Xin
-* Oracle - Ashok & Peter
-* Openstack - Peter & Ashok
-* Multipass - Ashok & Ashley
 

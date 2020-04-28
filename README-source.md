@@ -708,12 +708,4 @@ Required Parameters:
 
 {tests}
 
-## Active Developments
-
-* Azure - Ashley & Xin
-* AWS - Ashley & Xin
-* Google - Peter & Xin
-* Oracle - Ashok & Peter
-* Openstack - Peter & Ashok
-* Multipass - Ashok & Ashley
 

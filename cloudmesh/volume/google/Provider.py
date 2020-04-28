@@ -17,9 +17,9 @@ class Provider(VolumeABC):
         {name}:
           cm:
             active: true
-            heading: {name}
+            heading: GCP
             host: https://console.cloud.google.com/compute/instances?project={project_id}
-            label: {name}
+            label: {label}
             kind: google
             version: TBD
             service: volume

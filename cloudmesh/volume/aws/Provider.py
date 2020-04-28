@@ -33,7 +33,7 @@ class Provider(VolumeABC):
             multi_attach_enabled: True
             snapshot: "None"
           credentials:
-            EC2_SECURITY_GROUP: cloudmesh
+            EC2_SECURITY_GROUP: default
             EC2_ACCESS_ID: 
             EC2_SECRET_KEY: 
             EC2_PRIVATE_KEY_FILE_PATH: ~/cm/aws_ec2_cert.pem

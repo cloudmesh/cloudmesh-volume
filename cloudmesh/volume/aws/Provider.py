@@ -34,10 +34,10 @@ class Provider(VolumeABC):
             snapshot: "None"
           credentials:
             EC2_SECURITY_GROUP: default
-            EC2_ACCESS_ID: 
-            EC2_SECRET_KEY: 
-            EC2_PRIVATE_KEY_FILE_PATH: ~/cm/aws_ec2_cert.pem
-            EC2_PRIVATE_KEY_FILE_NAME: aws_ec2_cert
+            EC2_ACCESS_ID: XXXXX
+            EC2_SECRET_KEY: XXXXX
+            EC2_PRIVATE_KEY_FILE_PATH: ~/.ssh/id_rsa
+            EC2_PRIVATE_KEY_FILE_NAME: key_name
     """
 
     volume_status = [
@@ -56,7 +56,7 @@ class Provider(VolumeABC):
                       "cm.kind",
                       "cm.region",
                       # "AvailabilityZone",
-                      "CreateTime",
+                      #"CreateTime",
                       # "Encrypted",
                       "Size",
                       # "SnapshotId",
@@ -74,7 +74,7 @@ class Provider(VolumeABC):
                        "Kind",
                        "Region",
                        # "AvailabilityZone",
-                       "Create Time",
+                       #"Create Time",
                        # "Encrypted",
                        "Size(GB)",
                        # "SnapshotId",
@@ -643,7 +643,7 @@ class Provider(VolumeABC):
         if key == 'Name':
             result = self.list(NAME=value, refresh=True)[0]
         else:
-            result = self.list(NAME=name, refresh=True)[0]
+            result = self.list(NAME=kwargs['NAME'], refresh=True)[0]
         return result
 
     def migrate(self, **kwargs):

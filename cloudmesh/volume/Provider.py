@@ -302,13 +302,13 @@ class Provider(object):  # broken
         """
         collection = f"{self.cloud}-volume"
         self.cm = CmDatabase()
-        if self.cloud== 'aws' or self.cloud == 'multipass':
+        if self.cloud == 'aws' or self.cloud == 'multipass':
             self.cm.collection(collection).delete_many({"State": "deleted"})
         elif self.cloud == 'oracle':
             self.cm.collection(collection).delete_many({"lifecycle_state": "deleted"})
         elif self.cloud == 'azure':
             self.cm.collection(collection).delete_many({"disk_state": "deleted"})
-        elif slef.cm.cloud == 'google' or self.cloud == 'openstack':
+        elif self.cm.cloud == 'google' or self.cloud == 'openstack':
             self.cm.collection(collection).delete_many({"status": "deleted"})
         return self.provider.list()
 

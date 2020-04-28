@@ -6,7 +6,6 @@ from googleapiclient.discovery import build
 from time import sleep
 from googleapiclient.errors import HttpError
 from cloudmesh.mongo.CmDatabase import CmDatabase
-from pprint import pprint
 
 
 class Provider(VolumeABC):
@@ -647,15 +646,14 @@ class Provider(VolumeABC):
         :param name: name of volume
         :param from_vm: name of vm where volume will be moved from
         :param to_vm: name of vm where volume will be moved to
-        :return: dict
+        :return: dict of disk with updated info
         """
-        print(name)
-        print(from_vm)
-        print(to_vm)
         self.detach(name)
         self.attach(name, vm=to_vm)
         result = self.status(name)
-        return result
+        # this only would work when disk and instances are all in the same zone
+        # include how to migrate disks between zones and regions
+        raise NotImplementedError
 
     def sync(self,
              from_volume=None,

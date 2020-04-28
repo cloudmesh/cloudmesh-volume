@@ -1,7 +1,7 @@
 # Cloudmesh Volume Management
 
 
-> **Note:** The README.md page is outomatically generated, do not edit it.
+> **Note:** The README.md page is automatically generated, do not edit it.
 > To modify  change the content in
 > <https://github.com/cloudmesh/cloudmesh-volume/blob/master/README-source.md>
 > Curley brackets must use two in README-source.md
@@ -173,7 +173,7 @@ Required Parameters:
             The name of vm???
 ```
 
-umount(self, name="cloudmesh", path=None)
+unmount(self, name="cloudmesh", path=None)
 ```
 Unmount a volume from an instance.
 

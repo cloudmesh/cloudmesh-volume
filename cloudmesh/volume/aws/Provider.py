@@ -8,6 +8,7 @@ from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.mongo.CmDatabase import CmDatabase
 import datetime
 
+
 class Provider(VolumeABC):
     kind = "volume"
 
@@ -54,37 +55,37 @@ class Provider(VolumeABC):
                       "cm.cloud",
                       "cm.kind",
                       "cm.region",
-                      #"AvailabilityZone",
+                      # "AvailabilityZone",
                       "CreateTime",
-                      #"Encrypted",
+                      # "Encrypted",
                       "Size",
-                      #"SnapshotId",
+                      # "SnapshotId",
                       "State",
-                      #"VolumeId",
-                      #"Iops",
+                      # "VolumeId",
+                      # "Iops",
                       "cm.tags",
                       "VolumeType",
-                      #"created",
+                      # "created",
                       "AttachedToVm",
-                      #"UpdateTime"
+                      # "UpdateTime"
                       ],
             "header": ["Name",
                        "Cloud",
                        "Kind",
                        "Region",
-                       #"AvailabilityZone",
+                       # "AvailabilityZone",
                        "Create Time",
-                       #"Encrypted",
+                       # "Encrypted",
                        "Size(GB)",
-                       #"SnapshotId",
+                       # "SnapshotId",
                        "Status",
-                        #"VolumeId",
-                       #"Iops",
+                       # "VolumeId",
+                       # "Iops",
                        "Tags",
                        "Volume Type",
-                       #"Created",
+                       # "Created",
                        "Attached To Vm",
-                       #"Update Time"
+                       # "Update Time"
                        ],
         }
     }
@@ -143,32 +144,31 @@ class Provider(VolumeABC):
         #     ]
         # }
 
-
         if results is None:
             return None
 
         d = []
         elements = results['Volumes']
         for entry in elements:
-
+            tags = ""
             try:
                 tags = entry['Tags'].copy()
                 for item in entry['Tags']:
                     if item['Key'] == 'Name':
                         if item['Value'] == "":
-                            #Console.error(f"Please name volume {entry['VolumeId']}")
+                            # Console.error(f"Please name volume {entry['VolumeId']}")
                             volume_name = " "
                         elif item['Value'] == " ":
-                           # Console.error(f"Please name volume {entry['VolumeId']}")
+                            # Console.error(f"Please name volume {entry['VolumeId']}")
                             volume_name = " "
                         else:
                             volume_name = item['Value']
                             tags.remove(item)
                     else:
-                        #Console.error(f"Please name volume {entry['VolumeId']}")
+                        # Console.error(f"Please name volume {entry['VolumeId']}")
                         volume_name = " "
             except:
-                #Console.error(f"Please name volume {entry['VolumeId']}")
+                # Console.error(f"Please name volume {entry['VolumeId']}")
                 volume_name = " "
 
             if "cm" not in entry:
@@ -197,7 +197,7 @@ class Provider(VolumeABC):
             Filters=[
                 {
                     'Name': 'tag:Name',
-                    'Values': [vm,]
+                    'Values': [vm, ]
                 },
             ]
         )
@@ -221,7 +221,7 @@ class Provider(VolumeABC):
             ],
         )
 
-        #vms = []
+        # vms = []
         elements = volume['Volumes']
         for i in range(len(elements)):
             try:
@@ -231,7 +231,7 @@ class Provider(VolumeABC):
                     for tag in instance['Reservations'][0]['Instances'][0]['Tags']:
                         if tag['Key'] == 'Name':
                             vm_name = tag['Value']
-                            #print("vm_name: ", vm_name)
+                            # print("vm_name: ", vm_name)
                         return vm_name
             except:
                 Console.error(f"{volume_name} does not attach to any vm")
@@ -274,7 +274,7 @@ class Provider(VolumeABC):
             Filters=[
                 {
                     'Name': 'tag:Name',
-                    'Values': [volume_name,]
+                    'Values': [volume_name, ]
                 },
             ],
         )
@@ -327,9 +327,8 @@ class Provider(VolumeABC):
             ],
         )
         result = self.update_dict(result)
-        #volume_status = volume['Volumes'][0]['State']
+        # volume_status = volume['Volumes'][0]['State']
         return result
-
 
     def create(self, **kwargs):
         """
@@ -361,7 +360,7 @@ class Provider(VolumeABC):
         return result
 
     def _create(self,
-               **kwargs):
+                **kwargs):
         """
         Create a volume.
 
@@ -377,11 +376,10 @@ class Provider(VolumeABC):
         :return: dict
         """
 
-        if kwargs['volume_type']=='io1':
-
+        if kwargs['volume_type'] == 'io1':
             raise NotImplementedError
 
-        if kwargs['volume_type']=='sc1':
+        if kwargs['volume_type'] == 'sc1':
             if int(kwargs['size']) < 500:
                 raise Exception("minimum volume size for sc1 is 500 GB")
 
@@ -424,10 +422,9 @@ class Provider(VolumeABC):
             )
         r = [r]
         result = {}
-        result['Volumes']= r
+        result['Volumes'] = r
         result['Volumes'][0]['AttachedToVm'] = []
         return result
-
 
     def list(self,
              **kwargs
@@ -447,26 +444,25 @@ class Provider(VolumeABC):
         :param region: name of availability zone
         :return: dict
         """
-
-        if kwargs and kwargs['refresh']==True:
+        if kwargs and kwargs['refresh'] == True:
             result = self.client.describe_volumes()
             for key in kwargs:
                 if key == 'NAME' and kwargs['NAME']:
                     result = self.client.describe_volumes(
-                        #DryRun=dryrun,
+                        # DryRun=dryrun,
                         Filters=[
                             {
                                 'Name': 'tag:Name',
-                                'Values': [kwargs['NAME'],]
+                                'Values': [kwargs['NAME'], ]
                             },
                         ],
                     )
 
-                elif key=='NAMES' and kwargs['NAMES']:
-                    if type(kwargs['NAMES'])== str:
+                elif key == 'NAMES' and kwargs['NAMES']:
+                    if type(kwargs['NAMES']) == str:
                         kwargs['NAMES'] = [kwargs['NAMES']]
                     result = self.client.describe_volumes(
-                        #DryRun=dryrun,
+                        # DryRun=dryrun,
                         Filters=[
                             {
                                 'Name': 'tag:Name',
@@ -474,24 +470,24 @@ class Provider(VolumeABC):
                             },
                         ],
                     )
-                elif key =='vm' and kwargs['vm']:
-                    vm_id =  self.find_vm_id(kwargs['vm'])
+                elif key == 'vm' and kwargs['vm']:
+                    vm_id = self.find_vm_id(kwargs['vm'])
                     result = self.client.describe_volumes(
-                        #DryRun=dryrun,
+                        # DryRun=dryrun,
                         Filters=[
                             {
                                 'Name': 'attachment.instance-id',
-                                'Values': [vm_id,]
+                                'Values': [vm_id, ]
                             },
                         ],
                     )
-                elif key =='region' and kwargs['region']:
+                elif key == 'region' and kwargs['region']:
                     result = self.client.describe_volumes(
-                        #DryRun=dryrun,
+                        # DryRun=dryrun,
                         Filters=[
                             {
                                 'Name': 'availability-zone',
-                                'Values': [kwargs['region'],]
+                                'Values': [kwargs['region'], ]
                             },
                         ],
                     )
@@ -531,7 +527,7 @@ class Provider(VolumeABC):
                     'Name': 'tag:Name',
                     'Values': [name]
                 },
-            ],)
+            ], )
         volume_id = self.find_volume_id(name)
         if result['Volumes'][0]['State'] == 'available':
             response = self.client.delete_volume(VolumeId=volume_id)
@@ -544,7 +540,7 @@ class Provider(VolumeABC):
                     volume_status = self.status(name=name)[0]['State']
                 except:
                     break
-            result['Volumes'][0]['State']='deleted'
+            result['Volumes'][0]['State'] = 'deleted'
         else:
             Console.error("volume is not available")
         result = self.update_dict(result)
@@ -567,12 +563,12 @@ class Provider(VolumeABC):
         """
 
         devices = [
-                  "/dev/sdb",
-                  "/dev/sdd",
-                  "/dev/sde",
-                  "/dev/sdf",
-                  "/dev/sdg",
-                  "/dev/sdh",]
+            "/dev/sdb",
+            "/dev/sdd",
+            "/dev/sde",
+            "/dev/sdf",
+            "/dev/sdg",
+            "/dev/sdh", ]
 
         vm_id = self.find_vm_id(vm)
         for name in names:
@@ -580,25 +576,25 @@ class Provider(VolumeABC):
             for device in devices:
                 try:
                     response = self.client.attach_volume(
-                                        Device=device,
-                                        InstanceId=vm_id,
-                                        VolumeId=volume_id,
-                                        DryRun=dryrun
-                                    )
+                        Device=device,
+                        InstanceId=vm_id,
+                        VolumeId=volume_id,
+                        DryRun=dryrun
+                    )
                 except:
                     pass
 
-        return self.list(names=names,refresh=True)
+        return self.list(NAMES=names, refresh=True)
 
     def detach(self,
-                name):
+               name):
 
         """
         This function detach a volume from vm. It returns self.list() to list
         the updated volume. The vm under "AttachedToVm" will be removed if
         volume is successfully detached.
 
-        :param NAME: name of volume to dettach
+        :param name: name of volume to dettach
         :return: dict
         """
 
@@ -614,9 +610,9 @@ class Provider(VolumeABC):
             volume_status = self.status(name=name)[0]['State']
             if volume_status == "available":
                 break
-        return self.list(name=name, refresh=True)[0]
+        return self.list(NAME=name, refresh=True)[0]
 
-    def add_tag(self, name, **kwargs):
+    def add_tag(self, **kwargs):
 
         """
         This function add tag to a volume.
@@ -626,16 +622,14 @@ class Provider(VolumeABC):
         If NAME is not specified, then tag will be added to the last volume.
 
         :param NAME: name of volume
-        :param kwargs:
-                    key: name of tag
-                    value: value of tag
+        :param key: name of tag
+        :param value: value of tag
         :return: dict
         """
-
         key = kwargs['key']
         value = kwargs['value']
-        volume_id = self.find_volume_id(volume_name=name)
-        result = self.client.create_tags(
+        volume_id = self.find_volume_id(volume_name=kwargs['NAME'])
+        re = self.client.create_tags(
             Resources=[
                 volume_id,
             ],
@@ -647,11 +641,10 @@ class Provider(VolumeABC):
             ],
         )
         if key == 'Name':
-            result = self.list(name=value, refresh=True)[0]
+            result = self.list(NAME=value, refresh=True)[0]
         else:
-            result = self.list(name=name, refresh=True)[0]
+            result = self.list(NAME=name, refresh=True)[0]
         return result
-
 
     def migrate(self, **kwargs):
         """
@@ -665,7 +658,7 @@ class Provider(VolumeABC):
         volume_name = kwargs['NAME']
         vm = kwargs['vm']
         volume_status = self.status(NAME=volume_name)[0]['State']
-        volume_region = self.list(NAME=volume_name,refresh=True)[0]['cm']['region']
+        volume_region = self.list(NAME=volume_name, refresh=True)[0]['cm']['region']
         volume_id = self.find_volume_id(volume_name=volume_name)
         vm_info = self.vm_info(vm=vm)
         vm_status = vm_info['Reservations'][0]['Instances'][0]['State']['Name']
@@ -675,21 +668,21 @@ class Provider(VolumeABC):
         # migrate within same region:
         if vm_status == 'running':
             if volume_region == vm_region:
-                #if volume and vm are in the same zone,
+                # if volume and vm are in the same zone,
                 if volume_status == "in-use":
                     # if volume is attached to a vm, first detach and than attach to vm
                     self.detach(name=volume_name)
-                    self.attach(names=[volume_name,],vm=vm)
+                    self.attach(names=[volume_name, ], vm=vm)
                 elif volume_status == "available":
-                    #if volume is available, attach to vm
-                    self.attach(names=[volume_name,], vm=vm)
-                return self.list(name=volume_name, refresh=True)
+                    # if volume is available, attach to vm
+                    self.attach(names=[volume_name, ], vm=vm)
+                return self.list(NAME=volume_name, refresh=True)
             else:
-                #if volume and vm are not in the same zone, create a snapshot, create a new volume with the snapshot
+                # if volume and vm are not in the same zone, create a snapshot, create a new volume with the snapshot
                 # and in the same zone as vm, delete old volume
 
                 snapshot_id = self.client.create_snapshot(
-                    VolumeId=volume_id,)['SnapshotId']
+                    VolumeId=volume_id, )['SnapshotId']
                 ec2 = boto3.resource('ec2')
                 snapshot = ec2.Snapshot(snapshot_id)
                 start_timeout = 360
@@ -710,7 +703,7 @@ class Provider(VolumeABC):
                     status = self.status(name=volume_name)[0]['State']
                     if status == "available":
                         break
-                self.attach(names=[volume_name,], vm=vm)
+                self.attach(names=[volume_name, ], vm=vm)
                 response = self.client.delete_volume(VolumeId=volume_id)
 
         else:
@@ -725,7 +718,7 @@ class Provider(VolumeABC):
         :return: dict
         """
         volume_1 = names[0]
-        volume_1_region = self.list(name=volume_1, refresh=True)[0]['cm']['region']
+        volume_1_region = self.list(NAME=volume_1, refresh=True)[0]['cm']['region']
         volume_2 = names[1]
         volume_2_id = self.find_volume_id(volume_name=volume_2)
         # make a snapshot of volume_2
@@ -757,4 +750,4 @@ class Provider(VolumeABC):
             status = self.status(name=volume_1)[0]['State']
             if status == "available":
                 break
-        return self.list(name=volume_1, refresh=True)[0]
+        return self.list(NAME=volume_1, refresh=True)[0]

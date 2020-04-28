@@ -404,7 +404,7 @@ class Provider(VolumeABC):
         else:
             Console.error("volume is not existed or volume had been deleted")
 
-    def add_tag(self, name, **kwargs):
+    def add_tag(self, **kwargs):
         """
         This function add tag to a volume.
         If volume name is not specified, then tag will be added to the last volume.

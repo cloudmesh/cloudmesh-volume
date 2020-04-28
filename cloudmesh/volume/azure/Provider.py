@@ -300,38 +300,29 @@ class Provider(VolumeABC):
         :param vm: Instance name
         :return: Dictionary of volumes
         """
-        # VM_NAME = 'ashthorn-vm-3'
         self.vms = self.compute_client.virtual_machines
-        disk_creation = self.compute_client.disks.create_or_update(
-            self.group_name,
-            names,
-            {
-                'location': self.location,
-                'disk_size_gb': self.size,
-                'creation_data': {
-                    'create_option': 'Empty'
-                }
-            }
-        )
-        data_disk = disk_creation.result()
         virtual_machine = self.vms.get(self.group_name, vm)
-        disk_attach = virtual_machine.storage_profile.data_disks.append({
-            'lun': 0,
-            'name': data_disk.name,
-            'create_option': 'Attach',
-            'managed_disk': {
-                'id': data_disk.id
-            }
-        })
-        updated_vm = self.vms.create_or_update(
-            self.group_name,
-            vm,
-            virtual_machine
-        )
-        # return after attaching
-        results = updated_vm.result().as_dict()
-        result = self.update_dict([results])
-        return result
+        results = []
+        for name in names:
+            disk = self.compute_client.disks.get(self.group_name, name)
+            disk_attach = virtual_machine.storage_profile.data_disks.append({
+                'lun': 1,
+                'name': disk.name,
+                'create_option': DiskCreateOption.attach,
+                'managed_disk': {
+                    'id': disk.id
+                }
+            })
+            async_disk_attach = \
+                        self.vms.create_or_update(
+                self.group_name,
+                vm,
+                virtual_machine
+            )
+            async_disk_attach.wait(10)
+            results = async_disk_attach.result().as_dict()
+            result = self.update_dict([results])
+            return result
 
 
     def detach(self, name=None):
@@ -342,34 +333,26 @@ class Provider(VolumeABC):
         :param name: name of volumes to detach
         :return: dict
         """
-        group = 'default'
-        # disk_list = \
-        #     self.compute_client.disks.list_by_resource_group(group)
-        # found = []
-        # for disk in disk_list :
-        #     results = disk.as_dict()
-        #     result = self.update_dict([results])
-        #     if 'name' == 'test':
-        #         found.extend(result)
-        # return found
-        vm_info = self.compute_client.disks.get(group, 'test').as_dict()[
-            'managed_by']
-        VM_NAME = vm_info.split(sep="/")[-1]
-        # self.vms = self.compute_client.virtual_machines
-        # virtual_machine = self.vms.get(self.group_name, vm)
-        # data_disks = virtual_machine.storage_profile.data_disks
-        # data_disks[:] = [
-        #     disk for disk in data_disks if disk.name != NAME]
-        # async_vm_update = self.compute_client.virtual_machines.create_or_update(
-        #     self.group_name,
-        #     vm,
-        #     virtual_machine
-        # )
-        # # return after detaching
-        # results = async_vm_update.result().as_dict()
-        # result = self.update_dict([results])
-        # return result
+        vm_info = self.compute_client.disks.get(self.group_name,
+                                    name).as_dict()['managed_by']
+        vm = vm_info.split(sep="/")[-1]
+        self.vms = self.compute_client.virtual_machines
+        virtual_machine = self.vms.get(self.group_name, vm)
+        data_disks = virtual_machine.storage_profile.data_disks
+        data_disks[:] = [
+            disk for disk in data_disks if disk.name != name]
+        async_vm_update = self.compute_client.virtual_machines.create_or_update(
+            self.group_name,
+            vm,
+            virtual_machine
+        )
+        # return after detaching
+        results = async_vm_update.result().as_dict()
+        result = self.update_dict([results])
+        return result
 
+
+#Status and info use same code. Unable to only pull out 'disk_state' for status.
 
     def status(self, name=None):
         """
@@ -383,15 +366,14 @@ class Provider(VolumeABC):
             self.group_name,
             name
         )
-        # return after getting status
-        # results = disk_status.as_dict()
+        # return after getting info
+        results = disk_status.as_dict()
         # res = dict((k, results[k]) for k in ['disk_state']
         #            if k in results)
         # return res
-
-        results = disk_status.as_dict()
         result = self.update_dict([results])
         return result
+
 
     def info(self, name=None):
         """
@@ -423,9 +405,11 @@ class Provider(VolumeABC):
                      value: value of tag
         :return: self.list()
         """
+        key = kwargs['key']
+        value = kwargs['value']
         async_vm_update = self.compute_client.disks.create_or_update(
             self.group_name,
-            name,
+            kwargs['NAME'],
             {
                 'location': self.location,
                 'disk_size_gb': self.size,
@@ -433,8 +417,8 @@ class Provider(VolumeABC):
                     'create_option': 'Empty',
                 },
                 'tags': {
-                    'volumeproject': 'test',
-                    'tag2': 'test2'
+                    'Key': key,
+                    'Value': value
                 }
             }
         )

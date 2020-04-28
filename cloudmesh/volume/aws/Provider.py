@@ -97,9 +97,14 @@ class Provider(VolumeABC):
         :param name: name of cloud
         """
         self.cloud = name
-        self.client = boto3.client('ec2')
         config = Config()
         self.default = config[f"cloudmesh.volume.{self.cloud}.default"]
+        self.cred = config[f'cloudmesh.volume.{self.cloud}.credentials']
+        self.client = boto3.client('ec2',
+                                   region_name=self.default['region_name'],
+                                   aws_access_key_id=self.cred['EC2_ACCESS_ID'],
+                                   aws_secret_access_key=self.cred['EC2_SECRET_KEY']
+                                   )
         self.cm = CmDatabase()
 
     def update_dict(self, results):

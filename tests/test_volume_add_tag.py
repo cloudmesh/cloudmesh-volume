@@ -24,7 +24,7 @@ VERBOSE(variables.dict())
 key = variables['key']
 
 #
-# cms set cloud=openstack
+# cms set cloud=aws
 #
 cloud = variables.parameter('cloud')
 
@@ -72,14 +72,16 @@ class Test_provider_volume:
 
     def test_provider_volume_add_tag(self):
         HEADING()
-        Benchmark.Start()
-        key = "Name"
-        key_value = "new_name"
-        print(name)
+        key = "key"
+        key_value = "value"
         params = {"key": key, "value": key_value, 'NAME': name}
+        Benchmark.Start()
         data = provider.add_tag(**params)
-        print(data)
-        for entry in data:
-            value_name = entry['cm']['name']
-            assert value_name == key_value
         Benchmark.Stop()
+        for entry in data:
+            if cloud == 'aws':
+                tags = entry['cm']['tags']
+                assert tags == [{'Key': key, 'Value': key_value}]
+            elif cloud == 'multipass':
+                tags = entry['tags']
+                assert tags == [{key: key_value}]

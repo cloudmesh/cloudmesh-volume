@@ -1,0 +1,232 @@
+multipass
+============================= test session starts ==============================
+platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/xingu/ENV3/bin/python3.8
+cachedir: .pytest_cache
+rootdir: /Users/xingu/cm/cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 26:<module> ./tests/test_01_setup.py
+# ----------------------------------------------------------------------
+# {'cloud': 'multipass',
+#  'debug': 'True',
+#  'key': 'xingu',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-xingu-vm-263',
+#  'vm_name': 'test-xingu-vm-263',
+#  'volume': ' '}
+# ----------------------------------------------------------------------
+[0m
+Test run for multipass
+collected 2 items
+
+tests/test_01_setup.py::Test_provider_volume::test_cms_vm                                                                                                                                                                 Creating test-xingu-vm-263  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\                                                                                                                                                                 Configuring test-xingu-vm-263  /-\|                                                                                                                                                                 Starting test-xingu-vm-263  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-                                                                                                                                                                 Waiting for initialization to complete  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/                                                                                 Launched: test-xingu-vm-263
+                                                                                
+[35m
+# ######################################################################
+# test_cms_vm /tests/test_01_setup.py 61
+# ######################################################################
+[0m
+PASSED
+tests/test_01_setup.py::Test_provider_volume::test_benchmark 
+
++---------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------+
+| Name                      | Status   |   Time | Start               | tag       | Node                   | User   | OS     | Version   |
+|---------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------|
+| test_01_setup/test_cms_vm | ok       | 26.454 | 2020-04-28 05:03:29 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
++---------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_01_setup/test_cms_vm,ok,26.454,2020-04-28 05:03:29,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+
+PASSED
+
+============================== 2 passed in 38.22s ==============================
+============================= test session starts ==============================
+platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/xingu/ENV3/bin/python3.8
+cachedir: .pytest_cache
+rootdir: /Users/xingu/cm/cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 24:<module> ./tests/test_02_volume_provider.py
+# ----------------------------------------------------------------------
+# {'cloud': 'multipass',
+#  'debug': 'True',
+#  'key': 'xingu',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-xingu-vm-263',
+#  'vm_name': 'test-xingu-vm-263',
+#  'volume': ' '}
+# ----------------------------------------------------------------------
+[0m
+Test run for multipass
+collected 6 items
+
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_create volume list --cloud=multipass
+
+# ----------------------------------------------------------------------
+# arguments
+# ----------------------------------------------------------------------
+# 118:do_volume ./cloudmesh/volume/command/volume.py
+# ----------------------------------------------------------------------
+# {'--cloud': 'multipass',
+#  '--description': None,
+#  '--dryrun': False,
+#  '--key': None,
+#  '--output': 'table',
+#  '--path': None,
+#  '--refresh': False,
+#  '--region': None,
+#  '--size': None,
+#  '--value': None,
+#  '--vm': None,
+#  '--volume_type': None,
+#  'NAME': None,
+#  'NAMES': None,
+#  'add_tag': False,
+#  'attach': False,
+#  'create': False,
+#  'delete': False,
+#  'detach': False,
+#  'list': True,
+#  'migrate': False,
+#  'purge': False,
+#  'status': False,
+#  'sync': False}
+# ----------------------------------------------------------------------
+
+None
+None
+Timer: 0.0000s Load: 0.0000s (line_strip)
+
+[35m
+# ######################################################################
+# test_provider_volume_create /tests/test_02_volume_provider.py 47
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_list 
+[35m
+# ######################################################################
+# test_provider_volume_list /tests/test_02_volume_provider.py 76
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach                                                                                                                                                                 Enabling support for mounting  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-                                                                                                                                                                 
+[35m
+# ######################################################################
+# test_provider_volume_attach /tests/test_02_volume_provider.py 86
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach 
+[35m
+# ######################################################################
+# test_provider_volume_detach /tests/test_02_volume_provider.py 115
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete 
+[35m
+# ######################################################################
+# test_provider_volume_delete /tests/test_02_volume_provider.py 139
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_benchmark 
+
++-----------------------------------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------+
+| Name                                                | Status   |   Time | Start               | tag       | Node                   | User   | OS     | Version   |
+|-----------------------------------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------|
+| test_02_volume_provider/test_provider_volume_create | ok       |  0.053 | 2020-04-28 05:04:10 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
+| test_02_volume_provider/test_provider_volume_list   | ok       |  0.508 | 2020-04-28 05:04:25 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
+| test_02_volume_provider/test_provider_volume_attach | ok       | 20.547 | 2020-04-28 05:04:26 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
+| test_02_volume_provider/test_provider_volume_detach | ok       |  1.324 | 2020-04-28 05:04:52 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
+| test_02_volume_provider/test_provider_volume_delete | ok       |  0.518 | 2020-04-28 05:04:58 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
++-----------------------------------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_02_volume_provider/test_provider_volume_create,ok,0.053,2020-04-28 05:04:10,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_02_volume_provider/test_provider_volume_list,ok,0.508,2020-04-28 05:04:25,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_02_volume_provider/test_provider_volume_attach,ok,20.547,2020-04-28 05:04:26,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_02_volume_provider/test_provider_volume_detach,ok,1.324,2020-04-28 05:04:52,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_02_volume_provider/test_provider_volume_delete,ok,0.518,2020-04-28 05:04:58,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+
+PASSED
+
+=============================== warnings summary ===============================
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_create
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete
+  /Users/xingu/cm/cloudmesh-admin/cloudmesh/mongo/CmDatabase.py:104: DeprecationWarning: collection_names is deprecated. Use list_collection_names instead.
+    names = self.db.collection_names()
+
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_create
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete
+  /Users/xingu/cm/cloudmesh-admin/cloudmesh/mongo/CmDatabase.py:182: DeprecationWarning: count is deprecated. Use Collection.count_documents instead.
+    if cursor.count() > 0:
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+======================= 6 passed, 12 warnings in 51.71s ========================
+============================= test session starts ==============================
+platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/xingu/ENV3/bin/python3.8
+cachedir: .pytest_cache
+rootdir: /Users/xingu/cm/cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 21:<module> ./tests/test_03_teardown.py
+# ----------------------------------------------------------------------
+# {'cloud': 'multipass',
+#  'debug': 'True',
+#  'key': 'xingu',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-xingu-vm-263',
+#  'vm_name': 'test-xingu-vm-263',
+#  'volume': 'test-xingu-volume-263'}
+# ----------------------------------------------------------------------
+[0m
+collected 2 items
+
+tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate 
+[35m
+# ######################################################################
+# test_cms_terminate /tests/test_03_teardown.py 32
+# ######################################################################
+[0m
+result 
+PASSED
+tests/test_03_teardown.py::Test_provider_volume::test_benchmark 
+
++-------------------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------+
+| Name                                | Status   |   Time | Start               | tag       | Node                   | User   | OS     | Version   |
+|-------------------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------|
+| test_03_teardown/test_cms_terminate | ok       |  0.657 | 2020-04-28 05:05:02 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
++-------------------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_03_teardown/test_cms_terminate,ok,0.657,2020-04-28 05:05:02,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+
+PASSED
+
+============================== 2 passed in 1.86s ===============================

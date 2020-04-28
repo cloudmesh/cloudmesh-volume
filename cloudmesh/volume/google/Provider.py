@@ -319,13 +319,16 @@ class Provider(VolumeABC):
                                         remove_user_url = user.rsplit('/', 1)[1]
                                         if remove_user_url == kwargs['vm']:
                                             found.append(disk)
-                else:
-                    items = disk_list["items"]
-                    for item in items:
-                        if "disks" in items[item]:
-                            disks = items[item]["disks"]
-                            for disk in disks:
-                                found.append(disk)
+            else:
+                disk_list = compute_service.disks().aggregatedList(
+                    project=self.credentials["project_id"],
+                    orderBy='creationTimestamp desc').execute()
+                items = disk_list["items"]
+                for item in items:
+                    if "disks" in items[item]:
+                        disks = items[item]["disks"]
+                        for disk in disks:
+                            found.append(disk)
 
             result = self.update_dict(found)
 

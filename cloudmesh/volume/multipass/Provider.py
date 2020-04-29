@@ -79,8 +79,8 @@ class Provider(VolumeABC):
     def update_volume_after_attached_to_vm(self, info, vms):
         """
         Update volume info after attached to a vm.
-        info['AttachedToVm'] is a list of vm names where the volume is attached to.
-        info['machine_path'] is the volume path in vm
+        info['AttachedToVm'] is a list of vm names where the volume is attached
+        to. info['machine_path'] is the volume path in vm
         info['time"] is the updated as updated time
 
         :param info: volume info got from MongoDB database
@@ -100,8 +100,8 @@ class Provider(VolumeABC):
     def update_volume_after_detach(self, info, vms):
         """
         update volume info after detaching from a vm
-        info['AttachedToVm'] is a list of vm names where the volume is attached to.
-        info['time"] is the updated time
+        info['AttachedToVm'] is a list of vm names where the volume is attached
+        to. info['time"] is the updated time
 
         :param info: volume info
         :param vms: attached to vms
@@ -117,8 +117,8 @@ class Provider(VolumeABC):
     def update_volume_tag(self, info, key, value):
         """
         Update volume tag.
-        Tags is a key-value pair, with key as tag name and value as tag value, tag = {key: value}.
-        A volume can have multipale tags.
+        Tags is a key-value pair, with key as tag name and value as tag value,
+        tag = {key: value}. A volume can have multipale tags.
         If given duplicated tag name, update the value to the current tag value.
 
         :param info: volume info
@@ -146,7 +146,8 @@ class Provider(VolumeABC):
     def __init__(self, name):
         """
         Initialize provider.
-        set cloudtype to "multipass", get the default dict, create a cloudmesh database object.
+        set cloudtype to "multipass", get the default dict, create a cloudmesh
+        database object.
 
         :param name: name of cloud
         """
@@ -184,7 +185,8 @@ class Provider(VolumeABC):
     def create(self, **kwargs):
         """
         This function create a new volume.
-        Default parameters from self.default, such as: path="/Users/username/multipass".
+        Default parameters from self.default, such as:
+        path="/Users/username/multipass".
 
         :param NAME (string): the name of volume
         :param path (string): path of volume
@@ -411,7 +413,8 @@ class Provider(VolumeABC):
     def add_tag(self, **kwargs):
         """
         This function add tag to a volume.
-        If volume name is not specified, then tag will be added to the last volume.
+        If volume name is not specified, then tag will be added to the last
+        volume.
 
         :param NAME: name of volume
         :param key: name of tag
@@ -429,7 +432,8 @@ class Provider(VolumeABC):
 
     def status(self, name=None):
         """
-        This function get volume status, such as "in-use", "available", "deleted"
+        This function get volume status, such as "in-use", "available",
+        "deleted"
 
         :param name (string): volume name
         :return: dict
@@ -444,8 +448,9 @@ class Provider(VolumeABC):
     def migrate(self, **kwargs):
         """
         Migrate volume from one vm to another vm. "region" is volume path.
-        If vm and volume are in the same region (path), migrate within the same region (path)
-        If vm and volume are in different regions, migrate between two regions (path)
+        If vm and volume are in the same region (path), migrate within the same
+        region (path). If vm and volume are in different regions, migrate
+        between two regions (path)
 
         :param NAME (string): the volume name
         :param vm (string): the vm name

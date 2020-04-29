@@ -56,7 +56,7 @@ class Provider(VolumeABC):
                       "cm.kind",
                       "cm.region",
                       # "AvailabilityZone",
-                      #"CreateTime",
+                      # "CreateTime",
                       # "Encrypted",
                       "Size",
                       # "SnapshotId",
@@ -74,7 +74,7 @@ class Provider(VolumeABC):
                        "Kind",
                        "Region",
                        # "AvailabilityZone",
-                       #"Create Time",
+                       # "Create Time",
                        # "Encrypted",
                        "Size(GB)",
                        # "SnapshotId",
@@ -103,7 +103,8 @@ class Provider(VolumeABC):
         self.client = boto3.client('ec2',
                                    region_name=self.default['region_name'],
                                    aws_access_key_id=self.cred['EC2_ACCESS_ID'],
-                                   aws_secret_access_key=self.cred['EC2_SECRET_KEY']
+                                   aws_secret_access_key=self.cred[
+                                       'EC2_SECRET_KEY']
                                    )
         self.cm = CmDatabase()
 
@@ -233,7 +234,8 @@ class Provider(VolumeABC):
                 for item in elements[i]['Attachments']:
                     vm_id = item['InstanceId']
                     instance = client.describe_instances(InstanceIds=[vm_id])
-                    for tag in instance['Reservations'][0]['Instances'][0]['Tags']:
+                    for tag in instance['Reservations'][0]['Instances'][0][
+                        'Tags']:
                         if tag['Key'] == 'Name':
                             vm_name = tag['Value']
                             # print("vm_name: ", vm_name)
@@ -259,8 +261,10 @@ class Provider(VolumeABC):
             try:
                 for item in elements[i]['Attachments']:
                     vm_id = item['InstanceId']
-                    instance = self.client.describe_instances(InstanceIds=[vm_id])
-                    for tag in instance['Reservations'][0]['Instances'][0]['Tags']:
+                    instance = self.client.describe_instances(
+                        InstanceIds=[vm_id])
+                    for tag in instance['Reservations'][0]['Instances'][0][
+                        'Tags']:
                         if tag['Key'] == 'Name':
                             vm_name = tag['Value']
                             elements[i]['AttachedToVm'].append(vm_name)
@@ -510,7 +514,8 @@ class Provider(VolumeABC):
                                           query={'AttachedToVm': kwargs['vm']})
                 elif key == 'region' and kwargs['region']:
                     result = self.cm.find(collection=f"{self.cloud}-volume",
-                                          query={'AvailabilityZone': kwargs['region']})
+                                          query={'AvailabilityZone': kwargs[
+                                              'region']})
         else:
             result = self.client.describe_volumes()
             result = self.update_AttachedToVm(result)
@@ -663,11 +668,13 @@ class Provider(VolumeABC):
         volume_name = kwargs['NAME']
         vm = kwargs['vm']
         volume_status = self.status(NAME=volume_name)[0]['State']
-        volume_region = self.list(NAME=volume_name, refresh=True)[0]['cm']['region']
+        volume_region = self.list(NAME=volume_name, refresh=True)[0]['cm'][
+            'region']
         volume_id = self.find_volume_id(volume_name=volume_name)
         vm_info = self.vm_info(vm=vm)
         vm_status = vm_info['Reservations'][0]['Instances'][0]['State']['Name']
-        vm_region = vm_info['Reservations'][0]['Instances'][0]['Placement']['AvailabilityZone']
+        vm_region = vm_info['Reservations'][0]['Instances'][0]['Placement'][
+            'AvailabilityZone']
         vm_id = self.find_vm_id(vm_name=vm)
 
         # migrate within same region:
@@ -723,7 +730,8 @@ class Provider(VolumeABC):
         :return: dict
         """
         volume_1 = names[0]
-        volume_1_region = self.list(NAME=volume_1, refresh=True)[0]['cm']['region']
+        volume_1_region = self.list(NAME=volume_1, refresh=True)[0]['cm'][
+            'region']
         volume_2 = names[1]
         volume_2_id = self.find_volume_id(volume_name=volume_2)
         # make a snapshot of volume_2

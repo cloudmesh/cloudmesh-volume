@@ -8,7 +8,7 @@ from cloudmesh.mongo.CmDatabase import CmDatabase
 
 
 class Provider(VolumeABC):
-    kind = "opensatck"
+    kind = "openstack"
 
     sample = """
     cloudmesh:

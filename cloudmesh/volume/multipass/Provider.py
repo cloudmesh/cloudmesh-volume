@@ -2,7 +2,6 @@ import json
 import os
 
 from cloudmesh.common.Shell import Shell
-from cloudmesh.common.util import banner
 from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.configuration.Config import Config
 from cloudmesh.common.console import Console

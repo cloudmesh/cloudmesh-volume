@@ -5,7 +5,6 @@
 # TODO: start this with cloud init, e.g, empty mongodb
 # TODO: assertuons need to be added
 
-import json
 import pytest
 from cloudmesh.common.Benchmark import Benchmark
 from cloudmesh.common.Shell import Shell

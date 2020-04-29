@@ -8,7 +8,6 @@
 import os
 from time import sleep
 
-import pytest
 from cloudmesh.common.Benchmark import Benchmark
 from cloudmesh.common.debug import VERBOSE
 from cloudmesh.common.util import HEADING

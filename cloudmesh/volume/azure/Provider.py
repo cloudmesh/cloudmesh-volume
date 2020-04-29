@@ -1,16 +1,10 @@
 from azure.common.credentials import ServicePrincipalCredentials
-from azure.mgmt.resource import ResourceManagementClient
-from azure.mgmt.network import NetworkManagementClient
 from azure.mgmt.compute.models import DiskCreateOption
-# from azure.common.client_factory import get_client_from_auth_file
 from azure.mgmt.compute import ComputeManagementClient
 from cloudmesh.common.Printer import Printer
 from cloudmesh.common.console import Console
-from cloudmesh.common.debug import VERBOSE
 from cloudmesh.configuration.Config import Config
 from cloudmesh.volume.VolumeABC import VolumeABC
-import json
-import ast
 
 
 class Provider(VolumeABC):

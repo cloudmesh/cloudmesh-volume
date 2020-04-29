@@ -4,11 +4,9 @@
 
 # TODO: start this with cloud init, e.g, empty mongodb
 # TODO: assertions need to be added
-from pprint import pprint
 
 import pytest
 import os
-from time import sleep
 from cloudmesh.common.debug import VERBOSE
 from cloudmesh.common.util import HEADING
 from cloudmesh.common.variables import Variables
@@ -16,8 +14,6 @@ from cloudmesh.common.Benchmark import Benchmark
 from cloudmesh.volume.Provider import Provider
 from cloudmesh.configuration.Config import Config
 from cloudmesh.management.configuration.name import Name
-from cloudmesh.mongo.CmDatabase import CmDatabase
-import sys
 
 Benchmark.debug()
 

@@ -1,6 +1,5 @@
 from cloudmesh.common.Printer import Printer
 from cloudmesh.common.console import Console
-from cloudmesh.common.util import banner
 from cloudmesh.common.variables import Variables
 from cloudmesh.configuration.Config import Config
 from cloudmesh.mongo.DataBaseDecorator import DatabaseUpdate

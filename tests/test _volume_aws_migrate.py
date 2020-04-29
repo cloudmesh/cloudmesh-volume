@@ -2,13 +2,7 @@
 # pytest -v --capture=no tests/test_volume_aws_migrate.py
 ###############################################################
 
-from pprint import pprint
-
-import pytest
-import os
-from time import sleep
 from cloudmesh.common.debug import VERBOSE
-from cloudmesh.common.util import HEADING
 from cloudmesh.common.variables import Variables
 from cloudmesh.common.Benchmark import Benchmark
 from cloudmesh.volume.Provider import Provider

@@ -2,11 +2,9 @@ from time import sleep
 
 import boto3
 from cloudmesh.common.console import Console
-from cloudmesh.common.util import banner
 from cloudmesh.configuration.Config import Config
 from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.mongo.CmDatabase import CmDatabase
-import datetime
 
 
 class Provider(VolumeABC):

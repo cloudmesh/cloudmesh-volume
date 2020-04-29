@@ -31,7 +31,8 @@ The complete documentation of volume API is available at
 * Create Volume
 
 To create a new volume.
-For multipass, volume region means path of the directory, i.e. "/Users/username/multipass"
+For multipass, volume region means path of the directory, i.e. 
+    "/Users/username/multipass"
 For aws, volume region means availability zone.
 For azure, volume region means location.
 For google, volume region means zone of volume.
@@ -54,9 +55,12 @@ cms volume create test_volume --size=100 --region=us-east-2a
 
 To list volumes. 
 
-If volume name or names are not given and refresh is True, return the information of volume through the cloud.
-If volume name or names are not given and refresh is False, return the information of volume through database.
-If volume name or names are given, return the information of volume through the cloud.
+If volume name or names are not given and refresh is True, return the 
+    information of volume through the cloud.
+If volume name or names are not given and refresh is False, return the 
+    information of volume through database.
+If volume name or names are given, return the information of volume through the 
+    cloud.
 If vm is specified, it will print out all the volumes attached to vm.
 If region(zone) is specified, it will print out all the volumes in that zone.
 
@@ -65,7 +69,8 @@ Example 1: To return the information of volume through current cloud provider.
 ```commandline
 cms volume list --refresh
 ```
-Example 2: To return the information of test_volume1 and test_volume2 through openstack cloud provider.
+Example 2: To return the information of test_volume1 and test_volume2 through 
+    openstack cloud provider.
 
 ```commandline
 cms volume list test_volume1,test_volume2 --cloud=openstack
@@ -73,10 +78,10 @@ cms volume list test_volume1,test_volume2 --cloud=openstack
 
 * Delete Volume
 
-To delete volume or volumes from multiple cloud providers permanently and is irreversible.
-The volume will be updated in the database with status set to 'deleted'. 
-All data on the volume will be permanently lost when the volume is deleted.
-(Use purge to remove deleted volumes from database) 
+To delete volume or volumes from multiple cloud providers permanently and is 
+irreversible. The volume will be updated in the database with status set to
+'deleted'. All data on the volume will be permanently lost when the volume
+is deleted. (Use purge to remove deleted volumes from database) 
 
 Example 1: To delete current volume
 
@@ -92,12 +97,12 @@ cms volume delete test_volume1,test_volume2
 
 * Attach Volume
 
-To attach one or more volumes to vm. 
-The volume being attached needs to located in the same zone as the vm.
-For aws, vm can have multiple attached volumes.
+To attach one or more volumes to a vm. 
+The volume being attached needs to be located in the same zone as the vm.
+For aws, a vm can have multiple attached volumes.
 GCP (google) requires that the instance be stopped when attaching a disk. 
-If the instance is running when the attach function is called, 
-the function will stop the instance and then restart the instance after attaching the disk.
+If the instance is running when the attach function is called, the function will 
+stop the instance and then restart the instance after attaching the disk.
 
 Example 1: To attach test_volume1 to test_vm
 
@@ -110,7 +115,8 @@ cms volume attach test_volume1 --vm=test_vm
 To detach volume or volumes from all vm.
 GCP (google) requires that the instance be stopped when detaching a disk.  
 If the instance is running when the detach function is called, 
-the function will stop the instance and then restart the instance after detaching the disk.
+the function will stop the instance and then restart the instance after 
+detaching the disk.
 
 Example 1: To detach current volume from vm
 
@@ -131,9 +137,10 @@ cms volume status test_volume
 * Migrate Volume
 
 To migrage volume to vm in the same cloud service, 
-if no given volume, migrate the current volume. Implemented in aws and multipass.
+if no given volume, migrate the current volume. Implemented in aws and 
+multipass.
 
-Example 1: To migrage test_volume volume to test_vm in the aws cloud service
+Example 1: To migrate test_volume volume to test_vm in the aws cloud service
 
 ```commandline
 cms volume migrate test_volume --vm=test_vm --cloud=aws
@@ -216,6 +223,11 @@ additional GCP projects.
 
 ### Azure
 
+Similar to Google, in Azure, volumes are referred to ask 'disks'.
+
+* Disk Operations:
+  <https://docs.microsoft.com/en-us/python/api/azure-mgmt-compute/azure.mgmt
+   .compute.v2019_11_01.operations.disksoperations?view=azure-python>
 * Azure CLI:   
   <https://docs.microsoft.com/en-us/cli/azure/netappfiles/volume?view=azure-cli-latest#az-netappfiles-volume-create>
 * REST:   
@@ -240,7 +252,8 @@ additional GCP projects.
 
 * from Amazon EBS volume
  
-    create a copy of EBS volume content into Amazon S3, and then migration could be done as follows:
+    create a copy of EBS volume content into Amazon S3, and then migration could 
+    be done as follows:
 
   * Migrating from Amazon S3 to Google Cloud Storage
 

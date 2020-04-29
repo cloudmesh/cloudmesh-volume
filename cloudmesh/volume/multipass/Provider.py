@@ -410,15 +410,16 @@ class Provider(VolumeABC):
         If volume name is not specified, then tag will be added to the last volume.
 
         :param NAME: name of volume
-        :param kwargs:
-                    key: name of tag
-                    value: value of tag
+        :param key: name of tag
+        :param value: value of tag
         :return: dict
         """
         key = kwargs['key']
         value = kwargs['value']
-        volume_info = self.cm.find_name(name=NAME)
+        volume_info = self.cm.find_name(name=kwargs['NAME'])
+        print("volume_info", volume_info)
         volume_info = self.update_volume_tag(info=volume_info, key=key, value=value)
+        print("volume_info2", volume_info)
         return volume_info[0]
 
     def status(self, name=None):

@@ -5,7 +5,7 @@ from cloudmesh.common.util import path_expand
 configuration = path_expand("~/.cloudmesh/cloudmesh.yaml")
 
 p = AZProvider(name="azure",
-             configuration=configuration)
+               configuration=configuration)
 
 print(p)
 
@@ -13,9 +13,9 @@ print(p)
 # pprint(p.delete())
 # pprint(p.list())
 # pprint(p.attach())
-pprint(p.detach())
+# pprint(p.detach())
 # pprint(p.status())
 # pprint(p.info())
-# pprint(p.add_tag())
+pprint(p.add_tag())
 # pprint(p.migrate())
 # pprint(p.sync())

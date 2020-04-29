@@ -9,6 +9,7 @@ from cloudmesh.common.console import Console
 import datetime
 from cloudmesh.mongo.CmDatabase import CmDatabase
 
+
 class Provider(VolumeABC):
     kind = "volume"
 
@@ -56,9 +57,9 @@ class Provider(VolumeABC):
     def generate_volume_info(self, NAME, path):
         """
         generate volume info dict.
-        info['AttachedToVm'] is a list of vm names where the volume is attached to. (volume can attach to multiple vm and vm
-        can have multiple attachments)
-        info['machine_path'] is the volume path in vm
+        info['AttachedToVm'] is a list of vm names where the volume is attached
+        to. (volume can attach to multiple vm and vm can have multiple
+        attachments) info['machine_path'] is the volume path in vm
         info['time"] is the created time, will be updated as updated time
 
         :param NAME: volume name
@@ -96,7 +97,7 @@ class Provider(VolumeABC):
         info[0]['time'] = datetime.datetime.now()
         return info
 
-    def update_volume_after_detach(self, info,vms):
+    def update_volume_after_detach(self, info, vms):
         """
         update volume info after detaching from a vm
         info['AttachedToVm'] is a list of vm names where the volume is attached to.
@@ -107,13 +108,13 @@ class Provider(VolumeABC):
         :return: list of one dict
         """
         info[0]['AttachedToVm'] = vms
-        if len(vms)==0:
+        if len(vms) == 0:
             info[0]['machine_path'] = None
             info[0]['State'] = 'available'
         info[0]['time'] = datetime.datetime.now()
         return info
 
-    def update_volume_tag(self,info, key, value):
+    def update_volume_tag(self, info, key, value):
         """
         Update volume tag.
         Tags is a key-value pair, with key as tag name and value as tag value, tag = {key: value}.
@@ -127,22 +128,22 @@ class Provider(VolumeABC):
         keys = []
         for tag in info[0]['tags']:
             if key == list(tag.keys())[0]:
-                if len(value)==0:
+                if len(value) == 0:
                     print("here1")
                     info[0]['tags'].remove(tag)
                     print(info[0]['tags'])
                     keys.append(list(tag.keys())[0])
                 else:
-                    tag.update({key:value})
+                    tag.update({key: value})
                     keys.append(list(tag.keys())[0])
-        print("keys",keys)
+        print("keys", keys)
         if key not in keys:
             tag = {key: value}
             info[0]['tags'].append(tag)
         info[0]['time'] = datetime.datetime.now()
         return info
 
-    def __init__(self,name):
+    def __init__(self, name):
         """
         Initialize provider.
         set cloudtype to "multipass", get the default dict, create a cloudmesh database object.
@@ -173,14 +174,14 @@ class Provider(VolumeABC):
             if "cm" not in element.keys():
                 element['cm'] = {}
             element["cm"].update({
-                        "kind": "volume",
-                        "cloud": self.cloud,
-                        "name": element['name'],
-                    })
+                "kind": "volume",
+                "cloud": self.cloud,
+                "name": element['name'],
+            })
             d.append(element)
         return d
 
-    def create(self,**kwargs):
+    def create(self, **kwargs):
         """
         This function create a new volume.
         Default parameters from self.default, such as: path="/Users/username/multipass".
@@ -244,10 +245,11 @@ class Provider(VolumeABC):
             for key in kwargs:
                 if key == 'NAME' and kwargs['NAME']:
                     result = self.cm.find_name(name=kwargs['NAME'])
-                elif key=='NAMES' and kwargs['NAMES']:
+                elif key == 'NAMES' and kwargs['NAMES']:
                     result = self.cm.find_names(names=kwargs['NAMES'])
-                elif key =='vm' and kwargs['vm']:
-                    result = self.cm.find(collection=f"{self.cloud}-volume", query={'AttachedToVm': kwargs['vm']})
+                elif key == 'vm' and kwargs['vm']:
+                    result = self.cm.find(collection=f"{self.cloud}-volume",
+                                          query={'AttachedToVm': kwargs['vm']})
                     # result = []
                     # response = self._get_mount_status(vm=kwargs['vm'])
                     # mounts = response['mounts']
@@ -255,8 +257,9 @@ class Provider(VolumeABC):
                     #     volume_name = key.split(sep="/")[-1]
                     #     r = self.cm.find_name(name=volume_name)
                     #     result.append(r)
-                elif key =='region' and kwargs['region']:
-                    result = self.cm.find(collection=f"{self.cloud}-volume", query={'path': kwargs['region']})
+                elif key == 'region' and kwargs['region']:
+                    result = self.cm.find(collection=f"{self.cloud}-volume",
+                                          query={'path': kwargs['region']})
         else:
             result = self.cm.find(cloud='multipass', kind='volume')
         return result
@@ -313,14 +316,16 @@ class Provider(VolumeABC):
                     mounts = result['mounts']
                     if f"{path}/{name}" in mounts.keys():
                         vms.append(vm)
-                result = self.update_volume_after_attached_to_vm(info=volume_info, vms=vms)
+                result = self.update_volume_after_attached_to_vm(
+                    info=volume_info, vms=vms)
                 results.append(result)
             else:
-                Console.error("volume is not existed or volume had been deleted")
-        #results = self.update_dict([results])
+                Console.error(
+                    "volume is not existed or volume had been deleted")
+        # results = self.update_dict([results])
         return results[0]
 
-    def mount(self,path=None,vm=None):
+    def mount(self, path=None, vm=None):
         """
         mount volume to vm
 
@@ -334,7 +339,7 @@ class Provider(VolumeABC):
 
         return dict_result
 
-    def _get_mount_status(self,vm=None):
+    def _get_mount_status(self, vm=None):
         """
         Get mount status of vm
 
@@ -370,7 +375,6 @@ class Provider(VolumeABC):
         dict_result = self._get_mount_status(vm=vm)
 
         return dict_result
-
 
     def detach(self, name):
         """
@@ -418,7 +422,8 @@ class Provider(VolumeABC):
         value = kwargs['value']
         volume_info = self.cm.find_name(name=kwargs['NAME'])
         print("volume_info", volume_info)
-        volume_info = self.update_volume_tag(info=volume_info, key=key, value=value)
+        volume_info = self.update_volume_tag(info=volume_info, key=key,
+                                             value=value)
         print("volume_info2", volume_info)
         return volume_info[0]
 
@@ -458,7 +463,7 @@ class Provider(VolumeABC):
 
         if vm_status == 'running':
             self.detach(NAME=volume_name)
-            self.attach(NAMES=[volume_name],vm=vm)
+            self.attach(NAMES=[volume_name], vm=vm)
         try:
             for old_vm in volume_attached_vm:
                 volume_info[0]['AttachedToVm'].remove(old_vm)
@@ -478,10 +483,9 @@ class Provider(VolumeABC):
         path1 = f"{self.cm.find_name(name=names[0])[0]['path']}/{names[0]}/"
         path2 = f"{self.cm.find_name(name=names[1])[0]['path']}/{names[1]}/"
         os.system(f"rsync -avzh {path2} {path1}")
-        kwargs1={}
+        kwargs1 = {}
         kwargs1['key'] = "sync_with"
         kwargs1['value'] = names[1]
-        volume_info1 = self.add_tag(names[0],**kwargs1)
+        volume_info1 = self.add_tag(names[0], **kwargs1)
         result = [volume_info1]
         return result
-

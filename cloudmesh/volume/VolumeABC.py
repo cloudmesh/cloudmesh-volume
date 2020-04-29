@@ -53,12 +53,12 @@ class VolumeABC(metaclass=ABCMeta):
         """
         Create a volume.
 
-           :param NAME (string): name of volume
-           :param region (string): availability-zone
-           :param size (integer): size of volume
-           :param volume_type (string): type of volume.
-           :param description (string)
-           :return: dict
+        :param NAME (string): name of volume
+        :param region (string): availability-zone
+        :param size (integer): size of volume
+        :param volume_type (string): type of volume.
+        :param description (string)
+        :return: dict of the created volume
         """
         raise NotImplementedError
 

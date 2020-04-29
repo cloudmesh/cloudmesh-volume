@@ -66,14 +66,9 @@ class Provider(VolumeABC):
         :param path: volume path
         :return: dict
         """
-        info = {}
-        info['tags'] = []
-        info['name'] = NAME
-        info['path'] = path
-        info['AttachedToVm'] = []
-        info['State'] = 'available'
-        info['machine_path'] = None
-        info['time'] = datetime.datetime.now()
+        info = {'tags': [], 'name': NAME, 'path': path, 'AttachedToVm': [],
+                'State': 'available', 'machine_path': None,
+                'time': datetime.datetime.now()}
         return info
 
     def update_volume_after_attached_to_vm(self, info, vms):
@@ -121,6 +116,8 @@ class Provider(VolumeABC):
         tag = {key: value}. A volume can have multipale tags.
         If given duplicated tag name, update the value to the current tag value.
 
+        :param value: value
+        :param key: key
         :param info: volume info
         :param vms: attached to vms
         :return: list of one dict
@@ -196,7 +193,7 @@ class Provider(VolumeABC):
         for key in self.default.keys():
             if key not in kwargs.keys():
                 kwargs[key] = self.default[key]
-            elif kwargs[key] == None:
+            elif kwargs[key] is None:
                 kwargs[key] = self.default[key]
         NAME = kwargs['NAME']
         path = kwargs['path']
@@ -488,9 +485,7 @@ class Provider(VolumeABC):
         path1 = f"{self.cm.find_name(name=names[0])[0]['path']}/{names[0]}/"
         path2 = f"{self.cm.find_name(name=names[1])[0]['path']}/{names[1]}/"
         os.system(f"rsync -avzh {path2} {path1}")
-        kwargs1 = {}
-        kwargs1['key'] = "sync_with"
-        kwargs1['value'] = names[1]
+        kwargs1 = {'key': "sync_with", 'value': names[1]}
         volume_info1 = self.add_tag(names[0], **kwargs1)
         result = [volume_info1]
         return result

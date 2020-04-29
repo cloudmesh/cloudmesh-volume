@@ -369,7 +369,7 @@ class Provider(VolumeABC):
         for key in self.default.keys():
             if key not in kwargs.keys():
                 kwargs[key] = self.default[key]
-            elif kwargs[key] == None:
+            elif kwargs[key] is None:
                 kwargs[key] = self.default[key]
 
         result = self._create(**kwargs)
@@ -439,8 +439,7 @@ class Provider(VolumeABC):
                 ],
             )
         r = [r]
-        result = {}
-        result['Volumes'] = r
+        result = {'Volumes': r}
         result['Volumes'][0]['AttachedToVm'] = []
         return result
 
@@ -761,10 +760,8 @@ class Provider(VolumeABC):
         # delete volume_1
         self.delete(name=volume_1)
         # create volume_1 with snapshot of volume_2
-        kwargs = {}
-        kwargs['region'] = volume_1_region
-        kwargs['snapshot'] = snapshot_id
-        kwargs['NAME'] = volume_1
+        kwargs = {'region': volume_1_region, 'snapshot': snapshot_id,
+                  'NAME': volume_1}
 
         new_volume = self.create(**kwargs)
         start_timeout = 360

@@ -692,7 +692,8 @@ class Provider(VolumeABC):
             if volume_region == vm_region:
                 # if volume and vm are in the same zone,
                 if volume_status == "in-use":
-                    # if volume is attached to a vm, first detach and than attach to vm
+                    # if volume is attached to a vm, first detach and than
+                    #       attach to vm
                     self.detach(name=volume_name)
                     self.attach(names=[volume_name, ], vm=vm)
                 elif volume_status == "available":
@@ -700,8 +701,9 @@ class Provider(VolumeABC):
                     self.attach(names=[volume_name, ], vm=vm)
                 return self.list(NAME=volume_name, refresh=True)
             else:
-                # if volume and vm are not in the same zone, create a snapshot, create a new volume with the snapshot
-                # and in the same zone as vm, delete old volume
+                # if volume and vm are not in the same zone, create a snapshot,
+                #       create a new volume with the snapshot and in the
+                #       same zone as vm, delete old volume
 
                 snapshot_id = self.client.create_snapshot(
                     VolumeId=volume_id, )['SnapshotId']

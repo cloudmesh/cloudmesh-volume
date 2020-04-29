@@ -6,6 +6,7 @@ from cloudmesh.configuration.Config import Config
 from cloudmesh.mongo.DataBaseDecorator import DatabaseUpdate
 from cloudmesh.mongo.CmDatabase import CmDatabase
 
+
 # class Provider(VolumeABC): # correct
 class Provider(object):  # broken
     kind = "volume"
@@ -111,12 +112,11 @@ class Provider(object):  # broken
         P = None
 
         if self.kind in ["multipass",
-                "aws",
-                "azure",
-                "google",
-                "openstack",
-                "oracle"]:
-
+                         "aws",
+                         "azure",
+                         "google",
+                         "openstack",
+                         "oracle"]:
             P = Provider.get_provider(self.kind)
 
         if P is None:
@@ -163,12 +163,13 @@ class Provider(object):  # broken
         """
         This command list all volumes as follows:
 
-        If names are given, search through all the active clouds and list all the volumes.
-        If names and cloud are given, list all volumes under the cloud.
-        If cloud is given, list all the volumes under the cloud.
+        If names are given, search through all the active clouds and list all
+        the volumes. If names and cloud are given, list all volumes under the
+        cloud. If cloud is given, list all the volumes under the cloud.
         If cloud is not given, list all the volumes under current cloud.
-        If vm is given, under the current cloud, list all the volumes attaching to the vm.
-        If region is given, under the current cloud, list all volumes in that region.
+        If vm is given, under the current cloud, list all the volumes
+        attaching to the vm. If region is given, under the current cloud,
+        list all volumes in that region.
 
         :param names: List of volume names
         :param vm: The name of the virtual machine
@@ -182,7 +183,8 @@ class Provider(object):  # broken
 
     def info(self, name=None):
         """
-        Search through the list of volumes, find the matching volume with name, return the dict of matched volume
+        Search through the list of volumes, find the matching volume with name,
+        return the dict of matched volume
 
         :param name: volume name to match
         :return: dict
@@ -205,7 +207,8 @@ class Provider(object):  # broken
     @DatabaseUpdate()
     def status(self, name=None):
         """
-        This function returns status of volume, such as "available", "in-use" and etc..
+        This function returns status of volume, such as "available", "in-use"
+        and etc..
 
         :param name: name of volume
         :return: string
@@ -280,7 +283,7 @@ class Provider(object):  # broken
         return result
 
     @DatabaseUpdate()
-    def sync(self,names):
+    def sync(self, names):
         """
         synchronize one volume with another volume
 
@@ -294,7 +297,7 @@ class Provider(object):  # broken
         return result
 
     @DatabaseUpdate()
-    def purge(self,**kwargs):
+    def purge(self, **kwargs):
         """
         purge deleted volumes in MongoDB database
 
@@ -305,13 +308,11 @@ class Provider(object):  # broken
         if self.cloud == 'aws' or self.cloud == 'multipass':
             self.cm.collection(collection).delete_many({"State": "deleted"})
         elif self.cloud == 'oracle':
-            self.cm.collection(collection).delete_many({"lifecycle_state": "deleted"})
+            self.cm.collection(collection).delete_many(
+                {"lifecycle_state": "deleted"})
         elif self.cloud == 'azure':
-            self.cm.collection(collection).delete_many({"disk_state": "deleted"})
+            self.cm.collection(collection).delete_many(
+                {"disk_state": "deleted"})
         elif self.cm.cloud == 'google' or self.cloud == 'openstack':
             self.cm.collection(collection).delete_many({"status": "deleted"})
         return self.provider.list()
-
-
-
-

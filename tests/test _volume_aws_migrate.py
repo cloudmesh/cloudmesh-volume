@@ -39,10 +39,13 @@ name = str(name_generator)
 names = []
 provider = Provider(name=cloud)
 
+
 def Print(data):
     print(provider.Print(data=data, output='table', kind='volume'))
 
 # TODO:
-# 1.start two vm in two different zone, one in default zone (us-east-2a), one in other zone (us-east-2c)
+# 1.start two vm in two different zone, one in default zone (us-east-2a), one
+#       in other zone (us-east-2c)
 # 2.create 1 new volume in default zone
-# 3. run migrate given --vm and --cloud (volume name will be the latest created volume)
+# 3. run migrate given --vm and --cloud (volume name will be the latest created
+#       volume)

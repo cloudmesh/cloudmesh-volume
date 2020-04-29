@@ -426,7 +426,7 @@ class Provider(VolumeABC):
         # return after adding tags
         results = async_vm_update.result().as_dict()
         result = self.update_dict([results])
-        return result
+        return result[0]
 
 
     def migrate(self,**kwargs):

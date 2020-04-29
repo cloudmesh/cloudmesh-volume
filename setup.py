@@ -46,14 +46,11 @@ version = readfile("VERSION")[0].strip()
 with open('README.md') as f:
     long_description = f.read()
 
-
-
 NAME = "cloudmesh-volume"
 DESCRIPTION = "A command called volume and foo for the cloudmesh shell"
 AUTHOR = "Gregor von Laszewski"
 AUTHOR_EMAIL = "laszewski@gmail.com"
 URL = "https://github.com/cloudmesh/cloudmesh-volume"
-
 
 setup(
     name=NAME,

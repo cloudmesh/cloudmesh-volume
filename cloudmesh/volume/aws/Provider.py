@@ -2,11 +2,9 @@ from time import sleep
 
 import boto3
 from cloudmesh.common.console import Console
-from cloudmesh.common.util import banner
 from cloudmesh.configuration.Config import Config
 from cloudmesh.volume.VolumeABC import VolumeABC
 from cloudmesh.mongo.CmDatabase import CmDatabase
-import datetime
 
 
 class Provider(VolumeABC):
@@ -369,7 +367,7 @@ class Provider(VolumeABC):
         for key in self.default.keys():
             if key not in kwargs.keys():
                 kwargs[key] = self.default[key]
-            elif kwargs[key] == None:
+            elif kwargs[key] is None:
                 kwargs[key] = self.default[key]
 
         result = self._create(**kwargs)
@@ -439,8 +437,7 @@ class Provider(VolumeABC):
                 ],
             )
         r = [r]
-        result = {}
-        result['Volumes'] = r
+        result = {'Volumes': r}
         result['Volumes'][0]['AttachedToVm'] = []
         return result
 
@@ -692,7 +689,8 @@ class Provider(VolumeABC):
             if volume_region == vm_region:
                 # if volume and vm are in the same zone,
                 if volume_status == "in-use":
-                    # if volume is attached to a vm, first detach and than attach to vm
+                    # if volume is attached to a vm, first detach and than
+                    #       attach to vm
                     self.detach(name=volume_name)
                     self.attach(names=[volume_name, ], vm=vm)
                 elif volume_status == "available":
@@ -700,8 +698,9 @@ class Provider(VolumeABC):
                     self.attach(names=[volume_name, ], vm=vm)
                 return self.list(NAME=volume_name, refresh=True)
             else:
-                # if volume and vm are not in the same zone, create a snapshot, create a new volume with the snapshot
-                # and in the same zone as vm, delete old volume
+                # if volume and vm are not in the same zone, create a snapshot,
+                #       create a new volume with the snapshot and in the
+                #       same zone as vm, delete old volume
 
                 snapshot_id = self.client.create_snapshot(
                     VolumeId=volume_id, )['SnapshotId']
@@ -759,10 +758,8 @@ class Provider(VolumeABC):
         # delete volume_1
         self.delete(name=volume_1)
         # create volume_1 with snapshot of volume_2
-        kwargs = {}
-        kwargs['region'] = volume_1_region
-        kwargs['snapshot'] = snapshot_id
-        kwargs['NAME'] = volume_1
+        kwargs = {'region': volume_1_region, 'snapshot': snapshot_id,
+                  'NAME': volume_1}
 
         new_volume = self.create(**kwargs)
         start_timeout = 360

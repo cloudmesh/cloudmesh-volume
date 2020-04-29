@@ -3,12 +3,10 @@
 ###############################################################
 
 # TODO: start this with cloud init, e.g, empty mongodb
-# TODO: assertuons need to be added
-from pprint import pprint
+# TODO: assertions need to be added
 
 import pytest
 import os
-from time import sleep
 from cloudmesh.common.debug import VERBOSE
 from cloudmesh.common.util import HEADING
 from cloudmesh.common.variables import Variables
@@ -16,8 +14,6 @@ from cloudmesh.common.Benchmark import Benchmark
 from cloudmesh.volume.Provider import Provider
 from cloudmesh.configuration.Config import Config
 from cloudmesh.management.configuration.name import Name
-from cloudmesh.mongo.CmDatabase import CmDatabase
-import sys
 
 Benchmark.debug()
 
@@ -57,7 +53,7 @@ class Test_provider_volume:
 
     def find_counter(self):
         name = str(Name())
-        #print(name)
+        # print(name)
         vms = provider.list(**params)
         if vms is not None:
             numbers = []
@@ -78,7 +74,7 @@ class Test_provider_volume:
         Benchmark.Stop()
         for v in data:
             status = v['lifecycle_state']
-        assert status in ['AVAILABLE','PROVISIONING']
+        assert status in ['AVAILABLE', 'PROVISIONING']
 
     def test_provider_volume_list(self):
         HEADING()
@@ -125,4 +121,3 @@ class Test_provider_volume:
 
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)
-

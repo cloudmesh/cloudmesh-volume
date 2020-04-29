@@ -47,8 +47,6 @@ provider = Provider(name=cloud)
 current_vms = 0
 
 
-
-
 @pytest.mark.incremental
 class Test_provider_volume:
 
@@ -60,7 +58,7 @@ class Test_provider_volume:
 
     def test_cms_vm(self):
         HEADING()
-        if cloud=="multipass":
+        if cloud == "multipass":
             cmd = f"multipass launch -n={name}"
             Benchmark.Start()
             result = os.system(cmd)
@@ -75,7 +73,7 @@ class Test_provider_volume:
                 status = response["info"][name]['state']
                 if status == "Running":
                     break
-            assert status =='Running'
+            assert status == 'Running'
         else:
             cmd = "cms vm boot --name=" + name
             Benchmark.Start()

@@ -316,7 +316,7 @@ class VolumeCommand(PluginCommand):
                         volume = provider.search(name=name)
                         if volume:
                             #banner(f"Detaching {name} from {cloud}")
-                            result = provider.detach(NAME=name)
+                            result = provider.detach(name=name)
                             detached.append(name)
                             print(provider.Print(result, kind='volume',
                                                  output=arguments.output))
@@ -330,7 +330,6 @@ class VolumeCommand(PluginCommand):
             name = arguments.NAME or variables["volume"] or get_last_volume()
             arguments.NAME = name
             provider = Provider(name=arguments.cloud)
-            #print(arguments)
             result = provider.add_tag(**arguments)
             print(provider.Print(result, kind='volume', output=arguments.output)
                   )

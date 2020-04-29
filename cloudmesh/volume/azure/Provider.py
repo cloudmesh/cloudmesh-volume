@@ -113,7 +113,7 @@ class Provider(VolumeABC):
         self.cloud = name
         self.location = 'eastus'
         self.size = 1
-        self.group_name = 'default'
+        self.group_name = self.spec["default"]['group']
 
         cred = self.spec["credentials"]
         self.default = self.spec["default"]
@@ -124,7 +124,7 @@ class Provider(VolumeABC):
         if credentials is not None:
             cred.update(credentials)
 
-        VERBOSE(cred, verbose=10)
+        #VERBOSE(cred, verbose=10)
 
         if self.cloudtype != 'azure':
             Console.error("This class is meant for azure cloud")
@@ -349,7 +349,7 @@ class Provider(VolumeABC):
         # return after detaching
         results = async_vm_update.result().as_dict()
         result = self.update_dict([results])
-        return result
+        return result[0]
 
 
 #Status and info use same code. Unable to only pull out 'disk_state' for status.
@@ -426,7 +426,7 @@ class Provider(VolumeABC):
         # return after adding tags
         results = async_vm_update.result().as_dict()
         result = self.update_dict([results])
-        return result
+        return result[0]
 
 
     def migrate(self,**kwargs):

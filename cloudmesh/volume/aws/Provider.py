@@ -56,7 +56,7 @@ class Provider(VolumeABC):
                       "cm.kind",
                       "cm.region",
                       # "AvailabilityZone",
-                      #"CreateTime",
+                      # "CreateTime",
                       # "Encrypted",
                       "Size",
                       # "SnapshotId",
@@ -74,7 +74,7 @@ class Provider(VolumeABC):
                        "Kind",
                        "Region",
                        # "AvailabilityZone",
-                       #"Create Time",
+                       # "Create Time",
                        # "Encrypted",
                        "Size(GB)",
                        # "SnapshotId",
@@ -103,7 +103,8 @@ class Provider(VolumeABC):
         self.client = boto3.client('ec2',
                                    region_name=self.default['region_name'],
                                    aws_access_key_id=self.cred['EC2_ACCESS_ID'],
-                                   aws_secret_access_key=self.cred['EC2_SECRET_KEY']
+                                   aws_secret_access_key=self.cred[
+                                       'EC2_SECRET_KEY']
                                    )
         self.cm = CmDatabase()
 
@@ -124,7 +125,8 @@ class Provider(VolumeABC):
         #         'Attachments':
         #             [
         #                 {
-        #                 'AttachTime': datetime.datetime(2020, 3, 16, 20, 0, 35, tzinfo=tzutc()),
+        #                 'AttachTime': datetime.datetime(2020, 3, 16, 20, 0,
+        #                  35, tzinfo=tzutc()),
         #                  'Device': '/dev/sda1',
         #                  'InstanceId': 'i-0765529fec90ba56b',
         #                  'State': 'attached',
@@ -133,7 +135,8 @@ class Provider(VolumeABC):
         #                  }
         #             ],
         #         'AvailabilityZone': 'us-east-2c',
-        #         'CreateTime': datetime.datetime(2020, 3, 16, 20, 0, 35, 257000, tzinfo=tzutc()),
+        #         'CreateTime': datetime.datetime(2020, 3, 16, 20, 0, 35,
+        #          257000, tzinfo=tzutc()),
         #         'Encrypted': False,
         #         'Size': 8,
         #         'SnapshotId': 'snap-085c8383cc8833286',
@@ -161,16 +164,19 @@ class Provider(VolumeABC):
                 for item in entry['Tags']:
                     if item['Key'] == 'Name':
                         if item['Value'] == "":
-                            # Console.error(f"Please name volume {entry['VolumeId']}")
+                            # Console.error(f"Please name volume
+                            #       {entry['VolumeId']}")
                             volume_name = " "
                         elif item['Value'] == " ":
-                            # Console.error(f"Please name volume {entry['VolumeId']}")
+                            # Console.error(f"Please name volume
+                            #       {entry['VolumeId']}")
                             volume_name = " "
                         else:
                             volume_name = item['Value']
                             tags.remove(item)
                     else:
-                        # Console.error(f"Please name volume {entry['VolumeId']}")
+                        # Console.error(f"Please name volume
+                        #       {entry['VolumeId']}")
                         volume_name = " "
             except:
                 # Console.error(f"Please name volume {entry['VolumeId']}")
@@ -210,9 +216,10 @@ class Provider(VolumeABC):
 
     def find_vm_info_from_volume_name(self, volume_name=None):
         """
-        This function find vm info which the volume attached to through given volume name. only
-        implemented circumstance when a volume can only attach to one vm. (type
-        iol volume could attach to multiple vms, not implemented)
+        This function find vm info which the volume attached to through given
+        volume name. Only implemented circumstance when a volume can only
+        attach to one vm. (type iol volume could attach to multiple vms,
+        not implemented)
 
         :param volume_name: the name of volume.
         :return: string
@@ -233,7 +240,8 @@ class Provider(VolumeABC):
                 for item in elements[i]['Attachments']:
                     vm_id = item['InstanceId']
                     instance = client.describe_instances(InstanceIds=[vm_id])
-                    for tag in instance['Reservations'][0]['Instances'][0]['Tags']:
+                    for tag in instance['Reservations'][0]['Instances'][0][
+                        'Tags']:
                         if tag['Key'] == 'Name':
                             vm_name = tag['Value']
                             # print("vm_name: ", vm_name)
@@ -259,8 +267,10 @@ class Provider(VolumeABC):
             try:
                 for item in elements[i]['Attachments']:
                     vm_id = item['InstanceId']
-                    instance = self.client.describe_instances(InstanceIds=[vm_id])
-                    for tag in instance['Reservations'][0]['Instances'][0]['Tags']:
+                    instance = self.client.describe_instances(
+                        InstanceIds=[vm_id])
+                    for tag in instance['Reservations'][0]['Instances'][0][
+                        'Tags']:
                         if tag['Key'] == 'Name':
                             vm_name = tag['Value']
                             elements[i]['AttachedToVm'].append(vm_name)
@@ -318,7 +328,8 @@ class Provider(VolumeABC):
 
     def status(self, name):
         """
-        This function get volume status, such as "in-use", "available", "deleting"
+        This function get volume status, such as "in-use", "available",
+        "deleting"
 
         :param name
         :return: dict
@@ -337,7 +348,8 @@ class Provider(VolumeABC):
 
     def create(self, **kwargs):
         """
-        This function create a new volume, with defalt parameters in self.default.
+        This function create a new volume, with defalt parameters in
+        self.default.
         default:
             {volume_type: gp2
             size: 2
@@ -357,7 +369,7 @@ class Provider(VolumeABC):
         for key in self.default.keys():
             if key not in kwargs.keys():
                 kwargs[key] = self.default[key]
-            elif kwargs[key] == None:
+            elif kwargs[key] is None:
                 kwargs[key] = self.default[key]
 
         result = self._create(**kwargs)
@@ -374,9 +386,10 @@ class Provider(VolumeABC):
         :param encrypted (boolean): True|False
         :param size (integer): size of volume
         :param volume_type (string): type of volume. This can be gp2 for General
-                                     Purpose SSD, io1 for Provisioned IOPS SSD (not implemented),
-                                    st1 for Throughput Optimized HDD, sc1 for
-                                    Cold HDD, or standard for Magnetic volumes.
+                                     Purpose SSD, io1 for Provisioned IOPS SSD
+                                     (not implemented), st1 for Throughput
+                                     Optimized HDD, sc1 for Cold HDD,
+                                     or standard for Magnetic volumes.
         :param snapshot (string): snapshot id
         :return: dict
         """
@@ -426,8 +439,7 @@ class Provider(VolumeABC):
                 ],
             )
         r = [r]
-        result = {}
-        result['Volumes'] = r
+        result = {'Volumes': r}
         result['Volumes'][0]['AttachedToVm'] = []
         return result
 
@@ -510,7 +522,8 @@ class Provider(VolumeABC):
                                           query={'AttachedToVm': kwargs['vm']})
                 elif key == 'region' and kwargs['region']:
                     result = self.cm.find(collection=f"{self.cloud}-volume",
-                                          query={'AvailabilityZone': kwargs['region']})
+                                          query={'AvailabilityZone': kwargs[
+                                              'region']})
         else:
             result = self.client.describe_volumes()
             result = self.update_AttachedToVm(result)
@@ -520,7 +533,8 @@ class Provider(VolumeABC):
     def delete(self, name):
         """
         This function delete one volume.
-        It will return the info of volume with "state" updated as "deleted" and will show in Database.
+        It will return the info of volume with "state" updated as "deleted"
+        and will show in Database.
 
         :param NAME (string): volume name
         :return: dict
@@ -663,11 +677,13 @@ class Provider(VolumeABC):
         volume_name = kwargs['NAME']
         vm = kwargs['vm']
         volume_status = self.status(NAME=volume_name)[0]['State']
-        volume_region = self.list(NAME=volume_name, refresh=True)[0]['cm']['region']
+        volume_region = self.list(NAME=volume_name, refresh=True)[0]['cm'][
+            'region']
         volume_id = self.find_volume_id(volume_name=volume_name)
         vm_info = self.vm_info(vm=vm)
         vm_status = vm_info['Reservations'][0]['Instances'][0]['State']['Name']
-        vm_region = vm_info['Reservations'][0]['Instances'][0]['Placement']['AvailabilityZone']
+        vm_region = vm_info['Reservations'][0]['Instances'][0]['Placement'][
+            'AvailabilityZone']
         vm_id = self.find_vm_id(vm_name=vm)
 
         # migrate within same region:
@@ -675,7 +691,8 @@ class Provider(VolumeABC):
             if volume_region == vm_region:
                 # if volume and vm are in the same zone,
                 if volume_status == "in-use":
-                    # if volume is attached to a vm, first detach and than attach to vm
+                    # if volume is attached to a vm, first detach and than
+                    #       attach to vm
                     self.detach(name=volume_name)
                     self.attach(names=[volume_name, ], vm=vm)
                 elif volume_status == "available":
@@ -683,8 +700,9 @@ class Provider(VolumeABC):
                     self.attach(names=[volume_name, ], vm=vm)
                 return self.list(NAME=volume_name, refresh=True)
             else:
-                # if volume and vm are not in the same zone, create a snapshot, create a new volume with the snapshot
-                # and in the same zone as vm, delete old volume
+                # if volume and vm are not in the same zone, create a snapshot,
+                #       create a new volume with the snapshot and in the
+                #       same zone as vm, delete old volume
 
                 snapshot_id = self.client.create_snapshot(
                     VolumeId=volume_id, )['SnapshotId']
@@ -723,7 +741,8 @@ class Provider(VolumeABC):
         :return: dict
         """
         volume_1 = names[0]
-        volume_1_region = self.list(NAME=volume_1, refresh=True)[0]['cm']['region']
+        volume_1_region = self.list(NAME=volume_1, refresh=True)[0]['cm'][
+            'region']
         volume_2 = names[1]
         volume_2_id = self.find_volume_id(volume_name=volume_2)
         # make a snapshot of volume_2
@@ -741,10 +760,8 @@ class Provider(VolumeABC):
         # delete volume_1
         self.delete(name=volume_1)
         # create volume_1 with snapshot of volume_2
-        kwargs = {}
-        kwargs['region'] = volume_1_region
-        kwargs['snapshot'] = snapshot_id
-        kwargs['NAME'] = volume_1
+        kwargs = {'region': volume_1_region, 'snapshot': snapshot_id,
+                  'NAME': volume_1}
 
         new_volume = self.create(**kwargs)
         start_timeout = 360

@@ -3,7 +3,7 @@
 ###############################################################
 
 # TODO: start this with cloud init, e.g, empty mongodb
-# TODO: assertuons need to be added
+# TODO: assertions need to be added
 from pprint import pprint
 
 import pytest
@@ -57,7 +57,7 @@ class Test_provider_volume:
 
     def find_counter(self):
         name = str(Name())
-        #print(name)
+        # print(name)
         vms = provider.list(**params)
         if vms is not None:
             numbers = []
@@ -78,7 +78,7 @@ class Test_provider_volume:
         Benchmark.Stop()
         for v in data:
             status = v['lifecycle_state']
-        assert status in ['AVAILABLE','PROVISIONING']
+        assert status in ['AVAILABLE', 'PROVISIONING']
 
     def test_provider_volume_list(self):
         HEADING()
@@ -125,4 +125,3 @@ class Test_provider_volume:
 
     def test_benchmark(self):
         Benchmark.print(sysinfo=False, csv=True, tag=cloud)
-

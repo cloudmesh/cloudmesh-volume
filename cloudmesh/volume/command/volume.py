@@ -286,7 +286,7 @@ class VolumeCommand(PluginCommand):
                 Console.error("No vm specified or found")
                 return ""
             names = Parameter.expand(names)
-            #banner(f"Attaching {names} to {arguments.vm}")
+            # banner(f"Attaching {names} to {arguments.vm}")
             provider = Provider(name=arguments.cloud)
             result = provider.attach(names, vm)
             print(provider.Print(result, kind='volume', output=arguments.output)
@@ -315,7 +315,7 @@ class VolumeCommand(PluginCommand):
                         # None if it is not in the cloud
                         volume = provider.search(name=name)
                         if volume:
-                            #banner(f"Detaching {name} from {cloud}")
+                            # banner(f"Detaching {name} from {cloud}")
                             result = provider.detach(name=name)
                             detached.append(name)
                             print(provider.Print(result, kind='volume',
@@ -374,7 +374,7 @@ class VolumeCommand(PluginCommand):
                 volumes = arguments.NAMES
             else:
                 Console.error("Two volumes should be specified")
-            #if arguments.cloud:
+            # if arguments.cloud:
             arguments.cloud = cloud
             provider = Provider(name=arguments.cloud)
             result = provider.sync(NAMES=arguments.NAMES)
@@ -391,4 +391,3 @@ class VolumeCommand(PluginCommand):
             result = provider.list()
             print(provider.Print(result, kind='volume', output=arguments.output)
                   )
-

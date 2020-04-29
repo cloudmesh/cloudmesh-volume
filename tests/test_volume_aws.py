@@ -39,8 +39,10 @@ name = str(name_generator)
 names = []
 provider = Provider(name=cloud)
 
+
 def Print(data):
     print(provider.Print(data=data, output='table', kind='volume'))
+
 
 # current_vms = 0
 
@@ -102,7 +104,8 @@ class Test_provider_volume:
     #     print(name3)
     #     key = "Name"
     #     key_value = names
-    #     # os.system(f"cms volume add_tag {name} --key={key} --value={key_value}")
+    #     # os.system(f"cms volume add_tag {name} --key={key}
+    #           --value={key_value}")
     #     print(names[0])
     #     params = {"key": key, "value": key_value, 'NAME': names[0]}
     #     Benchmark.Start()
@@ -118,12 +121,13 @@ class Test_provider_volume:
         HEADING()
         # os.system("cms volume list")
         # os.system("cms volume list --cloud=aws1")
-        params = {"cloud": cloud, "refresh":True}
+        params = {"cloud": cloud, "refresh": True}
         Benchmark.Start()
         data = provider.list(**params)
         Benchmark.Stop()
         Print(data)
         assert len(data) >= 0
+
     #
     def test_provider_volume_list_names(self):
         HEADING()
@@ -207,7 +211,8 @@ class Test_provider_volume:
     #             break
     #         for name in names:
     #             for entry in data:
-    #                 if entry['cm']['name'] == name and entry["AttachedToVm"] == [vm]:
+    #                 if entry['cm']['name'] == name and entry["AttachedToVm"]
+    #                     == [vm]:
     #                     count += 1
     #     VERBOSE(data)
     #     assert count >= len(names)

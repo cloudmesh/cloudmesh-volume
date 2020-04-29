@@ -20,6 +20,12 @@ functions that are deployed on different clouds.
 
 See also: [Volume man page](https://cloudmesh.github.io/cloudmesh-manual/manual/volume.html)
 
+## API documentation 
+
+The complete documentation of volume API is available at
+ 
+* <https://cloudmesh.github.io/cloudmesh-manual/api/cloudmesh.volume.html>
+
 ## Volume Providers
 
 ### Multipass

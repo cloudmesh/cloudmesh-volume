@@ -13,11 +13,7 @@ import json
 import ast
 
 
-# client = get_client_from_auth_file(ComputeManagementClient, auth_path=C:\Users\plj2861\Documents\AshleyPersonal\School\IndianaUniversity\CloudComputing\azure_credentials.json)
-
-
 class Provider(VolumeABC):
-
     """The provider class is a category of objects, and in this case objects
     related to creating, deleting, and listing a volume, along with other
     volume related functions."""
@@ -47,7 +43,6 @@ class Provider(VolumeABC):
             volume_type: __DEFAULT__
 
     """
-
 
     volume_states = [
         'ACTIVE',
@@ -92,7 +87,8 @@ class Provider(VolumeABC):
                        ],
         }
     }
-# need to update output
+
+    # need to update output
 
     def __init__(self, name="azure", configuration=None, credentials=None):
         """
@@ -103,7 +99,7 @@ class Provider(VolumeABC):
         :param configuration: The location of the yaml configuration file
         """
         # configuration = configuration if configuration is not None \
-            # else CLOUDMESH_YAML_PATH
+        # else CLOUDMESH_YAML_PATH
 
         conf = Config(configuration)["cloudmesh"]
 
@@ -124,7 +120,7 @@ class Provider(VolumeABC):
         if credentials is not None:
             cred.update(credentials)
 
-        #VERBOSE(cred, verbose=10)
+        # VERBOSE(cred, verbose=10)
 
         if self.cloudtype != 'azure':
             Console.error("This class is meant for azure cloud")
@@ -143,7 +139,7 @@ class Provider(VolumeABC):
 
         credentials = ServicePrincipalCredentials(
             client_id=cred['AZURE_APPLICATION_ID'],
-            #application and client id are same thing
+            # application and client id are same thing
             secret=cred['AZURE_SECRET_KEY'],
             tenant=cred['AZURE_TENANT_ID']
         )
@@ -153,7 +149,6 @@ class Provider(VolumeABC):
         # Management Clients
         self.compute_client = ComputeManagementClient(
             credentials, subscription)
-
 
     def Print(self, data, kind=None, output="table"):
         """
@@ -174,13 +169,12 @@ class Provider(VolumeABC):
                                 )
               )
 
-
     def update_dict(self, results):
         """
         This function adds a cloudmesh cm dict to each dict in the list
         elements. Libcloud returns an object or list of objects with the dict
-        method. This object is converted to a dict. Typically this method is used
-        internally.
+        method. This object is converted to a dict. Typically this method is
+        used internally.
 
         :param results: the original dicts.
         :param kind: for some kinds special attributes are added. This includes
@@ -210,7 +204,6 @@ class Provider(VolumeABC):
             d.append(entry)
         return d
 
-
     def create(self, **kwargs):
         """
         Create a volume.
@@ -238,8 +231,7 @@ class Provider(VolumeABC):
         result = self.update_dict([results])
         return result
 
-
-    def delete (self, name=None):
+    def delete(self, name=None):
         """
         Delete volumes.
         If name is not given, delete the most recent volume.
@@ -258,7 +250,6 @@ class Provider(VolumeABC):
         results = disk_deletion.result()
         result = self.update_dict(results)
         return result
-
 
     def list(self, **kwargs):
         """
@@ -291,7 +282,6 @@ class Provider(VolumeABC):
             found.extend(result)
         return found
 
-
     def attach(self, names=None, vm=None):
         """
         This function attaches a given volume to a given instance
@@ -314,16 +304,15 @@ class Provider(VolumeABC):
                 }
             })
             async_disk_attach = \
-                        self.vms.create_or_update(
-                self.group_name,
-                vm,
-                virtual_machine
-            )
+                self.vms.create_or_update(
+                    self.group_name,
+                    vm,
+                    virtual_machine
+                )
             async_disk_attach.wait(10)
             results = async_disk_attach.result().as_dict()
             result = self.update_dict([results])
             return result
-
 
     def detach(self, name=None):
         """
@@ -334,7 +323,7 @@ class Provider(VolumeABC):
         :return: dict
         """
         vm_info = self.compute_client.disks.get(self.group_name,
-                                    name).as_dict()['managed_by']
+                                                name).as_dict()['managed_by']
         vm = vm_info.split(sep="/")[-1]
         self.vms = self.compute_client.virtual_machines
         virtual_machine = self.vms.get(self.group_name, vm)
@@ -351,8 +340,8 @@ class Provider(VolumeABC):
         result = self.update_dict([results])
         return result[0]
 
-
-#Status and info use same code. Unable to only pull out 'disk_state' for status.
+    # Status and info use same code. Unable to only pull out 'disk_state' for
+    #       status.
 
     def status(self, name=None):
         """
@@ -374,7 +363,6 @@ class Provider(VolumeABC):
         result = self.update_dict([results])
         return result
 
-
     def info(self, name=None):
         """
         Search through the list of volumes, find the matching volume with name,
@@ -391,7 +379,6 @@ class Provider(VolumeABC):
         results = disk_status.as_dict()
         result = self.update_dict([results])
         return result
-
 
     def add_tag(self, **kwargs):
         """
@@ -428,8 +415,7 @@ class Provider(VolumeABC):
         result = self.update_dict([results])
         return result[0]
 
-
-    def migrate(self,**kwargs):
+    def migrate(self, **kwargs):
         """
         Migrate volume from one vm to another vm.
 
@@ -440,8 +426,7 @@ class Provider(VolumeABC):
         """
         raise NotImplementedError
 
-
-    def sync(self,names):
+    def sync(self, names):
         """
         synchronize one volume with another volume
 

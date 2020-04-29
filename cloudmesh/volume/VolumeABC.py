@@ -6,14 +6,17 @@ from cloudmesh.configuration.Config import Config
 class VolumeABC(metaclass=ABCMeta):
 
     def __init__(self, cloud, path):
+        # noinspection SpellCheckingInspection
         """
-        Initialize self.cm, self.default, self.credentials, self.group, self.experiment
+                Initialize self.cm, self.default, self.credentials, self.group,
+                self.experiment
 
-        :param cloud: name of provider
-        :param path: "~/.cloudmesh/cloudmesh.yaml"
-        """
+                :param cloud: name of provider
+                :param path: "~/.cloudmesh/cloudmesh.yaml"
+                """
 
         try:
+            # noinspection SpellCheckingInspection
             config = Config(config_path=path)["cloudmesh"]
             self.cm = config["cloud"][cloud]["cm"]
             self.default = config["cloud"][cloud]["default"]
@@ -29,12 +32,13 @@ class VolumeABC(metaclass=ABCMeta):
         """
         This command list all volumes as follows:
 
-        If NAMES are given, search through all the active clouds and list all the volumes.
-        If NAMES and cloud are given, list all volumes under the cloud.
-        If cloud is given, list all the volumes under the cloud.
+        If NAMES are given, search through all the active clouds and list all
+        the volumes. If NAMES and cloud are given, list all volumes under the
+        cloud. If cloud is given, list all the volumes under the cloud.
         If cloud is not given, list all the volumes under current cloud.
-        If vm is given, under the current cloud, list all the volumes attaching to the vm.
-        If region is given, under the current cloud, list all volumes in that region.
+        If vm is given, under the current cloud, list all the volumes attaching
+        to the vm. If region is given, under the current cloud, list all
+        volumes in that region.
 
         :param NAMES: List of volume names
         :param vm: The name of the virtual machine
@@ -53,12 +57,12 @@ class VolumeABC(metaclass=ABCMeta):
         """
         Create a volume.
 
-           :param NAME (string): name of volume
-           :param region (string): availability-zone
-           :param size (integer): size of volume
-           :param volume_type (string): type of volume.
-           :param description (string)
-           :return: dict
+        :param NAME (string): name of volume
+        :param region (string): availability-zone
+        :param size (integer): size of volume
+        :param volume_type (string): type of volume.
+        :param description (string)
+        :return: dict of the created volume
         """
         raise NotImplementedError
 
@@ -76,7 +80,7 @@ class VolumeABC(metaclass=ABCMeta):
     @abstractmethod
     def attach(self, name=None, vm=None):
         """
-        Attatch volume to a vm.
+        Attach volume to a vm.
         If NAMES is not specified, attach the most recent volume to vm.
 
         :param NAME: volume name
@@ -87,18 +91,18 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def detach(self,names=None):
+    def detach(self, names=None):
         """
-        Dettach volumes from vm.
+        Detach volumes from vm.
         If success, the last volume will be saved as the most recent volume.
 
-        :param NAMES: names of volumes to dettach
+        :param NAMES: names of volumes to detach
         :return: dict
         """
         raise NotImplementedError
 
     @abstractmethod
-    def add_tag(self,**kwargs):
+    def add_tag(self, **kwargs):
         """
         This function add tag to a volume.
         If NAME is not specified, then tag will be added to the last volume.
@@ -115,7 +119,8 @@ class VolumeABC(metaclass=ABCMeta):
     @abstractmethod
     def status(self, name=None):
         """
-        This function returns status of volume, such as "available", "in-use" and etc..
+        This function returns status of volume, such as "available", "in-use"
+        and etc..
 
         :param NAME: name of volume
         :return: string
@@ -123,7 +128,7 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def migrate(self,**kwargs):
+    def migrate(self, **kwargs):
         """
         Migrate volume from one vm to another vm.
 
@@ -135,7 +140,7 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def sync(self,names):
+    def sync(self, names):
         """
         synchronize one volume with another volume
 
@@ -144,7 +149,7 @@ class VolumeABC(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-    def purge(self,**kwargs):
+    def purge(self, **kwargs):
         """
         purge all the deleted volume in MongoDB database
 

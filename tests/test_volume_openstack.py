@@ -3,7 +3,7 @@
 ###############################################################
 
 # TODO: start this with cloud init, e.g, empty mongodb
-# TODO: assertuons need to be added
+# TODO: assertions need to be added
 from pprint import pprint
 
 import pytest
@@ -57,7 +57,7 @@ class Test_provider_volume:
 
     def find_counter(self):
         name = str(Name())
-        #print(name)
+        # print(name)
         vms = provider.list(**params)
         if vms is not None:
             numbers = []
@@ -83,7 +83,7 @@ class Test_provider_volume:
         os.system(f"cms volume list --cloud={cloud}")
         name_generator.incr()
         Benchmark.Start()
-        params = {"NAME":name}
+        params = {"NAME": name}
         data = provider.create(**params)
         Benchmark.Stop()
         for v in data:
@@ -98,7 +98,7 @@ class Test_provider_volume:
         Benchmark.Start()
         NAMES = []
         NAMES.append(name)
-        provider.attach(NAMES=NAMES,vm=vm)
+        provider.attach(NAMES=NAMES, vm=vm)
         Benchmark.Stop()
         start_timeout = 360
         time = 0

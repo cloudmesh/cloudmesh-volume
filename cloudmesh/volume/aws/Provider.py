@@ -125,7 +125,8 @@ class Provider(VolumeABC):
         #         'Attachments':
         #             [
         #                 {
-        #                 'AttachTime': datetime.datetime(2020, 3, 16, 20, 0, 35, tzinfo=tzutc()),
+        #                 'AttachTime': datetime.datetime(2020, 3, 16, 20, 0,
+        #                  35, tzinfo=tzutc()),
         #                  'Device': '/dev/sda1',
         #                  'InstanceId': 'i-0765529fec90ba56b',
         #                  'State': 'attached',
@@ -134,7 +135,8 @@ class Provider(VolumeABC):
         #                  }
         #             ],
         #         'AvailabilityZone': 'us-east-2c',
-        #         'CreateTime': datetime.datetime(2020, 3, 16, 20, 0, 35, 257000, tzinfo=tzutc()),
+        #         'CreateTime': datetime.datetime(2020, 3, 16, 20, 0, 35,
+        #          257000, tzinfo=tzutc()),
         #         'Encrypted': False,
         #         'Size': 8,
         #         'SnapshotId': 'snap-085c8383cc8833286',
@@ -162,16 +164,19 @@ class Provider(VolumeABC):
                 for item in entry['Tags']:
                     if item['Key'] == 'Name':
                         if item['Value'] == "":
-                            # Console.error(f"Please name volume {entry['VolumeId']}")
+                            # Console.error(f"Please name volume
+                            #       {entry['VolumeId']}")
                             volume_name = " "
                         elif item['Value'] == " ":
-                            # Console.error(f"Please name volume {entry['VolumeId']}")
+                            # Console.error(f"Please name volume
+                            #       {entry['VolumeId']}")
                             volume_name = " "
                         else:
                             volume_name = item['Value']
                             tags.remove(item)
                     else:
-                        # Console.error(f"Please name volume {entry['VolumeId']}")
+                        # Console.error(f"Please name volume
+                        #       {entry['VolumeId']}")
                         volume_name = " "
             except:
                 # Console.error(f"Please name volume {entry['VolumeId']}")
@@ -211,9 +216,10 @@ class Provider(VolumeABC):
 
     def find_vm_info_from_volume_name(self, volume_name=None):
         """
-        This function find vm info which the volume attached to through given volume name. only
-        implemented circumstance when a volume can only attach to one vm. (type
-        iol volume could attach to multiple vms, not implemented)
+        This function find vm info which the volume attached to through given
+        volume name. Only implemented circumstance when a volume can only
+        attach to one vm. (type iol volume could attach to multiple vms,
+        not implemented)
 
         :param volume_name: the name of volume.
         :return: string
@@ -322,7 +328,8 @@ class Provider(VolumeABC):
 
     def status(self, name):
         """
-        This function get volume status, such as "in-use", "available", "deleting"
+        This function get volume status, such as "in-use", "available",
+        "deleting"
 
         :param name
         :return: dict
@@ -341,7 +348,8 @@ class Provider(VolumeABC):
 
     def create(self, **kwargs):
         """
-        This function create a new volume, with defalt parameters in self.default.
+        This function create a new volume, with defalt parameters in
+        self.default.
         default:
             {volume_type: gp2
             size: 2
@@ -378,9 +386,10 @@ class Provider(VolumeABC):
         :param encrypted (boolean): True|False
         :param size (integer): size of volume
         :param volume_type (string): type of volume. This can be gp2 for General
-                                     Purpose SSD, io1 for Provisioned IOPS SSD (not implemented),
-                                    st1 for Throughput Optimized HDD, sc1 for
-                                    Cold HDD, or standard for Magnetic volumes.
+                                     Purpose SSD, io1 for Provisioned IOPS SSD
+                                     (not implemented), st1 for Throughput
+                                     Optimized HDD, sc1 for Cold HDD,
+                                     or standard for Magnetic volumes.
         :param snapshot (string): snapshot id
         :return: dict
         """
@@ -525,7 +534,8 @@ class Provider(VolumeABC):
     def delete(self, name):
         """
         This function delete one volume.
-        It will return the info of volume with "state" updated as "deleted" and will show in Database.
+        It will return the info of volume with "state" updated as "deleted"
+        and will show in Database.
 
         :param NAME (string): volume name
         :return: dict

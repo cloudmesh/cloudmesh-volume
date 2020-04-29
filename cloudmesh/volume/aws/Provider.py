@@ -103,7 +103,8 @@ class Provider(VolumeABC):
         self.client = boto3.client('ec2',
                                    region_name=self.default['region_name'],
                                    aws_access_key_id=self.cred['EC2_ACCESS_ID'],
-                                   aws_secret_access_key=self.cred['EC2_SECRET_KEY']
+                                   aws_secret_access_key=
+                                   self.cred['EC2_SECRET_KEY']
                                    )
         self.cm = CmDatabase()
 

@@ -1,7 +1,7 @@
 # Cloudmesh Volume Management
 
 
-> **Note:** The README.md page is automatically generated, do not edit it.
+> **Note:** The README.md page is outomatically generated, do not edit it.
 > To modify  change the content in
 > <https://github.com/cloudmesh/cloudmesh-volume/blob/master/README-source.md>
 > Curley brackets must use two in README-source.md
@@ -26,129 +26,106 @@ simplifying the volume management interface to an existing cloud. We
 will also benchmark the clouds while comparing the volume management
 functions that are deployed on different clouds.
 
-<<<<<<< HEAD
 ## Manual
 
 ```bash
+Usage:
+  volume list [NAMES]
+              [--vm=VM]
+              [--region=REGION]
+              [--cloud=CLOUD]
+              [--refresh]
+              [--dryrun]
+              [--output=FORMAT]
+  volume create [NAME]
+              [--size=SIZE]
+              [--volume_type=TYPE]
+              [--description=DESCRIPTION]
+              [--dryrun]
+              [--region=REGION]
+              [--path=PATH]
+  volume attach [NAMES] [--vm=VM]
+  volume detach [NAMES]
+  volume delete [NAMES]
+  volume add_tag [NAME]
+              [--key=KEY]
+              [--value=VALUE]
+  volume status [NAME]
+  volume migrate [NAME]
+              [--vm=VM]
+              [--cloud=CLOUD]
+  volume sync [NAMES]
+              [--cloud=CLOUD]
+  volume purge [--cloud=CLOUD]
 
-```
+This command manages volumes across different clouds
 
+Arguments:
+    NAME   the name of the volume
+    NAMES  the names of multiple volumes
 
-=======
-## Volume Management functions
+Options:
+    --vm=VM              The name of the virtual machine
+    --region=REGION      The name of the region
+    --cloud=CLOUD        The name of the cloud
+    --refresh            If refresh the info is taken from the cloud
+    --volume_type=TYPE   The type of the volume
+    --output=FORMAT      Output format [default: table]
+    --key=KEY            The tag key
+    --value=VALUE        The value of tag key
+    --snapshot           The snapshot of volume
+    --path=PATH          The path of local volume
 
-* volume list
-  
-  List volumes.
-  
-  If NAMES are given, search through all the active clouds and list all the volumes.
-  
-  If NAMES and cloud are given, list all volumes under the cloud.
-  
-  If cloud is given, list all the volumes under the cloud.
-  
-  If cloud is not given, list all the volumes under current cloud.
+Description:
 
-  If vm is given, under the current cloud, list all the volumes attaching to the vm.
-  
-  If region is given, under the current cloud, list all volumes in that region.
-      
-```
-    volume list NAMES
-                [--vm=VM]
-                [--region=REGION]
-                [--cloud=CLOUD]
-                [--refresh]
+  volume list [NAMES]
+              [--vm=VM]
+              [--region=REGION]
+              [--cloud=CLOUD]
+              [--refresh]
+              [--dryrun]
+              [--output=FORMAT]
+      List all the volumes for certain vm, region, or cloud.
+
+  volume create [NAME]
+                [--size=SIZE]
+                [--volume_type=TYPE]
+                [--description=DESCRIPTION]
                 [--dryrun]
+                [--snapshot=SNAPSHOT]
+                [--region=REGION]
+      Creates a volume
+
+  volume status [NAMES]
+                [--cloud=CLOUD]
+      Get the status (e.g. 'available', 'READY', 'in-use') of a volume
+
+  volume attach [NAMES]
+                [--vm=VM]
+      Attach volume to a vm
+
+  volume detach [NAMES]
+      Detach volume from a vm
+
+  volume delete [NAMES]
+      Delete the named volumes
+
+  volume migrate [NAME]
+                 [--vm=VM]
+                 [--cloud=CLOUD]
+       Migrate volume from one vm to another vm in the same provider.
+
+  volume sync [NAMES]
+              [--cloud=CLOUD]
+      Volume sync allows for data to be shared between two volumes.
+
+  volume purge [--cloud=CLOUD]
+      Volume purge delete all the "deleted" volumes in MongoDB
+      database
 ```
 
-* volume create
 
-    Create a volume.
-    
-    If success, the volume will be saved as the most recent volume.     
-```
-    volume create [NAME]
-                  [--size=SIZE]
-                  [--volume_type=TYPE]
-                  [--description=DESCRIPTION]
-                  [--region=REGION]
-                  [--dryrun]
-```
-
-* volume attach
-
-    Attach volumes to a vm.
-    
-    If NAMES is not specified, attach the last created volume to vm.    
-```
-    volume attach [NAMES]
-                  [--vm=VM]
-```
-
-* volume detach
-
-    Detach volumes from vms.
-    
-    If NAMES is not specified, detach the last created volume from vm.
-    
-    If success, the last volume will be saved as the most recent volume. 
-``` 
-    volume detach [NAMES]  
-```
-
-* volume delete
-
-    Delete volumes.
-    
-    If NAMES is not given, delete the most recent volume.
-```
-    volume delete [NAMES] 
-```
-
-* volume purge
-
-    Purge deleted volumes.
-    
-    If cloud is not given, delete the volumes under current cloud.
-```
-    volume purge [--cloud=CLOUD] 
-```
-
-* volume add_tag
-
-    Add tag for a volume. For example: key="Name", value="user-volume-1".
-     
-    It could also be used to rename or name a volume.
-     
-    If NAME is not specified, then tag will be added to the most recent volume.
-    
-    If success, the volume will be saved as the most recent volume. 
-    
-```
-    volume add_tag  [NAME]
-                    [--key=KEY]
-                    [--value=VALUE]
-```
-    
-* volume migrate
-  
-  Migrate volume from one vm to another vm between different regions,
-  services or providers. 
-  
-``` 
-  volume migrate NAME [--vm=VM] 
-```
-
-* volume sync
-  
-  Sync contents of one volume to another volume. It is  a copy of all 
-  changed content from one volume to the other.
-  
-```
-    volume sync NAME
-```
->>>>>>> origin/master
+See also: [Volume man page](https://cloudmesh.github.io/cloudmesh-manual/manual/volume.html)
 
 ## Volume Providers
 
@@ -158,50 +135,133 @@ functions that are deployed on different clouds.
 
 #### Multipass volume management functions
 
-mount(self, name="cloudmesh", source=None, destination=None)
+* Create Volume
 ```
-mounts the source into the instance at the given destination
+create(**kwargs):
 
-Required Parameters: 
-
-        source --
-    
-            The name of source (volume?)
-
-        destination --
-
-            The name of vm???
-```
-
-unmount(self, name="cloudmesh", path=None)
-```
-Unmount a volume from an instance.
+This function create a new volume.
+Default parameters from self.default, such as: path="/Users/username/multipass".
 
 Required Parameters:
 
-        source --
-
-             The name of source (volume?)
+        name: the name of volume
+        path: path of volume
 ```
 
-transfer(self, name="cloudmesh", source=None, destination=None,
-recursive=True):
+* Delete Volume
+```
+delete(name):
 
-``` Copies files or entire directories into the vm
+Delete volume.
 
-Required Parameters: 
+If name is not given, delete the most recent volume.
 
-        source --
-    
-            The name of source (volume?)
+Required Parameters:
 
-        destination --
-
-            The name of vm???
+        name: volume name
 ```
 
-:o2: Add functions from provider with descriptions of required
-parameters
+
+* List Volume
+```
+list(**kwargs):
+
+This function list all volumes as following:
+If NAME (volume name) is specified, it will print out info of NAME.
+If NAME (volume name) is not specified, it will print out info of all
+          volumes under current cloud.
+If vm is specified, it will print out all the volumes attached to vm.
+If region(path) is specified, it will print out
+          all the volumes in that region. i.e. /Users/username/multipass
+
+Required Parameters:
+
+        NAME: name of volume
+        vm: name of vm
+        path: volume path
+```
+
+
+* Attach Volume
+```
+attach(names, vm):
+
+This function attach one or more volumes to vm. It returns info of
+updated volume. The updated dict with "AttachedToVm" showing
+the name of vm where the volume attached to.
+
+Required Parameters:
+
+        names (string): names of volumes
+        vm (string): name of vm
+```
+
+
+* Detach Volume
+```
+detach(name):
+
+This function detach a volume from vm. It returns the info of the updated volume.
+The vm under "AttachedToVm" will be removed if volume is successfully detached.
+Will detach volume from all vms.
+
+Required Parameters:
+
+        name: name of volume to be dettached
+```
+
+* Add Tags for Volume
+```
+add_tag(**kwargs):
+
+This function add tag to a volume.
+If volume name is not specified, then tag will be added to the last volume.
+
+Required Parameters:
+
+        NAME: name of volume
+        key: name of tag
+        value: value of tag
+```
+
+
+* Volume Status
+```
+status(name=None):
+
+This function get volume status, such as "in-use", "available", "deleted"
+
+Required Parameters:
+
+        name (string): volume name
+```
+
+
+* Migrate Volume
+```
+migrate(**kwargs):
+
+Migrate volume from one vm to another vm. "region" is volume path.
+If vm and volume are in the same region (path), migrate within the same region (path)
+If vm and volume are in different regions, migrate between two regions (path)
+
+Required Parameters:
+
+        name (string): the volume name
+        vm (string): the vm name
+```
+
+
+* Sync Volumes
+```
+sync(names):
+
+sync contents of one volume to another volume
+
+Required Parameters:
+
+        names (list): list of volume names
+```
 
 ### AWS
 
@@ -209,7 +269,7 @@ parameters
   <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
 * Amazon EBS:   
   <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-volume.html>
-* Amazon python api:   
+* Amazon python boto3:   
   <https://boto3.amazonaws.com/v1/documentation/api/latest/index.html>
 * REST api:   
   <https://docs.aws.amazon.com/apigateway/api-reference/>
@@ -221,88 +281,140 @@ parameters
 
 #### AWS volume management functions
 
-list(**kwargs)
+* Create Volume
+```
+create(**kwargs):
 
-    """        
-        This function list all volumes as following:
-        If NAME (volume_name) is specified, it will print out info of NAME
-        If NAME (volume_name) is not specified, it will print out info of all volumes
-        If vm is specified, it will print out all the volumes attached to vm
-        If region(availability zone) is specified, it will print out all the volumes in that region
+This function create a new volume, with defalt parameters in self.default.
 
-        :param NAME: name of volume
-        :param vm: name of vm
-        :param region: name of availability zone
-        :return: dict
-    """
+Optional Parameters:
 
-create(**kwargs)
+        NAME (string): the name of volume
+        size (int): the size of volume (GB)
+        volume_type: volume type, gp2 for General Purpose SSD
+        region (string): availability zone of volume
+        snapshot (string): snapshot id
+        encrypted (boolean): True|False
+```
 
-    """
-       Create a volume.
+* Delete Volume
+```
+delete(name):
 
-       :param NAME (string): name of volume
-       :param region (string): availability-zone
-       :param size (integer): size of volume
-       :param volume_type (string): type of volume
-       :return: dict
-    """
-    
-delete volumes(NAME)
-    
-    """    
-        This function delete one volume.
+This function delete one volume. 
+It will return the info of volume with "state" updated as "deleted" 
+and will show in Database.
 
-        :param NAME (string): volume name
-        :return: dict        
-    """
-    
-attach(NAMES, vm, device, dryrun=False):
+Required Parameters:
+ 
+        name (string): names of volume
+```
 
-    """        
-        This function attach one or more volumes to vm. It returns self.list() to list the updated volume.
-        The updated dict with
-        "AttachedToVm" showing the name of vm where the volume attached to
+* List Volume
+```
+list(**kwargs):
 
-        :param NAMES (string): names of volumes
-        :param vm (string): name of vm
-        :param device (string): The device name which is the attaching point to vm. 
-                                This function provided 5 attaching points.
-        :param dryrun (boolean): True|False
-        :return: dict
-    """
+This function list all volumes as following:
+If NAME (volume name) is specified, it will print out info of NAME.
+        If NAME (volume name) is not specified, it will print out info of all
+          volumes under current cloud.
+        If vm is specified, it will print out all the volumes attached to vm.
+        If region(availability zone) is specified, it will print out
+          all the volumes in that region.
 
-detach(NAME):
+Optional Parameters:
 
-    """
-        This function detach a volume from vm. It returns self.list(NAME) to list the updated volume. 
-        The vm under "AttachedToVm" will be removed if volume is successfully detached.
+        NAME: name of volume
+        vm: name of vm
+        region: name of availability zone
+```
 
-        :param NAME: name of volume to detach
-        :return: dict
-    """
-    
-add_tag(NAME, **kwargs):
+* Attach Volume
+```
+attach(names,vm,dryrun=False):
 
-    """    
-        This function add tag to a volume. 
-        In aws Boto3, key for volume name is "Name". For example, key="Name", value="user-volume-1". 
-        It could also be used to rename or name a volume. 
+This function attach one or more volumes to vm.  It returns self.list()
+        to list the updated volume. The updated dict with "AttachedToVm" showing
+        the name of vm where the volume attached to.
 
-        :param NAME: name of volume
-        :param kwargs:
-                    key: name of tag
-                    value: value of tag
-        :return: dict        
-    """
+Required Parameters:
+ 
+        names (string): names of volumes
 
-:o2: Add functions from provider with descriptions of required parameters
+        vm (string): name of vm
+```
+
+* Detach Volume
+```
+detach(name):
+
+This function detach a volume from vm. It returns self.list() to list
+the updated volume. The vm under "AttachedToVm" will be removed if
+volume is successfully detached.
+
+Required Parameters:
+        name: name of volume to dettach
+```
+
+* Add Tags for Volume
+```
+add_tag(**kwargs):
+
+This function add tag to a volume.
+In aws Boto3, key for volume name is "Name". For example,
+key="Name", value="user-volume-1".
+It could also be used to rename or name a volume.
+If NAME is not specified, then tag will be added to the last volume.
+
+Required Parameters:
+
+        NAME: name of volume
+        key: name of tag
+        value: value of tag
+```
+
+* Volume Status
+```
+status(name):
+
+This function get volume status, such as "in-use", "available", "deleted"
+
+Required Parameters:
+
+        name (string): volume name
+```
+
+* Migrate Volume
+```
+migrate(**kwargs):
+
+Migrate volume from one vm to another vm.
+
+Required Parameters:
+
+        NAME (string): the volume name
+
+        vm (string): the vm name
+
+        region (string): the availability zone
+```
+
+* Sync Volumes
+```
+sync(names):
+
+sync contents of one volume to another volume
+
+Required Parameters:
+
+        names (list): list of volume names
+```
 
 ### Google
 
 * python api:   
   <http://googleapis.github.io/google-api-python-client/docs/dyn/compute_v1.html>
-* REST api for cumpute disks documentation:   
+* REST api for compute disks documentation:   
   <https://cloud.google.com/compute/docs/reference/rest/v1/disks?hl=en_US>
 * Documentation about volume cost:   
   <https://cloud.google.com/compute/disks-image-pricing>
@@ -311,7 +423,178 @@ add_tag(NAME, **kwargs):
 
 #### Google volume management functions
 
-:o2: Add functions from provider with descriptions of required parameters
+In Google Cloud Platform (GCP), volumes are referred to as 'disks'.  There are 
+regional disks, which replicate data between two zones in the same region, and 
+zonal disks, which only store data in a single zone.  Currently, only management
+functions for zonal disks are supported.
+
+Also, the GCP project ID is required to be set in the configuration file.  In 
+order to use multiple projects, copy the google section in the configuration 
+file under each of the cloud, storage, and volume sections and create 
+additional google sections named google2, google3, ... for each of the 
+additional GCP projects.    
+
+* Create volume
+
+    ```
+    create(self, **kwargs)
+    
+    Creates a persistent disk in the specified project using the data in the 
+    request.
+  
+    Optional Parameters:
+        NAME (string): the name of volume
+        size (int): the size of volume (GB)
+        volume_type (string): pd-standard or pd-ssd
+        region (string): zone of volume
+        description (string): additional description of volume
+    
+    Required Parameters for API function::
+      project: project ID for the project in which the volume is being created
+      zone: the zone in which the volume is being created
+      body: a dictionary in which several parameters for the disk can be set 
+            such as size, name, type, and description
+    ```            
+
+* List volumes
+
+    Note: Even though only zonal disks are currently supported, it is possible 
+    to get a list of disks in a specific zone by setting the argument 
+    --region=zone
+    
+    ```
+    cms volume list --region=us-central1-a
+    ```  
+   
+    ```
+    list(self, **kwargs)
+    
+    This function list all volumes as following:
+      If NAME (volume name) is specified, it will print out info of NAME.
+      If NAME (volume name) is not specified, it will print out info of all
+      volumes under current cloud.
+      If vm is specified, it will print out all the volumes attached to vm.
+      If region(zone) is specified, it will print out all the 
+      volumes in that zone.
+
+      Optional Parameters:
+        NAME (string): name of volume
+        vm (string): name of vm
+        region (string): name of availability zone
+    
+    Required Parameters for API function(vary by argument):
+      For no arguments, NAMES, --vm, --cloud: 
+        project: project ID for the project being worked in
+      For argument --region:
+        project: project ID for the project being worked in
+        zone: zone from which to get list of disks
+    ```   
+ 
+* Delete volumes
+  
+  ```
+  delete(self, name=None)
+  
+    Deletes the specified persistent disk.
+    Deleting a disk removes its data permanently and is irreversible.
+    The volume will be updated in the database with status set to 'deleted'. 
+    (Use purge to remove deleted volumes from database) 
+    
+    Required Parameters:
+        name (string): names of volume
+  
+    Required Parameters for API function:
+      project: project ID for the project in which the volume is located
+      zone: the zone in which the volume is located
+      disk: name of the disk to be deleted
+    ```
+
+* Attach volumes
+
+  Note: The disk being attached needs to located in the same zone as the virtual 
+  machine.
+  
+  ```
+  attach(self, names, vm=None)
+
+    Attach one or more disks to an instance.  GCP requires that the
+    instance be stopped when attaching a disk.  If the instance is running when 
+    the attach function is called, the function will stop the instance and then 
+    restart the instance after attaching the disk.
+    
+    Required Parameters:
+        names (string): name(s) of volume(s)
+        vm (string): name of vm
+
+    Required Parameters for API function:
+      project: project ID for the project in which the instance is located
+      zone: the zone in which the instance is located
+      instance: the name of the instance to attach the volume to
+      body: a dictionary in which several parameters for the attahment can be 
+            set such as the source of the disk to be attached and the 
+            'deviceName' given to identify the disk once attached.  Keep the 
+            'deviceName' the same as the name of the volume (this is important 
+            for detach).
+    ```
+  
+* Detach volumes
+  
+  ```
+  detach(self, name=None)
+
+    Detach a disk from all instances.  GCP requires that the instance be stopped
+    when detaching a disk.  If the instance is running when the detach function 
+    is called, the function will stop the instance and then restart the instance
+    after detaching the disk.
+   
+    Required Parameters:
+        name (string): name of volume to dettach
+    
+    Required Parameters for API function:
+      project: project ID for the project in which the instance is located
+      zone: the zone in which the instance is located
+      instance: the name of the instance to attach the volume to
+      deviceName: name given to identify the disk when attached to the instance.
+    ```
+
+* Add a tag to a volume
+
+  ```
+  add_tag(self, **kwargs)
+  
+    Add a key:value label to the disk
+    Unable to change the name of a disk in Google Cloud
+    
+    Required Parameters:
+        NAME (string): name of volume
+        key: name of tag
+        value: value of tag  
+  
+    Required Parameters for API function:
+      project: project ID for the project in which the volume is located
+      zone: zone in which the volume is located
+      resource: name of the volume
+      body: dictionary containing the the keys 'labelFingerprint' and 'labels'.
+            'labels' is the key:value pair to be added to the disk, while 
+            an up-to-date 'labelFingerprint' hash is required to update the 
+            labels
+  ```
+
+* Status of volume
+
+  ```
+  status(self, name=None)
+  
+    Get status of specified disk, such as 'READY'
+    Calls self.list() to get disk info
+    
+    Required Parameters:
+        name (string): volume nams
+  
+    Required Parameters for API function:
+      project: project ID for the project being worked in
+  ```
+  
 
 ### Azure
 
@@ -322,7 +605,119 @@ add_tag(NAME, **kwargs):
 
 #### Azure volume management functions
 
-:o2: Add functions from provider with descriptions of required parameters
+
+Create Volume
+```
+create(**kwargs)
+
+    Creates a disk in the specified location and resource group.
+
+Required Parameters: 
+
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+        disk_size_gb: The size of the disk.
+        creation_data: Information about the disk, including the create
+        option. For this project, a create option of 'Empty' was used.
+
+```
+
+Delete Volume
+```
+delete(NAME)
+
+    Deletes the specified disk. The volume cannot have be attached to a
+    virtual machine.
+
+    Warning: All data on the volume will be permanently lost when the volume is 
+    deleted.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+```
+
+List Volumes
+```
+list(**kwargs):
+    Lists the disks in the specified resource group.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.       
+```
+
+Attach Volume
+```
+attach(NAMES,vm)
+    Attaches the specified disk to the specified VM instance.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+        VM_NAME: The name of the vm to attach the disk to.
+        lun: Logical unit number used to attach the disk to the vm. Any lun
+        can only be used for one disk being attached to any given vm. All
+        disks attached to any given vm must have a unique lun.
+        create_option: Set to 'Attach'.
+        id: ID of the disk.
+```
+
+Detach Volume
+```
+Detach(NAME)
+    Detaches the specified disk from a VM instance.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+        VM_NAME: The name of the vm to attach the disk to.
+        
+```
+
+Get Volume Status
+```
+Status(NAME)
+    Gets the status of a disk, either attached or unattached.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+        
+```
+
+Get Volume Info
+```
+Info(NAME)
+    Gets information about a disk.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+        
+```
+
+Add Tag to Volume
+```
+Add_tag(**kwargs)
+    Tags a disk.
+
+Required Parameters: 
+        GROUP_NAME: The name of the resource group.
+        LOCATION: The region in which to place the disk.
+        DISK_NAME: The name of the disk.
+        disk_size_gb: The size of the disk.
+        creation_data: Information about the disk, including the create
+        option. For this project, a create option of 'Empty' was used.
+        tags: Tags to be added to the disk.
+        
+```
+
 
 ### OpenStack
 
@@ -339,46 +734,7 @@ add_tag(NAME, **kwargs):
 List Volumes
 ```
 list(**kwargs):
-    Lists all the volumes  
-```
-
-Create Volume
-```
-create(**kwargs)
-    Create Volume Creates a new volume
-
-Required Parameters: 
-        name: Name of the volume
-           
-```
-
-Delete Volume
-```
-delete(name)
-    Deletes the specified volume. 
-
-Required Parameters: 
-        name: Name of the volume to be deleted
-```
-
-Attach Volume
-```
-attach(name,vm)
-    Attaches the specified volume to the specified VM instance.
-
-Required Parameters: 
-        name: Name of the volume to be attached
-        vm: Instance name
-```
-
-Detach Volume
-```
-Detach(name,vm)
-    Detaches the specified volume from a VM instance
-
-Required Parameters: 
-        name: Name of the volume to be detached
-        vm: Instance name
+  
 ```
 ### Oracle
 
@@ -388,6 +744,8 @@ Required Parameters:
   <https://oracle-cloud-infrastructure-python-sdk.readthedocs.io/en/latest/api/core/client/oci.core.BlockstorageClient.html>
 
 #### Oracle volume management functions
+
+see:
 
 :o2: Add functions from provider with descriptions of required parameters
 
@@ -450,7 +808,23 @@ Required Parameters:
 
 ## Documentation on how to move volumes from one provider to the next 
 
-* from Amazon
+* from Amazon EBS volume
+ 
+    create a copy of EBS volume content into Amazon S3, and then migration could be done as follows:
+
+  * Migrating from Amazon S3 to Google Cloud Storage
+
+    <https://cloud.google.com/storage/docs/migrating#storage-list-buckets-s3-python>
+
+    <https://github.com/adzerk/s3-to-google-cloud-storage-connector>
+
+  * Migrating from Amazon S3 to Azure Blob Storage
+
+    <https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/master/README.md>
+
+  * Migrating from Amazon S3 to OpenStack
+  
+  * Migrating from Amazon S3 to Oracle
 
 * from Cloud Storage
 
@@ -479,13 +853,9 @@ Required Parameters:
  * [test_01_setup](tests/test_01_setup.py)
  * [test_02_volume_provider](tests/test_02_volume_provider.py)
  * [test_03_teardown](tests/test_03_teardown.py)
+ * [test_volume_add_tag](tests/test_volume_add_tag.py)
+ * [test_volume_aws](tests/test_volume_aws.py)
+ * [test_volume_openstack](tests/test_volume_openstack.py)
+ * [test_volume_oracle](tests/test_volume_oracle.py)
 
-## Active Developments
-
-* Azure - Ashley & Xin
-* AWS - Ashley & Xin
-* Google - Peter & Xin
-* Oracle - Ashok & Peter
-* Openstack - Peter & Ashok
-* Multipass - Xin
 

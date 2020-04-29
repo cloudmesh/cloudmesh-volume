@@ -6,15 +6,17 @@ from cloudmesh.configuration.Config import Config
 class VolumeABC(metaclass=ABCMeta):
 
     def __init__(self, cloud, path):
+        # noinspection SpellCheckingInspection
         """
-        Initialize self.cm, self.default, self.credentials, self.group,
-        self.experiment
+                Initialize self.cm, self.default, self.credentials, self.group,
+                self.experiment
 
-        :param cloud: name of provider
-        :param path: "~/.cloudmesh/cloudmesh.yaml"
-        """
+                :param cloud: name of provider
+                :param path: "~/.cloudmesh/cloudmesh.yaml"
+                """
 
         try:
+            # noinspection SpellCheckingInspection
             config = Config(config_path=path)["cloudmesh"]
             self.cm = config["cloud"][cloud]["cm"]
             self.default = config["cloud"][cloud]["default"]
@@ -78,7 +80,7 @@ class VolumeABC(metaclass=ABCMeta):
     @abstractmethod
     def attach(self, name=None, vm=None):
         """
-        Attatch volume to a vm.
+        Attach volume to a vm.
         If NAMES is not specified, attach the most recent volume to vm.
 
         :param NAME: volume name
@@ -91,10 +93,10 @@ class VolumeABC(metaclass=ABCMeta):
     @abstractmethod
     def detach(self, names=None):
         """
-        Dettach volumes from vm.
+        Detach volumes from vm.
         If success, the last volume will be saved as the most recent volume.
 
-        :param NAMES: names of volumes to dettach
+        :param NAMES: names of volumes to detach
         :return: dict
         """
         raise NotImplementedError

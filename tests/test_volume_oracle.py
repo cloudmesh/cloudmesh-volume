@@ -3,7 +3,7 @@
 ###############################################################
 
 # TODO: start this with cloud init, e.g, empty mongodb
-# TODO: assertuons need to be added
+# TODO: assertions need to be added
 from pprint import pprint
 
 import pytest

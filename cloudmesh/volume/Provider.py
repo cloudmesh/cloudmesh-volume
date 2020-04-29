@@ -219,7 +219,7 @@ class Provider(object):  # broken
     @DatabaseUpdate()
     def attach(self, names=None, vm=None):
         """
-        Attatch volume to a vm.
+        Attach volume to a vm.
         If names is not specified, attach the most recent volume to vm.
 
         :param name: volume name
@@ -232,10 +232,10 @@ class Provider(object):  # broken
     @DatabaseUpdate()
     def detach(self, name=None):
         """
-        Dettach volumes from vm.
+        Detach volumes from vm.
         If success, the last volume will be saved as the most recent volume.
 
-        :param names: names of volumes to dettach
+        :param names: names of volumes to detach
         :return: dict
         """
         try:

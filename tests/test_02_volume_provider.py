@@ -102,13 +102,13 @@ class Test_provider_volume:
             elif cloud == "aws" or cloud == "multipass":
                 status = provider.status(name=name)[0]['State']
             elif cloud == "azure":
-                pass
+                status = provider.status(name=name)[0]["disk_state"]
             elif cloud == "google":
                 status = provider.status(name=name)[0]['status']
             # In case of Oracle, status is AVAILABLE after attach
-            if status in ['in-use', 'AVAILABLE', 'READY']:
+            if status in ['in-use', 'AVAILABLE', 'READY',"Attached"]:
                 break
-        assert status in ['in-use', 'AVAILABLE', 'READY']
+        assert status in ['in-use', 'AVAILABLE', 'READY',"Attached"]
 
     def test_provider_volume_detach(self):
         # test detach one volume
@@ -129,12 +129,12 @@ class Test_provider_volume:
             elif cloud == "aws" or cloud == "multipass":
                 status = provider.status(name=name)[0]['State']
             elif cloud == "azure":
-                pass
+                status = provider.status(name=name)[0]["disk_state"]
             elif cloud == "google":
                 status = provider.status(name=name)[0]['status']
-            if status in ['available', 'AVAILABLE', 'READY']:
+            if status in ['available', 'AVAILABLE', 'READY', "Unattached"]:
                 break
-        assert status in ['available', 'AVAILABLE', 'READY']
+        assert status in ['available', 'AVAILABLE', 'READY', "Unattached"]
 
     def test_provider_volume_delete(self):
         HEADING()

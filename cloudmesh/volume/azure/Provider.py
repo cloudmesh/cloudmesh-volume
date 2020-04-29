@@ -340,7 +340,8 @@ class Provider(VolumeABC):
         result = self.update_dict([results])
         return result[0]
 
-    # Status and info use same code. Unable to only pull out 'disk_state' for status.
+    # Status and info use same code. Unable to only pull out 'disk_state' for
+    #       status.
 
     def status(self, name=None):
         """

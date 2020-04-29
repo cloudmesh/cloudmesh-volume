@@ -68,7 +68,8 @@ class Test_provider_volume:
                     break
         elif cloud == "azure":
             status = provider.status(name=name)[0]['disk_state']
-        assert status in ['available', 'AVAILABLE','PROVISIONING', 'READY', 'Unattached']
+        assert status in ['available', 'AVAILABLE', 'PROVISIONING', 'READY',
+                          'Unattached']
 
     def test_provider_volume_add_tag(self):
         HEADING()

@@ -71,7 +71,8 @@ class Test_provider_volume:
                     break
         elif cloud == "azure":
             status = provider.status(name=name)[0]['disk_state']
-        assert status in ['available', 'AVAILABLE','PROVISIONING', 'READY', 'Unattached']
+        assert status in ['available', 'AVAILABLE', 'PROVISIONING', 'READY',
+                          'Unattached']
 
     def test_provider_volume_list(self):
         HEADING()
@@ -106,9 +107,9 @@ class Test_provider_volume:
             elif cloud == "google":
                 status = provider.status(name=name)[0]['status']
             # In case of Oracle, status is AVAILABLE after attach
-            if status in ['in-use', 'AVAILABLE', 'READY',"Attached"]:
+            if status in ['in-use', 'AVAILABLE', 'READY', "Attached"]:
                 break
-        assert status in ['in-use', 'AVAILABLE', 'READY',"Attached"]
+        assert status in ['in-use', 'AVAILABLE', 'READY', "Attached"]
 
     def test_provider_volume_detach(self):
         # test detach one volume

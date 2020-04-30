@@ -13,7 +13,7 @@ class Provider(VolumeABC):
     sample = """
     cloudmesh:
       cloud:
-        aws:
+        {name}:
             cm:
               active: true
               heading: AWS

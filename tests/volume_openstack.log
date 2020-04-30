@@ -1,25 +1,25 @@
 openstack
-============================= test session starts ==============================
-platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/ashok/ENV3/bin/python3.8
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
 cachedir: .pytest_cache
-rootdir: /Users/ashok/cm/cloudmesh-volume, inifile: pytest.ini
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
 plugins: cov-2.8.1
 collecting ... [34m
 # ----------------------------------------------------------------------
 # variables.dict()
 # ----------------------------------------------------------------------
-# 26:<module> ./tests/test_01_setup.py
+# 26:<module> .\tests\test_01_setup.py
 # ----------------------------------------------------------------------
 # {'cloud': 'openstack',
+#  'cloudtype': 'azure',
 #  'debug': 'True',
-#  'key': 'ashok1',
-#  'test': 'test',
+#  'key': 'pmccand',
 #  'timer': 'True',
 #  'trace': 'True',
 #  'verbose': '10',
-#  'vm': 'test-ashok1-volume-199',
-#  'vm_name': 'test-ashok1-volume-199',
-#  'volume': 'test-ashok1-volume-199'}
+#  'vm': 'test-pmccand-vm-88',
+#  'vm_name': 'test-pmccand-vm-88',
+#  'volume': 'test-pmccand-volume-88'}
 # ----------------------------------------------------------------------
 [0m
 Test run for openstack
@@ -28,216 +28,194 @@ collected 2 items
 tests/test_01_setup.py::Test_provider_volume::test_cms_vm 
 [35m
 # ######################################################################
-# test_cms_vm /tests/test_01_setup.py 61
+# test_cms_vm \tests\test_01_setup.py 59
 # ######################################################################
 [0m
-vm boot --name=test-ashok1-volume-200
-
-# ----------------------------------------------------------------------
-# Create Server
-# ----------------------------------------------------------------------
-
-    Cloud:    openstack
-    Name:     test-ashok1-volume-200
-    Label:    test-ashok1-volume-200
-    User:     cc
-    IP:       129.114.27.177
-    Image:    CC-Ubuntu18.04
-    Size:     m1.medium
-    Network:  e01ee12e-fd22-4b21-a050-d3e015f42bb1
-    Public:   True
-    Key:      ashok1
-    Location: None
-    Timeout:  360
-    Secgroup: default
-    Group:    default
-    Groups:   ['default']
-
-WARNING: secgroup default already exists in cloud. skipping.
-ERROR: openstack reported the following error
-ERROR: -------------------------------------------------------------------------------
-set_server_metadata() got an unexpected keyword argument 'image'
-ERROR: -------------------------------------------------------------------------------
-
-# ----------------------------------------------------------------------
-# created
-# ----------------------------------------------------------------------
-# 220:create /Users/ashok/cm/cloudmesh-cloud/cloudmesh/compute/vm/Provider.py
-# ----------------------------------------------------------------------
-# [{'OS-DCF:diskConfig': 'MANUAL',
-#   'OS-EXT-AZ:availability_zone': '',
-#   'OS-EXT-SRV-ATTR:host': None,
-#   'OS-EXT-SRV-ATTR:hypervisor_hostname': None,
-#   'OS-EXT-SRV-ATTR:instance_name': '',
-#   'OS-EXT-STS:power_state': 0,
-#   'OS-EXT-STS:task_state': 'scheduling',
-#   'OS-EXT-STS:vm_state': 'building',
-#   'OS-SRV-USG:launched_at': None,
-#   'OS-SRV-USG:terminated_at': None,
-#   '_id': ObjectId('5ea0e6cd50160c70c3db7447'),
-#   'accessIPv4': '',
-#   'accessIPv6': '',
-#   'addresses': {},
-#   'adminPass': 'rSn2i8EUdFUB',
-#   'az': '',
-#   'block_device_mapping': {},
-#   'cloud': 'defaults',
-#   'cm': {'cloud': 'openstack',
-#          'collection': 'openstack-vm',
-#          'created': '2020-04-23 00:52:29.397348',
-#          'creation': '23.00',
-#          'group': 'default',
-#          'kind': 'vm',
-#          'label': 'test-ashok1-volume-200',
-#          'modified': '2020-04-23 00:52:52.625573',
-#          'name': 'test-ashok1-volume-200',
-#          'status': 'available'},
-#   'config_drive': '',
-#   'created': '2020-04-23T00:52:58Z',
-#   'created_at': '2020-04-23T00:52:58Z',
-#   'description': None,
-#   'disk_config': 'MANUAL',
-#   'flavor': {'id': '3'},
-#   'has_config_drive': False,
-#   'host': None,
-#   'hostId': '',
-#   'host_id': '',
-#   'hostname': None,
-#   'hypervisor_hostname': None,
-#   'id': '5623afcf-d46b-4960-ad29-4962ef90f218',
-#   'image': Munch({'id': 'c57bd526-6d0b-4f10-b9cc-86bb274f64bc'}),
-#   'instance_name': '',
-#   'interface_ip': '',
-#   'ip_public': '',
-#   'kernel_id': None,
-#   'key_name': 'ashok1',
-#   'launch_index': None,
-#   'launched_at': None,
-#   'location': {'cloud': 'defaults',
-#                'project': {'domain_id': None,
-#                            'domain_name': None,
-#                            'id': '7767f9aac3c143de8b1f0e6acc70f159',
-#                            'name': 'cloudmesh'},
-#                'region_name': 'KVM@TACC',
-#                'zone': ''},
-#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': '
-#               "'test-ashok1-volume-200', 'label': 'test-ashok1-volume-200', "
-#               "'group': 'default', 'cloud': 'openstack', 'status': "
-#               "'available', 'collection': 'openstack-vm', 'created': "
-#               "'2020-04-23 00:52:29.397348', 'modified': '2020-04-23 "
-#               '00:52:29.397348\', \'creation\': \'23.00\'}", \'image\': '
-#               "'CC-Ubuntu18.04', 'size': 'm1.medium'}",
-#   'name': 'test-ashok1-volume-200',
-#   'networks': {},
-#   'os-extended-volumes:volumes_attached': [],
-#   'personality': None,
-#   'power_state': 0,
-#   'private_v4': '',
-#   'progress': 0,
-#   'project_id': '7767f9aac3c143de8b1f0e6acc70f159',
-#   'properties': {'OS-DCF:diskConfig': 'MANUAL',
-#                  'OS-EXT-AZ:availability_zone': '',
-#                  'OS-EXT-SRV-ATTR:host': None,
-#                  'OS-EXT-SRV-ATTR:hypervisor_hostname': None,
-#                  'OS-EXT-SRV-ATTR:instance_name': '',
-#                  'OS-EXT-STS:power_state': 0,
-#                  'OS-EXT-STS:task_state': 'scheduling',
-#                  'OS-EXT-STS:vm_state': 'building',
-#                  'OS-SRV-USG:launched_at': None,
-#                  'OS-SRV-USG:terminated_at': None,
-#                  'os-extended-volumes:volumes_attached': []},
-#   'public_v4': '',
-#   'public_v6': '',
-#   'ramdisk_id': None,
-#   'region': 'KVM@TACC',
-#   'reservation_id': None,
-#   'root_device_name': None,
-#   'scheduler_hints': None,
-#   'security_groups': [],
-#   'server_groups': None,
-#   'status': 'BUILD',
-#   'tags': None,
-#   'task_state': 'scheduling',
-#   'tenant_id': '7767f9aac3c143de8b1f0e6acc70f159',
-#   'terminated_at': None,
-#   'updated': '2020-04-23T00:52:59Z',
-#   'user': 'cc',
-#   'user_data': None,
-#   'user_id': 'f706e90a101048c2a3f94525a16db197',
-#   'vm_state': 'building',
-#   'volumes': []}]
-# ----------------------------------------------------------------------
-
-Timer: 28.0000s Load: 0.0000s (line_strip)
+vm boot --name=test-pmccand-vm-89
+
+# ----------------------------------------------------------------------
+# Create Server
+# ----------------------------------------------------------------------
+
+    Cloud:    openstack
+    Name:     test-pmccand-vm-89
+    Label:    test-pmccand-vm-89
+    User:     cc
+    IP:       129.114.27.177
+    Image:    CC-Ubuntu18.04
+    Size:     m1.medium
+    Network:  e01ee12e-fd22-4b21-a050-d3e015f42bb1
+    Public:   True
+    Key:      pmccand
+    Location: None
+    Timeout:  360
+    Secgroup: default
+    Group:    default
+    Groups:   ['default']
+
+WARNING: secgroup default already exists in cloud. skipping.
+ERROR: openstack reported the following error
+ERROR: -------------------------------------------------------------------------------
+set_server_metadata() got an unexpected keyword argument 'image'
+ERROR: -------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# created
+# ----------------------------------------------------------------------
+# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
+# ----------------------------------------------------------------------
+# [{'OS-DCF:diskConfig': 'MANUAL',
+#   'OS-EXT-AZ:availability_zone': '',
+#   'OS-EXT-SRV-ATTR:host': None,
+#   'OS-EXT-SRV-ATTR:hypervisor_hostname': None,
+#   'OS-EXT-SRV-ATTR:instance_name': '',
+#   'OS-EXT-STS:power_state': 0,
+#   'OS-EXT-STS:task_state': 'scheduling',
+#   'OS-EXT-STS:vm_state': 'building',
+#   'OS-SRV-USG:launched_at': None,
+#   'OS-SRV-USG:terminated_at': None,
+#   '_id': ObjectId('5eab36e1921a3e1d1602e788'),
+#   'accessIPv4': '',
+#   'accessIPv6': '',
+#   'addresses': {},
+#   'adminPass': 'YivwQS4SnSuB',
+#   'az': '',
+#   'block_device_mapping': {},
+#   'cloud': 'defaults',
+#   'cm': {'cloud': 'openstack',
+#          'collection': 'openstack-vm',
+#          'created': '2020-04-30 20:36:49.537645',
+#          'creation': '34.00',
+#          'group': 'default',
+#          'kind': 'vm',
+#          'label': 'test-pmccand-vm-89',
+#          'modified': '2020-04-30 20:37:23.455068',
+#          'name': 'test-pmccand-vm-89',
+#          'status': 'available'},
+#   'config_drive': '',
+#   'created': '2020-04-30T20:37:20Z',
+#   'created_at': '2020-04-30T20:37:20Z',
+#   'description': None,
+#   'disk_config': 'MANUAL',
+#   'flavor': {'id': '3'},
+#   'has_config_drive': False,
+#   'host': None,
+#   'hostId': '',
+#   'host_id': '',
+#   'hostname': None,
+#   'hypervisor_hostname': None,
+#   'id': '26de6a21-bd98-42e4-93ee-7e4721e4d285',
+#   'image': Munch({'id': '70731a67-903e-4df2-8d5b-0fbf745f1fda'}),
+#   'instance_name': '',
+#   'interface_ip': '',
+#   'ip_public': '',
+#   'kernel_id': None,
+#   'key_name': 'pmccand',
+#   'launch_index': None,
+#   'launched_at': None,
+#   'location': {'cloud': 'defaults',
+#                'project': {'domain_id': None,
+#                            'domain_name': None,
+#                            'id': '7767f9aac3c143de8b1f0e6acc70f159',
+#                            'name': 'cloudmesh'},
+#                'region_name': 'KVM@TACC',
+#                'zone': ''},
+#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-89\', '
+#               "'label': 'test-pmccand-vm-89', 'group': 'default', 'cloud': "
+#               "'openstack', 'status': 'available', 'collection': "
+#               "'openstack-vm', 'created': '2020-04-30 20:36:49.537645', "
+#               "'modified': '2020-04-30 20:36:49.537645', 'creation': "
+#               '\'34.00\'}", \'image\': \'CC-Ubuntu18.04\', \'size\': '
+#               "'m1.medium'}",
+#   'name': 'test-pmccand-vm-89',
+#   'networks': {},
+#   'os-extended-volumes:volumes_attached': [],
+#   'personality': None,
+#   'power_state': 0,
+#   'private_v4': '',
+#   'progress': 0,
+#   'project_id': '7767f9aac3c143de8b1f0e6acc70f159',
+#   'properties': {'OS-DCF:diskConfig': 'MANUAL',
+#                  'OS-EXT-AZ:availability_zone': '',
+#                  'OS-EXT-SRV-ATTR:host': None,
+#                  'OS-EXT-SRV-ATTR:hypervisor_hostname': None,
+#                  'OS-EXT-SRV-ATTR:instance_name': '',
+#                  'OS-EXT-STS:power_state': 0,
+#                  'OS-EXT-STS:task_state': 'scheduling',
+#                  'OS-EXT-STS:vm_state': 'building',
+#                  'OS-SRV-USG:launched_at': None,
+#                  'OS-SRV-USG:terminated_at': None,
+#                  'os-extended-volumes:volumes_attached': []},
+#   'public_v4': '',
+#   'public_v6': '',
+#   'ramdisk_id': None,
+#   'region': 'KVM@TACC',
+#   'reservation_id': None,
+#   'root_device_name': None,
+#   'scheduler_hints': None,
+#   'security_groups': [],
+#   'server_groups': None,
+#   'status': 'BUILD',
+#   'tags': None,
+#   'task_state': 'scheduling',
+#   'tenant_id': '7767f9aac3c143de8b1f0e6acc70f159',
+#   'terminated_at': None,
+#   'updated': '2020-04-30T20:37:21Z',
+#   'user': 'cc',
+#   'user_data': None,
+#   'user_id': 'e143b52866f44d4da96cc08c9a089e19',
+#   'vm_state': 'building',
+#   'volumes': []}]
+# ----------------------------------------------------------------------
+
+Timer: 38.0000s Load: 2.0000s (line_strip)
 
 PASSED
 tests/test_01_setup.py::Test_provider_volume::test_benchmark 
-+------------------+--------------------------------------------------------------------------------------------------+
-| Attribute        | Value                                                                                            |
-|------------------+--------------------------------------------------------------------------------------------------|
-| cpu_count        | 8                                                                                                |
-| mem.active       | 2.7 GiB                                                                                          |
-| mem.available    | 2.8 GiB                                                                                          |
-| mem.free         | 68.2 MiB                                                                                         |
-| mem.inactive     | 2.7 GiB                                                                                          |
-| mem.percent      | 65.4 %                                                                                           |
-| mem.total        | 8.0 GiB                                                                                          |
-| mem.used         | 4.5 GiB                                                                                          |
-| mem.wired        | 1.8 GiB                                                                                          |
-| platform.version | 10.15.1                                                                                          |
-| python           | 3.8.1 (v3.8.1:1b293b6006, Dec 18 2019, 14:08:53)                                                 |
-|                  | [Clang 6.0 (clang-600.0.57)]                                                                     |
-| python.pip       | 20.0.2                                                                                           |
-| python.version   | 3.8.1                                                                                            |
-| sys.platform     | darwin                                                                                           |
-| uname.machine    | x86_64                                                                                           |
-| uname.node       | Ashoks-MacBook-Pro.local                                                                         |
-| uname.processor  | i386                                                                                             |
-| uname.release    | 19.0.0                                                                                           |
-| uname.system     | Darwin                                                                                           |
-| uname.version    | Darwin Kernel Version 19.0.0: Thu Oct 17 16:17:15 PDT 2019; root:xnu-6153.41.3~29/RELEASE_X86_64 |
-| user             | ashok                                                                                            |
-+------------------+--------------------------------------------------------------------------------------------------+
 
-+---------------------------+----------+--------+---------------------+-----------+--------------------------+--------+--------+-----------+
-| Name                      | Status   |   Time | Start               | tag       | Node                     | User   | OS     | Version   |
-|---------------------------+----------+--------+---------------------+-----------+--------------------------+--------+--------+-----------|
-| test_01_setup/test_cms_vm | ok       | 29.848 | 2020-04-23 00:52:28 | openstack | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
-+---------------------------+----------+--------+---------------------+-----------+--------------------------+--------+--------+-----------+
++---------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+| Name                      | Status   |   Time | Start               | tag       | Node            | User   | OS      | Version                         |
+|---------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------|
+| test_01_setup/test_cms_vm | ok       | 42.013 | 2020-04-30 20:36:45 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++---------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
 
 # csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
-# csv,test_01_setup/test_cms_vm,ok,29.848,2020-04-23 00:52:28,openstack,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
+# csv,test_01_setup/test_cms_vm,ok,42.013,2020-04-30 20:36:45,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
 
 PASSED
 
-=============================== warnings summary ===============================
-/Users/ashok/ENV3/lib/python3.8/site-packages/openstack/resource.py:210
-  /Users/ashok/ENV3/lib/python3.8/site-packages/openstack/resource.py:210: DeprecationWarning: Using or importing the ABCs from 'collections' instead of from 'collections.abc' is deprecated since Python 3.3, and in 3.9 it will stop working
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+c:\users\petem\env3\lib\site-packages\openstack\resource.py:210
+  c:\users\petem\env3\lib\site-packages\openstack\resource.py:210: DeprecationWarning: Using or importing the ABCs from 'collections' instead of from 'collections.abc' is deprecated since Python 3.3, and in 3.9 it will stop working
     class _ComponentManager(collections.MutableMapping):
 
 -- Docs: https://docs.pytest.org/en/latest/warnings.html
-======================== 2 passed, 1 warning in 30.97s =========================
-============================= test session starts ==============================
-platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/ashok/ENV3/bin/python3.8
+======================= 2 passed, 2 warnings in 45.33s ========================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
 cachedir: .pytest_cache
-rootdir: /Users/ashok/cm/cloudmesh-volume, inifile: pytest.ini
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
 plugins: cov-2.8.1
 collecting ... [34m
 # ----------------------------------------------------------------------
 # variables.dict()
 # ----------------------------------------------------------------------
-# 24:<module> ./tests/test_02_volume_provider.py
+# 24:<module> .\tests\test_02_volume_provider.py
 # ----------------------------------------------------------------------
 # {'cloud': 'openstack',
+#  'cloudtype': 'azure',
 #  'debug': 'True',
-#  'key': 'ashok1',
-#  'test': 'test',
+#  'key': 'pmccand',
 #  'timer': 'True',
 #  'trace': 'True',
 #  'verbose': '10',
-#  'vm': 'test-ashok1-volume-200',
-#  'vm_name': 'test-ashok1-volume-200',
-#  'volume': 'test-ashok1-volume-199'}
+#  'vm': 'test-pmccand-vm-89',
+#  'vm_name': 'test-pmccand-vm-89',
+#  'volume': 'test-pmccand-volume-88'}
 # ----------------------------------------------------------------------
 [0m
 Test run for openstack
@@ -248,7 +226,7 @@ tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_cre
 # ----------------------------------------------------------------------
 # arguments
 # ----------------------------------------------------------------------
-# 115:do_volume ./cloudmesh/volume/command/volume.py
+# 118:do_volume .\cloudmesh\volume\command\volume.py
 # ----------------------------------------------------------------------
 # {'--cloud': 'openstack',
 #  '--description': None,
@@ -276,112 +254,101 @@ tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_cre
 #  'sync': False}
 # ----------------------------------------------------------------------
 
-+------------------------+-----------+--------+-------------------+----------------------------+------+-----------+--------------------------------------+-------------+
-| Name                   | Cloud     | Kind   | Availability Zone | Created At                 | Size | Status    | Id                                   | Volume Type |
-+------------------------+-----------+--------+-------------------+----------------------------+------+-----------+--------------------------------------+-------------+
-| test-asingam-volume-41 | openstack | volume | nova              | 2020-04-04T19:43:31.000000 | 1    | in-use    | 07ebafc3-3da3-4d84-8dd8-33c30e92f867 | __DEFAULT__ |
-| xin-openstack-7        | openstack | volume | nova              | 2020-03-23T13:51:34.000000 | 1    | available | 22896b9a-19fc-4460-8a63-cd97b7251e8a | __DEFAULT__ |
-| VolTestDemo2           | openstack | volume | nova              | 2020-03-11T05:04:34.000000 | 2    | in-use    | b92680e3-26d6-4664-974a-6a766ddbd7dc | __DEFAULT__ |
-|                        | openstack | volume | nova              | 2020-02-13T06:34:12.000000 | 20   | available | c52282b2-01b0-4629-a5ef-19a457510143 | __DEFAULT__ |
-| test-ashok1-volume-189 | openstack | volume | nova              | 2020-04-21T05:57:23.000000 | 1    | available | f8473ef8-8da5-4082-8839-56fb645f0959 | __DEFAULT__ |
-| test-ashok1-volume-190 | openstack | volume | nova              | 2020-04-21T06:04:14.000000 | 1    | available | bb60e301-ced4-4bb1-b309-aab545937bf8 | __DEFAULT__ |
-| test-ashok1-volume-193 | openstack | volume | nova              | 2020-04-22T01:32:40.000000 | 1    | available | 52f830bc-883c-48f2-bee6-11c1fc33a45a | __DEFAULT__ |
-| test-ashok1-volume-194 | openstack | volume | nova              | 2020-04-22T01:34:30.000000 | 1    | available | bfe4db05-f7dc-41a0-b4ad-318f46f6a92d | __DEFAULT__ |
-| test-ashok1-volume-196 | openstack | volume | nova              | 2020-04-22T02:34:37.000000 | 1    | available | 236ebc14-d9e2-4272-b3ea-4805662b26e2 | __DEFAULT__ |
-| test-ashok1-volume-198 | openstack | volume | nova              | 2020-04-23T00:39:19.000000 | 1    | available | dbc2fa13-78c3-4708-ab41-71582bf0b5c8 | __DEFAULT__ |
-| test-ashok1-volume-199 | openstack | volume | nova              | 2020-04-23T00:42:44.000000 | 1    | available | ba84515a-2ed0-4ab8-bc4e-53ed237e7611 | __DEFAULT__ |
-+------------------------+-----------+--------+-------------------+----------------------------+------+-----------+--------------------------------------+-------------+
 None
-Timer: 0.0000s Load: 0.0000s (line_strip)
+None
+Timer: 1.0000s Load: 2.0000s (line_strip)
 
 [35m
 # ######################################################################
-# test_provider_volume_create /tests/test_02_volume_provider.py 47
+# test_provider_volume_create \tests\test_02_volume_provider.py 47
 # ######################################################################
 [0m
-Running test_provider_volume_create
 PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_list 
 [35m
 # ######################################################################
-# test_provider_volume_list /tests/test_02_volume_provider.py 77
+# test_provider_volume_list \tests\test_02_volume_provider.py 77
 # ######################################################################
 [0m
 PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach 
 [35m
 # ######################################################################
-# test_provider_volume_attach /tests/test_02_volume_provider.py 87
+# test_provider_volume_attach \tests\test_02_volume_provider.py 87
 # ######################################################################
 [0m
 PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach 
 [35m
 # ######################################################################
-# test_provider_volume_detach /tests/test_02_volume_provider.py 116
+# test_provider_volume_detach \tests\test_02_volume_provider.py 116
 # ######################################################################
 [0m
 PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete 
 [35m
 # ######################################################################
-# test_provider_volume_delete /tests/test_02_volume_provider.py 140
+# test_provider_volume_delete \tests\test_02_volume_provider.py 140
 # ######################################################################
 [0m
 PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_benchmark 
 
-+-----------------------------------------------------+----------+--------+---------------------+-----------+--------------------------+--------+--------+-----------+
-| Name                                                | Status   |   Time | Start               | tag       | Node                     | User   | OS     | Version   |
-|-----------------------------------------------------+----------+--------+---------------------+-----------+--------------------------+--------+--------+-----------|
-| test_02_volume_provider/test_provider_volume_create | ok       |  4.669 | 2020-04-23 00:53:02 | openstack | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
-| test_02_volume_provider/test_provider_volume_list   | ok       |  1.419 | 2020-04-23 00:53:06 | openstack | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
-| test_02_volume_provider/test_provider_volume_attach | ok       |  9.347 | 2020-04-23 00:53:08 | openstack | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
-| test_02_volume_provider/test_provider_volume_detach | ok       |  8.389 | 2020-04-23 00:53:23 | openstack | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
-| test_02_volume_provider/test_provider_volume_delete | ok       |  4.447 | 2020-04-23 00:53:38 | openstack | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
-+-----------------------------------------------------+----------+--------+---------------------+-----------+--------------------------+--------+--------+-----------+
++-----------------------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+| Name                                                | Status   |   Time | Start               | tag       | Node            | User   | OS      | Version                         |
+|-----------------------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------|
+| test_02_volume_provider/test_provider_volume_create | ok       |  7.047 | 2020-04-30 20:37:36 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_list   | ok       |  1.35  | 2020-04-30 20:37:43 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_attach | ok       | 27.861 | 2020-04-30 20:37:44 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_detach | ok       |  8.933 | 2020-04-30 20:38:18 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_delete | ok       |  9.062 | 2020-04-30 20:38:34 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-----------------------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
 
 # csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
-# csv,test_02_volume_provider/test_provider_volume_create,ok,4.669,2020-04-23 00:53:02,openstack,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
-# csv,test_02_volume_provider/test_provider_volume_list,ok,1.419,2020-04-23 00:53:06,openstack,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
-# csv,test_02_volume_provider/test_provider_volume_attach,ok,9.347,2020-04-23 00:53:08,openstack,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
-# csv,test_02_volume_provider/test_provider_volume_detach,ok,8.389,2020-04-23 00:53:23,openstack,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
-# csv,test_02_volume_provider/test_provider_volume_delete,ok,4.447,2020-04-23 00:53:38,openstack,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
+# csv,test_02_volume_provider/test_provider_volume_create,ok,7.047,2020-04-30 20:37:36,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_list,ok,1.35,2020-04-30 20:37:43,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_attach,ok,27.861,2020-04-30 20:37:44,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_detach,ok,8.933,2020-04-30 20:38:18,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_delete,ok,9.062,2020-04-30 20:38:34,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
 
 PASSED
 
-=============================== warnings summary ===============================
-/Users/ashok/ENV3/lib/python3.8/site-packages/openstack/resource.py:210
-  /Users/ashok/ENV3/lib/python3.8/site-packages/openstack/resource.py:210: DeprecationWarning: Using or importing the ABCs from 'collections' instead of from 'collections.abc' is deprecated since Python 3.3, and in 3.9 it will stop working
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+c:\users\petem\env3\lib\site-packages\openstack\resource.py:210
+  c:\users\petem\env3\lib\site-packages\openstack\resource.py:210: DeprecationWarning: Using or importing the ABCs from 'collections' instead of from 'collections.abc' is deprecated since Python 3.3, and in 3.9 it will stop working
     class _ComponentManager(collections.MutableMapping):
 
 tests/test_02_volume_provider.py: 90 tests with warnings
-  /Users/ashok/ENV3/lib/python3.8/site-packages/openstack/resource.py:351: DeprecationWarning: inspect.getargspec() is deprecated since Python 3.0, use inspect.signature() or inspect.getfullargspec()
+  c:\users\petem\env3\lib\site-packages\openstack\resource.py:351: DeprecationWarning: inspect.getargspec() is deprecated since Python 3.0, use inspect.signature() or inspect.getfullargspec()
     len(inspect.getargspec(type_).args) > 1)
 
 -- Docs: https://docs.pytest.org/en/latest/warnings.html
-======================= 6 passed, 91 warnings in 45.38s ========================
-============================= test session starts ==============================
-platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/ashok/ENV3/bin/python3.8
+================== 6 passed, 92 warnings in 75.97s (0:01:15) ==================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
 cachedir: .pytest_cache
-rootdir: /Users/ashok/cm/cloudmesh-volume, inifile: pytest.ini
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
 plugins: cov-2.8.1
 collecting ... [34m
 # ----------------------------------------------------------------------
 # variables.dict()
 # ----------------------------------------------------------------------
-# 21:<module> ./tests/test_03_teardown.py
+# 20:<module> .\tests\test_03_teardown.py
 # ----------------------------------------------------------------------
 # {'cloud': 'openstack',
+#  'cloudtype': 'azure',
 #  'debug': 'True',
-#  'key': 'ashok1',
-#  'test': 'test',
+#  'key': 'pmccand',
 #  'timer': 'True',
 #  'trace': 'True',
 #  'verbose': '10',
-#  'vm': 'test-ashok1-volume-200',
-#  'vm_name': 'test-ashok1-volume-200',
-#  'volume': 'test-ashok1-volume-200'}
+#  'vm': 'test-pmccand-vm-89',
+#  'vm_name': 'test-pmccand-vm-89',
+#  'volume': 'test-pmccand-volume-89'}
 # ----------------------------------------------------------------------
 [0m
 collected 2 items
@@ -389,29 +356,35 @@ collected 2 items
 tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate 
 [35m
 # ######################################################################
-# test_cms_terminate /tests/test_03_teardown.py 32
+# test_cms_terminate \tests\test_03_teardown.py 31
 # ######################################################################
 [0m
-result vm terminate test-ashok1-volume-200
-+------------------------+-----------+------------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------+
-| Name                   | Cloud     | Label                  | State   | Status   | Task   | Image          | Flavor    | Public IPs     | Private IPs   |   Creation time | Started at                 |
-|------------------------+-----------+------------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------|
-| test-ashok1-volume-200 | openstack | test-ashok1-volume-200 | active  | DELETED  | None   | CC-Ubuntu18.04 | m1.medium | 129.114.27.177 |               |              23 | 2020-04-23T00:52:46.000000 |
-+------------------------+-----------+------------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------+
-Timer: 5.0000s Load: 0.0000s (line_strip)
+result vm terminate test-pmccand-vm-89
++--------------------+-----------+--------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------+
+| Name               | Cloud     | Label              | State   | Status   | Task   | Image          | Flavor    | Public IPs     | Private IPs   |   Creation time | Started at                 |
+|--------------------+-----------+--------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------|
+| test-pmccand-vm-89 | openstack | test-pmccand-vm-89 | active  | DELETED  | None   | CC-Ubuntu18.04 | m1.medium | 129.114.27.177 |               |              34 | 2020-04-30T20:37:15.000000 |
++--------------------+-----------+--------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------+
+Timer: 6.0000s Load: 2.0000s (line_strip)
 
 PASSED
 tests/test_03_teardown.py::Test_provider_volume::test_benchmark 
 
-+-------------------------------------+----------+--------+---------------------+-----------+--------------------------+--------+--------+-----------+
-| Name                                | Status   |   Time | Start               | tag       | Node                     | User   | OS     | Version   |
-|-------------------------------------+----------+--------+---------------------+-----------+--------------------------+--------+--------+-----------|
-| test_03_teardown/test_cms_terminate | ok       |  6.403 | 2020-04-23 00:53:46 | openstack | Ashoks-MacBook-Pro.local | ashok  | Darwin | 10.15.1   |
-+-------------------------------------+----------+--------+---------------------+-----------+--------------------------+--------+--------+-----------+
++-------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+| Name                                | Status   |   Time | Start               | tag       | Node            | User   | OS      | Version                         |
+|-------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------|
+| test_03_teardown/test_cms_terminate | ok       |  9.564 | 2020-04-30 20:38:47 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
 
 # csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
-# csv,test_03_teardown/test_cms_terminate,ok,6.403,2020-04-23 00:53:46,openstack,Ashoks-MacBook-Pro.local,ashok,Darwin,10.15.1
+# csv,test_03_teardown/test_cms_terminate,ok,9.564,2020-04-30 20:38:47,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
 
 PASSED
 
-============================== 2 passed in 7.52s ===============================
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+======================== 2 passed, 1 warning in 12.04s ========================

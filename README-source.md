@@ -137,7 +137,7 @@ cms volume status test_volume
 
 * Migrate Volume
 
-To migrage volume to vm in the same cloud service, 
+To migrate volume to vm in the same cloud service, 
 if no given volume, migrate the current volume. Implemented in aws and 
 multipass.
 
@@ -186,6 +186,7 @@ cms volume add_tag test_volume --key=Name --value=new_name
 
 ### AWS
 
+ 
 * AWS CLI:   
   <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
 * Amazon EBS:   
@@ -279,18 +280,6 @@ Similar to Google, in Azure, volumes are referred to ask 'disks'.
   * Migrating from Cloud Storage to Azure Blob Storage
 
     <https://blog.bitscry.com/2019/12/30/data-transfer-google-cloud-storage-to-azure-blob-storage/>
-
-  * Migrating from Cloud Storage to OpenStack
-
-* from Azure Blob Storage
-
-  * Migrating from Azure Blob Storage to Amazon S3
-
-  * Migrating from Azure Blob Storage to Cloud Storage
-
-  * Migrating from Azure Blob Storage to OpenStack
-
-* from OpenStack
 
 ## Test cases
 

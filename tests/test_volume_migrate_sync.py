@@ -75,14 +75,13 @@ class Test_provider_volume:
         sleep(10)
         assert data[0]['AttachedToVm'][0] == vm_name2
 
-
     def test_provider_volume_sync(self):
         HEADING()
         os.system(f"cms volume detach {volume_name1}")
         os.system(f"cms volume create {volume_name2}")
         if cloud == 'aws':
             # "cms volume sync volume_name1,volume_name2"
-            params = {"NAMES": [volume_name1,volume_name2], "cloud": cloud}
+            params = {"NAMES": [volume_name1, volume_name2], "cloud": cloud}
             Benchmark.Start()
             data = provider.sync(**params)
             Benchmark.Stop()
@@ -99,6 +98,7 @@ class Test_provider_volume:
 
     # clean up
     def test_provider_volume_cleanup(self):
+        HEADING()
         if cloud == "multipass":
             os.system(f"cms volume delete {volume_name1},{volume_name2}")
             os.system(f"multipass delete {vm_name1}")

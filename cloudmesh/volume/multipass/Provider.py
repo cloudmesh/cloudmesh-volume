@@ -1,5 +1,6 @@
 import json
 import os
+import platform
 
 from cloudmesh.common.Shell import Shell
 from cloudmesh.volume.VolumeABC import VolumeABC
@@ -196,7 +197,11 @@ class Provider(VolumeABC):
                 kwargs[key] = self.default[key]
         NAME = kwargs['NAME']
         path = kwargs['path']
-        result = os.system(f"mkdir {path}/{NAME}")
+        op_sys = platform.system()
+        if op_sys == 'Windows':
+            result = os.system(f"mkdir {path}\{NAME}")
+        else:
+            result = os.system(f"mkdir {path}/{NAME}")
         if result == 0:
             result = self.generate_volume_info(NAME=NAME, path=path)
 
@@ -214,7 +219,11 @@ class Provider(VolumeABC):
         result = self.cm.find_name(name)
         path = result[0]['path']
         try:
-            re = os.system(f"rmdir {path}/{name}")
+            op_sys = platform.system()
+            if op_sys == 'Windows':
+                os.system(f"rmdir {path}\{name}")
+            else:
+                os.system(f"rmdir {path}/{name}")
             result[0]['State'] = 'deleted'
             result = self.update_dict(result)
         except:

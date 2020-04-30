@@ -63,6 +63,7 @@ class Test_provider_volume:
             Benchmark.Start()
             result = os.system(cmd)
             Benchmark.Stop()
+            status = None
             start_timeout = 360
             time = 0
             while time <= start_timeout:

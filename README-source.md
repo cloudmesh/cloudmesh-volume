@@ -26,6 +26,39 @@ The complete documentation of volume API is available at
  
 * <https://cloudmesh.github.io/cloudmesh-manual/api/cloudmesh.volume.html>
 
+## Installation
+
+### Users
+
+The user can install cloudmesh volume with
+
+```bash
+pip install cloudmesh-volume
+```
+
+### Developers
+
+Developers want the source code and do the developement in the
+directory. We use the `cloudmesh-installer` to do this. Make sure you
+use a virtual environment such as ~/ENV3. We recommend using python
+3.8.2
+
+* See also: <https://github.com/cloudmesh/cloudmesh-installer>
+
+```bash
+mkdir cm
+cd cm
+pip install cloudmesh-installer -U
+cloudmesh-installer get volume
+```
+
+In case you need to reinstall the venv you can use
+
+cloudmesh-installer new ~/ENV3 storage --python=python3.8
+
+PLease note to use the python program for your system. This may be
+different.
+
 ## Users Guide
 
 * Create Volume
@@ -186,7 +219,8 @@ cms volume add_tag test_volume --key=Name --value=new_name
 
 ### AWS
 
- 
+In AWS, volume is EBS volume in EC2 services.
+
 * AWS CLI:   
   <https://docs.aws.amazon.com/cli/latest/reference/ec2/create-volume.html>
 * Amazon EBS:   
@@ -225,7 +259,7 @@ additional GCP projects.
 
 ### Azure
 
-Similar to Google, in Azure, volumes are referred to ask 'disks'.
+Similar to Google, in Azure, volumes are referred to as 'disks'.
 
 * Disk Operations:
   <https://docs.microsoft.com/en-us/python/api/azure-mgmt-compute/azure.mgmt
@@ -254,8 +288,8 @@ Similar to Google, in Azure, volumes are referred to ask 'disks'.
 
 * from Amazon EBS volume
  
-    create a copy of EBS volume content into Amazon S3, and then migration could 
-    be done as follows:
+    Create a copy of EBS volume content into Amazon S3, and then migration could 
+    be done as follows, or use cloudmesh storage service, please check .
 
   * Migrating from Amazon S3 to Google Cloud Storage
 

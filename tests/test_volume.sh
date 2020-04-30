@@ -47,22 +47,22 @@ pytest --capture=no -v tests/test_02_volume_provider.py >> ./tests/volume_google
 echo "### Terminating vm"
 pytest --capture=no -v tests/test_03_teardown.py >> ./tests/volume_google.log
 
-#echo "### Running tests for multipass"
-#cms set cloud=multipass
-#echo multipass > ./tests/volume_multipass.log
-#echo "### Starting vm"
-#pytest --capture=no -v tests/test_01_setup.py >> ./tests/volume_multipass.log
-#echo "### Running volume testes"
-#pytest --capture=no -v tests/test_02_volume_provider.py >> ./tests/volume_multipass.log
-#echo "### Terminating vm"
-#pytest --capture=no -v tests/test_03_teardown.py >> ./tests/volume_multipass.log
+echo "### Running tests for multipass"
+cms set cloud=multipass
+echo multipass > ./tests/volume_multipass.log
+echo "### Starting vm"
+pytest --capture=no -v tests/test_01_setup.py >> ./tests/volume_multipass.log
+echo "### Running volume testes"
+pytest --capture=no -v tests/test_02_volume_provider.py >> ./tests/volume_multipass.log
+echo "### Terminating vm"
+pytest --capture=no -v tests/test_03_teardown.py >> ./tests/volume_multipass.log
 
-#echo "### Running tests for azure"
-#cms set cloud=azure
-#echo azure > ./tests/volume_azure.log
-#echo "### Starting vm"
-#pytest --capture=no -v tests/test_01_setup.py >> ./tests/volume_azure.log
-#echo "### Running volume testes"
-#pytest --capture=no -v tests/test_02_volume_provider.py >> ./tests/volume_azure.log
-#echo "### Terminating vm"
-#pytest --capture=no -v tests/test_03_teardown.py >> ./tests/volume_azure.log
+echo "### Running tests for azure"
+cms set cloud=azure
+echo azure > ./tests/volume_azure.log
+echo "### Starting vm"
+pytest --capture=no -v tests/test_01_setup.py >> ./tests/volume_azure.log
+echo "### Running volume testes"
+pytest --capture=no -v tests/test_02_volume_provider.py >> ./tests/volume_azure.log
+echo "### Terminating vm"
+pytest --capture=no -v tests/test_03_teardown.py >> ./tests/volume_azure.log

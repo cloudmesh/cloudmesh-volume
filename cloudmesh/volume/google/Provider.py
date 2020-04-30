@@ -17,19 +17,19 @@ class Provider(VolumeABC):
         {name}:
           cm:
             active: true
-            heading: GCP
-            host: https://console.cloud.google.com/compute/instances?project={project_id}
+            heading: google
+            host: cloud.google.com
             label: {label}
             kind: google
             version: TBD
             service: volume
           default:
-            zone: us-central1-a
+            zone: {zone}
             type: projects/{project_id}/zones/{zone}/diskTypes/pd-standard
-            sizeGb: '200'
+            sizeGb: {sizeGb}
           credentials:
             project_id: {project_id}
-            path_to_service_account_json: {path}
+            path_to_service_account_json: ~/.cloudmesh/service_account.json
     """
 
     output = {

@@ -16,7 +16,7 @@ class Provider(VolumeABC):
     sample = """
     cloudmesh:
       volume:
-        multipass:
+        {name}:
               cm:
                 active: '1'
                 heading: multipass

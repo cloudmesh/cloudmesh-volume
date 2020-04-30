@@ -319,10 +319,17 @@ class Provider(VolumeABC):
                 if vm in vms:
                     Console.error(f"{name} already attached to {vm}")
                 else:
-                    result = self.mount(path=f"{path}/{name}", vm=vm)
-                    mounts = result['mounts']
-                    if f"{path}/{name}" in mounts.keys():
-                        vms.append(vm)
+                    os_sys = platform.system()
+                    if os_sys =='Windows':
+                        result = self.mount(path=f"{path}\{name}", vm=vm)
+                        mounts = result['mounts']
+                        if f"{path}\{name}" in mounts.keys():
+                            vms.append(vm)
+                    else:
+                        result = self.mount(path=f"{path}/{name}", vm=vm)
+                        mounts = result['mounts']
+                        if f"{path}/{name}" in mounts.keys():
+                            vms.append(vm)
                 result = self.update_volume_after_attached_to_vm(
                     info=volume_info, vms=vms)
                 results.append(result)
@@ -391,7 +398,7 @@ class Provider(VolumeABC):
         volume is successfully detached.
         Will detach volume from all vms.
 
-        :param name: name of volume to be dettached
+        :param name: name of volume to be detached
         :return: dict
         """
 
@@ -400,20 +407,28 @@ class Provider(VolumeABC):
             vms = volume_info[0]['AttachedToVm']
             path = volume_info[0]['path']
             if len(vms) == 0:
-                Console.error(f"{name} does not attach to any vm")
+                Console.error(f"{name} is not attached to any vm")
             else:
                 removed = []
-                for vm in vms:
-                    result = self.unmount(path=f"{path}/{name}", vm=vm)
-                    mounts = result['mounts']
-                    if f"{path}/{name}" not in mounts.keys():
-                        removed.append(vm)
+                os_sys = platform.system()
+                if os_sys == 'Windows':
+                    for vm in vms:
+                        result = self.unmount(path=f"{path}\{name}", vm=vm)
+                        mounts = result['mounts']
+                        if f"{path}\{name}" not in mounts.keys():
+                            removed.append(vm)
+                else:
+                    for vm in vms:
+                        result = self.unmount(path=f"{path}/{name}", vm=vm)
+                        mounts = result['mounts']
+                        if f"{path}/{name}" not in mounts.keys():
+                            removed.append(vm)
                 for vm in removed:
                     vms.remove(vm)
                 result = self.update_volume_after_detach(volume_info, vms)
                 return result[0]
         else:
-            Console.error("volume is not existed or volume had been deleted")
+            Console.error("volume does not exist or volume had been deleted")
 
     def add_tag(self, **kwargs):
         """

@@ -1,24 +1,25 @@
 aws
-============================= test session starts ==============================
-platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/xingu/ENV3/bin/python3.8
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
 cachedir: .pytest_cache
-rootdir: /Users/xingu/cm/cloudmesh-volume, inifile: pytest.ini
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
 plugins: cov-2.8.1
 collecting ... [34m
 # ----------------------------------------------------------------------
 # variables.dict()
 # ----------------------------------------------------------------------
-# 26:<module> ./tests/test_01_setup.py
+# 26:<module> .\tests\test_01_setup.py
 # ----------------------------------------------------------------------
 # {'cloud': 'aws',
+#  'cloudtype': 'azure',
 #  'debug': 'True',
-#  'key': 'xingu',
+#  'key': 'pmccand',
 #  'timer': 'True',
 #  'trace': 'True',
 #  'verbose': '10',
-#  'vm': 'test-xingu-vm-184',
-#  'vm_name': 'test-xingu-vm-185',
-#  'volume': 'test-xingu-volume-185'}
+#  'vm': 'test-pmccand-vm-90',
+#  'vm_name': 'test-pmccand-vm-90',
+#  'volume': 'pmccand-volume-65'}
 # ----------------------------------------------------------------------
 [0m
 Test run for aws
@@ -27,174 +28,181 @@ collected 2 items
 tests/test_01_setup.py::Test_provider_volume::test_cms_vm 
 [35m
 # ######################################################################
-# test_cms_vm /tests/test_01_setup.py 61
+# test_cms_vm \tests\test_01_setup.py 59
 # ######################################################################
 [0m
-vm boot --name=test-xingu-vm-186
-
-# ----------------------------------------------------------------------
-# Create Server
-# ----------------------------------------------------------------------
-
-    Name:     test-xingu-vm-186
-    User:     root
-    IP:       None
-    Image:    ami-0c929bde1796e1484
-    Size:     t2.medium
-    Public:   None
-    Key:      xingu
-    Location: None
-    Timeout:  360
-    Secgroup: default
-    Group:    default
-
-
-Instance created...
-
-Waiting for the Public IP address assignment ...
-    Public IP:   18.217.251.239
-    Private IP:  172.31.8.118
-ERROR: aws reported the following error
-ERROR: -------------------------------------------------------------------------------
-set_server_metadata() got an unexpected keyword argument 'cm'
-ERROR: -------------------------------------------------------------------------------
-
-# ----------------------------------------------------------------------
-# created
-# ----------------------------------------------------------------------
-# 220:create /Users/xingu/cm/cloudmesh-cloud/cloudmesh/compute/vm/Provider.py
-# ----------------------------------------------------------------------
-# [{'AmiLaunchIndex': 0,
-#   'Architecture': 'x86_64',
-#   'BlockDeviceMappings': [],
-#   'CapacityReservationSpecification': {'CapacityReservationPreference': 'open'},
-#   'ClientToken': '',
-#   'CpuOptions': {'CoreCount': 2, 'ThreadsPerCore': 1},
-#   'EbsOptimized': False,
-#   'EnaSupport': True,
-#   'HibernationOptions': {'Configured': False},
-#   'Hypervisor': 'xen',
-#   'ImageId': 'ami-0c929bde1796e1484',
-#   'InstanceId': 'i-098cc19d3b903e735',
-#   'InstanceType': 't2.medium',
-#   'KeyName': 'xingu',
-#   'LaunchTime': datetime.datetime(2020, 4, 27, 14, 29, 51, tzinfo=tzutc()),
-#   'MetadataOptions': {'HttpEndpoint': 'enabled',
-#                       'HttpPutResponseHopLimit': 1,
-#                       'HttpTokens': 'optional',
-#                       'State': 'pending'},
-#   'Monitoring': {'State': 'disabled'},
-#   'NetworkInterfaces': [{'Attachment': {'AttachTime': datetime.datetime(2020, 4, 27, 14, 29, 51, tzinfo=tzutc()),
-#                                         'AttachmentId': 'eni-attach-0139d40579d99e82e',
-#                                         'DeleteOnTermination': True,
-#                                         'DeviceIndex': 0,
-#                                         'Status': 'attaching'},
-#                          'Description': '',
-#                          'Groups': [{'GroupId': 'sg-23f08e45',
-#                                      'GroupName': 'default'}],
-#                          'InterfaceType': 'interface',
-#                          'Ipv6Addresses': [],
-#                          'MacAddress': '02:f2:9c:cc:84:2e',
-#                          'NetworkInterfaceId': 'eni-048dfc092e6435461',
-#                          'OwnerId': '998726019676',
-#                          'PrivateDnsName': 'ip-172-31-8-118.us-east-2.compute.internal',
-#                          'PrivateIpAddress': '172.31.8.118',
-#                          'PrivateIpAddresses': [{'Primary': True,
-#                                                  'PrivateDnsName': 'ip-172-31-8-118.us-east-2.compute.internal',
-#                                                  'PrivateIpAddress': '172.31.8.118'}],
-#                          'SourceDestCheck': True,
-#                          'Status': 'in-use',
-#                          'SubnetId': 'subnet-bd46b6d6',
-#                          'VpcId': 'vpc-e334fc88'}],
-#   'Placement': {'AvailabilityZone': 'us-east-2a',
-#                 'GroupName': '',
-#                 'Tenancy': 'default'},
-#   'PrivateDnsName': 'ip-172-31-8-118.us-east-2.compute.internal',
-#   'PrivateIpAddress': '172.31.8.118',
-#   'ProductCodes': [],
-#   'PublicDnsName': '',
-#   'RootDeviceName': '/dev/sda1',
-#   'RootDeviceType': 'ebs',
-#   'SecurityGroups': [{'GroupId': 'sg-23f08e45', 'GroupName': 'default'}],
-#   'SourceDestCheck': True,
-#   'State': {'Code': 0, 'Name': 'pending'},
-#   'StateTransitionReason': '',
-#   'SubnetId': 'subnet-bd46b6d6',
-#   'Tags': [{'Key': 'cm.flavor', 'Value': 't2.medium'},
-#            {'Key': 'cm.kind', 'Value': 'vm'},
-#            {'Key': 'cm.user', 'Value': 'xingu'},
-#            {'Key': 'cm.image', 'Value': 'ami-0c929bde1796e1484'},
-#            {'Key': 'cm.name', 'Value': 'test-xingu-vm-186'},
-#            {'Key': 'Name', 'Value': 'test-xingu-vm-186'},
-#            {'Key': 'cm.status', 'Value': 'BOOTING'}],
-#   'VirtualizationType': 'hvm',
-#   'VpcId': 'vpc-e334fc88',
-#   '_id': ObjectId('5ea6ec5d46afb4bcb039dcfd'),
-#   'cm': {'cloud': 'aws',
-#          'collection': 'aws-vm',
-#          'created': '2020-04-27 14:29:49.967216',
-#          'creation': '25.00',
-#          'group': 'default',
-#          'kind': 'vm',
-#          'label': 'test-xingu-vm-186',
-#          'modified': '2020-04-27 14:30:15.454181',
-#          'name': 'test-xingu-vm-186',
-#          'status': 'available'},
-#   'created': ('04/27/2020, 14:29:51',),
-#   'image': ('ami-0c929bde1796e1484',),
-#   'instance_id': ('i-098cc19d3b903e735',),
-#   'key_name': ('xingu',),
-#   'kind': 'aws',
-#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-xingu-vm-186\', '
-#               "'label': 'test-xingu-vm-186', 'group': 'default', 'cloud': "
-#               "'aws', 'status': 'available', 'collection': 'aws-vm', "
-#               "'created': '2020-04-27 14:29:49.967216', 'modified': "
-#               '\'2020-04-27 14:29:49.967216\', \'creation\': \'25.00\'}", '
-#               "'image': 'ami-0c929bde1796e1484', 'size': 't2.medium'}",
-#   'name': ('t2.medium',),
-#   'private_ips': '172.31.8.118',
-#   'public_ips': '18.217.251.239',
-#   'status': ('pending',),
-#   'updated': ('04/27/2020, 14:29:51',)}]
-# ----------------------------------------------------------------------
-
-Timer: 27.0000s Load: 0.0000s (line_strip)
+vm boot --name=test-pmccand-vm-91
+
+# ----------------------------------------------------------------------
+# Create Server
+# ----------------------------------------------------------------------
+
+    Name:     test-pmccand-vm-91
+    User:     root
+    IP:       None
+    Image:    ami-0c929bde1796e1484
+    Size:     t2.medium
+    Public:   None
+    Key:      pmccand
+    Location: None
+    Timeout:  360
+    Secgroup: default
+    Group:    default
+
+
+Instance created...
+
+Waiting for the Public IP address assignment ...
+    Public IP:   3.22.248.49
+    Private IP:  172.31.11.127
+ERROR: aws reported the following error
+ERROR: -------------------------------------------------------------------------------
+set_server_metadata() got an unexpected keyword argument 'cm'
+ERROR: -------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# created
+# ----------------------------------------------------------------------
+# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
+# ----------------------------------------------------------------------
+# [{'AmiLaunchIndex': 0,
+#   'Architecture': 'x86_64',
+#   'BlockDeviceMappings': [],
+#   'CapacityReservationSpecification': {'CapacityReservationPreference': 'open'},
+#   'ClientToken': '',
+#   'CpuOptions': {'CoreCount': 2, 'ThreadsPerCore': 1},
+#   'EbsOptimized': False,
+#   'EnaSupport': True,
+#   'HibernationOptions': {'Configured': False},
+#   'Hypervisor': 'xen',
+#   'ImageId': 'ami-0c929bde1796e1484',
+#   'InstanceId': 'i-02acbad098bb7fb46',
+#   'InstanceType': 't2.medium',
+#   'KeyName': 'pmccand',
+#   'LaunchTime': datetime.datetime(2020, 4, 30, 20, 46, 56, tzinfo=tzutc()),
+#   'MetadataOptions': {'HttpEndpoint': 'enabled',
+#                       'HttpPutResponseHopLimit': 1,
+#                       'HttpTokens': 'optional',
+#                       'State': 'pending'},
+#   'Monitoring': {'State': 'disabled'},
+#   'NetworkInterfaces': [{'Attachment': {'AttachTime': datetime.datetime(2020, 4, 30, 20, 46, 56, tzinfo=tzutc()),
+#                                         'AttachmentId': 'eni-attach-0c2c60960e543f3f7',
+#                                         'DeleteOnTermination': True,
+#                                         'DeviceIndex': 0,
+#                                         'Status': 'attaching'},
+#                          'Description': '',
+#                          'Groups': [{'GroupId': 'sg-1c53ba64',
+#                                      'GroupName': 'default'}],
+#                          'InterfaceType': 'interface',
+#                          'Ipv6Addresses': [],
+#                          'MacAddress': '02:ca:3d:ff:d7:20',
+#                          'NetworkInterfaceId': 'eni-0de4d6572fee9733c',
+#                          'OwnerId': '039573061956',
+#                          'PrivateDnsName': 'ip-172-31-11-127.us-east-2.compute.internal',
+#                          'PrivateIpAddress': '172.31.11.127',
+#                          'PrivateIpAddresses': [{'Primary': True,
+#                                                  'PrivateDnsName': 'ip-172-31-11-127.us-east-2.compute.internal',
+#                                                  'PrivateIpAddress': '172.31.11.127'}],
+#                          'SourceDestCheck': True,
+#                          'Status': 'in-use',
+#                          'SubnetId': 'subnet-16cb337d',
+#                          'VpcId': 'vpc-58ad7d33'}],
+#   'Placement': {'AvailabilityZone': 'us-east-2a',
+#                 'GroupName': '',
+#                 'Tenancy': 'default'},
+#   'PrivateDnsName': 'ip-172-31-11-127.us-east-2.compute.internal',
+#   'PrivateIpAddress': '172.31.11.127',
+#   'ProductCodes': [],
+#   'PublicDnsName': '',
+#   'RootDeviceName': '/dev/sda1',
+#   'RootDeviceType': 'ebs',
+#   'SecurityGroups': [{'GroupId': 'sg-1c53ba64', 'GroupName': 'default'}],
+#   'SourceDestCheck': True,
+#   'State': {'Code': 0, 'Name': 'pending'},
+#   'StateTransitionReason': '',
+#   'SubnetId': 'subnet-16cb337d',
+#   'Tags': [{'Key': 'cm.user', 'Value': 'pmccand'},
+#            {'Key': 'Name', 'Value': 'test-pmccand-vm-91'},
+#            {'Key': 'cm.status', 'Value': 'BOOTING'},
+#            {'Key': 'cm.kind', 'Value': 'vm'},
+#            {'Key': 'cm.name', 'Value': 'test-pmccand-vm-91'},
+#            {'Key': 'cm.flavor', 'Value': 't2.medium'},
+#            {'Key': 'cm.image', 'Value': 'ami-0c929bde1796e1484'}],
+#   'VirtualizationType': 'hvm',
+#   'VpcId': 'vpc-58ad7d33',
+#   '_id': ObjectId('5eab393ea48aa4aaa3d788bb'),
+#   'cm': {'cloud': 'aws',
+#          'collection': 'aws-vm',
+#          'created': '2020-04-30 20:46:54.204937',
+#          'creation': '20.00',
+#          'group': 'default',
+#          'kind': 'vm',
+#          'label': 'test-pmccand-vm-91',
+#          'modified': '2020-04-30 20:47:14.188339',
+#          'name': 'test-pmccand-vm-91',
+#          'status': 'available'},
+#   'created': ('04/30/2020, 20:46:56',),
+#   'image': ('ami-0c929bde1796e1484',),
+#   'instance_id': ('i-02acbad098bb7fb46',),
+#   'key_name': ('pmccand',),
+#   'kind': 'aws',
+#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-91\', '
+#               "'label': 'test-pmccand-vm-91', 'group': 'default', 'cloud': "
+#               "'aws', 'status': 'available', 'collection': 'aws-vm', "
+#               "'created': '2020-04-30 20:46:54.204937', 'modified': "
+#               '\'2020-04-30 20:46:54.204937\', \'creation\': \'20.00\'}", '
+#               "'image': 'ami-0c929bde1796e1484', 'size': 't2.medium'}",
+#   'name': ('pmccand',),
+#   'private_ips': '172.31.11.127',
+#   'public_ips': '3.22.248.49',
+#   'status': ('pending',),
+#   'updated': ('04/30/2020, 20:46:56',)}]
+# ----------------------------------------------------------------------
+
+Timer: 22.0000s Load: 2.0000s (line_strip)
 
 PASSED
 tests/test_01_setup.py::Test_provider_volume::test_benchmark 
 
-+---------------------------+----------+--------+---------------------+-------+------------------------+--------+--------+-----------+
-| Name                      | Status   |   Time | Start               | tag   | Node                   | User   | OS     | Version   |
-|---------------------------+----------+--------+---------------------+-------+------------------------+--------+--------+-----------|
-| test_01_setup/test_cms_vm | ok       | 28.509 | 2020-04-27 14:29:48 | aws   | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
-+---------------------------+----------+--------+---------------------+-------+------------------------+--------+--------+-----------+
++---------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+| Name                      | Status   |   Time | Start               | tag   | Node            | User   | OS      | Version                         |
+|---------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------|
+| test_01_setup/test_cms_vm | ok       | 25.853 | 2020-04-30 20:46:50 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++---------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
 
 # csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
-# csv,test_01_setup/test_cms_vm,ok,28.509,2020-04-27 14:29:48,aws,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_01_setup/test_cms_vm,ok,25.853,2020-04-30 20:46:50,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
 
 PASSED
 
-============================== 2 passed in 29.69s ==============================
-============================= test session starts ==============================
-platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/xingu/ENV3/bin/python3.8
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+======================== 2 passed, 1 warning in 28.86s ========================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
 cachedir: .pytest_cache
-rootdir: /Users/xingu/cm/cloudmesh-volume, inifile: pytest.ini
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
 plugins: cov-2.8.1
 collecting ... [34m
 # ----------------------------------------------------------------------
 # variables.dict()
 # ----------------------------------------------------------------------
-# 24:<module> ./tests/test_02_volume_provider.py
+# 24:<module> .\tests\test_02_volume_provider.py
 # ----------------------------------------------------------------------
 # {'cloud': 'aws',
+#  'cloudtype': 'azure',
 #  'debug': 'True',
-#  'key': 'xingu',
+#  'key': 'pmccand',
 #  'timer': 'True',
 #  'trace': 'True',
 #  'verbose': '10',
-#  'vm': 'test-xingu-vm-186',
-#  'vm_name': 'test-xingu-vm-186',
-#  'volume': 'test-xingu-volume-185'}
+#  'vm': 'test-pmccand-vm-91',
+#  'vm_name': 'test-pmccand-vm-91',
+#  'volume': 'pmccand-volume-65'}
 # ----------------------------------------------------------------------
 [0m
 Test run for aws
@@ -205,7 +213,7 @@ tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_cre
 # ----------------------------------------------------------------------
 # arguments
 # ----------------------------------------------------------------------
-# 118:do_volume ./cloudmesh/volume/command/volume.py
+# 118:do_volume .\cloudmesh\volume\command\volume.py
 # ----------------------------------------------------------------------
 # {'--cloud': 'aws',
 #  '--description': None,
@@ -233,91 +241,93 @@ tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_cre
 #  'sync': False}
 # ----------------------------------------------------------------------
 
-+-----------------------+-------+--------+------------+----------------------------+----------+---------+------+-------------+-----------------------+
-| Name                  | Cloud | Kind   | Region     | Create Time                | Size(GB) | Status  | Tags | Volume Type | Attached To Vm        |
-+-----------------------+-------+--------+------------+----------------------------+----------+---------+------+-------------+-----------------------+
-| test-xingu-volume-184 | aws   | volume | us-east-2a | 2020-04-27 13:42:58.067000 | 2        | deleted | []   | gp2         |                       |
-|                       | aws   | volume | us-east-2a | 2020-04-27 13:42:37.051000 | 8        | in-use  |      | gp2         | ['test-xingu-vm-184'] |
-+-----------------------+-------+--------+------------+----------------------------+----------+---------+------+-------------+-----------------------+
 None
-Timer: 0.0000s Load: 0.0000s (line_strip)
+None
+Timer: 1.0000s Load: 2.0000s (line_strip)
 
 [35m
 # ######################################################################
-# test_provider_volume_create /tests/test_02_volume_provider.py 47
+# test_provider_volume_create \tests\test_02_volume_provider.py 47
 # ######################################################################
 [0m
 PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_list 
 [35m
 # ######################################################################
-# test_provider_volume_list /tests/test_02_volume_provider.py 76
+# test_provider_volume_list \tests\test_02_volume_provider.py 77
 # ######################################################################
 [0m
 PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach 
 [35m
 # ######################################################################
-# test_provider_volume_attach /tests/test_02_volume_provider.py 86
+# test_provider_volume_attach \tests\test_02_volume_provider.py 87
 # ######################################################################
 [0m
 PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach 
 [35m
 # ######################################################################
-# test_provider_volume_detach /tests/test_02_volume_provider.py 115
+# test_provider_volume_detach \tests\test_02_volume_provider.py 116
 # ######################################################################
 [0m
 PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete 
 [35m
 # ######################################################################
-# test_provider_volume_delete /tests/test_02_volume_provider.py 139
+# test_provider_volume_delete \tests\test_02_volume_provider.py 140
 # ######################################################################
 [0m
 PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_benchmark 
 
-+-----------------------------------------------------+----------+--------+---------------------+-------+------------------------+--------+--------+-----------+
-| Name                                                | Status   |   Time | Start               | tag   | Node                   | User   | OS     | Version   |
-|-----------------------------------------------------+----------+--------+---------------------+-------+------------------------+--------+--------+-----------|
-| test_02_volume_provider/test_provider_volume_create | ok       |  0.445 | 2020-04-27 14:30:20 | aws   | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
-| test_02_volume_provider/test_provider_volume_list   | ok       |  0.512 | 2020-04-27 14:30:36 | aws   | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
-| test_02_volume_provider/test_provider_volume_attach | ok       |  3.443 | 2020-04-27 14:30:37 | aws   | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
-| test_02_volume_provider/test_provider_volume_detach | ok       | 11.102 | 2020-04-27 14:30:45 | aws   | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
-| test_02_volume_provider/test_provider_volume_delete | ok       |  5.384 | 2020-04-27 14:31:01 | aws   | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
-+-----------------------------------------------------+----------+--------+---------------------+-------+------------------------+--------+--------+-----------+
++-----------------------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+| Name                                                | Status   |   Time | Start               | tag   | Node            | User   | OS      | Version                         |
+|-----------------------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------|
+| test_02_volume_provider/test_provider_volume_create | ok       |  0.75  | 2020-04-30 20:47:24 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_list   | ok       |  1.057 | 2020-04-30 20:47:40 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_attach | ok       |  3.277 | 2020-04-30 20:47:41 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_detach | ok       | 11.26  | 2020-04-30 20:47:50 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_delete | ok       |  5.617 | 2020-04-30 20:48:06 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-----------------------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
 
 # csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
-# csv,test_02_volume_provider/test_provider_volume_create,ok,0.445,2020-04-27 14:30:20,aws,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
-# csv,test_02_volume_provider/test_provider_volume_list,ok,0.512,2020-04-27 14:30:36,aws,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
-# csv,test_02_volume_provider/test_provider_volume_attach,ok,3.443,2020-04-27 14:30:37,aws,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
-# csv,test_02_volume_provider/test_provider_volume_detach,ok,11.102,2020-04-27 14:30:45,aws,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
-# csv,test_02_volume_provider/test_provider_volume_delete,ok,5.384,2020-04-27 14:31:01,aws,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_02_volume_provider/test_provider_volume_create,ok,0.75,2020-04-30 20:47:24,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_list,ok,1.057,2020-04-30 20:47:40,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_attach,ok,3.277,2020-04-30 20:47:41,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_detach,ok,11.26,2020-04-30 20:47:50,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_delete,ok,5.617,2020-04-30 20:48:06,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
 
 PASSED
 
-============================== 6 passed in 49.58s ==============================
-============================= test session starts ==============================
-platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/xingu/ENV3/bin/python3.8
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+======================== 6 passed, 1 warning in 56.16s ========================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
 cachedir: .pytest_cache
-rootdir: /Users/xingu/cm/cloudmesh-volume, inifile: pytest.ini
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
 plugins: cov-2.8.1
 collecting ... [34m
 # ----------------------------------------------------------------------
 # variables.dict()
 # ----------------------------------------------------------------------
-# 21:<module> ./tests/test_03_teardown.py
+# 20:<module> .\tests\test_03_teardown.py
 # ----------------------------------------------------------------------
 # {'cloud': 'aws',
+#  'cloudtype': 'azure',
 #  'debug': 'True',
-#  'key': 'xingu',
+#  'key': 'pmccand',
 #  'timer': 'True',
 #  'trace': 'True',
 #  'verbose': '10',
-#  'vm': 'test-xingu-vm-186',
-#  'vm_name': 'test-xingu-vm-186',
-#  'volume': ' '}
+#  'vm': 'test-pmccand-vm-91',
+#  'vm_name': 'test-pmccand-vm-91',
+#  'volume': 'test-pmccand-volume-91'}
 # ----------------------------------------------------------------------
 [0m
 collected 2 items
@@ -325,32 +335,38 @@ collected 2 items
 tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate 
 [35m
 # ######################################################################
-# test_cms_terminate /tests/test_03_teardown.py 32
+# test_cms_terminate \tests\test_03_teardown.py 31
 # ######################################################################
 [0m
-result vm terminate test-xingu-vm-186
-ec2.instancesCollection(ec2.ServiceResource(), ec2.Instance)
-ec2.instancesCollection(ec2.ServiceResource(), ec2.Instance)
-Terminating Instance..Please wait...
-Instance having Tag:test-xingu-vm-186 and Instance-Id:i-098cc19d3b903e735 terminated
-+--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------+
-| Name   | Cloud   | Instance ID   | Status   | Image   | Public IPs   | Private IPs   | Creation Time   | Started at   | Kind   |
-|--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------|
-+--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------+
-Timer: 32.0000s Load: 0.0000s (line_strip)
+result vm terminate test-pmccand-vm-91
+ec2.instancesCollection(ec2.ServiceResource(), ec2.Instance)
+ec2.instancesCollection(ec2.ServiceResource(), ec2.Instance)
+Terminating Instance..Please wait...
+Instance having Tag:test-pmccand-vm-91 and Instance-Id:i-02acbad098bb7fb46 terminated
++--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------+
+| Name   | Cloud   | Instance ID   | Status   | Image   | Public IPs   | Private IPs   | Creation Time   | Started at   | Kind   |
+|--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------|
++--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------+
+Timer: 32.0000s Load: 2.0000s (line_strip)
 
 PASSED
 tests/test_03_teardown.py::Test_provider_volume::test_benchmark 
 
-+-------------------------------------+----------+--------+---------------------+-------+------------------------+--------+--------+-----------+
-| Name                                | Status   |   Time | Start               | tag   | Node                   | User   | OS     | Version   |
-|-------------------------------------+----------+--------+---------------------+-------+------------------------+--------+--------+-----------|
-| test_03_teardown/test_cms_terminate | ok       | 32.708 | 2020-04-27 14:31:08 | aws   | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
-+-------------------------------------+----------+--------+---------------------+-------+------------------------+--------+--------+-----------+
++-------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+| Name                                | Status   |   Time | Start               | tag   | Node            | User   | OS      | Version                         |
+|-------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------|
+| test_03_teardown/test_cms_terminate | ok       | 35.294 | 2020-04-30 20:48:16 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
 
 # csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
-# csv,test_03_teardown/test_cms_terminate,ok,32.708,2020-04-27 14:31:08,aws,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_03_teardown/test_cms_terminate,ok,35.294,2020-04-30 20:48:16,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
 
 PASSED
 
-============================== 2 passed in 33.37s ==============================
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+======================== 2 passed, 1 warning in 37.80s ========================

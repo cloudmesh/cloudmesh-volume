@@ -42,7 +42,6 @@ class Provider(VolumeABC):
                       "sizeGb",
                       "type",
                       "creationTimestamp",
-                      "id",
                       "zone",
                       "users",
                       "description",
@@ -54,9 +53,8 @@ class Provider(VolumeABC):
                        "Size",
                        "Type",
                        "Created",
-                       "ID",
                        "Zone",
-                       "VMs",
+                       "Attached to VMs",
                        "Description",
                        "Tags"]
         }

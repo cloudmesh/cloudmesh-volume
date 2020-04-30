@@ -1,6 +1,6 @@
 import json
 import os
-import platform
+from pathlib import Path
 
 from cloudmesh.common.Shell import Shell
 from cloudmesh.volume.VolumeABC import VolumeABC
@@ -184,6 +184,7 @@ class Provider(VolumeABC):
         This function create a new volume.
         Default parameters from self.default, such as:
         path="/Users/username/multipass".
+        Note: Windows users should also use "/" in file path.
 
         :param NAME (string): the name of volume
         :param path (string): path of volume
@@ -195,15 +196,13 @@ class Provider(VolumeABC):
                 kwargs[key] = self.default[key]
             elif kwargs[key] is None:
                 kwargs[key] = self.default[key]
-        NAME = kwargs['NAME']
-        path = kwargs['path']
-        op_sys = platform.system()
-        if op_sys == 'Windows':
-            result = os.system(f"mkdir {path}\{NAME}")
-        else:
-            result = os.system(f"mkdir {path}/{NAME}")
+        name = kwargs['NAME']
+        path = Path(kwargs['path'])
+        new_path = Path(f'{path}/{name}')
+        result = os.system(f"mkdir {new_path}")
+
         if result == 0:
-            result = self.generate_volume_info(NAME=NAME, path=path)
+            result = self.generate_volume_info(NAME=name, path=kwargs['path'])
 
         result = self.update_dict([result])
         return result
@@ -218,12 +217,9 @@ class Provider(VolumeABC):
         """
         result = self.cm.find_name(name)
         path = result[0]['path']
+        delete_path = Path(f'{path}/{name}')
         try:
-            op_sys = platform.system()
-            if op_sys == 'Windows':
-                os.system(f"rmdir {path}\{name}")
-            else:
-                os.system(f"rmdir {path}/{name}")
+            os.system(f"rmdir {delete_path}")
             result[0]['State'] = 'deleted'
             result = self.update_dict(result)
         except:
@@ -309,7 +305,6 @@ class Provider(VolumeABC):
         :param vm (string): name of vm
         :return: dict
         """
-
         results = []
         for name in names:
             volume_info = self.cm.find_name(name)
@@ -319,17 +314,11 @@ class Provider(VolumeABC):
                 if vm in vms:
                     Console.error(f"{name} already attached to {vm}")
                 else:
-                    os_sys = platform.system()
-                    if os_sys =='Windows':
-                        result = self.mount(path=f"{path}\{name}", vm=vm)
-                        mounts = result['mounts']
-                        if f"{path}\{name}" in mounts.keys():
-                            vms.append(vm)
-                    else:
-                        result = self.mount(path=f"{path}/{name}", vm=vm)
-                        mounts = result['mounts']
-                        if f"{path}/{name}" in mounts.keys():
-                            vms.append(vm)
+                    result = self.mount(path=f"{path}/{name}", vm=vm)
+                    mounts = result['mounts']
+                    if f"{path}/{name}" in mounts.keys():
+                        vms.append(vm)
+
                 result = self.update_volume_after_attached_to_vm(
                     info=volume_info, vms=vms)
                 results.append(result)
@@ -410,19 +399,11 @@ class Provider(VolumeABC):
                 Console.error(f"{name} is not attached to any vm")
             else:
                 removed = []
-                os_sys = platform.system()
-                if os_sys == 'Windows':
-                    for vm in vms:
-                        result = self.unmount(path=f"{path}\{name}", vm=vm)
-                        mounts = result['mounts']
-                        if f"{path}\{name}" not in mounts.keys():
-                            removed.append(vm)
-                else:
-                    for vm in vms:
-                        result = self.unmount(path=f"{path}/{name}", vm=vm)
-                        mounts = result['mounts']
-                        if f"{path}/{name}" not in mounts.keys():
-                            removed.append(vm)
+                for vm in vms:
+                    result = self.unmount(path=f"{path}/{name}", vm=vm)
+                    mounts = result['mounts']
+                    if f"{path}/{name}" not in mounts.keys():
+                        removed.append(vm)
                 for vm in removed:
                     vms.remove(vm)
                 result = self.update_volume_after_detach(volume_info, vms)
@@ -455,7 +436,7 @@ class Provider(VolumeABC):
         This function get volume status, such as "in-use", "available",
         "deleted"
 
-        :param name (string): volume name
+        :param name: volume name
         :return: dict
         """
         volume_info = self.cm.find_name(name)
@@ -487,8 +468,9 @@ class Provider(VolumeABC):
         vm_status = vm_info["info"][vm]['state']
 
         if vm_status == 'running':
-            self.detach(NAME=volume_name)
-            self.attach(NAMES=[volume_name], vm=vm)
+            param = {'NAME': volume_name}
+            self.detach(**param)
+            self.attach(**param, vm=vm)
         try:
             for old_vm in volume_attached_vm:
                 volume_info[0]['AttachedToVm'].remove(old_vm)

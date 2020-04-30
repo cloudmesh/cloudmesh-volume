@@ -360,7 +360,7 @@ class VolumeCommand(PluginCommand):
                 raise NotImplementedError
 
         elif arguments.sync:
-            # "cms volume sync NAMES"
+            # "cms volume sync NAMES --cloud=CLOUD"
             # when len(NAMES)==2, sync volume (NAMES[0]) with volume (NAMES[1])
             # when len(NAMES)==1, sync current volume with volume(NAMES[0])
             # what it actually does is copy second volume and overwrite
@@ -377,7 +377,7 @@ class VolumeCommand(PluginCommand):
             # if arguments.cloud:
             arguments.cloud = cloud
             provider = Provider(name=arguments.cloud)
-            result = provider.sync(NAMES=arguments.NAMES)
+            result = provider.sync(**arguments)
             print(provider.Print(result,
                                  kind='volume',
                                  output=arguments.output))

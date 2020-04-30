@@ -282,17 +282,17 @@ class Provider(object):  # broken
         return result
 
     @DatabaseUpdate()
-    def sync(self, names):
+    def sync(self, **kwargs):
         """
         synchronize one volume with another volume
 
         :param names (list): list of volume names
         :return: dict
         """
-        try:
-            result = self.provider.sync(names)
-        except:
-            raise ValueError("Volume could not be synchronized")
+        #try:
+        result = self.provider.sync(**kwargs)
+        #except:
+            #raise ValueError("Volume could not be synchronized")
         return result
 
     @DatabaseUpdate()

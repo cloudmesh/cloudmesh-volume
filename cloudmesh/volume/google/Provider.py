@@ -455,7 +455,7 @@ class Provider(VolumeABC):
 
     def _start_instance(self, name=None, zone=None):
         """
-        stops the instance with the given name
+        starts the instance with the given name
 
         :param name: name of the instance
         :zone: zone in which the instance is located

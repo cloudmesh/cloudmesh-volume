@@ -79,7 +79,8 @@ cms volume list test_volume1,test_volume2 --cloud=openstack
 * Delete Volume
 
 To delete volume or volumes from multiple cloud providers permanently and is 
-irreversible. The volume will be updated in the database with status set to
+irreversible. Make sure volume is not attached to any vm before running delete command.
+The volume will be updated in the database with status set to
 'deleted'. All data on the volume will be permanently lost when the volume
 is deleted. (Use purge to remove deleted volumes from database) 
 

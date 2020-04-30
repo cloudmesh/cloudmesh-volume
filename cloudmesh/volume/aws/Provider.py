@@ -231,7 +231,6 @@ class Provider(VolumeABC):
             ],
         )
 
-        # vms = []
         elements = volume['Volumes']
         for i in range(len(elements)):
             try:
@@ -242,7 +241,6 @@ class Provider(VolumeABC):
                         'Tags']:
                         if tag['Key'] == 'Name':
                             vm_name = tag['Value']
-                            # print("vm_name: ", vm_name)
                         return vm_name
             except:
                 Console.error(f"{volume_name} does not attach to any vm")
@@ -459,7 +457,7 @@ class Provider(VolumeABC):
         :param region: name of availability zone
         :return: dict
         """
-        if kwargs and kwargs['refresh'] == True:
+        if kwargs and kwargs['refresh']:
             result = self.client.describe_volumes()
             for key in kwargs:
                 if key == 'NAME' and kwargs['NAME']:
@@ -508,7 +506,7 @@ class Provider(VolumeABC):
                     )
             result = self.update_AttachedToVm(result)
             result = self.update_dict(result)
-        elif kwargs and kwargs['refresh'] == False:
+        elif kwargs and not kwargs['refresh']:
             result = self.cm.find(cloud=self.cloud, kind='volume')
             for key in kwargs:
                 if key == 'NAME' and kwargs['NAME']:
@@ -674,7 +672,7 @@ class Provider(VolumeABC):
         """
         volume_name = kwargs['NAME']
         vm = kwargs['vm']
-        volume_status = self.status(NAME=volume_name)[0]['State']
+        volume_status = self.status(name=volume_name)[0]['State']
         volume_region = self.list(NAME=volume_name, refresh=True)[0]['cm'][
             'region']
         volume_id = self.find_volume_id(volume_name=volume_name)
@@ -729,19 +727,20 @@ class Provider(VolumeABC):
 
         else:
             Console.error("vm is not available")
-        return self.list()
+        result = self.list(NAME=kwargs['NAME'], refresh=True)[0]
+        return result
 
-    def sync(self, names):
+    def sync(self, **kwargs):
         """
         sync contents of one volume to another volume
 
         :param NAMES (list): list of volume names
         :return: dict
         """
-        volume_1 = names[0]
+        volume_1 = kwargs['NAMES'][0]
         volume_1_region = self.list(NAME=volume_1, refresh=True)[0]['cm'][
             'region']
-        volume_2 = names[1]
+        volume_2 = kwargs['NAMES'][0]
         volume_2_id = self.find_volume_id(volume_name=volume_2)
         # make a snapshot of volume_2
         snapshot_id = self.client.create_snapshot(
@@ -771,3 +770,4 @@ class Provider(VolumeABC):
             if status == "available":
                 break
         return self.list(NAME=volume_1, refresh=True)[0]
+

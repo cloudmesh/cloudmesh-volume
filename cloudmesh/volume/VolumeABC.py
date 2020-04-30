@@ -140,7 +140,7 @@ class VolumeABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def sync(self, names):
+    def sync(self, **kwargs):
         """
         synchronize one volume with another volume
 

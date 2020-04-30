@@ -16,19 +16,19 @@ collecting ... [34m
 #  'timer': 'True',
 #  'trace': 'True',
 #  'verbose': '10',
-#  'vm': 'test-xingu-vm-263',
-#  'vm_name': 'test-xingu-vm-263',
-#  'volume': ' '}
+#  'vm': 'test-xingu-vm-267',
+#  'vm_name': 'test-xingu-vm-267',
+#  'volume': 'test-xingu-volume-267'}
 # ----------------------------------------------------------------------
 [0m
 Test run for multipass
 collected 2 items
 
-tests/test_01_setup.py::Test_provider_volume::test_cms_vm                                                                                                                                                                 Creating test-xingu-vm-263  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\                                                                                                                                                                 Configuring test-xingu-vm-263  /-\|                                                                                                                                                                 Starting test-xingu-vm-263  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-                                                                                                                                                                 Waiting for initialization to complete  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/                                                                                 Launched: test-xingu-vm-263
+tests/test_01_setup.py::Test_provider_volume::test_cms_vm                                                                                                                                                                 Creating test-xingu-vm-268  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|                                                                                                                                                                 Configuring test-xingu-vm-268  /-\|/                                                                                                                                                                 Starting test-xingu-vm-268  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|                                                                                                                                                                 Waiting for initialization to complete  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/                                                                                 Launched: test-xingu-vm-268
                                                                                 
 [35m
 # ######################################################################
-# test_cms_vm /tests/test_01_setup.py 61
+# test_cms_vm /tests/test_01_setup.py 59
 # ######################################################################
 [0m
 PASSED
@@ -37,15 +37,15 @@ tests/test_01_setup.py::Test_provider_volume::test_benchmark
 +---------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------+
 | Name                      | Status   |   Time | Start               | tag       | Node                   | User   | OS     | Version   |
 |---------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------|
-| test_01_setup/test_cms_vm | ok       | 26.454 | 2020-04-28 05:03:29 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
+| test_01_setup/test_cms_vm | ok       | 30.054 | 2020-04-30 13:19:54 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
 +---------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------+
 
 # csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
-# csv,test_01_setup/test_cms_vm,ok,26.454,2020-04-28 05:03:29,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_01_setup/test_cms_vm,ok,30.054,2020-04-30 13:19:54,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
 
 PASSED
 
-============================== 2 passed in 38.22s ==============================
+============================== 2 passed in 41.77s ==============================
 ============================= test session starts ==============================
 platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/xingu/ENV3/bin/python3.8
 cachedir: .pytest_cache
@@ -63,9 +63,9 @@ collecting ... [34m
 #  'timer': 'True',
 #  'trace': 'True',
 #  'verbose': '10',
-#  'vm': 'test-xingu-vm-263',
-#  'vm_name': 'test-xingu-vm-263',
-#  'volume': ' '}
+#  'vm': 'test-xingu-vm-267',
+#  'vm_name': 'test-xingu-vm-268',
+#  'volume': 'test-xingu-volume-267'}
 # ----------------------------------------------------------------------
 [0m
 Test run for multipass
@@ -104,7 +104,11 @@ tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_cre
 #  'sync': False}
 # ----------------------------------------------------------------------
 
-None
++-----------------------+-----------+--------+---------+------------------------+--------------+--------------+------+----------------------------+
+| Name                  | Cloud     | Kind   | State   | Path                   | Machine Path | AttachedToVm | Tags | Update Time                |
++-----------------------+-----------+--------+---------+------------------------+--------------+--------------+------+----------------------------+
+| test-xingu-volume-263 | multipass | volume | deleted | /Users/xingu/multipass |              | []           | []   | 2020-04-28 01:04:53.391000 |
++-----------------------+-----------+--------+---------+------------------------+--------------+--------------+------+----------------------------+
 None
 Timer: 0.0000s Load: 0.0000s (line_strip)
 
@@ -117,28 +121,28 @@ PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_list 
 [35m
 # ######################################################################
-# test_provider_volume_list /tests/test_02_volume_provider.py 76
+# test_provider_volume_list /tests/test_02_volume_provider.py 77
 # ######################################################################
 [0m
 PASSED
-tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach                                                                                                                                                                 Enabling support for mounting  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-                                                                                                                                                                 
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach                                                                                                                                                                 Enabling support for mounting  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|                                                                                                                                                                 
 [35m
 # ######################################################################
-# test_provider_volume_attach /tests/test_02_volume_provider.py 86
+# test_provider_volume_attach /tests/test_02_volume_provider.py 87
 # ######################################################################
 [0m
 PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach 
 [35m
 # ######################################################################
-# test_provider_volume_detach /tests/test_02_volume_provider.py 115
+# test_provider_volume_detach /tests/test_02_volume_provider.py 116
 # ######################################################################
 [0m
 PASSED
 tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete 
 [35m
 # ######################################################################
-# test_provider_volume_delete /tests/test_02_volume_provider.py 139
+# test_provider_volume_delete /tests/test_02_volume_provider.py 140
 # ######################################################################
 [0m
 PASSED
@@ -147,19 +151,19 @@ tests/test_02_volume_provider.py::Test_provider_volume::test_benchmark
 +-----------------------------------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------+
 | Name                                                | Status   |   Time | Start               | tag       | Node                   | User   | OS     | Version   |
 |-----------------------------------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------|
-| test_02_volume_provider/test_provider_volume_create | ok       |  0.053 | 2020-04-28 05:04:10 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
-| test_02_volume_provider/test_provider_volume_list   | ok       |  0.508 | 2020-04-28 05:04:25 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
-| test_02_volume_provider/test_provider_volume_attach | ok       | 20.547 | 2020-04-28 05:04:26 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
-| test_02_volume_provider/test_provider_volume_detach | ok       |  1.324 | 2020-04-28 05:04:52 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
-| test_02_volume_provider/test_provider_volume_delete | ok       |  0.518 | 2020-04-28 05:04:58 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
+| test_02_volume_provider/test_provider_volume_create | ok       |  0.063 | 2020-04-30 13:20:37 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
+| test_02_volume_provider/test_provider_volume_list   | ok       |  0.501 | 2020-04-30 13:20:53 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
+| test_02_volume_provider/test_provider_volume_attach | ok       | 17.849 | 2020-04-30 13:20:53 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
+| test_02_volume_provider/test_provider_volume_detach | ok       |  1.371 | 2020-04-30 13:21:16 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
+| test_02_volume_provider/test_provider_volume_delete | ok       |  0.521 | 2020-04-30 13:21:23 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
 +-----------------------------------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------+
 
 # csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
-# csv,test_02_volume_provider/test_provider_volume_create,ok,0.053,2020-04-28 05:04:10,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
-# csv,test_02_volume_provider/test_provider_volume_list,ok,0.508,2020-04-28 05:04:25,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
-# csv,test_02_volume_provider/test_provider_volume_attach,ok,20.547,2020-04-28 05:04:26,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
-# csv,test_02_volume_provider/test_provider_volume_detach,ok,1.324,2020-04-28 05:04:52,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
-# csv,test_02_volume_provider/test_provider_volume_delete,ok,0.518,2020-04-28 05:04:58,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_02_volume_provider/test_provider_volume_create,ok,0.063,2020-04-30 13:20:37,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_02_volume_provider/test_provider_volume_list,ok,0.501,2020-04-30 13:20:53,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_02_volume_provider/test_provider_volume_attach,ok,17.849,2020-04-30 13:20:53,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_02_volume_provider/test_provider_volume_detach,ok,1.371,2020-04-30 13:21:16,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_02_volume_provider/test_provider_volume_delete,ok,0.521,2020-04-30 13:21:23,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
 
 PASSED
 
@@ -183,7 +187,7 @@ tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_del
     if cursor.count() > 0:
 
 -- Docs: https://docs.pytest.org/en/latest/warnings.html
-======================= 6 passed, 12 warnings in 51.71s ========================
+======================= 6 passed, 12 warnings in 48.35s ========================
 ============================= test session starts ==============================
 platform darwin -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- /Users/xingu/ENV3/bin/python3.8
 cachedir: .pytest_cache
@@ -193,7 +197,7 @@ collecting ... [34m
 # ----------------------------------------------------------------------
 # variables.dict()
 # ----------------------------------------------------------------------
-# 21:<module> ./tests/test_03_teardown.py
+# 20:<module> ./tests/test_03_teardown.py
 # ----------------------------------------------------------------------
 # {'cloud': 'multipass',
 #  'debug': 'True',
@@ -201,9 +205,9 @@ collecting ... [34m
 #  'timer': 'True',
 #  'trace': 'True',
 #  'verbose': '10',
-#  'vm': 'test-xingu-vm-263',
-#  'vm_name': 'test-xingu-vm-263',
-#  'volume': 'test-xingu-volume-263'}
+#  'vm': 'test-xingu-vm-267',
+#  'vm_name': 'test-xingu-vm-268',
+#  'volume': 'test-xingu-volume-268'}
 # ----------------------------------------------------------------------
 [0m
 collected 2 items
@@ -211,7 +215,7 @@ collected 2 items
 tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate 
 [35m
 # ######################################################################
-# test_cms_terminate /tests/test_03_teardown.py 32
+# test_cms_terminate /tests/test_03_teardown.py 31
 # ######################################################################
 [0m
 result 
@@ -221,12 +225,12 @@ tests/test_03_teardown.py::Test_provider_volume::test_benchmark
 +-------------------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------+
 | Name                                | Status   |   Time | Start               | tag       | Node                   | User   | OS     | Version   |
 |-------------------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------|
-| test_03_teardown/test_cms_terminate | ok       |  0.657 | 2020-04-28 05:05:02 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
+| test_03_teardown/test_cms_terminate | ok       |  0.683 | 2020-04-30 13:21:26 | multipass | Xins-MacBook-Pro.local | xingu  | Darwin | 10.15.3   |
 +-------------------------------------+----------+--------+---------------------+-----------+------------------------+--------+--------+-----------+
 
 # csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
-# csv,test_03_teardown/test_cms_terminate,ok,0.657,2020-04-28 05:05:02,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
+# csv,test_03_teardown/test_cms_terminate,ok,0.683,2020-04-30 13:21:26,multipass,Xins-MacBook-Pro.local,xingu,Darwin,10.15.3
 
 PASSED
 
-============================== 2 passed in 1.86s ===============================
+============================== 2 passed in 1.73s ===============================

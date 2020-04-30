@@ -126,14 +126,11 @@ class Provider(VolumeABC):
         for tag in info[0]['tags']:
             if key == list(tag.keys())[0]:
                 if len(value) == 0:
-                    print("here1")
                     info[0]['tags'].remove(tag)
-                    print(info[0]['tags'])
                     keys.append(list(tag.keys())[0])
                 else:
                     tag.update({key: value})
                     keys.append(list(tag.keys())[0])
-        print("keys", keys)
         if key not in keys:
             tag = {key: value}
             info[0]['tags'].append(tag)
@@ -425,10 +422,8 @@ class Provider(VolumeABC):
         key = kwargs['key']
         value = kwargs['value']
         volume_info = self.cm.find_name(name=kwargs['NAME'])
-        print("volume_info", volume_info)
         volume_info = self.update_volume_tag(info=volume_info, key=key,
                                              value=value)
-        print("volume_info2", volume_info)
         return volume_info[0]
 
     def status(self, name=None):
@@ -480,17 +475,19 @@ class Provider(VolumeABC):
 
         return volume_info
 
-    def sync(self, names):
+    def sync(self, **kwargs):
         """
         sync contents of one volume to another volume
 
         :param names (list): list of volume names
         :return: list of dict
         """
-        path1 = f"{self.cm.find_name(name=names[0])[0]['path']}/{names[0]}/"
-        path2 = f"{self.cm.find_name(name=names[1])[0]['path']}/{names[1]}/"
+        volume_1 = kwargs['NAMES'][0]
+        volume_2 = kwargs['NAMES'][1]
+        path1 = f"{self.cm.find_name(name=volume_1)[0]['path']}/{volume_1}/"
+        path2 = f"{self.cm.find_name(name=volume_2)[0]['path']}/{volume_2}/"
         os.system(f"rsync -avzh {path2} {path1}")
-        kwargs1 = {'key': "sync_with", 'value': names[1]}
-        volume_info1 = self.add_tag(names[0], **kwargs1)
+        kwargs1 = {'NAME': volume_1, 'key': "sync_with", 'value': volume_2}
+        volume_info1 = self.add_tag(**kwargs1)
         result = [volume_info1]
         return result

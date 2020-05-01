@@ -312,8 +312,10 @@ Similar to Google, in Azure, volumes are referred to as 'disks'.
 * from Amazon EBS volume
  
     Create a copy of EBS volume content into Amazon S3, and then migration could 
-    be done as follows, or use cloudmesh storage service, please refer to
-     <https://cloudmesh.github.io/cloudmesh-manual/api/cloudmesh.storage.html>
+    be done by cloudmesh storage service, please refer to
+     <https://cloudmesh.github.io/cloudmesh-manual/api/cloudmesh.storage.html>.
+     
+     Here are some documentation about migrating Amazon S3 to other cloud services:
 
   * Migrating from Amazon S3 to Google Cloud Storage
 

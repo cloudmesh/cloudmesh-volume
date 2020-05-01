@@ -258,7 +258,7 @@ class Provider(object):  # broken
     @DatabaseUpdate()
     def migrate(self, **kwargs):
         """
-        Migrate volume from one vm to another vm.
+        Migrate volume from one vm to another vm in the same cloud service.
 
         :param name (string): the volume name
         :param vm (string): the vm name
@@ -273,15 +273,15 @@ class Provider(object):  # broken
     @DatabaseUpdate()
     def sync(self, **kwargs):
         """
-        synchronize one volume with another volume
+        synchronize one volume with another volume in the same cloud service.
 
         :param names (list): list of volume names
         :return: dict
         """
-        #try:
-        result = self.provider.sync(**kwargs)
-        #except:
-            #raise ValueError("Volume could not be synchronized")
+        try:
+            result = self.provider.sync(**kwargs)
+        except:
+            raise ValueError("Volume could not be synchronized")
         return result
 
     @DatabaseUpdate()

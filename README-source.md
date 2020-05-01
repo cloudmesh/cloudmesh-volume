@@ -193,8 +193,8 @@ cms volume status test_volume
 * Migrate Volume
 
 To migrate volume to vm in the same cloud service, 
-if no given volume, migrate the current volume. Implemented in aws and 
-multipass.
+if no given volume, migrate the current volume. Implemented for aws and 
+multipass provider.
 
 Example 1: To migrate test_volume volume to test_vm in the aws cloud service
 
@@ -207,7 +207,7 @@ cms volume migrate test_volume --vm=test_vm --cloud=aws
 To sync first volume with second volume in the same cloud service.
 When len(NAMES)==2, sync volume (NAMES[0]) with volume (NAMES[1])
 When len(NAMES)==1, sync current volume with volume(NAMES[0])
-Implemented in aws and multipass.
+Implemented for aws and multipass provider.
 
 Example 1: To sync test_volume1 with test_volume2 in aws cloud provider.
 

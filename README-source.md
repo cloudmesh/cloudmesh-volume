@@ -155,7 +155,7 @@ Please check following table for available functions for each cloud service:
 |---------------|-------|-----|
 | AWS | * |* |
 | Azure |* | |
-| Google |*|*|*
+| Google |*|*|
 | Multipass|*|*|
 |Openstack|*|
 |Oracle|*|

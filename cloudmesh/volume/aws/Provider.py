@@ -12,29 +12,29 @@ class Provider(VolumeABC):
 
     sample = """
     cloudmesh:
-        volume:
-            {name}:
-                cm:
-                  active: true
-                  heading: AWS
-                  host: aws.com
-                  label: VAWAS1
-                  kind: aws
-                  version: TBD
-                  service: volume
-                default:
-                  volume_type: gp2
-                  size: TBD
-                  encrypted: False
-                  region_name: {region_name}
-                  region: {availability_zone}
-                  snapshot: "None"
-                credentials:
-                  EC2_SECURITY_GROUP: default
-                  EC2_ACCESS_ID: {aws_access_key_id}
-                  EC2_SECRET_KEY: {aws_secret_access_key}
-                  EC2_PRIVATE_KEY_FILE_PATH: {private_key_file_path}
-                  EC2_PRIVATE_KEY_FILE_NAME: {private_key_file_name}
+      volume:
+        {name}:
+          cm:
+            active: true
+            heading: AWS
+            host: aws.com
+            label: VAWAS1
+            kind: aws
+            version: TBD
+            service: volume
+          default:
+            volume_type: gp2
+            size: TBD
+            encrypted: False
+            region_name: {region_name}
+            region: {availability_zone}
+            snapshot: "None"
+          credentials:
+            EC2_SECURITY_GROUP: default
+            EC2_ACCESS_ID: {aws_access_key_id}
+            EC2_SECRET_KEY: {aws_secret_access_key}
+            EC2_PRIVATE_KEY_FILE_PATH: {private_key_file_path}
+            EC2_PRIVATE_KEY_FILE_NAME: {private_key_file_name}
     """
 
     volume_status = [

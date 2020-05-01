@@ -64,13 +64,13 @@ different.
 * Create Volume
 
 To create a new volume.
-For multipass, volume region means path of the directory, i.e. 
+For multipass, creates a directory, volume region means path of the directory, i.e.
     "/Users/username/multipass"
-For aws, volume region means availability zone.
-For azure, volume region means location.
-For google, volume region means zone of volume.
-For oracle, volume region means availability_domain.
-For openstack, volume region means ???.
+For aws, creates EBS volume in EC2 service, volume region means availability zone.
+For azure, creates disk, volume region means location.
+For google, creates zonal disks, volume region means zone of volume.
+For oracle, creates volume in block-storage service, volume region means availability_domain.
+For openstack, creates volume, volume region means zone.
 
 Example 1: To create a volume with default parameters and generated name:
 
@@ -96,6 +96,17 @@ If volume name or names are given, return the information of volume through the
     cloud.
 If vm is specified, it will print out all the volumes attached to vm.
 If region(zone) is specified, it will print out all the volumes in that zone.
+
+Please check following table about available functions for each cloud service:
+
+|   |List with Refresh|List without Refresh|List One Volume |List Multiple Volumes|List by Region|List by vm|
+|---------------|-------|-----|-----|---|---|---|
+| AWS | * |* |*|*|*|*|
+| Azure |* | |*|*|
+| Google |*|*|*|*|*|*|
+| Multipass| |*|*|*|*|*|
+|Openstack|*|*|*|*|||
+|Oracle|*|*|*|*  |
 
 Example 1: To return the information of volume through current cloud provider.
 
@@ -137,6 +148,17 @@ For aws, a vm can have multiple attached volumes.
 GCP (google) requires that the instance be stopped when attaching a disk. 
 If the instance is running when the attach function is called, the function will 
 stop the instance and then restart the instance after attaching the disk.
+
+Please check following table for available functions for each cloud service:
+
+|   |Attach One Volume|Attach Multiple Volumes|
+|---------------|-------|-----|
+| AWS | * |* |
+| Azure |* | |
+| Google |*|*|*
+| Multipass|*|*|
+|Openstack|*|
+|Oracle|*|
 
 Example 1: To attach test_volume1 to test_vm
 
@@ -282,14 +304,16 @@ Similar to Google, in Azure, volumes are referred to as 'disks'.
 * API:   
   <https://docs.cloud.oracle.com/en-us/iaas/api/#/en/iaas/20160918/Volume/>
 * OCI API:   
-  <https://oracle-cloud-infrastructure-python-sdk.readthedocs.io/en/latest/api/core/client/oci.core.BlockstorageClient.html>
+  <https://oracle-cloud-infrastructure-python-sdk.readthedocs.io/en/latest/api/core/client/oci.core.
+  BlockstorageClient.html>
 
-## Documentation on how to move volumes from one provider to the next 
+## Documentation about migration between cloud providers 
 
 * from Amazon EBS volume
  
     Create a copy of EBS volume content into Amazon S3, and then migration could 
-    be done as follows, or use cloudmesh storage service, please check .
+    be done as follows, or use cloudmesh storage service, please refer to
+     <https://cloudmesh.github.io/cloudmesh-manual/api/cloudmesh.storage.html>
 
   * Migrating from Amazon S3 to Google Cloud Storage
 
@@ -300,10 +324,6 @@ Similar to Google, in Azure, volumes are referred to as 'disks'.
   * Migrating from Amazon S3 to Azure Blob Storage
 
     <https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/master/README.md>
-
-  * Migrating from Amazon S3 to OpenStack
-  
-  * Migrating from Amazon S3 to Oracle
 
 * from Cloud Storage
 

@@ -160,7 +160,6 @@ class Provider(VolumeABC):
         :param kind: "multipass"
         :return: The list with the modified dicts
         """
-
         if elements is None:
             return None
 
@@ -187,7 +186,6 @@ class Provider(VolumeABC):
         :param path (string): path of volume
         :return: dict
         """
-
         for key in self.default.keys():
             if key not in kwargs.keys():
                 kwargs[key] = self.default[key]
@@ -197,10 +195,8 @@ class Provider(VolumeABC):
         path = Path(kwargs['path'])
         new_path = Path(f'{path}/{name}')
         result = os.system(f"mkdir {new_path}")
-
         if result == 0:
             result = self.generate_volume_info(NAME=name, path=kwargs['path'])
-
         result = self.update_dict([result])
         return result
 
@@ -224,7 +220,6 @@ class Provider(VolumeABC):
         return result
 
     def list(self, **kwargs):
-
         """
         This function list all volumes as following:
         If NAME (volume name) is specified, it will print out info of NAME.
@@ -239,7 +234,6 @@ class Provider(VolumeABC):
         :param region: for multipass, it is the same with "path"
         :return: dict
         """
-
         if kwargs:
             result = self.cm.find(cloud='multipass', kind='volume')
             for key in kwargs:
@@ -250,13 +244,6 @@ class Provider(VolumeABC):
                 elif key == 'vm' and kwargs['vm']:
                     result = self.cm.find(collection=f"{self.cloud}-volume",
                                           query={'AttachedToVm': kwargs['vm']})
-                    # result = []
-                    # response = self._get_mount_status(vm=kwargs['vm'])
-                    # mounts = response['mounts']
-                    # for key in mounts.keys():
-                    #     volume_name = key.split(sep="/")[-1]
-                    #     r = self.cm.find_name(name=volume_name)
-                    #     result.append(r)
                 elif key == 'region' and kwargs['region']:
                     result = self.cm.find(collection=f"{self.cloud}-volume",
                                           query={'path': kwargs['region']})
@@ -265,17 +252,14 @@ class Provider(VolumeABC):
         return result
 
     def _get_vm_status(self, name=None) -> dict:
-
         """
         Get vm status.
 
         :param name (string): vm name
         :return: dict
         """
-
         dict_result = {}
         result = Shell.run(f"multipass info {name} --format=json")
-
         if f'instance "{name}" does not exist' in result:
             dict_result = {
                 'name': name,
@@ -287,7 +271,6 @@ class Provider(VolumeABC):
                 'name': name,
                 'status': result["info"][name]['State']
             }
-
         return dict_result
 
     def attach(self,
@@ -322,7 +305,6 @@ class Provider(VolumeABC):
             else:
                 Console.error(
                     "volume is not existed or volume had been deleted")
-        # results = self.update_dict([results])
         return results[0]
 
     def mount(self, path=None, vm=None):
@@ -333,10 +315,8 @@ class Provider(VolumeABC):
         :param vm (string): name of vm
         :return: dict
         """
-
         os.system(f"multipass mount {path} {vm}")
         dict_result = self._get_mount_status(vm=vm)
-
         return dict_result
 
     def _get_mount_status(self, vm=None):
@@ -370,10 +350,8 @@ class Provider(VolumeABC):
         :param vm (string): name of vm
         :return:
         """
-
         os.system(f"multipass unmount {vm}:{path}")
         dict_result = self._get_mount_status(vm=vm)
-
         return dict_result
 
     def detach(self, name):
@@ -387,7 +365,6 @@ class Provider(VolumeABC):
         :param name: name of volume to be detached
         :return: dict
         """
-
         volume_info = self.cm.find_name(name)
         if volume_info and volume_info[0]['State'] != "deleted":
             vms = volume_info[0]['AttachedToVm']
@@ -454,14 +431,11 @@ class Provider(VolumeABC):
         """
         volume_name = kwargs['NAME']
         vm = kwargs['vm']
-
         volume_info = self.cm.find_name(name=volume_name)
         volume_attached_vm = volume_info[0]['AttachedToVm']
-
         vm_info = Shell.run(f"multipass info {vm} --format=json")
         vm_info = json.loads(vm_info)
         vm_status = vm_info["info"][vm]['state']
-
         if vm_status == 'running':
             param = {'NAME': volume_name}
             self.detach(**param)
@@ -472,7 +446,6 @@ class Provider(VolumeABC):
         except:
             pass
         volume_info[0]['AttachedToVm'].append(vm)
-
         return volume_info
 
     def sync(self, **kwargs):

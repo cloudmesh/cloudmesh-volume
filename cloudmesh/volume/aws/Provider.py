@@ -151,7 +151,6 @@ class Provider(VolumeABC):
 
         if results is None:
             return None
-
         d = []
         elements = results['Volumes']
         for entry in elements:
@@ -189,7 +188,6 @@ class Provider(VolumeABC):
                 "region": entry["AvailabilityZone"],
                 "tags": tags
             })
-
             d.append(entry)
         return d
 
@@ -200,7 +198,6 @@ class Provider(VolumeABC):
         :param vm: the name of vm.
         :return: dict
         """
-
         vm_info = self.client.describe_instances(
             Filters=[
                 {
@@ -229,7 +226,6 @@ class Provider(VolumeABC):
                 },
             ],
         )
-
         elements = volume['Volumes']
         for i in range(len(elements)):
             try:
@@ -358,7 +354,6 @@ class Provider(VolumeABC):
         :param region (string): availability zone of volume
         :return: dict
         """
-
         for key in self.default.keys():
             if key not in kwargs.keys():
                 kwargs[key] = self.default[key]
@@ -369,15 +364,14 @@ class Provider(VolumeABC):
         result = self.update_dict(result)
         return result
 
-    def _create(self,
-                **kwargs):
+    def _create(self, **kwargs):
         """
         Create a volume.
 
         :param name (string): name of volume
         :param region (string): availability-zone
         :param encrypted (boolean): True|False
-        :param size (integer): size of volume
+        :param size (integer): size of volume. Minimum size for st1 and sc1 is 500 GB.
         :param volume_type (string): type of volume. This can be gp2 for General
                                      Purpose SSD, io1 for Provisioned IOPS SSD
                                      (not implemented), st1 for Throughput
@@ -386,14 +380,11 @@ class Provider(VolumeABC):
         :param snapshot (string): snapshot id
         :return: dict
         """
-
         if kwargs['volume_type'] == 'io1':
             raise NotImplementedError
-
-        if kwargs['volume_type'] == 'sc1':
+        if kwargs['volume_type'] in ['sc1', 'st1']:
             if int(kwargs['size']) < 500:
-                raise Exception("minimum volume size for sc1 is 500 GB")
-
+                Console.error("minimum volume size for sc1 is 500 GB")
         if kwargs['snapshot'] != "None":
             r = self.client.create_volume(
                 AvailabilityZone=kwargs['region'],
@@ -436,9 +427,7 @@ class Provider(VolumeABC):
         result['Volumes'][0]['AttachedToVm'] = []
         return result
 
-    def list(self,
-             **kwargs
-             ):
+    def list(self, **kwargs):
 
         """
         This function list all volumes as following:
@@ -452,7 +441,7 @@ class Provider(VolumeABC):
         :param NAME: name of volume
         :param vm: name of vm
         :param region: name of availability zone
-        :return: dict
+        :return: dict of volume
         """
         if kwargs and kwargs['refresh']:
             result = self.client.describe_volumes()
@@ -467,7 +456,6 @@ class Provider(VolumeABC):
                             },
                         ],
                     )
-
                 elif key == 'NAMES' and kwargs['NAMES']:
                     if type(kwargs['NAMES']) == str:
                         kwargs['NAMES'] = [kwargs['NAMES']]
@@ -532,7 +520,6 @@ class Provider(VolumeABC):
         :param NAME (string): volume name
         :return: dict
         """
-
         result = self.client.describe_volumes(
             Filters=[
                 {
@@ -571,9 +558,8 @@ class Provider(VolumeABC):
         :param names (string): names of volumes
         :param vm (string): name of vm
         :param dryrun (boolean): True|False
-        :return: list of dict
+        :return: dict of volume
         """
-
         devices = [
             "/dev/sdb",
             "/dev/sdd",
@@ -581,7 +567,6 @@ class Provider(VolumeABC):
             "/dev/sdf",
             "/dev/sdg",
             "/dev/sdh", ]
-
         vm_id = self.find_vm_id(vm)
         for name in names:
             volume_id = self.find_volume_id(name)
@@ -595,21 +580,19 @@ class Provider(VolumeABC):
                     )
                 except:
                     pass
-
         return self.list(NAMES=names, refresh=True)
 
     def detach(self,
                name):
 
         """
-        This function detach a volume from vm. It returns self.list() to list
+        This function detach a volume from vm. It returns volume dict of
         the updated volume. The vm under "AttachedToVm" will be removed if
         volume is successfully detached.
 
-        :param name: name of volume to dettach
-        :return: dict
+        :param name: name of volume to detach
+        :return: dict of volume
         """
-
         volume_status = self.status(name=name)[0]['State']
         if volume_status == 'in-use':
             volume_id = self.find_volume_id(volume_name=name)
@@ -665,7 +648,7 @@ class Provider(VolumeABC):
         :param NAME (string): the volume name
         :param vm (string): the vm name
         :param region (string): the availability zone
-        :return: dict
+        :return: dict of volume
         """
         volume_name = kwargs['NAME']
         vm = kwargs['vm']
@@ -682,21 +665,13 @@ class Provider(VolumeABC):
         # migrate within same region:
         if vm_status == 'running':
             if volume_region == vm_region:
-                # if volume and vm are in the same zone,
                 if volume_status == "in-use":
-                    # if volume is attached to a vm, first detach and than
-                    #       attach to vm
                     self.detach(name=volume_name)
                     self.attach(names=[volume_name, ], vm=vm)
                 elif volume_status == "available":
-                    # if volume is available, attach to vm
                     self.attach(names=[volume_name, ], vm=vm)
                 return self.list(NAME=volume_name, refresh=True)
             else:
-                # if volume and vm are not in the same zone, create a snapshot,
-                #       create a new volume with the snapshot and in the
-                #       same zone as vm, delete old volume
-
                 snapshot_id = self.client.create_snapshot(
                     VolumeId=volume_id, )['SnapshotId']
                 ec2 = boto3.resource('ec2')
@@ -721,7 +696,6 @@ class Provider(VolumeABC):
                         break
                 self.attach(names=[volume_name, ], vm=vm)
                 response = self.client.delete_volume(VolumeId=volume_id)
-
         else:
             Console.error("vm is not available")
         result = self.list(NAME=kwargs['NAME'], refresh=True)[0]
@@ -739,7 +713,6 @@ class Provider(VolumeABC):
             'region']
         volume_2 = kwargs['NAMES'][0]
         volume_2_id = self.find_volume_id(volume_name=volume_2)
-        # make a snapshot of volume_2
         snapshot_id = self.client.create_snapshot(
             VolumeId=volume_2_id, )['SnapshotId']
         ec2 = boto3.resource('ec2')
@@ -751,12 +724,9 @@ class Provider(VolumeABC):
             time += 5
             if snapshot.state == "completed":
                 break
-        # delete volume_1
         self.delete(name=volume_1)
-        # create volume_1 with snapshot of volume_2
         kwargs = {'region': volume_1_region, 'snapshot': snapshot_id,
                   'NAME': volume_1}
-
         new_volume = self.create(**kwargs)
         start_timeout = 360
         time = 0

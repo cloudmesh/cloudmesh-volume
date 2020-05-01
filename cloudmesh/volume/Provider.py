@@ -70,20 +70,15 @@ class Provider(object):  # broken
         :param output: "table" or "json"
         :return:
         """
-
         if kind is None and len(data) > 0:
             kind = data[0]["cm"]["kind"]
-
         if output == "table":
-
             order = self.provider.output[kind]['order']
             header = self.provider.output[kind]['header']
-
             if 'humanize' in self.provider.output[kind]:
                 humanize = self.provider.output[kind]['humanize']
             else:
                 humanize = None
-
             print(Printer.flatwrite(data,
                                     sort_keys=["name"],
                                     order=order,
@@ -103,13 +98,10 @@ class Provider(object):  # broken
             self.cloud = name
             self.kind = self.spec["cm"]["kind"]
             super().__init__()
-
         except:
             Console.error(f"provider {name} not found in {configuration}")
             raise ValueError(f"provider {name} not found in {configuration}")
-
         P = None
-
         if self.kind in ["multipass",
                          "aws",
                          "azure",
@@ -117,11 +109,9 @@ class Provider(object):  # broken
                          "openstack",
                          "oracle"]:
             P = Provider.get_provider(self.kind)
-
         if P is None:
             Console.error(f"provider {name} not supported")
             raise ValueError(f"provider {name} not supported")
-
         self.provider = P(self.cloud)
 
     @DatabaseUpdate()
@@ -136,7 +126,6 @@ class Provider(object):  # broken
            :param description (string)
            :return: dict
         """
-
         try:
             data = self.provider.create(**kwargs)
             variables = Variables()

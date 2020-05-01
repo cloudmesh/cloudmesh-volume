@@ -56,9 +56,16 @@ class VolumeABC(metaclass=ABCMeta):
     def create(self, **kwargs):
         """
         Create a volume.
+        For multipass, creates a directory, volume region means path of the directory, i.e.
+            "/Users/username/multipass"
+        For aws, creates EBS volume in EC2 service, volume region means availability zone.
+        For azure, creates disk, volume region means location.
+        For google, creates zonal disks, volume region means zone of volume.
+        For oracle, creates volume in block-storage service, volume region means availability_domain.
+        For openstack, creates volume, volume region means zone.
 
         :param NAME (string): name of volume
-        :param region (string): availability-zone
+        :param region (string): region
         :param size (integer): size of volume
         :param volume_type (string): type of volume.
         :param description (string)
@@ -70,7 +77,7 @@ class VolumeABC(metaclass=ABCMeta):
     def delete(self, names=None):
         """
         Delete volumes.
-        If NAMES is not given, delete the most recent volume.
+        If volume names are not given, delete the most recent volume.
 
         :param NAMES: List of volume names
         :return:
@@ -81,13 +88,12 @@ class VolumeABC(metaclass=ABCMeta):
     def attach(self, name=None, vm=None):
         """
         Attach volume to a vm.
-        If NAMES is not specified, attach the most recent volume to vm.
+        If volume names are not specified, attach the most recent volume to vm.
 
         :param NAME: volume name
         :param vm: vm name which the volume will be attached to
         :return: dict
         """
-
         raise NotImplementedError
 
     @abstractmethod
@@ -120,7 +126,7 @@ class VolumeABC(metaclass=ABCMeta):
     def status(self, name=None):
         """
         This function returns status of volume, such as "available", "in-use"
-        and etc..
+        and etc.
 
         :param NAME: name of volume
         :return: string
@@ -130,11 +136,11 @@ class VolumeABC(metaclass=ABCMeta):
     @abstractmethod
     def migrate(self, **kwargs):
         """
-        Migrate volume from one vm to another vm.
+        This function migrate volume from one vm to another vm in the same cloud service.
 
         :param NAME (string): the volume name
         :param vm (string): the vm name
-        :param region (string): the availability zone
+        :param region (string): region
         :return: dict
         """
         raise NotImplementedError
@@ -142,7 +148,7 @@ class VolumeABC(metaclass=ABCMeta):
     @abstractmethod
     def sync(self, **kwargs):
         """
-        synchronize one volume with another volume
+        This function synchronize one volume with another volume in the same cloud service.
 
         :param NAMES (list): list of volume names
         :return: dict
@@ -151,8 +157,8 @@ class VolumeABC(metaclass=ABCMeta):
 
     def purge(self, **kwargs):
         """
-        purge all the deleted volume in MongoDB database
+        This function purge all the deleted volume in MongoDB database
 
-        :return: dict
+        :return:
         """
         raise NotImplementedError

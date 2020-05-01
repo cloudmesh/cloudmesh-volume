@@ -38,7 +38,7 @@ pip install cloudmesh-volume
 
 ### Developers
 
-Developers want the source code and do the developement in the
+Developers want the source code and do the development in the
 directory. We use the `cloudmesh-installer` to do this. Make sure you
 use a virtual environment such as ~/ENV3. We recommend using python
 3.8.2

@@ -17,15 +17,15 @@ class Provider(VolumeABC):
     cloudmesh:
       volume:
         {name}:
-              cm:
-                active: '1'
-                heading: multipass
-                host: TBD
-                kind: multipass
-                version: TBD
-                service: volume
-              default:
-                path: /Volumes/multipass
+          cm:
+            active: '1'
+            heading: multipass
+            host: TBD
+            kind: multipass
+            version: TBD
+            service: volume
+          default:
+            path: /Volumes/multipass
     """
 
     output = {

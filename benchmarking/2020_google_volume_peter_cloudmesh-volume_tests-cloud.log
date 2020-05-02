@@ -31,63 +31,120 @@ tests/test_01_setup.py::Test_provider_volume::test_cms_vm
 # test_cms_vm \tests\test_01_setup.py 59
 # ######################################################################
 [0m
-vm boot --name=test-pmccand-vm-92
-INFO: Waiting for insert operation to finish : test-pmccand-vm-92
-insert on test-pmccand-vm-92 is complete.
-Instance test-pmccand-vm-92 created successfully.
-INFO: Waiting for setMetadata operation to finish : test-pmccand-vm-92
-setMetadata on test-pmccand-vm-92 is complete.
-Metadata keys added to instance test-pmccand-vm-92
-
-# ----------------------------------------------------------------------
-# created
-# ----------------------------------------------------------------------
-# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
-# ----------------------------------------------------------------------
-# [{'_id': ObjectId('5eab39bd1a0e50f93674a3bf'),
-#   'cloud': 'google',
-#   'cm': {'cloud': 'google',
-#          'collection': 'google-vm',
-#          'created': '2020-04-30 20:49:01.124959',
-#          'creation': '13.00',
-#          'group': 'default',
-#          'kind': 'vm',
-#          'label': 'test-pmccand-vm-92',
-#          'modified': '2020-04-30 20:49:19.841843',
-#          'name': 'test-pmccand-vm-92',
-#          'status': 'available'},
-#   'created': '2020-04-30T13:49:07.257-07:00',
-#   'deviceName': 'test-pmccand-vm-92-disk',
-#   'diskSizeGb': '10',
-#   'diskType': 'PERSISTENT',
-#   'fingerprint': 'ppi25IT-IJs=',
-#   'id': '4605632461740082989',
-#   'ip_public': '35.209.43.196',
-#   'kind': 'compute#instance',
-#   'machineType': 'g1-small',
-#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-92\', '
-#               "'label': 'test-pmccand-vm-92', 'group': 'default', 'cloud': "
-#               "'google', 'status': 'available', 'collection': 'google-vm', "
-#               "'created': '2020-04-30 20:49:01.124959', 'modified': "
-#               '\'2020-04-30 20:49:01.124959\', \'creation\': \'13.00\'}", '
-#               "'image': 'ubuntu-1910', 'size': 10}",
-#   'mode': 'READ_WRITE',
-#   'modified': '2020-04-30 20:49:13.576792',
-#   'name': 'test-pmccand-vm-92',
-#   'networkIP': '10.128.0.8',
-#   'network_fingerprint': 'k_CLla4uD4E=',
-#   'sourceImage': 'ubuntu-1910',
-#   'status': 'RUNNING',
-#   'tags': {'fingerprint': '44K85TLN_UQ=',
-#            'items': ['cm-default-http',
-#                      'cm-default-https',
-#                      'cm-default-icmp',
-#                      'cm-default-ssh']},
-#   'type': 'Intel Haswell',
-#   'zone': 'us-central1-a'}]
-# ----------------------------------------------------------------------
-
-Timer: 22.0000s Load: 2.0000s (line_strip)
+vm boot --name=test-pmccand-vm-92
+
+INFO: Waiting for insert operation to finish : test-pmccand-vm-92
+
+insert on test-pmccand-vm-92 is complete.
+
+Instance test-pmccand-vm-92 created successfully.
+
+INFO: Waiting for setMetadata operation to finish : test-pmccand-vm-92
+
+setMetadata on test-pmccand-vm-92 is complete.
+
+Metadata keys added to instance test-pmccand-vm-92
+
+
+
+# ----------------------------------------------------------------------
+
+# created
+
+# ----------------------------------------------------------------------
+
+# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
+
+# ----------------------------------------------------------------------
+
+# [{'_id': ObjectId('5eab39bd1a0e50f93674a3bf'),
+
+#   'cloud': 'google',
+
+#   'cm': {'cloud': 'google',
+
+#          'collection': 'google-vm',
+
+#          'created': '2020-04-30 20:49:01.124959',
+
+#          'creation': '13.00',
+
+#          'group': 'default',
+
+#          'kind': 'vm',
+
+#          'label': 'test-pmccand-vm-92',
+
+#          'modified': '2020-04-30 20:49:19.841843',
+
+#          'name': 'test-pmccand-vm-92',
+
+#          'status': 'available'},
+
+#   'created': '2020-04-30T13:49:07.257-07:00',
+
+#   'deviceName': 'test-pmccand-vm-92-disk',
+
+#   'diskSizeGb': '10',
+
+#   'diskType': 'PERSISTENT',
+
+#   'fingerprint': 'ppi25IT-IJs=',
+
+#   'id': '4605632461740082989',
+
+#   'ip_public': '35.209.43.196',
+
+#   'kind': 'compute#instance',
+
+#   'machineType': 'g1-small',
+
+#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-92\', '
+
+#               "'label': 'test-pmccand-vm-92', 'group': 'default', 'cloud': "
+
+#               "'google', 'status': 'available', 'collection': 'google-vm', "
+
+#               "'created': '2020-04-30 20:49:01.124959', 'modified': "
+
+#               '\'2020-04-30 20:49:01.124959\', \'creation\': \'13.00\'}", '
+
+#               "'image': 'ubuntu-1910', 'size': 10}",
+
+#   'mode': 'READ_WRITE',
+
+#   'modified': '2020-04-30 20:49:13.576792',
+
+#   'name': 'test-pmccand-vm-92',
+
+#   'networkIP': '10.128.0.8',
+
+#   'network_fingerprint': 'k_CLla4uD4E=',
+
+#   'sourceImage': 'ubuntu-1910',
+
+#   'status': 'RUNNING',
+
+#   'tags': {'fingerprint': '44K85TLN_UQ=',
+
+#            'items': ['cm-default-http',
+
+#                      'cm-default-https',
+
+#                      'cm-default-icmp',
+
+#                      'cm-default-ssh']},
+
+#   'type': 'Intel Haswell',
+
+#   'zone': 'us-central1-a'}]
+
+# ----------------------------------------------------------------------
+
+
+
+Timer: 22.0000s Load: 2.0000s (line_strip)
+
 
 PASSED
 tests/test_01_setup.py::Test_provider_volume::test_benchmark 
@@ -296,16 +353,26 @@ tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate
 # test_cms_terminate \tests\test_03_teardown.py 31
 # ######################################################################
 [0m
-result vm terminate test-pmccand-vm-92
-INFO: Waiting for delete operation to finish : test-pmccand-vm-92
-delete on test-pmccand-vm-92 is complete.
-test-pmccand-vm-92 deleted successfully.
-+--------------------+---------+--------+---------------------+---------------+---------------+----------+---------------+-------------------------+----------------+-------------+-------------+----------------------+-------------------------------+
-| Name               | Cloud   | Kind   |                  Id | Type          | Zone          | Status   | External IP   | Disk Name               |   OS Disk Size | OS Name     | Disk Type   | Provisioning State   | Created                       |
-|--------------------+---------+--------+---------------------+---------------+---------------+----------+---------------+-------------------------+----------------+-------------+-------------+----------------------+-------------------------------|
-| test-pmccand-vm-92 | google  | vm     | 4605632461740082989 | Intel Haswell | us-central1-a | DELETED  | 35.209.43.196 | test-pmccand-vm-92-disk |             10 | ubuntu-1910 | PERSISTENT  | READ_WRITE           | 2020-04-30T13:49:07.257-07:00 |
-+--------------------+---------+--------+---------------------+---------------+---------------+----------+---------------+-------------------------+----------------+-------------+-------------+----------------------+-------------------------------+
-Timer: 113.0000s Load: 2.0000s (line_strip)
+result vm terminate test-pmccand-vm-92
+
+INFO: Waiting for delete operation to finish : test-pmccand-vm-92
+
+delete on test-pmccand-vm-92 is complete.
+
+test-pmccand-vm-92 deleted successfully.
+
++--------------------+---------+--------+---------------------+---------------+---------------+----------+---------------+-------------------------+----------------+-------------+-------------+----------------------+-------------------------------+
+
+| Name               | Cloud   | Kind   |                  Id | Type          | Zone          | Status   | External IP   | Disk Name               |   OS Disk Size | OS Name     | Disk Type   | Provisioning State   | Created                       |
+
+|--------------------+---------+--------+---------------------+---------------+---------------+----------+---------------+-------------------------+----------------+-------------+-------------+----------------------+-------------------------------|
+
+| test-pmccand-vm-92 | google  | vm     | 4605632461740082989 | Intel Haswell | us-central1-a | DELETED  | 35.209.43.196 | test-pmccand-vm-92-disk |             10 | ubuntu-1910 | PERSISTENT  | READ_WRITE           | 2020-04-30T13:49:07.257-07:00 |
+
++--------------------+---------+--------+---------------------+---------------+---------------+----------+---------------+-------------------------+----------------+-------------+-------------+----------------------+-------------------------------+
+
+Timer: 113.0000s Load: 2.0000s (line_strip)
+
 
 PASSED
 tests/test_03_teardown.py::Test_provider_volume::test_benchmark 

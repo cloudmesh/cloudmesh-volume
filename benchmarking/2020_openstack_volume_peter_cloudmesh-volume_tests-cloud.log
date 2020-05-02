@@ -31,144 +31,282 @@ tests/test_01_setup.py::Test_provider_volume::test_cms_vm
 # test_cms_vm \tests\test_01_setup.py 59
 # ######################################################################
 [0m
-vm boot --name=test-pmccand-vm-89
-
-# ----------------------------------------------------------------------
-# Create Server
-# ----------------------------------------------------------------------
-
-    Cloud:    openstack
-    Name:     test-pmccand-vm-89
-    Label:    test-pmccand-vm-89
-    User:     cc
-    IP:       129.114.27.177
-    Image:    CC-Ubuntu18.04
-    Size:     m1.medium
-    Network:  e01ee12e-fd22-4b21-a050-d3e015f42bb1
-    Public:   True
-    Key:      pmccand
-    Location: None
-    Timeout:  360
-    Secgroup: default
-    Group:    default
-    Groups:   ['default']
-
-WARNING: secgroup default already exists in cloud. skipping.
-ERROR: openstack reported the following error
-ERROR: -------------------------------------------------------------------------------
-set_server_metadata() got an unexpected keyword argument 'image'
-ERROR: -------------------------------------------------------------------------------
-
-# ----------------------------------------------------------------------
-# created
-# ----------------------------------------------------------------------
-# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
-# ----------------------------------------------------------------------
-# [{'OS-DCF:diskConfig': 'MANUAL',
-#   'OS-EXT-AZ:availability_zone': '',
-#   'OS-EXT-SRV-ATTR:host': None,
-#   'OS-EXT-SRV-ATTR:hypervisor_hostname': None,
-#   'OS-EXT-SRV-ATTR:instance_name': '',
-#   'OS-EXT-STS:power_state': 0,
-#   'OS-EXT-STS:task_state': 'scheduling',
-#   'OS-EXT-STS:vm_state': 'building',
-#   'OS-SRV-USG:launched_at': None,
-#   'OS-SRV-USG:terminated_at': None,
-#   '_id': ObjectId('5eab36e1921a3e1d1602e788'),
-#   'accessIPv4': '',
-#   'accessIPv6': '',
-#   'addresses': {},
-#   'adminPass': 'YivwQS4SnSuB',
-#   'az': '',
-#   'block_device_mapping': {},
-#   'cloud': 'defaults',
-#   'cm': {'cloud': 'openstack',
-#          'collection': 'openstack-vm',
-#          'created': '2020-04-30 20:36:49.537645',
-#          'creation': '34.00',
-#          'group': 'default',
-#          'kind': 'vm',
-#          'label': 'test-pmccand-vm-89',
-#          'modified': '2020-04-30 20:37:23.455068',
-#          'name': 'test-pmccand-vm-89',
-#          'status': 'available'},
-#   'config_drive': '',
-#   'created': '2020-04-30T20:37:20Z',
-#   'created_at': '2020-04-30T20:37:20Z',
-#   'description': None,
-#   'disk_config': 'MANUAL',
-#   'flavor': {'id': '3'},
-#   'has_config_drive': False,
-#   'host': None,
-#   'hostId': '',
-#   'host_id': '',
-#   'hostname': None,
-#   'hypervisor_hostname': None,
-#   'id': '26de6a21-bd98-42e4-93ee-7e4721e4d285',
-#   'image': Munch({'id': '70731a67-903e-4df2-8d5b-0fbf745f1fda'}),
-#   'instance_name': '',
-#   'interface_ip': '',
-#   'ip_public': '',
-#   'kernel_id': None,
-#   'key_name': 'pmccand',
-#   'launch_index': None,
-#   'launched_at': None,
-#   'location': {'cloud': 'defaults',
-#                'project': {'domain_id': None,
-#                            'domain_name': None,
-#                            'id': '7767f9aac3c143de8b1f0e6acc70f159',
-#                            'name': 'cloudmesh'},
-#                'region_name': 'KVM@TACC',
-#                'zone': ''},
-#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-89\', '
-#               "'label': 'test-pmccand-vm-89', 'group': 'default', 'cloud': "
-#               "'openstack', 'status': 'available', 'collection': "
-#               "'openstack-vm', 'created': '2020-04-30 20:36:49.537645', "
-#               "'modified': '2020-04-30 20:36:49.537645', 'creation': "
-#               '\'34.00\'}", \'image\': \'CC-Ubuntu18.04\', \'size\': '
-#               "'m1.medium'}",
-#   'name': 'test-pmccand-vm-89',
-#   'networks': {},
-#   'os-extended-volumes:volumes_attached': [],
-#   'personality': None,
-#   'power_state': 0,
-#   'private_v4': '',
-#   'progress': 0,
-#   'project_id': '7767f9aac3c143de8b1f0e6acc70f159',
-#   'properties': {'OS-DCF:diskConfig': 'MANUAL',
-#                  'OS-EXT-AZ:availability_zone': '',
-#                  'OS-EXT-SRV-ATTR:host': None,
-#                  'OS-EXT-SRV-ATTR:hypervisor_hostname': None,
-#                  'OS-EXT-SRV-ATTR:instance_name': '',
-#                  'OS-EXT-STS:power_state': 0,
-#                  'OS-EXT-STS:task_state': 'scheduling',
-#                  'OS-EXT-STS:vm_state': 'building',
-#                  'OS-SRV-USG:launched_at': None,
-#                  'OS-SRV-USG:terminated_at': None,
-#                  'os-extended-volumes:volumes_attached': []},
-#   'public_v4': '',
-#   'public_v6': '',
-#   'ramdisk_id': None,
-#   'region': 'KVM@TACC',
-#   'reservation_id': None,
-#   'root_device_name': None,
-#   'scheduler_hints': None,
-#   'security_groups': [],
-#   'server_groups': None,
-#   'status': 'BUILD',
-#   'tags': None,
-#   'task_state': 'scheduling',
-#   'tenant_id': '7767f9aac3c143de8b1f0e6acc70f159',
-#   'terminated_at': None,
-#   'updated': '2020-04-30T20:37:21Z',
-#   'user': 'cc',
-#   'user_data': None,
-#   'user_id': 'e143b52866f44d4da96cc08c9a089e19',
-#   'vm_state': 'building',
-#   'volumes': []}]
-# ----------------------------------------------------------------------
-
-Timer: 38.0000s Load: 2.0000s (line_strip)
+vm boot --name=test-pmccand-vm-89
+
+
+
+# ----------------------------------------------------------------------
+
+# Create Server
+
+# ----------------------------------------------------------------------
+
+
+
+    Cloud:    openstack
+
+    Name:     test-pmccand-vm-89
+
+    Label:    test-pmccand-vm-89
+
+    User:     cc
+
+    IP:       129.114.27.177
+
+    Image:    CC-Ubuntu18.04
+
+    Size:     m1.medium
+
+    Network:  e01ee12e-fd22-4b21-a050-d3e015f42bb1
+
+    Public:   True
+
+    Key:      pmccand
+
+    Location: None
+
+    Timeout:  360
+
+    Secgroup: default
+
+    Group:    default
+
+    Groups:   ['default']
+
+
+
+WARNING: secgroup default already exists in cloud. skipping.
+
+ERROR: openstack reported the following error
+
+ERROR: -------------------------------------------------------------------------------
+
+set_server_metadata() got an unexpected keyword argument 'image'
+
+ERROR: -------------------------------------------------------------------------------
+
+
+
+# ----------------------------------------------------------------------
+
+# created
+
+# ----------------------------------------------------------------------
+
+# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
+
+# ----------------------------------------------------------------------
+
+# [{'OS-DCF:diskConfig': 'MANUAL',
+
+#   'OS-EXT-AZ:availability_zone': '',
+
+#   'OS-EXT-SRV-ATTR:host': None,
+
+#   'OS-EXT-SRV-ATTR:hypervisor_hostname': None,
+
+#   'OS-EXT-SRV-ATTR:instance_name': '',
+
+#   'OS-EXT-STS:power_state': 0,
+
+#   'OS-EXT-STS:task_state': 'scheduling',
+
+#   'OS-EXT-STS:vm_state': 'building',
+
+#   'OS-SRV-USG:launched_at': None,
+
+#   'OS-SRV-USG:terminated_at': None,
+
+#   '_id': ObjectId('5eab36e1921a3e1d1602e788'),
+
+#   'accessIPv4': '',
+
+#   'accessIPv6': '',
+
+#   'addresses': {},
+
+#   'adminPass': 'YivwQS4SnSuB',
+
+#   'az': '',
+
+#   'block_device_mapping': {},
+
+#   'cloud': 'defaults',
+
+#   'cm': {'cloud': 'openstack',
+
+#          'collection': 'openstack-vm',
+
+#          'created': '2020-04-30 20:36:49.537645',
+
+#          'creation': '34.00',
+
+#          'group': 'default',
+
+#          'kind': 'vm',
+
+#          'label': 'test-pmccand-vm-89',
+
+#          'modified': '2020-04-30 20:37:23.455068',
+
+#          'name': 'test-pmccand-vm-89',
+
+#          'status': 'available'},
+
+#   'config_drive': '',
+
+#   'created': '2020-04-30T20:37:20Z',
+
+#   'created_at': '2020-04-30T20:37:20Z',
+
+#   'description': None,
+
+#   'disk_config': 'MANUAL',
+
+#   'flavor': {'id': '3'},
+
+#   'has_config_drive': False,
+
+#   'host': None,
+
+#   'hostId': '',
+
+#   'host_id': '',
+
+#   'hostname': None,
+
+#   'hypervisor_hostname': None,
+
+#   'id': '26de6a21-bd98-42e4-93ee-7e4721e4d285',
+
+#   'image': Munch({'id': '70731a67-903e-4df2-8d5b-0fbf745f1fda'}),
+
+#   'instance_name': '',
+
+#   'interface_ip': '',
+
+#   'ip_public': '',
+
+#   'kernel_id': None,
+
+#   'key_name': 'pmccand',
+
+#   'launch_index': None,
+
+#   'launched_at': None,
+
+#   'location': {'cloud': 'defaults',
+
+#                'project': {'domain_id': None,
+
+#                            'domain_name': None,
+
+#                            'id': '7767f9aac3c143de8b1f0e6acc70f159',
+
+#                            'name': 'cloudmesh'},
+
+#                'region_name': 'KVM@TACC',
+
+#                'zone': ''},
+
+#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-89\', '
+
+#               "'label': 'test-pmccand-vm-89', 'group': 'default', 'cloud': "
+
+#               "'openstack', 'status': 'available', 'collection': "
+
+#               "'openstack-vm', 'created': '2020-04-30 20:36:49.537645', "
+
+#               "'modified': '2020-04-30 20:36:49.537645', 'creation': "
+
+#               '\'34.00\'}", \'image\': \'CC-Ubuntu18.04\', \'size\': '
+
+#               "'m1.medium'}",
+
+#   'name': 'test-pmccand-vm-89',
+
+#   'networks': {},
+
+#   'os-extended-volumes:volumes_attached': [],
+
+#   'personality': None,
+
+#   'power_state': 0,
+
+#   'private_v4': '',
+
+#   'progress': 0,
+
+#   'project_id': '7767f9aac3c143de8b1f0e6acc70f159',
+
+#   'properties': {'OS-DCF:diskConfig': 'MANUAL',
+
+#                  'OS-EXT-AZ:availability_zone': '',
+
+#                  'OS-EXT-SRV-ATTR:host': None,
+
+#                  'OS-EXT-SRV-ATTR:hypervisor_hostname': None,
+
+#                  'OS-EXT-SRV-ATTR:instance_name': '',
+
+#                  'OS-EXT-STS:power_state': 0,
+
+#                  'OS-EXT-STS:task_state': 'scheduling',
+
+#                  'OS-EXT-STS:vm_state': 'building',
+
+#                  'OS-SRV-USG:launched_at': None,
+
+#                  'OS-SRV-USG:terminated_at': None,
+
+#                  'os-extended-volumes:volumes_attached': []},
+
+#   'public_v4': '',
+
+#   'public_v6': '',
+
+#   'ramdisk_id': None,
+
+#   'region': 'KVM@TACC',
+
+#   'reservation_id': None,
+
+#   'root_device_name': None,
+
+#   'scheduler_hints': None,
+
+#   'security_groups': [],
+
+#   'server_groups': None,
+
+#   'status': 'BUILD',
+
+#   'tags': None,
+
+#   'task_state': 'scheduling',
+
+#   'tenant_id': '7767f9aac3c143de8b1f0e6acc70f159',
+
+#   'terminated_at': None,
+
+#   'updated': '2020-04-30T20:37:21Z',
+
+#   'user': 'cc',
+
+#   'user_data': None,
+
+#   'user_id': 'e143b52866f44d4da96cc08c9a089e19',
+
+#   'vm_state': 'building',
+
+#   'volumes': []}]
+
+# ----------------------------------------------------------------------
+
+
+
+Timer: 38.0000s Load: 2.0000s (line_strip)
+
 
 PASSED
 tests/test_01_setup.py::Test_provider_volume::test_benchmark 
@@ -359,13 +497,20 @@ tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate
 # test_cms_terminate \tests\test_03_teardown.py 31
 # ######################################################################
 [0m
-result vm terminate test-pmccand-vm-89
-+--------------------+-----------+--------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------+
-| Name               | Cloud     | Label              | State   | Status   | Task   | Image          | Flavor    | Public IPs     | Private IPs   |   Creation time | Started at                 |
-|--------------------+-----------+--------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------|
-| test-pmccand-vm-89 | openstack | test-pmccand-vm-89 | active  | DELETED  | None   | CC-Ubuntu18.04 | m1.medium | 129.114.27.177 |               |              34 | 2020-04-30T20:37:15.000000 |
-+--------------------+-----------+--------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------+
-Timer: 6.0000s Load: 2.0000s (line_strip)
+result vm terminate test-pmccand-vm-89
+
++--------------------+-----------+--------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------+
+
+| Name               | Cloud     | Label              | State   | Status   | Task   | Image          | Flavor    | Public IPs     | Private IPs   |   Creation time | Started at                 |
+
+|--------------------+-----------+--------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------|
+
+| test-pmccand-vm-89 | openstack | test-pmccand-vm-89 | active  | DELETED  | None   | CC-Ubuntu18.04 | m1.medium | 129.114.27.177 |               |              34 | 2020-04-30T20:37:15.000000 |
+
++--------------------+-----------+--------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------+
+
+Timer: 6.0000s Load: 2.0000s (line_strip)
+
 
 PASSED
 tests/test_03_teardown.py::Test_provider_volume::test_benchmark 

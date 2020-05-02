@@ -1,0 +1,390 @@
+openstack
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 26:<module> .\tests\test_01_setup.py
+# ----------------------------------------------------------------------
+# {'cloud': 'openstack',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-88',
+#  'vm_name': 'test-pmccand-vm-88',
+#  'volume': 'test-pmccand-volume-88'}
+# ----------------------------------------------------------------------
+[0m
+Test run for openstack
+collected 2 items
+
+tests/test_01_setup.py::Test_provider_volume::test_cms_vm 
+[35m
+# ######################################################################
+# test_cms_vm \tests\test_01_setup.py 59
+# ######################################################################
+[0m
+vm boot --name=test-pmccand-vm-89
+
+# ----------------------------------------------------------------------
+# Create Server
+# ----------------------------------------------------------------------
+
+    Cloud:    openstack
+    Name:     test-pmccand-vm-89
+    Label:    test-pmccand-vm-89
+    User:     cc
+    IP:       129.114.27.177
+    Image:    CC-Ubuntu18.04
+    Size:     m1.medium
+    Network:  e01ee12e-fd22-4b21-a050-d3e015f42bb1
+    Public:   True
+    Key:      pmccand
+    Location: None
+    Timeout:  360
+    Secgroup: default
+    Group:    default
+    Groups:   ['default']
+
+WARNING: secgroup default already exists in cloud. skipping.
+ERROR: openstack reported the following error
+ERROR: -------------------------------------------------------------------------------
+set_server_metadata() got an unexpected keyword argument 'image'
+ERROR: -------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# created
+# ----------------------------------------------------------------------
+# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
+# ----------------------------------------------------------------------
+# [{'OS-DCF:diskConfig': 'MANUAL',
+#   'OS-EXT-AZ:availability_zone': '',
+#   'OS-EXT-SRV-ATTR:host': None,
+#   'OS-EXT-SRV-ATTR:hypervisor_hostname': None,
+#   'OS-EXT-SRV-ATTR:instance_name': '',
+#   'OS-EXT-STS:power_state': 0,
+#   'OS-EXT-STS:task_state': 'scheduling',
+#   'OS-EXT-STS:vm_state': 'building',
+#   'OS-SRV-USG:launched_at': None,
+#   'OS-SRV-USG:terminated_at': None,
+#   '_id': ObjectId('5eab36e1921a3e1d1602e788'),
+#   'accessIPv4': '',
+#   'accessIPv6': '',
+#   'addresses': {},
+#   'adminPass': 'YivwQS4SnSuB',
+#   'az': '',
+#   'block_device_mapping': {},
+#   'cloud': 'defaults',
+#   'cm': {'cloud': 'openstack',
+#          'collection': 'openstack-vm',
+#          'created': '2020-04-30 20:36:49.537645',
+#          'creation': '34.00',
+#          'group': 'default',
+#          'kind': 'vm',
+#          'label': 'test-pmccand-vm-89',
+#          'modified': '2020-04-30 20:37:23.455068',
+#          'name': 'test-pmccand-vm-89',
+#          'status': 'available'},
+#   'config_drive': '',
+#   'created': '2020-04-30T20:37:20Z',
+#   'created_at': '2020-04-30T20:37:20Z',
+#   'description': None,
+#   'disk_config': 'MANUAL',
+#   'flavor': {'id': '3'},
+#   'has_config_drive': False,
+#   'host': None,
+#   'hostId': '',
+#   'host_id': '',
+#   'hostname': None,
+#   'hypervisor_hostname': None,
+#   'id': '26de6a21-bd98-42e4-93ee-7e4721e4d285',
+#   'image': Munch({'id': '70731a67-903e-4df2-8d5b-0fbf745f1fda'}),
+#   'instance_name': '',
+#   'interface_ip': '',
+#   'ip_public': '',
+#   'kernel_id': None,
+#   'key_name': 'pmccand',
+#   'launch_index': None,
+#   'launched_at': None,
+#   'location': {'cloud': 'defaults',
+#                'project': {'domain_id': None,
+#                            'domain_name': None,
+#                            'id': '7767f9aac3c143de8b1f0e6acc70f159',
+#                            'name': 'cloudmesh'},
+#                'region_name': 'KVM@TACC',
+#                'zone': ''},
+#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-89\', '
+#               "'label': 'test-pmccand-vm-89', 'group': 'default', 'cloud': "
+#               "'openstack', 'status': 'available', 'collection': "
+#               "'openstack-vm', 'created': '2020-04-30 20:36:49.537645', "
+#               "'modified': '2020-04-30 20:36:49.537645', 'creation': "
+#               '\'34.00\'}", \'image\': \'CC-Ubuntu18.04\', \'size\': '
+#               "'m1.medium'}",
+#   'name': 'test-pmccand-vm-89',
+#   'networks': {},
+#   'os-extended-volumes:volumes_attached': [],
+#   'personality': None,
+#   'power_state': 0,
+#   'private_v4': '',
+#   'progress': 0,
+#   'project_id': '7767f9aac3c143de8b1f0e6acc70f159',
+#   'properties': {'OS-DCF:diskConfig': 'MANUAL',
+#                  'OS-EXT-AZ:availability_zone': '',
+#                  'OS-EXT-SRV-ATTR:host': None,
+#                  'OS-EXT-SRV-ATTR:hypervisor_hostname': None,
+#                  'OS-EXT-SRV-ATTR:instance_name': '',
+#                  'OS-EXT-STS:power_state': 0,
+#                  'OS-EXT-STS:task_state': 'scheduling',
+#                  'OS-EXT-STS:vm_state': 'building',
+#                  'OS-SRV-USG:launched_at': None,
+#                  'OS-SRV-USG:terminated_at': None,
+#                  'os-extended-volumes:volumes_attached': []},
+#   'public_v4': '',
+#   'public_v6': '',
+#   'ramdisk_id': None,
+#   'region': 'KVM@TACC',
+#   'reservation_id': None,
+#   'root_device_name': None,
+#   'scheduler_hints': None,
+#   'security_groups': [],
+#   'server_groups': None,
+#   'status': 'BUILD',
+#   'tags': None,
+#   'task_state': 'scheduling',
+#   'tenant_id': '7767f9aac3c143de8b1f0e6acc70f159',
+#   'terminated_at': None,
+#   'updated': '2020-04-30T20:37:21Z',
+#   'user': 'cc',
+#   'user_data': None,
+#   'user_id': 'e143b52866f44d4da96cc08c9a089e19',
+#   'vm_state': 'building',
+#   'volumes': []}]
+# ----------------------------------------------------------------------
+
+Timer: 38.0000s Load: 2.0000s (line_strip)
+
+PASSED
+tests/test_01_setup.py::Test_provider_volume::test_benchmark 
+
++---------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+| Name                      | Status   |   Time | Start               | tag       | Node            | User   | OS      | Version                         |
+|---------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------|
+| test_01_setup/test_cms_vm | ok       | 42.013 | 2020-04-30 20:36:45 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++---------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_01_setup/test_cms_vm,ok,42.013,2020-04-30 20:36:45,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+c:\users\petem\env3\lib\site-packages\openstack\resource.py:210
+  c:\users\petem\env3\lib\site-packages\openstack\resource.py:210: DeprecationWarning: Using or importing the ABCs from 'collections' instead of from 'collections.abc' is deprecated since Python 3.3, and in 3.9 it will stop working
+    class _ComponentManager(collections.MutableMapping):
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+======================= 2 passed, 2 warnings in 45.33s ========================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 24:<module> .\tests\test_02_volume_provider.py
+# ----------------------------------------------------------------------
+# {'cloud': 'openstack',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-89',
+#  'vm_name': 'test-pmccand-vm-89',
+#  'volume': 'test-pmccand-volume-88'}
+# ----------------------------------------------------------------------
+[0m
+Test run for openstack
+collected 6 items
+
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_create volume list --cloud=openstack
+
+# ----------------------------------------------------------------------
+# arguments
+# ----------------------------------------------------------------------
+# 118:do_volume .\cloudmesh\volume\command\volume.py
+# ----------------------------------------------------------------------
+# {'--cloud': 'openstack',
+#  '--description': None,
+#  '--dryrun': False,
+#  '--key': None,
+#  '--output': 'table',
+#  '--path': None,
+#  '--refresh': False,
+#  '--region': None,
+#  '--size': None,
+#  '--value': None,
+#  '--vm': None,
+#  '--volume_type': None,
+#  'NAME': None,
+#  'NAMES': None,
+#  'add_tag': False,
+#  'attach': False,
+#  'create': False,
+#  'delete': False,
+#  'detach': False,
+#  'list': True,
+#  'migrate': False,
+#  'purge': False,
+#  'status': False,
+#  'sync': False}
+# ----------------------------------------------------------------------
+
+None
+None
+Timer: 1.0000s Load: 2.0000s (line_strip)
+
+[35m
+# ######################################################################
+# test_provider_volume_create \tests\test_02_volume_provider.py 47
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_list 
+[35m
+# ######################################################################
+# test_provider_volume_list \tests\test_02_volume_provider.py 77
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach 
+[35m
+# ######################################################################
+# test_provider_volume_attach \tests\test_02_volume_provider.py 87
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach 
+[35m
+# ######################################################################
+# test_provider_volume_detach \tests\test_02_volume_provider.py 116
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete 
+[35m
+# ######################################################################
+# test_provider_volume_delete \tests\test_02_volume_provider.py 140
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_benchmark 
+
++-----------------------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+| Name                                                | Status   |   Time | Start               | tag       | Node            | User   | OS      | Version                         |
+|-----------------------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------|
+| test_02_volume_provider/test_provider_volume_create | ok       |  7.047 | 2020-04-30 20:37:36 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_list   | ok       |  1.35  | 2020-04-30 20:37:43 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_attach | ok       | 27.861 | 2020-04-30 20:37:44 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_detach | ok       |  8.933 | 2020-04-30 20:38:18 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_delete | ok       |  9.062 | 2020-04-30 20:38:34 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-----------------------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_02_volume_provider/test_provider_volume_create,ok,7.047,2020-04-30 20:37:36,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_list,ok,1.35,2020-04-30 20:37:43,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_attach,ok,27.861,2020-04-30 20:37:44,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_detach,ok,8.933,2020-04-30 20:38:18,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_delete,ok,9.062,2020-04-30 20:38:34,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+c:\users\petem\env3\lib\site-packages\openstack\resource.py:210
+  c:\users\petem\env3\lib\site-packages\openstack\resource.py:210: DeprecationWarning: Using or importing the ABCs from 'collections' instead of from 'collections.abc' is deprecated since Python 3.3, and in 3.9 it will stop working
+    class _ComponentManager(collections.MutableMapping):
+
+tests/test_02_volume_provider.py: 90 tests with warnings
+  c:\users\petem\env3\lib\site-packages\openstack\resource.py:351: DeprecationWarning: inspect.getargspec() is deprecated since Python 3.0, use inspect.signature() or inspect.getfullargspec()
+    len(inspect.getargspec(type_).args) > 1)
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+================== 6 passed, 92 warnings in 75.97s (0:01:15) ==================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 20:<module> .\tests\test_03_teardown.py
+# ----------------------------------------------------------------------
+# {'cloud': 'openstack',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-89',
+#  'vm_name': 'test-pmccand-vm-89',
+#  'volume': 'test-pmccand-volume-89'}
+# ----------------------------------------------------------------------
+[0m
+collected 2 items
+
+tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate 
+[35m
+# ######################################################################
+# test_cms_terminate \tests\test_03_teardown.py 31
+# ######################################################################
+[0m
+result vm terminate test-pmccand-vm-89
++--------------------+-----------+--------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------+
+| Name               | Cloud     | Label              | State   | Status   | Task   | Image          | Flavor    | Public IPs     | Private IPs   |   Creation time | Started at                 |
+|--------------------+-----------+--------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------|
+| test-pmccand-vm-89 | openstack | test-pmccand-vm-89 | active  | DELETED  | None   | CC-Ubuntu18.04 | m1.medium | 129.114.27.177 |               |              34 | 2020-04-30T20:37:15.000000 |
++--------------------+-----------+--------------------+---------+----------+--------+----------------+-----------+----------------+---------------+-----------------+----------------------------+
+Timer: 6.0000s Load: 2.0000s (line_strip)
+
+PASSED
+tests/test_03_teardown.py::Test_provider_volume::test_benchmark 
+
++-------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+| Name                                | Status   |   Time | Start               | tag       | Node            | User   | OS      | Version                         |
+|-------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------|
+| test_03_teardown/test_cms_terminate | ok       |  9.564 | 2020-04-30 20:38:47 | openstack | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_03_teardown/test_cms_terminate,ok,9.564,2020-04-30 20:38:47,openstack,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+======================== 2 passed, 1 warning in 12.04s ========================

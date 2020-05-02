@@ -1,0 +1,384 @@
+azure
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 26:<module> .\tests\test_01_setup.py
+# ----------------------------------------------------------------------
+# {'cloud': 'azure',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-92',
+#  'vm_name': 'test-pmccand-vm-93',
+#  'volume': 'test-pmccand-volume-93'}
+# ----------------------------------------------------------------------
+[0m
+Test run for azure
+collected 2 items
+
+tests/test_01_setup.py::Test_provider_volume::test_cms_vm 
+[35m
+# ######################################################################
+# test_cms_vm \tests\test_01_setup.py 59
+# ######################################################################
+[0m
+vm boot --name=test-pmccand-vm-94
+
+# ----------------------------------------------------------------------
+# cre
+# ----------------------------------------------------------------------
+# 219:__init__ C:\Users\petem\cm\cloudmesh-azure\cloudmesh\azure\compute\Provider.py
+# ----------------------------------------------------------------------
+# {'AZURE_APPLICATION_ID': '********',
+#  'AZURE_REGION': 'eastus',
+#  'AZURE_SECRET_KEY': 'hXz3DxF667qyL[KB:Y]npBmE[BjLNoyY',
+#  'AZURE_SUBSCRIPTION_ID': '********',
+#  'AZURE_TENANT_ID': '********'}
+# ----------------------------------------------------------------------
+
+INFO: Creating Azure Resource Group
+INFO: Azure Resource Group created: default
+INFO: Creating new public IP
+INFO: Public IP created: cloudmeshVM-pub-ip_0
+INFO: Creating Vnet
+INFO: VNET created: cmnetwork
+INFO: Creating Subnet
+INFO: Subnet created: cmsubnet
+INFO: Creating NIC
+INFO: NIC created: cloudmesh-nic_0
+
+# ----------------------------------------------------------------------
+# Creating Server
+# ----------------------------------------------------------------------
+
+    Name:     test-pmccand-vm-94
+    User:     ubuntu
+    IP:       cloudmeshVM-pub-ip_0
+    Image:    Canonical:UbuntuServer:16.04.0-LTS:latest
+    Size:     Basic_A0
+    Public:   ?
+    Key:      pmccand
+    Location: None
+    Timeout:  360
+    Secgroup: default
+    Group:    default
+
+INFO: VM created: test-pmccand-vm-94
+ERROR: azure reported the following error
+ERROR: -------------------------------------------------------------------------------
+Azure Error: InvalidTagValueLength
+Message: Tag value too large.  Following tag value '{'kind': 'vm', 'name': 'test-pmccand-vm-94', 'label': 'test-pmccand-vm-94', 'group': 'default', 'cloud': 'azure', 'status': 'available', 'collection': 'azure-vm', 'created': '2020-04-30 21:00:07.533538', 'modified': '2020-04-30 21:00:07.533538', 'creation': '195.00'}' exceeded the maximum length. Maximum allowed length for tag value - '256' characters.
+ERROR: -------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# created
+# ----------------------------------------------------------------------
+# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
+# ----------------------------------------------------------------------
+# [{'_id': ObjectId('5eab3c5784327dc540200899'),
+#   'cm': {'cloud': 'azure',
+#          'collection': 'azure-vm',
+#          'created': '2020-04-30 21:00:07.533538',
+#          'creation': '195.00',
+#          'group': 'default',
+#          'kind': 'vm',
+#          'label': 'test-pmccand-vm-94',
+#          'modified': '2020-04-30 21:03:22.930981',
+#          'name': 'test-pmccand-vm-94',
+#          'status': 'available'},
+#   'hardware_profile': {'vm_size': 'Standard_B1s'},
+#   'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/virtualMachines/test-pmccand-vm-94',
+#   'key': 'pmccand',
+#   'location': 'eastus',
+#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-94\', '
+#               "'label': 'test-pmccand-vm-94', 'group': 'default', 'cloud': "
+#               "'azure', 'status': 'available', 'collection': 'azure-vm', "
+#               "'created': '2020-04-30 21:00:07.533538', 'modified': "
+#               '\'2020-04-30 21:00:07.533538\', \'creation\': \'195.00\'}", '
+#               "'image': 'Canonical:UbuntuServer:16.04.0-LTS:latest', 'size': "
+#               "'Basic_A0'}",
+#   'name': 'test-pmccand-vm-94',
+#   'network_profile': {'network_interfaces': [{'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Network/networkInterfaces/cloudmesh-nic_0'}]},
+#   'os_profile': {'admin_username': 'TBD',
+#                  'allow_extension_operations': True,
+#                  'computer_name': 'test-pmccand-vm-94',
+#                  'linux_configuration': {'disable_password_authentication': True,
+#                                          'provision_vm_agent': True,
+#                                          'ssh': {'public_keys': [{'key_data': 'ssh-rsa '
+#                                                                               'AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 '
+#                                                                               'petem@DESKTOP-8KFG755',
+#                                                                   'path': '/home/TBD/.ssh/authorized_keys'}]}},
+#                  'require_guest_provision_signal': True,
+#                  'secrets': []},
+#   'provisioning_state': 'Succeeded',
+#   'public_ip': '13.82.180.122',
+#   'secgroup': 'default',
+#   'secrule': ['ssh', 'icmp', 'http', 'https'],
+#   'ssh_key_name': 'pmccand',
+#   'status': 'ACTIVE',
+#   'storage_profile': {'data_disks': [],
+#                       'image_reference': {'exact_version': '16.04.202004290',
+#                                           'offer': 'UbuntuServer',
+#                                           'publisher': 'Canonical',
+#                                           'sku': '16.04.0-LTS',
+#                                           'version': 'latest'},
+#                       'os_disk': {'caching': 'ReadWrite',
+#                                   'create_option': 'FromImage',
+#                                   'disk_size_gb': 64,
+#                                   'managed_disk': {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/DEFAULT/providers/Microsoft.Compute/disks/cloudmesh-os-disk_test-pmccand-vm-94',
+#                                                    'storage_account_type': 'Premium_LRS'},
+#                                   'name': 'cloudmesh-os-disk_test-pmccand-vm-94',
+#                                   'os_type': 'Linux'}},
+#   'type': 'Microsoft.Compute/virtualMachines',
+#   'vm_id': '32cd925d-af6a-4ce5-ae79-2023b869d3a7'}]
+# ----------------------------------------------------------------------
+
+Timer: 199.0000s Load: 1.0000s (line_strip)
+
+PASSED
+tests/test_01_setup.py::Test_provider_volume::test_benchmark 
+
++---------------------------+----------+---------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+| Name                      | Status   |    Time | Start               | tag   | Node            | User   | OS      | Version                         |
+|---------------------------+----------+---------+---------------------+-------+-----------------+--------+---------+---------------------------------|
+| test_01_setup/test_cms_vm | ok       | 202.411 | 2020-04-30 21:00:02 | azure | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++---------------------------+----------+---------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_01_setup/test_cms_vm,ok,202.411,2020-04-30 21:00:02,azure,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+================== 2 passed, 1 warning in 205.69s (0:03:25) ===================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 24:<module> .\tests\test_02_volume_provider.py
+# ----------------------------------------------------------------------
+# {'cloud': 'azure',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-94',
+#  'vm_name': 'test-pmccand-vm-94',
+#  'volume': 'test-pmccand-volume-93'}
+# ----------------------------------------------------------------------
+[0m
+Test run for azure
+collected 6 items
+
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_create volume list --cloud=azure
+
+# ----------------------------------------------------------------------
+# arguments
+# ----------------------------------------------------------------------
+# 118:do_volume .\cloudmesh\volume\command\volume.py
+# ----------------------------------------------------------------------
+# {'--cloud': 'azure',
+#  '--description': None,
+#  '--dryrun': False,
+#  '--key': None,
+#  '--output': 'table',
+#  '--path': None,
+#  '--refresh': False,
+#  '--region': None,
+#  '--size': None,
+#  '--value': None,
+#  '--vm': None,
+#  '--volume_type': None,
+#  'NAME': None,
+#  'NAMES': None,
+#  'add_tag': False,
+#  'attach': False,
+#  'create': False,
+#  'delete': False,
+#  'detach': False,
+#  'list': True,
+#  'migrate': False,
+#  'purge': False,
+#  'status': False,
+#  'sync': False}
+# ----------------------------------------------------------------------
+
+entry {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/disks/cloudmesh-os-disk_test-pmccand-vm-94', 'name': 'cloudmesh-os-disk_test-pmccand-vm-94', 'type': 'Microsoft.Compute/disks', 'location': 'eastus', 'managed_by': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/virtualMachines/test-pmccand-vm-94', 'sku': {'name': 'Premium_LRS', 'tier': 'Premium'}, 'time_created': '2020-04-30T21:01:37.455738Z', 'os_type': 'Linux', 'hyper_vgeneration': 'V1', 'creation_data': {'create_option': 'FromImage', 'image_reference': {'id': '/Subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/Providers/Microsoft.Compute/Locations/eastus/Publishers/Canonical/ArtifactTypes/VMImage/Offers/UbuntuServer/Skus/16.04.0-LTS/Versions/16.04.202004290'}}, 'disk_size_gb': 64, 'disk_size_bytes': 68719476736, 'unique_id': '07a7779e-7895-4a50-9047-a182dbdd09a6', 'provisioning_state': 'Succeeded', 'disk_iops_read_write': 240, 'disk_mbps_read_write': 50, 'disk_state': 'Attached', 'encryption': {'type': 'EncryptionAtRestWithPlatformKey'}}
++--------------------------------------+-------+--------+--------+------+------------+--------------------------------------------------+
+| Name                                 | Cloud | Kind   | Region | Size | Group_Name | Id                                               |
++--------------------------------------+-------+--------+--------+------+------------+--------------------------------------------------+
+| cloudmesh-os-disk_test-pmccand-vm-94 | azure | volume | eastus | 1    | default    | /subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de |
+|                                      |       |        |        |      |            | 054/resourceGroups/default/providers/Microsoft.C |
+|                                      |       |        |        |      |            | ompute/disks/cloudmesh-os-disk_test-pmccand-     |
+|                                      |       |        |        |      |            | vm-94                                            |
++--------------------------------------+-------+--------+--------+------+------------+--------------------------------------------------+
+None
+Timer: 1.0000s Load: 2.0000s (line_strip)
+
+[35m
+# ######################################################################
+# test_provider_volume_create \tests\test_02_volume_provider.py 47
+# ######################################################################
+[0m
+entry {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/disks/test-pmccand-volume-94', 'name': 'test-pmccand-volume-94', 'type': 'Microsoft.Compute/disks', 'location': 'eastus', 'sku': {'name': 'Standard_LRS', 'tier': 'Standard'}, 'time_created': '2020-04-30T21:03:34.259212Z', 'creation_data': {'create_option': 'Empty'}, 'disk_size_gb': 1, 'disk_size_bytes': 1073741824, 'unique_id': '1613b40a-4a97-4be5-bc7e-2c47262b7386', 'provisioning_state': 'Succeeded', 'disk_iops_read_write': 500, 'disk_mbps_read_write': 60, 'disk_state': 'Unattached', 'encryption': {'type': 'EncryptionAtRestWithPlatformKey'}}
+entry {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/disks/test-pmccand-volume-94', 'name': 'test-pmccand-volume-94', 'type': 'Microsoft.Compute/disks', 'location': 'eastus', 'sku': {'name': 'Standard_LRS', 'tier': 'Standard'}, 'time_created': '2020-04-30T21:03:34.259212Z', 'creation_data': {'create_option': 'Empty'}, 'disk_size_gb': 1, 'disk_size_bytes': 1073741824, 'unique_id': '1613b40a-4a97-4be5-bc7e-2c47262b7386', 'provisioning_state': 'Succeeded', 'disk_iops_read_write': 500, 'disk_mbps_read_write': 60, 'disk_state': 'Unattached', 'encryption': {'type': 'EncryptionAtRestWithPlatformKey'}}
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_list 
+[35m
+# ######################################################################
+# test_provider_volume_list \tests\test_02_volume_provider.py 77
+# ######################################################################
+[0m
+entry {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/disks/cloudmesh-os-disk_test-pmccand-vm-94', 'name': 'cloudmesh-os-disk_test-pmccand-vm-94', 'type': 'Microsoft.Compute/disks', 'location': 'eastus', 'managed_by': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/virtualMachines/test-pmccand-vm-94', 'sku': {'name': 'Premium_LRS', 'tier': 'Premium'}, 'time_created': '2020-04-30T21:01:37.455738Z', 'os_type': 'Linux', 'hyper_vgeneration': 'V1', 'creation_data': {'create_option': 'FromImage', 'image_reference': {'id': '/Subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/Providers/Microsoft.Compute/Locations/eastus/Publishers/Canonical/ArtifactTypes/VMImage/Offers/UbuntuServer/Skus/16.04.0-LTS/Versions/16.04.202004290'}}, 'disk_size_gb': 64, 'disk_size_bytes': 68719476736, 'unique_id': '07a7779e-7895-4a50-9047-a182dbdd09a6', 'provisioning_state': 'Succeeded', 'disk_iops_read_write': 240, 'disk_mbps_read_write': 50, 'disk_state': 'Attached', 'encryption': {'type': 'EncryptionAtRestWithPlatformKey'}}
+entry {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/disks/test-pmccand-volume-94', 'name': 'test-pmccand-volume-94', 'type': 'Microsoft.Compute/disks', 'location': 'eastus', 'sku': {'name': 'Standard_LRS', 'tier': 'Standard'}, 'time_created': '2020-04-30T21:03:34.259212Z', 'creation_data': {'create_option': 'Empty'}, 'disk_size_gb': 1, 'disk_size_bytes': 1073741824, 'unique_id': '1613b40a-4a97-4be5-bc7e-2c47262b7386', 'provisioning_state': 'Succeeded', 'disk_iops_read_write': 500, 'disk_mbps_read_write': 60, 'disk_state': 'Unattached', 'encryption': {'type': 'EncryptionAtRestWithPlatformKey'}}
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach 
+[35m
+# ######################################################################
+# test_provider_volume_attach \tests\test_02_volume_provider.py 87
+# ######################################################################
+[0m
+entry {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/virtualMachines/test-pmccand-vm-94', 'name': 'test-pmccand-vm-94', 'type': 'Microsoft.Compute/virtualMachines', 'location': 'eastus', 'hardware_profile': {'vm_size': 'Standard_B1s'}, 'storage_profile': {'image_reference': {'publisher': 'Canonical', 'offer': 'UbuntuServer', 'sku': '16.04.0-LTS', 'version': 'latest', 'exact_version': '16.04.202004290'}, 'os_disk': {'os_type': 'Linux', 'name': 'cloudmesh-os-disk_test-pmccand-vm-94', 'caching': 'ReadWrite', 'create_option': 'FromImage', 'disk_size_gb': 64, 'managed_disk': {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/DEFAULT/providers/Microsoft.Compute/disks/cloudmesh-os-disk_test-pmccand-vm-94', 'storage_account_type': 'Premium_LRS'}}, 'data_disks': [{'lun': 1, 'name': 'test-pmccand-volume-94', 'caching': 'None', 'create_option': 'Attach', 'disk_size_gb': 1, 'managed_disk': {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/disks/test-pmccand-volume-94', 'storage_account_type': 'Standard_LRS'}, 'to_be_detached': False}]}, 'os_profile': {'computer_name': 'test-pmccand-vm-94', 'admin_username': 'TBD', 'linux_configuration': {'disable_password_authentication': True, 'ssh': {'public_keys': [{'path': '/home/TBD/.ssh/authorized_keys', 'key_data': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755'}]}, 'provision_vm_agent': True}, 'secrets': [], 'allow_extension_operations': True, 'require_guest_provision_signal': True}, 'network_profile': {'network_interfaces': [{'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Network/networkInterfaces/cloudmesh-nic_0'}]}, 'provisioning_state': 'Succeeded', 'vm_id': '32cd925d-af6a-4ce5-ae79-2023b869d3a7'}
+entry {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/disks/test-pmccand-volume-94', 'name': 'test-pmccand-volume-94', 'type': 'Microsoft.Compute/disks', 'location': 'eastus', 'managed_by': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/virtualMachines/test-pmccand-vm-94', 'sku': {'name': 'Standard_LRS', 'tier': 'Standard'}, 'time_created': '2020-04-30T21:03:34.259212Z', 'creation_data': {'create_option': 'Empty'}, 'disk_size_gb': 1, 'disk_size_bytes': 1073741824, 'unique_id': '1613b40a-4a97-4be5-bc7e-2c47262b7386', 'provisioning_state': 'Succeeded', 'disk_iops_read_write': 500, 'disk_mbps_read_write': 60, 'disk_state': 'Attached', 'encryption': {'type': 'EncryptionAtRestWithPlatformKey'}}
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach 
+[35m
+# ######################################################################
+# test_provider_volume_detach \tests\test_02_volume_provider.py 116
+# ######################################################################
+[0m
+entry {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/virtualMachines/test-pmccand-vm-94', 'name': 'test-pmccand-vm-94', 'type': 'Microsoft.Compute/virtualMachines', 'location': 'eastus', 'hardware_profile': {'vm_size': 'Standard_B1s'}, 'storage_profile': {'image_reference': {'publisher': 'Canonical', 'offer': 'UbuntuServer', 'sku': '16.04.0-LTS', 'version': 'latest', 'exact_version': '16.04.202004290'}, 'os_disk': {'os_type': 'Linux', 'name': 'cloudmesh-os-disk_test-pmccand-vm-94', 'caching': 'ReadWrite', 'create_option': 'FromImage', 'disk_size_gb': 64, 'managed_disk': {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/DEFAULT/providers/Microsoft.Compute/disks/cloudmesh-os-disk_test-pmccand-vm-94', 'storage_account_type': 'Premium_LRS'}}, 'data_disks': []}, 'os_profile': {'computer_name': 'test-pmccand-vm-94', 'admin_username': 'TBD', 'linux_configuration': {'disable_password_authentication': True, 'ssh': {'public_keys': [{'path': '/home/TBD/.ssh/authorized_keys', 'key_data': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755'}]}, 'provision_vm_agent': True}, 'secrets': [], 'allow_extension_operations': True, 'require_guest_provision_signal': True}, 'network_profile': {'network_interfaces': [{'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Network/networkInterfaces/cloudmesh-nic_0'}]}, 'provisioning_state': 'Succeeded', 'vm_id': '32cd925d-af6a-4ce5-ae79-2023b869d3a7'}
+entry {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/disks/test-pmccand-volume-94', 'name': 'test-pmccand-volume-94', 'type': 'Microsoft.Compute/disks', 'location': 'eastus', 'sku': {'name': 'Standard_LRS', 'tier': 'Standard'}, 'time_created': '2020-04-30T21:03:34.259212Z', 'creation_data': {'create_option': 'Empty'}, 'disk_size_gb': 1, 'disk_size_bytes': 1073741824, 'unique_id': '1613b40a-4a97-4be5-bc7e-2c47262b7386', 'provisioning_state': 'Succeeded', 'disk_iops_read_write': 500, 'disk_mbps_read_write': 60, 'disk_state': 'Unattached', 'encryption': {'type': 'EncryptionAtRestWithPlatformKey'}}
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete 
+[35m
+# ######################################################################
+# test_provider_volume_delete \tests\test_02_volume_provider.py 140
+# ######################################################################
+[0m
+entry {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/disks/cloudmesh-os-disk_test-pmccand-vm-94', 'name': 'cloudmesh-os-disk_test-pmccand-vm-94', 'type': 'Microsoft.Compute/disks', 'location': 'eastus', 'managed_by': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/virtualMachines/test-pmccand-vm-94', 'sku': {'name': 'Premium_LRS', 'tier': 'Premium'}, 'time_created': '2020-04-30T21:01:37.455738Z', 'os_type': 'Linux', 'hyper_vgeneration': 'V1', 'creation_data': {'create_option': 'FromImage', 'image_reference': {'id': '/Subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/Providers/Microsoft.Compute/Locations/eastus/Publishers/Canonical/ArtifactTypes/VMImage/Offers/UbuntuServer/Skus/16.04.0-LTS/Versions/16.04.202004290'}}, 'disk_size_gb': 64, 'disk_size_bytes': 68719476736, 'unique_id': '07a7779e-7895-4a50-9047-a182dbdd09a6', 'provisioning_state': 'Succeeded', 'disk_iops_read_write': 240, 'disk_mbps_read_write': 50, 'disk_state': 'Attached', 'encryption': {'type': 'EncryptionAtRestWithPlatformKey'}}
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_benchmark 
+
++-----------------------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+| Name                                                | Status   |   Time | Start               | tag   | Node            | User   | OS      | Version                         |
+|-----------------------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------|
+| test_02_volume_provider/test_provider_volume_create | ok       |  3.192 | 2020-04-30 21:03:33 | azure | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_list   | ok       |  0.526 | 2020-04-30 21:03:36 | azure | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_attach | ok       | 31.374 | 2020-04-30 21:03:37 | azure | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_detach | ok       | 31.123 | 2020-04-30 21:04:13 | azure | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_delete | ok       | 30.702 | 2020-04-30 21:04:50 | azure | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-----------------------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_02_volume_provider/test_provider_volume_create,ok,3.192,2020-04-30 21:03:33,azure,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_list,ok,0.526,2020-04-30 21:03:36,azure,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_attach,ok,31.374,2020-04-30 21:03:37,azure,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_detach,ok,31.123,2020-04-30 21:04:13,azure,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_delete,ok,30.702,2020-04-30 21:04:50,azure,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+================== 6 passed, 1 warning in 115.52s (0:01:55) ===================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 20:<module> .\tests\test_03_teardown.py
+# ----------------------------------------------------------------------
+# {'cloud': 'azure',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-94',
+#  'vm_name': 'test-pmccand-vm-94',
+#  'volume': 'test-pmccand-vm-94'}
+# ----------------------------------------------------------------------
+[0m
+collected 2 items
+
+tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate 
+[35m
+# ######################################################################
+# test_cms_terminate \tests\test_03_teardown.py 31
+# ######################################################################
+[0m
+result vm terminate test-pmccand-vm-94
+
+# ----------------------------------------------------------------------
+# cre
+# ----------------------------------------------------------------------
+# 219:__init__ C:\Users\petem\cm\cloudmesh-azure\cloudmesh\azure\compute\Provider.py
+# ----------------------------------------------------------------------
+# {'AZURE_APPLICATION_ID': '********',
+#  'AZURE_REGION': 'eastus',
+#  'AZURE_SECRET_KEY': 'hXz3DxF667qyL[KB:Y]npBmE[BjLNoyY',
+#  'AZURE_SUBSCRIPTION_ID': '********',
+#  'AZURE_TENANT_ID': '********'}
+# ----------------------------------------------------------------------
+
+INFO: Deleting Azure Virtual Machine
+INFO: Deleting Azure Resource Group
++--------------------+---------+------+-----------------------------------+------------+-----------+-----------+--------------+----------------+----------------------+---------+--------+
+| Name               | Cloud   | Id   | Type                              | Location   | VM Size   | OS Name   | OS Version   | OS Disk Size   | Provisioning State   | VM ID   | Kind   |
+|--------------------+---------+------+-----------------------------------+------------+-----------+-----------+--------------+----------------+----------------------+---------+--------|
+| test-pmccand-vm-94 | azure   |      | Microsoft.Compute/virtualMachines | eastus     |           |           |              |                |                      |         | vm     |
++--------------------+---------+------+-----------------------------------+------------+-----------+-----------+--------------+----------------+----------------------+---------+--------+
+Timer: 284.0000s Load: 1.0000s (line_strip)
+
+PASSED
+tests/test_03_teardown.py::Test_provider_volume::test_benchmark 
+
++-------------------------------------+----------+---------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+| Name                                | Status   |    Time | Start               | tag   | Node            | User   | OS      | Version                         |
+|-------------------------------------+----------+---------+---------------------+-------+-----------------+--------+---------+---------------------------------|
+| test_03_teardown/test_cms_terminate | ok       | 286.795 | 2020-04-30 21:05:24 | azure | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-------------------------------------+----------+---------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_03_teardown/test_cms_terminate,ok,286.795,2020-04-30 21:05:24,azure,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+================== 2 passed, 1 warning in 289.18s (0:04:49) ===================

@@ -1,1 +1,372 @@
+aws
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 26:<module> .\tests\test_01_setup.py
+# ----------------------------------------------------------------------
+# {'cloud': 'aws',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-90',
+#  'vm_name': 'test-pmccand-vm-90',
+#  'volume': 'pmccand-volume-65'}
+# ----------------------------------------------------------------------
+[0m
+Test run for aws
+collected 2 items
 
+tests/test_01_setup.py::Test_provider_volume::test_cms_vm 
+[35m
+# ######################################################################
+# test_cms_vm \tests\test_01_setup.py 59
+# ######################################################################
+[0m
+vm boot --name=test-pmccand-vm-91
+
+# ----------------------------------------------------------------------
+# Create Server
+# ----------------------------------------------------------------------
+
+    Name:     test-pmccand-vm-91
+    User:     root
+    IP:       None
+    Image:    ami-0c929bde1796e1484
+    Size:     t2.medium
+    Public:   None
+    Key:      pmccand
+    Location: None
+    Timeout:  360
+    Secgroup: default
+    Group:    default
+
+
+Instance created...
+
+Waiting for the Public IP address assignment ...
+    Public IP:   3.22.248.49
+    Private IP:  172.31.11.127
+ERROR: aws reported the following error
+ERROR: -------------------------------------------------------------------------------
+set_server_metadata() got an unexpected keyword argument 'cm'
+ERROR: -------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# created
+# ----------------------------------------------------------------------
+# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
+# ----------------------------------------------------------------------
+# [{'AmiLaunchIndex': 0,
+#   'Architecture': 'x86_64',
+#   'BlockDeviceMappings': [],
+#   'CapacityReservationSpecification': {'CapacityReservationPreference': 'open'},
+#   'ClientToken': '',
+#   'CpuOptions': {'CoreCount': 2, 'ThreadsPerCore': 1},
+#   'EbsOptimized': False,
+#   'EnaSupport': True,
+#   'HibernationOptions': {'Configured': False},
+#   'Hypervisor': 'xen',
+#   'ImageId': 'ami-0c929bde1796e1484',
+#   'InstanceId': 'i-02acbad098bb7fb46',
+#   'InstanceType': 't2.medium',
+#   'KeyName': 'pmccand',
+#   'LaunchTime': datetime.datetime(2020, 4, 30, 20, 46, 56, tzinfo=tzutc()),
+#   'MetadataOptions': {'HttpEndpoint': 'enabled',
+#                       'HttpPutResponseHopLimit': 1,
+#                       'HttpTokens': 'optional',
+#                       'State': 'pending'},
+#   'Monitoring': {'State': 'disabled'},
+#   'NetworkInterfaces': [{'Attachment': {'AttachTime': datetime.datetime(2020, 4, 30, 20, 46, 56, tzinfo=tzutc()),
+#                                         'AttachmentId': 'eni-attach-0c2c60960e543f3f7',
+#                                         'DeleteOnTermination': True,
+#                                         'DeviceIndex': 0,
+#                                         'Status': 'attaching'},
+#                          'Description': '',
+#                          'Groups': [{'GroupId': 'sg-1c53ba64',
+#                                      'GroupName': 'default'}],
+#                          'InterfaceType': 'interface',
+#                          'Ipv6Addresses': [],
+#                          'MacAddress': '02:ca:3d:ff:d7:20',
+#                          'NetworkInterfaceId': 'eni-0de4d6572fee9733c',
+#                          'OwnerId': '039573061956',
+#                          'PrivateDnsName': 'ip-172-31-11-127.us-east-2.compute.internal',
+#                          'PrivateIpAddress': '172.31.11.127',
+#                          'PrivateIpAddresses': [{'Primary': True,
+#                                                  'PrivateDnsName': 'ip-172-31-11-127.us-east-2.compute.internal',
+#                                                  'PrivateIpAddress': '172.31.11.127'}],
+#                          'SourceDestCheck': True,
+#                          'Status': 'in-use',
+#                          'SubnetId': 'subnet-16cb337d',
+#                          'VpcId': 'vpc-58ad7d33'}],
+#   'Placement': {'AvailabilityZone': 'us-east-2a',
+#                 'GroupName': '',
+#                 'Tenancy': 'default'},
+#   'PrivateDnsName': 'ip-172-31-11-127.us-east-2.compute.internal',
+#   'PrivateIpAddress': '172.31.11.127',
+#   'ProductCodes': [],
+#   'PublicDnsName': '',
+#   'RootDeviceName': '/dev/sda1',
+#   'RootDeviceType': 'ebs',
+#   'SecurityGroups': [{'GroupId': 'sg-1c53ba64', 'GroupName': 'default'}],
+#   'SourceDestCheck': True,
+#   'State': {'Code': 0, 'Name': 'pending'},
+#   'StateTransitionReason': '',
+#   'SubnetId': 'subnet-16cb337d',
+#   'Tags': [{'Key': 'cm.user', 'Value': 'pmccand'},
+#            {'Key': 'Name', 'Value': 'test-pmccand-vm-91'},
+#            {'Key': 'cm.status', 'Value': 'BOOTING'},
+#            {'Key': 'cm.kind', 'Value': 'vm'},
+#            {'Key': 'cm.name', 'Value': 'test-pmccand-vm-91'},
+#            {'Key': 'cm.flavor', 'Value': 't2.medium'},
+#            {'Key': 'cm.image', 'Value': 'ami-0c929bde1796e1484'}],
+#   'VirtualizationType': 'hvm',
+#   'VpcId': 'vpc-58ad7d33',
+#   '_id': ObjectId('5eab393ea48aa4aaa3d788bb'),
+#   'cm': {'cloud': 'aws',
+#          'collection': 'aws-vm',
+#          'created': '2020-04-30 20:46:54.204937',
+#          'creation': '20.00',
+#          'group': 'default',
+#          'kind': 'vm',
+#          'label': 'test-pmccand-vm-91',
+#          'modified': '2020-04-30 20:47:14.188339',
+#          'name': 'test-pmccand-vm-91',
+#          'status': 'available'},
+#   'created': ('04/30/2020, 20:46:56',),
+#   'image': ('ami-0c929bde1796e1484',),
+#   'instance_id': ('i-02acbad098bb7fb46',),
+#   'key_name': ('pmccand',),
+#   'kind': 'aws',
+#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-91\', '
+#               "'label': 'test-pmccand-vm-91', 'group': 'default', 'cloud': "
+#               "'aws', 'status': 'available', 'collection': 'aws-vm', "
+#               "'created': '2020-04-30 20:46:54.204937', 'modified': "
+#               '\'2020-04-30 20:46:54.204937\', \'creation\': \'20.00\'}", '
+#               "'image': 'ami-0c929bde1796e1484', 'size': 't2.medium'}",
+#   'name': ('pmccand',),
+#   'private_ips': '172.31.11.127',
+#   'public_ips': '3.22.248.49',
+#   'status': ('pending',),
+#   'updated': ('04/30/2020, 20:46:56',)}]
+# ----------------------------------------------------------------------
+
+Timer: 22.0000s Load: 2.0000s (line_strip)
+
+PASSED
+tests/test_01_setup.py::Test_provider_volume::test_benchmark 
+
++---------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+| Name                      | Status   |   Time | Start               | tag   | Node            | User   | OS      | Version                         |
+|---------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------|
+| test_01_setup/test_cms_vm | ok       | 25.853 | 2020-04-30 20:46:50 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++---------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_01_setup/test_cms_vm,ok,25.853,2020-04-30 20:46:50,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+======================== 2 passed, 1 warning in 28.86s ========================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 24:<module> .\tests\test_02_volume_provider.py
+# ----------------------------------------------------------------------
+# {'cloud': 'aws',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-91',
+#  'vm_name': 'test-pmccand-vm-91',
+#  'volume': 'pmccand-volume-65'}
+# ----------------------------------------------------------------------
+[0m
+Test run for aws
+collected 6 items
+
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_create volume list --cloud=aws
+
+# ----------------------------------------------------------------------
+# arguments
+# ----------------------------------------------------------------------
+# 118:do_volume .\cloudmesh\volume\command\volume.py
+# ----------------------------------------------------------------------
+# {'--cloud': 'aws',
+#  '--description': None,
+#  '--dryrun': False,
+#  '--key': None,
+#  '--output': 'table',
+#  '--path': None,
+#  '--refresh': False,
+#  '--region': None,
+#  '--size': None,
+#  '--value': None,
+#  '--vm': None,
+#  '--volume_type': None,
+#  'NAME': None,
+#  'NAMES': None,
+#  'add_tag': False,
+#  'attach': False,
+#  'create': False,
+#  'delete': False,
+#  'detach': False,
+#  'list': True,
+#  'migrate': False,
+#  'purge': False,
+#  'status': False,
+#  'sync': False}
+# ----------------------------------------------------------------------
+
+None
+None
+Timer: 1.0000s Load: 2.0000s (line_strip)
+
+[35m
+# ######################################################################
+# test_provider_volume_create \tests\test_02_volume_provider.py 47
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_list 
+[35m
+# ######################################################################
+# test_provider_volume_list \tests\test_02_volume_provider.py 77
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach 
+[35m
+# ######################################################################
+# test_provider_volume_attach \tests\test_02_volume_provider.py 87
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach 
+[35m
+# ######################################################################
+# test_provider_volume_detach \tests\test_02_volume_provider.py 116
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete 
+[35m
+# ######################################################################
+# test_provider_volume_delete \tests\test_02_volume_provider.py 140
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_benchmark 
+
++-----------------------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+| Name                                                | Status   |   Time | Start               | tag   | Node            | User   | OS      | Version                         |
+|-----------------------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------|
+| test_02_volume_provider/test_provider_volume_create | ok       |  0.75  | 2020-04-30 20:47:24 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_list   | ok       |  1.057 | 2020-04-30 20:47:40 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_attach | ok       |  3.277 | 2020-04-30 20:47:41 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_detach | ok       | 11.26  | 2020-04-30 20:47:50 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_delete | ok       |  5.617 | 2020-04-30 20:48:06 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-----------------------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_02_volume_provider/test_provider_volume_create,ok,0.75,2020-04-30 20:47:24,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_list,ok,1.057,2020-04-30 20:47:40,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_attach,ok,3.277,2020-04-30 20:47:41,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_detach,ok,11.26,2020-04-30 20:47:50,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_delete,ok,5.617,2020-04-30 20:48:06,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+======================== 6 passed, 1 warning in 56.16s ========================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 20:<module> .\tests\test_03_teardown.py
+# ----------------------------------------------------------------------
+# {'cloud': 'aws',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-91',
+#  'vm_name': 'test-pmccand-vm-91',
+#  'volume': 'test-pmccand-volume-91'}
+# ----------------------------------------------------------------------
+[0m
+collected 2 items
+
+tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate 
+[35m
+# ######################################################################
+# test_cms_terminate \tests\test_03_teardown.py 31
+# ######################################################################
+[0m
+result vm terminate test-pmccand-vm-91
+ec2.instancesCollection(ec2.ServiceResource(), ec2.Instance)
+ec2.instancesCollection(ec2.ServiceResource(), ec2.Instance)
+Terminating Instance..Please wait...
+Instance having Tag:test-pmccand-vm-91 and Instance-Id:i-02acbad098bb7fb46 terminated
++--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------+
+| Name   | Cloud   | Instance ID   | Status   | Image   | Public IPs   | Private IPs   | Creation Time   | Started at   | Kind   |
+|--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------|
++--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------+
+Timer: 32.0000s Load: 2.0000s (line_strip)
+
+PASSED
+tests/test_03_teardown.py::Test_provider_volume::test_benchmark 
+
++-------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+| Name                                | Status   |   Time | Start               | tag   | Node            | User   | OS      | Version                         |
+|-------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------|
+| test_03_teardown/test_cms_terminate | ok       | 35.294 | 2020-04-30 20:48:16 | aws   | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-------------------------------------+----------+--------+---------------------+-------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_03_teardown/test_cms_terminate,ok,35.294,2020-04-30 20:48:16,aws,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+======================== 2 passed, 1 warning in 37.80s ========================

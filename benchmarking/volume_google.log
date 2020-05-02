@@ -1,0 +1,330 @@
+aws
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 26:<module> .\tests\test_01_setup.py
+# ----------------------------------------------------------------------
+# {'cloud': 'google',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-91',
+#  'vm_name': 'test-pmccand-vm-91',
+#  'volume': 'test-pmccand-volume-91'}
+# ----------------------------------------------------------------------
+[0m
+Test run for google
+collected 2 items
+
+tests/test_01_setup.py::Test_provider_volume::test_cms_vm 
+[35m
+# ######################################################################
+# test_cms_vm \tests\test_01_setup.py 59
+# ######################################################################
+[0m
+vm boot --name=test-pmccand-vm-92
+INFO: Waiting for insert operation to finish : test-pmccand-vm-92
+insert on test-pmccand-vm-92 is complete.
+Instance test-pmccand-vm-92 created successfully.
+INFO: Waiting for setMetadata operation to finish : test-pmccand-vm-92
+setMetadata on test-pmccand-vm-92 is complete.
+Metadata keys added to instance test-pmccand-vm-92
+
+# ----------------------------------------------------------------------
+# created
+# ----------------------------------------------------------------------
+# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
+# ----------------------------------------------------------------------
+# [{'_id': ObjectId('5eab39bd1a0e50f93674a3bf'),
+#   'cloud': 'google',
+#   'cm': {'cloud': 'google',
+#          'collection': 'google-vm',
+#          'created': '2020-04-30 20:49:01.124959',
+#          'creation': '13.00',
+#          'group': 'default',
+#          'kind': 'vm',
+#          'label': 'test-pmccand-vm-92',
+#          'modified': '2020-04-30 20:49:19.841843',
+#          'name': 'test-pmccand-vm-92',
+#          'status': 'available'},
+#   'created': '2020-04-30T13:49:07.257-07:00',
+#   'deviceName': 'test-pmccand-vm-92-disk',
+#   'diskSizeGb': '10',
+#   'diskType': 'PERSISTENT',
+#   'fingerprint': 'ppi25IT-IJs=',
+#   'id': '4605632461740082989',
+#   'ip_public': '35.209.43.196',
+#   'kind': 'compute#instance',
+#   'machineType': 'g1-small',
+#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-92\', '
+#               "'label': 'test-pmccand-vm-92', 'group': 'default', 'cloud': "
+#               "'google', 'status': 'available', 'collection': 'google-vm', "
+#               "'created': '2020-04-30 20:49:01.124959', 'modified': "
+#               '\'2020-04-30 20:49:01.124959\', \'creation\': \'13.00\'}", '
+#               "'image': 'ubuntu-1910', 'size': 10}",
+#   'mode': 'READ_WRITE',
+#   'modified': '2020-04-30 20:49:13.576792',
+#   'name': 'test-pmccand-vm-92',
+#   'networkIP': '10.128.0.8',
+#   'network_fingerprint': 'k_CLla4uD4E=',
+#   'sourceImage': 'ubuntu-1910',
+#   'status': 'RUNNING',
+#   'tags': {'fingerprint': '44K85TLN_UQ=',
+#            'items': ['cm-default-http',
+#                      'cm-default-https',
+#                      'cm-default-icmp',
+#                      'cm-default-ssh']},
+#   'type': 'Intel Haswell',
+#   'zone': 'us-central1-a'}]
+# ----------------------------------------------------------------------
+
+Timer: 22.0000s Load: 2.0000s (line_strip)
+
+PASSED
+tests/test_01_setup.py::Test_provider_volume::test_benchmark 
+
++---------------------------+----------+--------+---------------------+--------+-----------------+--------+---------+---------------------------------+
+| Name                      | Status   |   Time | Start               | tag    | Node            | User   | OS      | Version                         |
+|---------------------------+----------+--------+---------------------+--------+-----------------+--------+---------+---------------------------------|
+| test_01_setup/test_cms_vm | ok       | 25.479 | 2020-04-30 20:48:57 | google | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++---------------------------+----------+--------+---------------------+--------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_01_setup/test_cms_vm,ok,25.479,2020-04-30 20:48:57,google,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+======================== 2 passed, 1 warning in 28.56s ========================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 24:<module> .\tests\test_02_volume_provider.py
+# ----------------------------------------------------------------------
+# {'cloud': 'google',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-92',
+#  'vm_name': 'test-pmccand-vm-92',
+#  'volume': 'test-pmccand-volume-91'}
+# ----------------------------------------------------------------------
+[0m
+Test run for google
+collected 6 items
+
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_create volume list --cloud=google
+
+# ----------------------------------------------------------------------
+# arguments
+# ----------------------------------------------------------------------
+# 118:do_volume .\cloudmesh\volume\command\volume.py
+# ----------------------------------------------------------------------
+# {'--cloud': 'google',
+#  '--description': None,
+#  '--dryrun': False,
+#  '--key': None,
+#  '--output': 'table',
+#  '--path': None,
+#  '--refresh': False,
+#  '--region': None,
+#  '--size': None,
+#  '--value': None,
+#  '--vm': None,
+#  '--volume_type': None,
+#  'NAME': None,
+#  'NAMES': None,
+#  'add_tag': False,
+#  'attach': False,
+#  'create': False,
+#  'delete': False,
+#  'detach': False,
+#  'list': True,
+#  'migrate': False,
+#  'purge': False,
+#  'status': False,
+#  'sync': False}
+# ----------------------------------------------------------------------
+
+None
+None
+Timer: 2.0000s Load: 2.0000s (line_strip)
+
+[35m
+# ######################################################################
+# test_provider_volume_create \tests\test_02_volume_provider.py 47
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_list 
+[35m
+# ######################################################################
+# test_provider_volume_list \tests\test_02_volume_provider.py 77
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach 
+[35m
+# ######################################################################
+# test_provider_volume_attach \tests\test_02_volume_provider.py 87
+# ######################################################################
+[0m
+[34m
+# ----------------------------------------------------------------------
+# Stopping VM test-pmccand-vm-92
+# ----------------------------------------------------------------------
+[0m
+[34m
+# ----------------------------------------------------------------------
+# Attaching test-pmccand-volume-92
+# ----------------------------------------------------------------------
+[0m
+[34m
+# ----------------------------------------------------------------------
+# Restarting VM test-pmccand-vm-92
+# ----------------------------------------------------------------------
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach 
+[35m
+# ######################################################################
+# test_provider_volume_detach \tests\test_02_volume_provider.py 116
+# ######################################################################
+[0m
+[34m
+# ----------------------------------------------------------------------
+# Stopping VM test-pmccand-vm-92
+# ----------------------------------------------------------------------
+[0m
+[34m
+# ----------------------------------------------------------------------
+# Detaching test-pmccand-volume-92
+# ----------------------------------------------------------------------
+[0m
+[34m
+# ----------------------------------------------------------------------
+# Restarting VM test-pmccand-vm-92
+# ----------------------------------------------------------------------
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete 
+[35m
+# ######################################################################
+# test_provider_volume_delete \tests\test_02_volume_provider.py 140
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_benchmark 
+
++-----------------------------------------------------+----------+---------+---------------------+--------+-----------------+--------+---------+---------------------------------+
+| Name                                                | Status   |    Time | Start               | tag    | Node            | User   | OS      | Version                         |
+|-----------------------------------------------------+----------+---------+---------------------+--------+-----------------+--------+---------+---------------------------------|
+| test_02_volume_provider/test_provider_volume_create | ok       |   3.683 | 2020-04-30 20:49:32 | google | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_list   | ok       |   1.707 | 2020-04-30 20:49:35 | google | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_attach | ok       | 108.138 | 2020-04-30 20:49:37 | google | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_detach | ok       | 223.865 | 2020-04-30 20:51:32 | google | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_delete | ok       |   4.939 | 2020-04-30 20:55:23 | google | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-----------------------------------------------------+----------+---------+---------------------+--------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_02_volume_provider/test_provider_volume_create,ok,3.683,2020-04-30 20:49:32,google,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_list,ok,1.707,2020-04-30 20:49:35,google,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_attach,ok,108.138,2020-04-30 20:49:37,google,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_detach,ok,223.865,2020-04-30 20:51:32,google,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_delete,ok,4.939,2020-04-30 20:55:23,google,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+================== 6 passed, 1 warning in 366.14s (0:06:06) ===================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 20:<module> .\tests\test_03_teardown.py
+# ----------------------------------------------------------------------
+# {'cloud': 'google',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-92',
+#  'vm_name': 'test-pmccand-vm-92',
+#  'volume': 'test-pmccand-volume-92'}
+# ----------------------------------------------------------------------
+[0m
+collected 2 items
+
+tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate 
+[35m
+# ######################################################################
+# test_cms_terminate \tests\test_03_teardown.py 31
+# ######################################################################
+[0m
+result vm terminate test-pmccand-vm-92
+INFO: Waiting for delete operation to finish : test-pmccand-vm-92
+delete on test-pmccand-vm-92 is complete.
+test-pmccand-vm-92 deleted successfully.
++--------------------+---------+--------+---------------------+---------------+---------------+----------+---------------+-------------------------+----------------+-------------+-------------+----------------------+-------------------------------+
+| Name               | Cloud   | Kind   |                  Id | Type          | Zone          | Status   | External IP   | Disk Name               |   OS Disk Size | OS Name     | Disk Type   | Provisioning State   | Created                       |
+|--------------------+---------+--------+---------------------+---------------+---------------+----------+---------------+-------------------------+----------------+-------------+-------------+----------------------+-------------------------------|
+| test-pmccand-vm-92 | google  | vm     | 4605632461740082989 | Intel Haswell | us-central1-a | DELETED  | 35.209.43.196 | test-pmccand-vm-92-disk |             10 | ubuntu-1910 | PERSISTENT  | READ_WRITE           | 2020-04-30T13:49:07.257-07:00 |
++--------------------+---------+--------+---------------------+---------------+---------------+----------+---------------+-------------------------+----------------+-------------+-------------+----------------------+-------------------------------+
+Timer: 113.0000s Load: 2.0000s (line_strip)
+
+PASSED
+tests/test_03_teardown.py::Test_provider_volume::test_benchmark 
+
++-------------------------------------+----------+---------+---------------------+--------+-----------------+--------+---------+---------------------------------+
+| Name                                | Status   |    Time | Start               | tag    | Node            | User   | OS      | Version                         |
+|-------------------------------------+----------+---------+---------------------+--------+-----------------+--------+---------+---------------------------------|
+| test_03_teardown/test_cms_terminate | ok       | 115.435 | 2020-04-30 20:55:34 | google | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-------------------------------------+----------+---------+---------------------+--------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_03_teardown/test_cms_terminate,ok,115.435,2020-04-30 20:55:34,google,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+================== 2 passed, 1 warning in 117.72s (0:01:57) ===================

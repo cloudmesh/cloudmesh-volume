@@ -17,16 +17,16 @@ class Provider(VolumeABC):
         {name}:
           cm:
             active: true
-            heading: google
+            heading: {name}
             host: cloud.google.com
-            label: {label}
+            label: {name}
             kind: google
-            version: TBD
+            version: v1
             service: volume
           default:
-            zone: {zone}
+            zone: us-central1-a
             type: projects/{project_id}/zones/{zone}/diskTypes/pd-standard
-            sizeGb: {sizeGb}
+            sizeGb: 10
           credentials:
             project_id: {project_id}
             path_to_service_account_json: ~/.cloudmesh/service_account.json

@@ -31,118 +31,230 @@ tests/test_01_setup.py::Test_provider_volume::test_cms_vm
 # test_cms_vm \tests\test_01_setup.py 59
 # ######################################################################
 [0m
-vm boot --name=test-pmccand-vm-94
-
-# ----------------------------------------------------------------------
-# cre
-# ----------------------------------------------------------------------
-# 219:__init__ C:\Users\petem\cm\cloudmesh-azure\cloudmesh\azure\compute\Provider.py
-# ----------------------------------------------------------------------
-# {'AZURE_APPLICATION_ID': '********',
-#  'AZURE_REGION': 'eastus',
-#  'AZURE_SECRET_KEY': 'hXz3DxF667qyL[KB:Y]npBmE[BjLNoyY',
-#  'AZURE_SUBSCRIPTION_ID': '********',
-#  'AZURE_TENANT_ID': '********'}
-# ----------------------------------------------------------------------
-
-INFO: Creating Azure Resource Group
-INFO: Azure Resource Group created: default
-INFO: Creating new public IP
-INFO: Public IP created: cloudmeshVM-pub-ip_0
-INFO: Creating Vnet
-INFO: VNET created: cmnetwork
-INFO: Creating Subnet
-INFO: Subnet created: cmsubnet
-INFO: Creating NIC
-INFO: NIC created: cloudmesh-nic_0
-
-# ----------------------------------------------------------------------
-# Creating Server
-# ----------------------------------------------------------------------
-
-    Name:     test-pmccand-vm-94
-    User:     ubuntu
-    IP:       cloudmeshVM-pub-ip_0
-    Image:    Canonical:UbuntuServer:16.04.0-LTS:latest
-    Size:     Basic_A0
-    Public:   ?
-    Key:      pmccand
-    Location: None
-    Timeout:  360
-    Secgroup: default
-    Group:    default
-
-INFO: VM created: test-pmccand-vm-94
-ERROR: azure reported the following error
-ERROR: -------------------------------------------------------------------------------
-Azure Error: InvalidTagValueLength
-Message: Tag value too large.  Following tag value '{'kind': 'vm', 'name': 'test-pmccand-vm-94', 'label': 'test-pmccand-vm-94', 'group': 'default', 'cloud': 'azure', 'status': 'available', 'collection': 'azure-vm', 'created': '2020-04-30 21:00:07.533538', 'modified': '2020-04-30 21:00:07.533538', 'creation': '195.00'}' exceeded the maximum length. Maximum allowed length for tag value - '256' characters.
-ERROR: -------------------------------------------------------------------------------
-
-# ----------------------------------------------------------------------
-# created
-# ----------------------------------------------------------------------
-# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
-# ----------------------------------------------------------------------
-# [{'_id': ObjectId('5eab3c5784327dc540200899'),
-#   'cm': {'cloud': 'azure',
-#          'collection': 'azure-vm',
-#          'created': '2020-04-30 21:00:07.533538',
-#          'creation': '195.00',
-#          'group': 'default',
-#          'kind': 'vm',
-#          'label': 'test-pmccand-vm-94',
-#          'modified': '2020-04-30 21:03:22.930981',
-#          'name': 'test-pmccand-vm-94',
-#          'status': 'available'},
-#   'hardware_profile': {'vm_size': 'Standard_B1s'},
-#   'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/virtualMachines/test-pmccand-vm-94',
-#   'key': 'pmccand',
-#   'location': 'eastus',
-#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-94\', '
-#               "'label': 'test-pmccand-vm-94', 'group': 'default', 'cloud': "
-#               "'azure', 'status': 'available', 'collection': 'azure-vm', "
-#               "'created': '2020-04-30 21:00:07.533538', 'modified': "
-#               '\'2020-04-30 21:00:07.533538\', \'creation\': \'195.00\'}", '
-#               "'image': 'Canonical:UbuntuServer:16.04.0-LTS:latest', 'size': "
-#               "'Basic_A0'}",
-#   'name': 'test-pmccand-vm-94',
-#   'network_profile': {'network_interfaces': [{'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Network/networkInterfaces/cloudmesh-nic_0'}]},
-#   'os_profile': {'admin_username': 'TBD',
-#                  'allow_extension_operations': True,
-#                  'computer_name': 'test-pmccand-vm-94',
-#                  'linux_configuration': {'disable_password_authentication': True,
-#                                          'provision_vm_agent': True,
-#                                          'ssh': {'public_keys': [{'key_data': 'ssh-rsa '
-#                                                                               'AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 '
-#                                                                               'petem@DESKTOP-8KFG755',
-#                                                                   'path': '/home/TBD/.ssh/authorized_keys'}]}},
-#                  'require_guest_provision_signal': True,
-#                  'secrets': []},
-#   'provisioning_state': 'Succeeded',
-#   'public_ip': '13.82.180.122',
-#   'secgroup': 'default',
-#   'secrule': ['ssh', 'icmp', 'http', 'https'],
-#   'ssh_key_name': 'pmccand',
-#   'status': 'ACTIVE',
-#   'storage_profile': {'data_disks': [],
-#                       'image_reference': {'exact_version': '16.04.202004290',
-#                                           'offer': 'UbuntuServer',
-#                                           'publisher': 'Canonical',
-#                                           'sku': '16.04.0-LTS',
-#                                           'version': 'latest'},
-#                       'os_disk': {'caching': 'ReadWrite',
-#                                   'create_option': 'FromImage',
-#                                   'disk_size_gb': 64,
-#                                   'managed_disk': {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/DEFAULT/providers/Microsoft.Compute/disks/cloudmesh-os-disk_test-pmccand-vm-94',
-#                                                    'storage_account_type': 'Premium_LRS'},
-#                                   'name': 'cloudmesh-os-disk_test-pmccand-vm-94',
-#                                   'os_type': 'Linux'}},
-#   'type': 'Microsoft.Compute/virtualMachines',
-#   'vm_id': '32cd925d-af6a-4ce5-ae79-2023b869d3a7'}]
-# ----------------------------------------------------------------------
-
-Timer: 199.0000s Load: 1.0000s (line_strip)
+vm boot --name=test-pmccand-vm-94
+
+
+
+# ----------------------------------------------------------------------
+
+# cre
+
+# ----------------------------------------------------------------------
+
+# 219:__init__ C:\Users\petem\cm\cloudmesh-azure\cloudmesh\azure\compute\Provider.py
+
+# ----------------------------------------------------------------------
+
+# {'AZURE_APPLICATION_ID': '********',
+
+#  'AZURE_REGION': 'eastus',
+
+#  'AZURE_SECRET_KEY': 'hXz3DxF667qyL[KB:Y]npBmE[BjLNoyY',
+
+#  'AZURE_SUBSCRIPTION_ID': '********',
+
+#  'AZURE_TENANT_ID': '********'}
+
+# ----------------------------------------------------------------------
+
+
+
+INFO: Creating Azure Resource Group
+
+INFO: Azure Resource Group created: default
+
+INFO: Creating new public IP
+
+INFO: Public IP created: cloudmeshVM-pub-ip_0
+
+INFO: Creating Vnet
+
+INFO: VNET created: cmnetwork
+
+INFO: Creating Subnet
+
+INFO: Subnet created: cmsubnet
+
+INFO: Creating NIC
+
+INFO: NIC created: cloudmesh-nic_0
+
+
+
+# ----------------------------------------------------------------------
+
+# Creating Server
+
+# ----------------------------------------------------------------------
+
+
+
+    Name:     test-pmccand-vm-94
+
+    User:     ubuntu
+
+    IP:       cloudmeshVM-pub-ip_0
+
+    Image:    Canonical:UbuntuServer:16.04.0-LTS:latest
+
+    Size:     Basic_A0
+
+    Public:   ?
+
+    Key:      pmccand
+
+    Location: None
+
+    Timeout:  360
+
+    Secgroup: default
+
+    Group:    default
+
+
+
+INFO: VM created: test-pmccand-vm-94
+
+ERROR: azure reported the following error
+
+ERROR: -------------------------------------------------------------------------------
+
+Azure Error: InvalidTagValueLength
+
+Message: Tag value too large.  Following tag value '{'kind': 'vm', 'name': 'test-pmccand-vm-94', 'label': 'test-pmccand-vm-94', 'group': 'default', 'cloud': 'azure', 'status': 'available', 'collection': 'azure-vm', 'created': '2020-04-30 21:00:07.533538', 'modified': '2020-04-30 21:00:07.533538', 'creation': '195.00'}' exceeded the maximum length. Maximum allowed length for tag value - '256' characters.
+
+ERROR: -------------------------------------------------------------------------------
+
+
+
+# ----------------------------------------------------------------------
+
+# created
+
+# ----------------------------------------------------------------------
+
+# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
+
+# ----------------------------------------------------------------------
+
+# [{'_id': ObjectId('5eab3c5784327dc540200899'),
+
+#   'cm': {'cloud': 'azure',
+
+#          'collection': 'azure-vm',
+
+#          'created': '2020-04-30 21:00:07.533538',
+
+#          'creation': '195.00',
+
+#          'group': 'default',
+
+#          'kind': 'vm',
+
+#          'label': 'test-pmccand-vm-94',
+
+#          'modified': '2020-04-30 21:03:22.930981',
+
+#          'name': 'test-pmccand-vm-94',
+
+#          'status': 'available'},
+
+#   'hardware_profile': {'vm_size': 'Standard_B1s'},
+
+#   'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Compute/virtualMachines/test-pmccand-vm-94',
+
+#   'key': 'pmccand',
+
+#   'location': 'eastus',
+
+#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-94\', '
+
+#               "'label': 'test-pmccand-vm-94', 'group': 'default', 'cloud': "
+
+#               "'azure', 'status': 'available', 'collection': 'azure-vm', "
+
+#               "'created': '2020-04-30 21:00:07.533538', 'modified': "
+
+#               '\'2020-04-30 21:00:07.533538\', \'creation\': \'195.00\'}", '
+
+#               "'image': 'Canonical:UbuntuServer:16.04.0-LTS:latest', 'size': "
+
+#               "'Basic_A0'}",
+
+#   'name': 'test-pmccand-vm-94',
+
+#   'network_profile': {'network_interfaces': [{'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/default/providers/Microsoft.Network/networkInterfaces/cloudmesh-nic_0'}]},
+
+#   'os_profile': {'admin_username': 'TBD',
+
+#                  'allow_extension_operations': True,
+
+#                  'computer_name': 'test-pmccand-vm-94',
+
+#                  'linux_configuration': {'disable_password_authentication': True,
+
+#                                          'provision_vm_agent': True,
+
+#                                          'ssh': {'public_keys': [{'key_data': 'ssh-rsa '
+
+#                                                                               'AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 '
+
+#                                                                               'petem@DESKTOP-8KFG755',
+
+#                                                                   'path': '/home/TBD/.ssh/authorized_keys'}]}},
+
+#                  'require_guest_provision_signal': True,
+
+#                  'secrets': []},
+
+#   'provisioning_state': 'Succeeded',
+
+#   'public_ip': '13.82.180.122',
+
+#   'secgroup': 'default',
+
+#   'secrule': ['ssh', 'icmp', 'http', 'https'],
+
+#   'ssh_key_name': 'pmccand',
+
+#   'status': 'ACTIVE',
+
+#   'storage_profile': {'data_disks': [],
+
+#                       'image_reference': {'exact_version': '16.04.202004290',
+
+#                                           'offer': 'UbuntuServer',
+
+#                                           'publisher': 'Canonical',
+
+#                                           'sku': '16.04.0-LTS',
+
+#                                           'version': 'latest'},
+
+#                       'os_disk': {'caching': 'ReadWrite',
+
+#                                   'create_option': 'FromImage',
+
+#                                   'disk_size_gb': 64,
+
+#                                   'managed_disk': {'id': '/subscriptions/6e92ea34-5a67-4bd0-886a-35e2366de054/resourceGroups/DEFAULT/providers/Microsoft.Compute/disks/cloudmesh-os-disk_test-pmccand-vm-94',
+
+#                                                    'storage_account_type': 'Premium_LRS'},
+
+#                                   'name': 'cloudmesh-os-disk_test-pmccand-vm-94',
+
+#                                   'os_type': 'Linux'}},
+
+#   'type': 'Microsoft.Compute/virtualMachines',
+
+#   'vm_id': '32cd925d-af6a-4ce5-ae79-2023b869d3a7'}]
+
+# ----------------------------------------------------------------------
+
+
+
+Timer: 199.0000s Load: 1.0000s (line_strip)
+
 
 PASSED
 tests/test_01_setup.py::Test_provider_volume::test_benchmark 
@@ -338,28 +450,50 @@ tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate
 # test_cms_terminate \tests\test_03_teardown.py 31
 # ######################################################################
 [0m
-result vm terminate test-pmccand-vm-94
-
-# ----------------------------------------------------------------------
-# cre
-# ----------------------------------------------------------------------
-# 219:__init__ C:\Users\petem\cm\cloudmesh-azure\cloudmesh\azure\compute\Provider.py
-# ----------------------------------------------------------------------
-# {'AZURE_APPLICATION_ID': '********',
-#  'AZURE_REGION': 'eastus',
-#  'AZURE_SECRET_KEY': 'hXz3DxF667qyL[KB:Y]npBmE[BjLNoyY',
-#  'AZURE_SUBSCRIPTION_ID': '********',
-#  'AZURE_TENANT_ID': '********'}
-# ----------------------------------------------------------------------
-
-INFO: Deleting Azure Virtual Machine
-INFO: Deleting Azure Resource Group
-+--------------------+---------+------+-----------------------------------+------------+-----------+-----------+--------------+----------------+----------------------+---------+--------+
-| Name               | Cloud   | Id   | Type                              | Location   | VM Size   | OS Name   | OS Version   | OS Disk Size   | Provisioning State   | VM ID   | Kind   |
-|--------------------+---------+------+-----------------------------------+------------+-----------+-----------+--------------+----------------+----------------------+---------+--------|
-| test-pmccand-vm-94 | azure   |      | Microsoft.Compute/virtualMachines | eastus     |           |           |              |                |                      |         | vm     |
-+--------------------+---------+------+-----------------------------------+------------+-----------+-----------+--------------+----------------+----------------------+---------+--------+
-Timer: 284.0000s Load: 1.0000s (line_strip)
+result vm terminate test-pmccand-vm-94
+
+
+
+# ----------------------------------------------------------------------
+
+# cre
+
+# ----------------------------------------------------------------------
+
+# 219:__init__ C:\Users\petem\cm\cloudmesh-azure\cloudmesh\azure\compute\Provider.py
+
+# ----------------------------------------------------------------------
+
+# {'AZURE_APPLICATION_ID': '********',
+
+#  'AZURE_REGION': 'eastus',
+
+#  'AZURE_SECRET_KEY': 'hXz3DxF667qyL[KB:Y]npBmE[BjLNoyY',
+
+#  'AZURE_SUBSCRIPTION_ID': '********',
+
+#  'AZURE_TENANT_ID': '********'}
+
+# ----------------------------------------------------------------------
+
+
+
+INFO: Deleting Azure Virtual Machine
+
+INFO: Deleting Azure Resource Group
+
++--------------------+---------+------+-----------------------------------+------------+-----------+-----------+--------------+----------------+----------------------+---------+--------+
+
+| Name               | Cloud   | Id   | Type                              | Location   | VM Size   | OS Name   | OS Version   | OS Disk Size   | Provisioning State   | VM ID   | Kind   |
+
+|--------------------+---------+------+-----------------------------------+------------+-----------+-----------+--------------+----------------+----------------------+---------+--------|
+
+| test-pmccand-vm-94 | azure   |      | Microsoft.Compute/virtualMachines | eastus     |           |           |              |                |                      |         | vm     |
+
++--------------------+---------+------+-----------------------------------+------------+-----------+-----------+--------------+----------------+----------------------+---------+--------+
+
+Timer: 284.0000s Load: 1.0000s (line_strip)
+
 
 PASSED
 tests/test_03_teardown.py::Test_provider_volume::test_benchmark 

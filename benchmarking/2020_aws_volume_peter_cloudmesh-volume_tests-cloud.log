@@ -31,135 +31,264 @@ tests/test_01_setup.py::Test_provider_volume::test_cms_vm
 # test_cms_vm \tests\test_01_setup.py 59
 # ######################################################################
 [0m
-vm boot --name=test-pmccand-vm-91
-
-# ----------------------------------------------------------------------
-# Create Server
-# ----------------------------------------------------------------------
-
-    Name:     test-pmccand-vm-91
-    User:     root
-    IP:       None
-    Image:    ami-0c929bde1796e1484
-    Size:     t2.medium
-    Public:   None
-    Key:      pmccand
-    Location: None
-    Timeout:  360
-    Secgroup: default
-    Group:    default
-
-
-Instance created...
-
-Waiting for the Public IP address assignment ...
-    Public IP:   3.22.248.49
-    Private IP:  172.31.11.127
-ERROR: aws reported the following error
-ERROR: -------------------------------------------------------------------------------
-set_server_metadata() got an unexpected keyword argument 'cm'
-ERROR: -------------------------------------------------------------------------------
-
-# ----------------------------------------------------------------------
-# created
-# ----------------------------------------------------------------------
-# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
-# ----------------------------------------------------------------------
-# [{'AmiLaunchIndex': 0,
-#   'Architecture': 'x86_64',
-#   'BlockDeviceMappings': [],
-#   'CapacityReservationSpecification': {'CapacityReservationPreference': 'open'},
-#   'ClientToken': '',
-#   'CpuOptions': {'CoreCount': 2, 'ThreadsPerCore': 1},
-#   'EbsOptimized': False,
-#   'EnaSupport': True,
-#   'HibernationOptions': {'Configured': False},
-#   'Hypervisor': 'xen',
-#   'ImageId': 'ami-0c929bde1796e1484',
-#   'InstanceId': 'i-02acbad098bb7fb46',
-#   'InstanceType': 't2.medium',
-#   'KeyName': 'pmccand',
-#   'LaunchTime': datetime.datetime(2020, 4, 30, 20, 46, 56, tzinfo=tzutc()),
-#   'MetadataOptions': {'HttpEndpoint': 'enabled',
-#                       'HttpPutResponseHopLimit': 1,
-#                       'HttpTokens': 'optional',
-#                       'State': 'pending'},
-#   'Monitoring': {'State': 'disabled'},
-#   'NetworkInterfaces': [{'Attachment': {'AttachTime': datetime.datetime(2020, 4, 30, 20, 46, 56, tzinfo=tzutc()),
-#                                         'AttachmentId': 'eni-attach-0c2c60960e543f3f7',
-#                                         'DeleteOnTermination': True,
-#                                         'DeviceIndex': 0,
-#                                         'Status': 'attaching'},
-#                          'Description': '',
-#                          'Groups': [{'GroupId': 'sg-1c53ba64',
-#                                      'GroupName': 'default'}],
-#                          'InterfaceType': 'interface',
-#                          'Ipv6Addresses': [],
-#                          'MacAddress': '02:ca:3d:ff:d7:20',
-#                          'NetworkInterfaceId': 'eni-0de4d6572fee9733c',
-#                          'OwnerId': '039573061956',
-#                          'PrivateDnsName': 'ip-172-31-11-127.us-east-2.compute.internal',
-#                          'PrivateIpAddress': '172.31.11.127',
-#                          'PrivateIpAddresses': [{'Primary': True,
-#                                                  'PrivateDnsName': 'ip-172-31-11-127.us-east-2.compute.internal',
-#                                                  'PrivateIpAddress': '172.31.11.127'}],
-#                          'SourceDestCheck': True,
-#                          'Status': 'in-use',
-#                          'SubnetId': 'subnet-16cb337d',
-#                          'VpcId': 'vpc-58ad7d33'}],
-#   'Placement': {'AvailabilityZone': 'us-east-2a',
-#                 'GroupName': '',
-#                 'Tenancy': 'default'},
-#   'PrivateDnsName': 'ip-172-31-11-127.us-east-2.compute.internal',
-#   'PrivateIpAddress': '172.31.11.127',
-#   'ProductCodes': [],
-#   'PublicDnsName': '',
-#   'RootDeviceName': '/dev/sda1',
-#   'RootDeviceType': 'ebs',
-#   'SecurityGroups': [{'GroupId': 'sg-1c53ba64', 'GroupName': 'default'}],
-#   'SourceDestCheck': True,
-#   'State': {'Code': 0, 'Name': 'pending'},
-#   'StateTransitionReason': '',
-#   'SubnetId': 'subnet-16cb337d',
-#   'Tags': [{'Key': 'cm.user', 'Value': 'pmccand'},
-#            {'Key': 'Name', 'Value': 'test-pmccand-vm-91'},
-#            {'Key': 'cm.status', 'Value': 'BOOTING'},
-#            {'Key': 'cm.kind', 'Value': 'vm'},
-#            {'Key': 'cm.name', 'Value': 'test-pmccand-vm-91'},
-#            {'Key': 'cm.flavor', 'Value': 't2.medium'},
-#            {'Key': 'cm.image', 'Value': 'ami-0c929bde1796e1484'}],
-#   'VirtualizationType': 'hvm',
-#   'VpcId': 'vpc-58ad7d33',
-#   '_id': ObjectId('5eab393ea48aa4aaa3d788bb'),
-#   'cm': {'cloud': 'aws',
-#          'collection': 'aws-vm',
-#          'created': '2020-04-30 20:46:54.204937',
-#          'creation': '20.00',
-#          'group': 'default',
-#          'kind': 'vm',
-#          'label': 'test-pmccand-vm-91',
-#          'modified': '2020-04-30 20:47:14.188339',
-#          'name': 'test-pmccand-vm-91',
-#          'status': 'available'},
-#   'created': ('04/30/2020, 20:46:56',),
-#   'image': ('ami-0c929bde1796e1484',),
-#   'instance_id': ('i-02acbad098bb7fb46',),
-#   'key_name': ('pmccand',),
-#   'kind': 'aws',
-#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-91\', '
-#               "'label': 'test-pmccand-vm-91', 'group': 'default', 'cloud': "
-#               "'aws', 'status': 'available', 'collection': 'aws-vm', "
-#               "'created': '2020-04-30 20:46:54.204937', 'modified': "
-#               '\'2020-04-30 20:46:54.204937\', \'creation\': \'20.00\'}", '
-#               "'image': 'ami-0c929bde1796e1484', 'size': 't2.medium'}",
-#   'name': ('pmccand',),
-#   'private_ips': '172.31.11.127',
-#   'public_ips': '3.22.248.49',
-#   'status': ('pending',),
-#   'updated': ('04/30/2020, 20:46:56',)}]
-# ----------------------------------------------------------------------
-
-Timer: 22.0000s Load: 2.0000s (line_strip)
+vm boot --name=test-pmccand-vm-91
+
+
+
+# ----------------------------------------------------------------------
+
+# Create Server
+
+# ----------------------------------------------------------------------
+
+
+
+    Name:     test-pmccand-vm-91
+
+    User:     root
+
+    IP:       None
+
+    Image:    ami-0c929bde1796e1484
+
+    Size:     t2.medium
+
+    Public:   None
+
+    Key:      pmccand
+
+    Location: None
+
+    Timeout:  360
+
+    Secgroup: default
+
+    Group:    default
+
+
+
+
+
+Instance created...
+
+
+
+Waiting for the Public IP address assignment ...
+
+    Public IP:   3.22.248.49
+
+    Private IP:  172.31.11.127
+
+ERROR: aws reported the following error
+
+ERROR: -------------------------------------------------------------------------------
+
+set_server_metadata() got an unexpected keyword argument 'cm'
+
+ERROR: -------------------------------------------------------------------------------
+
+
+
+# ----------------------------------------------------------------------
+
+# created
+
+# ----------------------------------------------------------------------
+
+# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
+
+# ----------------------------------------------------------------------
+
+# [{'AmiLaunchIndex': 0,
+
+#   'Architecture': 'x86_64',
+
+#   'BlockDeviceMappings': [],
+
+#   'CapacityReservationSpecification': {'CapacityReservationPreference': 'open'},
+
+#   'ClientToken': '',
+
+#   'CpuOptions': {'CoreCount': 2, 'ThreadsPerCore': 1},
+
+#   'EbsOptimized': False,
+
+#   'EnaSupport': True,
+
+#   'HibernationOptions': {'Configured': False},
+
+#   'Hypervisor': 'xen',
+
+#   'ImageId': 'ami-0c929bde1796e1484',
+
+#   'InstanceId': 'i-02acbad098bb7fb46',
+
+#   'InstanceType': 't2.medium',
+
+#   'KeyName': 'pmccand',
+
+#   'LaunchTime': datetime.datetime(2020, 4, 30, 20, 46, 56, tzinfo=tzutc()),
+
+#   'MetadataOptions': {'HttpEndpoint': 'enabled',
+
+#                       'HttpPutResponseHopLimit': 1,
+
+#                       'HttpTokens': 'optional',
+
+#                       'State': 'pending'},
+
+#   'Monitoring': {'State': 'disabled'},
+
+#   'NetworkInterfaces': [{'Attachment': {'AttachTime': datetime.datetime(2020, 4, 30, 20, 46, 56, tzinfo=tzutc()),
+
+#                                         'AttachmentId': 'eni-attach-0c2c60960e543f3f7',
+
+#                                         'DeleteOnTermination': True,
+
+#                                         'DeviceIndex': 0,
+
+#                                         'Status': 'attaching'},
+
+#                          'Description': '',
+
+#                          'Groups': [{'GroupId': 'sg-1c53ba64',
+
+#                                      'GroupName': 'default'}],
+
+#                          'InterfaceType': 'interface',
+
+#                          'Ipv6Addresses': [],
+
+#                          'MacAddress': '02:ca:3d:ff:d7:20',
+
+#                          'NetworkInterfaceId': 'eni-0de4d6572fee9733c',
+
+#                          'OwnerId': '039573061956',
+
+#                          'PrivateDnsName': 'ip-172-31-11-127.us-east-2.compute.internal',
+
+#                          'PrivateIpAddress': '172.31.11.127',
+
+#                          'PrivateIpAddresses': [{'Primary': True,
+
+#                                                  'PrivateDnsName': 'ip-172-31-11-127.us-east-2.compute.internal',
+
+#                                                  'PrivateIpAddress': '172.31.11.127'}],
+
+#                          'SourceDestCheck': True,
+
+#                          'Status': 'in-use',
+
+#                          'SubnetId': 'subnet-16cb337d',
+
+#                          'VpcId': 'vpc-58ad7d33'}],
+
+#   'Placement': {'AvailabilityZone': 'us-east-2a',
+
+#                 'GroupName': '',
+
+#                 'Tenancy': 'default'},
+
+#   'PrivateDnsName': 'ip-172-31-11-127.us-east-2.compute.internal',
+
+#   'PrivateIpAddress': '172.31.11.127',
+
+#   'ProductCodes': [],
+
+#   'PublicDnsName': '',
+
+#   'RootDeviceName': '/dev/sda1',
+
+#   'RootDeviceType': 'ebs',
+
+#   'SecurityGroups': [{'GroupId': 'sg-1c53ba64', 'GroupName': 'default'}],
+
+#   'SourceDestCheck': True,
+
+#   'State': {'Code': 0, 'Name': 'pending'},
+
+#   'StateTransitionReason': '',
+
+#   'SubnetId': 'subnet-16cb337d',
+
+#   'Tags': [{'Key': 'cm.user', 'Value': 'pmccand'},
+
+#            {'Key': 'Name', 'Value': 'test-pmccand-vm-91'},
+
+#            {'Key': 'cm.status', 'Value': 'BOOTING'},
+
+#            {'Key': 'cm.kind', 'Value': 'vm'},
+
+#            {'Key': 'cm.name', 'Value': 'test-pmccand-vm-91'},
+
+#            {'Key': 'cm.flavor', 'Value': 't2.medium'},
+
+#            {'Key': 'cm.image', 'Value': 'ami-0c929bde1796e1484'}],
+
+#   'VirtualizationType': 'hvm',
+
+#   'VpcId': 'vpc-58ad7d33',
+
+#   '_id': ObjectId('5eab393ea48aa4aaa3d788bb'),
+
+#   'cm': {'cloud': 'aws',
+
+#          'collection': 'aws-vm',
+
+#          'created': '2020-04-30 20:46:54.204937',
+
+#          'creation': '20.00',
+
+#          'group': 'default',
+
+#          'kind': 'vm',
+
+#          'label': 'test-pmccand-vm-91',
+
+#          'modified': '2020-04-30 20:47:14.188339',
+
+#          'name': 'test-pmccand-vm-91',
+
+#          'status': 'available'},
+
+#   'created': ('04/30/2020, 20:46:56',),
+
+#   'image': ('ami-0c929bde1796e1484',),
+
+#   'instance_id': ('i-02acbad098bb7fb46',),
+
+#   'key_name': ('pmccand',),
+
+#   'kind': 'aws',
+
+#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-91\', '
+
+#               "'label': 'test-pmccand-vm-91', 'group': 'default', 'cloud': "
+
+#               "'aws', 'status': 'available', 'collection': 'aws-vm', "
+
+#               "'created': '2020-04-30 20:46:54.204937', 'modified': "
+
+#               '\'2020-04-30 20:46:54.204937\', \'creation\': \'20.00\'}", '
+
+#               "'image': 'ami-0c929bde1796e1484', 'size': 't2.medium'}",
+
+#   'name': ('pmccand',),
+
+#   'private_ips': '172.31.11.127',
+
+#   'public_ips': '3.22.248.49',
+
+#   'status': ('pending',),
+
+#   'updated': ('04/30/2020, 20:46:56',)}]
+
+# ----------------------------------------------------------------------
+
+
+
+Timer: 22.0000s Load: 2.0000s (line_strip)
+
 
 PASSED
 tests/test_01_setup.py::Test_provider_volume::test_benchmark 
@@ -338,16 +467,26 @@ tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate
 # test_cms_terminate \tests\test_03_teardown.py 31
 # ######################################################################
 [0m
-result vm terminate test-pmccand-vm-91
-ec2.instancesCollection(ec2.ServiceResource(), ec2.Instance)
-ec2.instancesCollection(ec2.ServiceResource(), ec2.Instance)
-Terminating Instance..Please wait...
-Instance having Tag:test-pmccand-vm-91 and Instance-Id:i-02acbad098bb7fb46 terminated
-+--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------+
-| Name   | Cloud   | Instance ID   | Status   | Image   | Public IPs   | Private IPs   | Creation Time   | Started at   | Kind   |
-|--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------|
-+--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------+
-Timer: 32.0000s Load: 2.0000s (line_strip)
+result vm terminate test-pmccand-vm-91
+
+ec2.instancesCollection(ec2.ServiceResource(), ec2.Instance)
+
+ec2.instancesCollection(ec2.ServiceResource(), ec2.Instance)
+
+Terminating Instance..Please wait...
+
+Instance having Tag:test-pmccand-vm-91 and Instance-Id:i-02acbad098bb7fb46 terminated
+
++--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------+
+
+| Name   | Cloud   | Instance ID   | Status   | Image   | Public IPs   | Private IPs   | Creation Time   | Started at   | Kind   |
+
+|--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------|
+
++--------+---------+---------------+----------+---------+--------------+---------------+-----------------+--------------+--------+
+
+Timer: 32.0000s Load: 2.0000s (line_strip)
+
 
 PASSED
 tests/test_03_teardown.py::Test_provider_volume::test_benchmark 

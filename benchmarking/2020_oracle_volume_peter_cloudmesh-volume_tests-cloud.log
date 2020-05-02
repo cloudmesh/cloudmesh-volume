@@ -1,0 +1,1437 @@
+oracle
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 26:<module> .\tests\test_01_setup.py
+# ----------------------------------------------------------------------
+# {'cloud': 'oracle',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-89',
+#  'vm_name': 'test-pmccand-vm-89',
+#  'volume': 'test-pmccand-volume-89'}
+# ----------------------------------------------------------------------
+[0m
+Test run for oracle
+collected 2 items
+
+tests/test_01_setup.py::Test_provider_volume::test_cms_vm 
+[35m
+# ######################################################################
+# test_cms_vm \tests\test_01_setup.py 59
+# ######################################################################
+[0m
+vm boot --name=test-pmccand-vm-90
+
+
+
+# ----------------------------------------------------------------------
+
+# Create Server
+
+# ----------------------------------------------------------------------
+
+
+
+    Name:     test-pmccand-vm-90
+
+    User:     opc
+
+    IP:       None
+
+    Image:    Oracle-Linux-7.7-2020.03.23-0
+
+    Size:     VM.Standard.E2.1
+
+    Public:   True
+
+    Key:      pmccand
+
+    location: None
+
+    timeout:  360
+
+    secgroup: default
+
+    group:    default
+
+    groups:   ['default']
+
+
+
+Created VCN
+
+Created subnet
+
+Created gateway
+
+Launched instance
+
+ERROR: oracle reported the following error
+
+ERROR: -------------------------------------------------------------------------------
+
+set_server_metadata() got an unexpected keyword argument 'image'
+
+ERROR: -------------------------------------------------------------------------------
+
+
+
+ERROR: uploading document
+
+{'cm': {'kind': 'vm', 'name': 'test-pmccand-vm-90', 'label': 'test-pmccand-vm-90', 'group': 'default', 'cloud': 'oracle', 'status': 'available', 'collection': 'oracle-vm', 'created': '2020-04-30 20:39:09.889536', 'modified': '2020-04-30 20:40:47.790029', 'creation': '98.00'}, 'name': 'test-pmccand-vm-90', '_id': ObjectId('5eab376d4c203b6b14b6158f'), 'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T20:39:13.694Z'}}, '_display_name': 'test-pmccand-vm-90', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-1', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_ipxe_script': None, '_launch_mode': 'PARAVIRTUALIZED', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'RUNNING', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard.E2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 8.0,
+
+  "networking_bandwidth_in_gbps": 0.7,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz AMD EPYC\u2122 7551 (Naples)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 20, 39, 14, 917000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, '_image': 'Oracle-Linux-7.7-2020.03.23-0', 'ip_public': '129.213.43.151', 'ip_private': '11.0.0.2', 'status': 'RUNNING', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtachrmsa45n7efdu4542mfmbsvnitfft6xc22a372f3kqea', 'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-90\', \'label\': \'test-pmccand-vm-90\', \'group\': \'default\', \'cloud\': \'oracle\', \'status\': \'available\', \'collection\': \'oracle-vm\', \'created\': \'2020-04-30 20:39:09.889536\', \'modified\': \'2020-04-30 20:39:09.889536\', \'creation\': \'98.00\'}", \'image\': \'Oracle-Linux-7.7-2020.03.23-0\', \'size\': \'VM.Standard.E2.1\'}'}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 8.0,\n  "networking_bandwidth_in_gbps": 0.7,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz AMD EPYC\\u2122 7551 (Naples)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# created
+
+# ----------------------------------------------------------------------
+
+# 220:create C:\Users\petem\cm\cloudmesh-cloud\cloudmesh\compute\vm\Provider.py
+
+# ----------------------------------------------------------------------
+
+# [{'_agent_config': {'_is_management_disabled': False,
+
+#                     '_is_monitoring_disabled': False,
+
+#                     'attribute_map': {'is_management_disabled': 'isManagementDisabled',
+
+#                                       'is_monitoring_disabled': 'isMonitoringDisabled'},
+
+#                     'swagger_types': {'is_management_disabled': 'bool',
+
+#                                       'is_monitoring_disabled': 'bool'}},
+
+#   '_availability_domain': 'uFHJ:US-ASHBURN-AD-1',
+
+#   '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda',
+
+#   '_dedicated_vm_host_id': None,
+
+#   '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu',
+
+#                                     'CreatedOn': '2020-04-30T20:39:13.694Z'}},
+
+#   '_display_name': 'test-pmccand-vm-90',
+
+#   '_extended_metadata': {},
+
+#   '_fault_domain': 'FAULT-DOMAIN-1',
+
+#   '_freeform_tags': {},
+
+#   '_id': ObjectId('5eab376d4c203b6b14b6158f'),
+
+#   '_image': 'Oracle-Linux-7.7-2020.03.23-0',
+
+#   '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha',
+
+#   '_ipxe_script': None,
+
+#   '_launch_mode': 'PARAVIRTUALIZED',
+
+#   '_launch_options': {'_boot_volume_type': 'PARAVIRTUALIZED',
+
+#                       '_firmware': 'UEFI_64',
+
+#                       '_is_consistent_volume_naming_enabled': True,
+
+#                       '_is_pv_encryption_in_transit_enabled': False,
+
+#                       '_network_type': 'PARAVIRTUALIZED',
+
+#                       '_remote_data_volume_type': 'PARAVIRTUALIZED',
+
+#                       'attribute_map': {'boot_volume_type': 'bootVolumeType',
+
+#                                         'firmware': 'firmware',
+
+#                                         'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled',
+
+#                                         'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled',
+
+#                                         'network_type': 'networkType',
+
+#                                         'remote_data_volume_type': 'remoteDataVolumeType'},
+
+#                       'swagger_types': {'boot_volume_type': 'str',
+
+#                                         'firmware': 'str',
+
+#                                         'is_consistent_volume_naming_enabled': 'bool',
+
+#                                         'is_pv_encryption_in_transit_enabled': 'bool',
+
+#                                         'network_type': 'str',
+
+#                                         'remote_data_volume_type': 'str'}},
+
+#   '_lifecycle_state': 'RUNNING',
+
+#   '_metadata': {'ssh_authorized_keys': 'ssh-rsa '
+
+#                                        'AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 '
+
+#                                        'petem@DESKTOP-8KFG755\n'},
+
+#   '_region': 'iad',
+
+#   '_shape': 'VM.Standard.E2.1',
+
+#   '_shape_config': {
+
+#   "gpu_description": null,
+
+#   "gpus": 0,
+
+#   "local_disk_description": null,
+
+#   "local_disks": 0,
+
+#   "local_disks_total_size_in_gbs": null,
+
+#   "max_vnic_attachments": 2,
+
+#   "memory_in_gbs": 8.0,
+
+#   "networking_bandwidth_in_gbps": 0.7,
+
+#   "ocpus": 1.0,
+
+#   "processor_description": "2.0 GHz AMD EPYC\u2122 7551 (Naples)"
+
+# },
+
+#   '_source_details': {'_boot_volume_size_in_gbs': None,
+
+#                       '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha',
+
+#                       '_kms_key_id': None,
+
+#                       '_source_type': 'image',
+
+#                       'attribute_map': {'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs',
+
+#                                         'image_id': 'imageId',
+
+#                                         'kms_key_id': 'kmsKeyId',
+
+#                                         'source_type': 'sourceType'},
+
+#                       'swagger_types': {'boot_volume_size_in_gbs': 'int',
+
+#                                         'image_id': 'str',
+
+#                                         'kms_key_id': 'str',
+
+#                                         'source_type': 'str'}},
+
+#   '_system_tags': {},
+
+#   '_time_created': datetime.datetime(2020, 4, 30, 20, 39, 14, 917000, tzinfo=tzutc()),
+
+#   '_time_maintenance_reboot_due': None,
+
+#   'attribute_map': {'agent_config': 'agentConfig',
+
+#                     'availability_domain': 'availabilityDomain',
+
+#                     'compartment_id': 'compartmentId',
+
+#                     'dedicated_vm_host_id': 'dedicatedVmHostId',
+
+#                     'defined_tags': 'definedTags',
+
+#                     'display_name': 'displayName',
+
+#                     'extended_metadata': 'extendedMetadata',
+
+#                     'fault_domain': 'faultDomain',
+
+#                     'freeform_tags': 'freeformTags',
+
+#                     'id': 'id',
+
+#                     'image_id': 'imageId',
+
+#                     'ipxe_script': 'ipxeScript',
+
+#                     'launch_mode': 'launchMode',
+
+#                     'launch_options': 'launchOptions',
+
+#                     'lifecycle_state': 'lifecycleState',
+
+#                     'metadata': 'metadata',
+
+#                     'region': 'region',
+
+#                     'shape': 'shape',
+
+#                     'shape_config': 'shapeConfig',
+
+#                     'source_details': 'sourceDetails',
+
+#                     'system_tags': 'systemTags',
+
+#                     'time_created': 'timeCreated',
+
+#                     'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'},
+
+#   'cm': {'cloud': 'oracle',
+
+#          'collection': 'oracle-vm',
+
+#          'created': '2020-04-30 20:39:09.889536',
+
+#          'creation': '98.00',
+
+#          'group': 'default',
+
+#          'kind': 'vm',
+
+#          'label': 'test-pmccand-vm-90',
+
+#          'modified': '2020-04-30 20:40:47.790029',
+
+#          'name': 'test-pmccand-vm-90',
+
+#          'status': 'available'},
+
+#   'ip_private': '11.0.0.2',
+
+#   'ip_public': '129.213.43.151',
+
+#   'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-90\', '
+
+#               "'label': 'test-pmccand-vm-90', 'group': 'default', 'cloud': "
+
+#               "'oracle', 'status': 'available', 'collection': 'oracle-vm', "
+
+#               "'created': '2020-04-30 20:39:09.889536', 'modified': "
+
+#               '\'2020-04-30 20:39:09.889536\', \'creation\': \'98.00\'}", '
+
+#               "'image': 'Oracle-Linux-7.7-2020.03.23-0', 'size': "
+
+#               "'VM.Standard.E2.1'}",
+
+#   'name': 'test-pmccand-vm-90',
+
+#   'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtachrmsa45n7efdu4542mfmbsvnitfft6xc22a372f3kqea',
+
+#   'status': 'RUNNING',
+
+#   'swagger_types': {'agent_config': 'InstanceAgentConfig',
+
+#                     'availability_domain': 'str',
+
+#                     'compartment_id': 'str',
+
+#                     'dedicated_vm_host_id': 'str',
+
+#                     'defined_tags': 'dict(str, dict(str, object))',
+
+#                     'display_name': 'str',
+
+#                     'extended_metadata': 'dict(str, object)',
+
+#                     'fault_domain': 'str',
+
+#                     'freeform_tags': 'dict(str, str)',
+
+#                     'id': 'str',
+
+#                     'image_id': 'str',
+
+#                     'ipxe_script': 'str',
+
+#                     'launch_mode': 'str',
+
+#                     'launch_options': 'LaunchOptions',
+
+#                     'lifecycle_state': 'str',
+
+#                     'metadata': 'dict(str, str)',
+
+#                     'region': 'str',
+
+#                     'shape': 'str',
+
+#                     'shape_config': 'InstanceShapeConfig',
+
+#                     'source_details': 'InstanceSourceDetails',
+
+#                     'system_tags': 'dict(str, dict(str, object))',
+
+#                     'time_created': 'datetime',
+
+#                     'time_maintenance_reboot_due': 'datetime'}}]
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-29T01:59:00.855Z'}}, '_display_name': 'test-pmccand-vm-61', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-1', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_ipxe_script': None, '_launch_mode': 'NATIVE', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 15.0,
+
+  "networking_bandwidth_in_gbps": 1.0,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz Intel\u00ae Xeon\u00ae Platinum 8167M (Skylake)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 29, 1, 59, 2, 33000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'driver': 'oracle', 'cloud': 'oracle', 'updated': '2020-04-30 20:40:48.187944', 'name': 'test-pmccand-vm-61', 'created': '2020-04-30 20:40:51.489466', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'modified': '2020-04-30 20:40:51.489466'}, 'name': 'test-pmccand-vm-61', '_image': 'Oracle-Linux-7.8-2020.04.17-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtaccexaqhxg2inf6xjbc7j4g3upmibjpn3xrmzvoysjtqya', '_id': ObjectId('5eab37d34c203b6b14b61591')}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 15.0,\n  "networking_bandwidth_in_gbps": 1.0,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz Intel\\u00ae Xeon\\u00ae Platinum 8167M (Skylake)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T18:27:48.686Z'}}, '_display_name': 'test-pmccand-vm-72', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-1', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_ipxe_script': None, '_launch_mode': 'NATIVE', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 15.0,
+
+  "networking_bandwidth_in_gbps": 1.0,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz Intel\u00ae Xeon\u00ae Platinum 8167M (Skylake)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 18, 27, 49, 689000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'driver': 'oracle', 'cloud': 'oracle', 'updated': '2020-04-30 20:40:48.461147', 'name': 'test-pmccand-vm-72', 'created': '2020-04-30 20:40:51.515472', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'modified': '2020-04-30 20:40:51.515472'}, 'name': 'test-pmccand-vm-72', '_image': 'Oracle-Linux-7.8-2020.04.17-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtacosyyvehzrm3ujruwslcm3iljpmuaxjibidfmp4kaxyaq', '_id': ObjectId('5eab37d34c203b6b14b61592')}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 15.0,\n  "networking_bandwidth_in_gbps": 1.0,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz Intel\\u00ae Xeon\\u00ae Platinum 8167M (Skylake)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T19:15:45.441Z'}}, '_display_name': 'test-pmccand-vm-77', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-2', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_ipxe_script': None, '_launch_mode': 'NATIVE', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 15.0,
+
+  "networking_bandwidth_in_gbps": 1.0,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz Intel\u00ae Xeon\u00ae Platinum 8167M (Skylake)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 19, 15, 46, 781000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'driver': 'oracle', 'cloud': 'oracle', 'updated': '2020-04-30 20:40:48.876117', 'name': 'test-pmccand-vm-77', 'created': '2020-04-30 20:40:51.543468', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'modified': '2020-04-30 20:40:51.543468'}, 'name': 'test-pmccand-vm-77', '_image': 'Oracle-Linux-7.8-2020.04.17-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtacqfsbrtbhiivrw2njptlzg6wmhczl2x36f6horemrdnoq', '_id': ObjectId('5eab37d34c203b6b14b61593')}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 15.0,\n  "networking_bandwidth_in_gbps": 1.0,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz Intel\\u00ae Xeon\\u00ae Platinum 8167M (Skylake)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T19:23:47.520Z'}}, '_display_name': 'test-pmccand-vm-78', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-1', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_ipxe_script': None, '_launch_mode': 'NATIVE', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 15.0,
+
+  "networking_bandwidth_in_gbps": 1.0,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz Intel\u00ae Xeon\u00ae Platinum 8167M (Skylake)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 19, 23, 48, 583000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'driver': 'oracle', 'cloud': 'oracle', 'updated': '2020-04-30 20:40:49.081586', 'name': 'test-pmccand-vm-78', 'created': '2020-04-30 20:40:51.569628', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'modified': '2020-04-30 20:40:51.569628'}, 'name': 'test-pmccand-vm-78', '_image': 'Oracle-Linux-7.8-2020.04.17-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtacapddumsaazhmwbxuppf65axdzl5aov44zqe5o7iaqtiq', '_id': ObjectId('5eab37d34c203b6b14b61594')}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 15.0,\n  "networking_bandwidth_in_gbps": 1.0,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz Intel\\u00ae Xeon\\u00ae Platinum 8167M (Skylake)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T19:26:13.264Z'}}, '_display_name': 'test-pmccand-vm-78', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-2', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_ipxe_script': None, '_launch_mode': 'NATIVE', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 15.0,
+
+  "networking_bandwidth_in_gbps": 1.0,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz Intel\u00ae Xeon\u00ae Platinum 8167M (Skylake)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 19, 26, 14, 123000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'driver': 'oracle', 'cloud': 'oracle', 'updated': '2020-04-30 20:40:49.275899', 'name': 'test-pmccand-vm-78', 'created': '2020-04-30 20:40:51.596624', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'modified': '2020-04-30 20:40:51.596624'}, 'name': 'test-pmccand-vm-78', '_image': 'Oracle-Linux-7.8-2020.04.17-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtacnc5kuf4y3umtcj2o5d3ou3qus45l2ororvay4ohjntcq', '_id': ObjectId('5eab37d34c203b6b14b61595')}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 15.0,\n  "networking_bandwidth_in_gbps": 1.0,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz Intel\\u00ae Xeon\\u00ae Platinum 8167M (Skylake)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T20:04:50.844Z'}}, '_display_name': 'test-pmccand-vm-83', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-1', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_ipxe_script': None, '_launch_mode': 'PARAVIRTUALIZED', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard.E2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 8.0,
+
+  "networking_bandwidth_in_gbps": 0.7,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz AMD EPYC\u2122 7551 (Naples)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 20, 4, 51, 846000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'driver': 'oracle', 'cloud': 'oracle', 'updated': '2020-04-30 20:40:49.450901', 'name': 'test-pmccand-vm-83', 'created': '2020-04-30 20:40:51.612328', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'modified': '2020-04-30 20:40:51.612328'}, 'name': 'test-pmccand-vm-83', '_image': 'Oracle-Linux-7.7-2020.03.23-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtac6r5blr34yugdelnbbzvumj6ddd3abhvsp6btfjoit2hq', '_id': ObjectId('5eab37d34c203b6b14b61596')}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 8.0,\n  "networking_bandwidth_in_gbps": 0.7,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz AMD EPYC\\u2122 7551 (Naples)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T20:11:23.102Z'}}, '_display_name': 'test-pmccand-vm-83', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-1', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_ipxe_script': None, '_launch_mode': 'PARAVIRTUALIZED', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard.E2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 8.0,
+
+  "networking_bandwidth_in_gbps": 0.7,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz AMD EPYC\u2122 7551 (Naples)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 20, 11, 24, 46000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'driver': 'oracle', 'cloud': 'oracle', 'updated': '2020-04-30 20:40:49.633694', 'name': 'test-pmccand-vm-83', 'created': '2020-04-30 20:40:51.638344', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'modified': '2020-04-30 20:40:51.638344'}, 'name': 'test-pmccand-vm-83', '_image': 'Oracle-Linux-7.7-2020.03.23-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtacfpe62ehduf7phpu7c6zj3onz6wkzkrlo7wjloldphn5a', '_id': ObjectId('5eab37d34c203b6b14b61597')}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 8.0,\n  "networking_bandwidth_in_gbps": 0.7,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz AMD EPYC\\u2122 7551 (Naples)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T20:14:41.807Z'}}, '_display_name': 'test-pmccand-vm-83', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-1', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_ipxe_script': None, '_launch_mode': 'PARAVIRTUALIZED', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard.E2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 8.0,
+
+  "networking_bandwidth_in_gbps": 0.7,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz AMD EPYC\u2122 7551 (Naples)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 20, 14, 42, 960000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'driver': 'oracle', 'cloud': 'oracle', 'updated': '2020-04-30 20:40:49.791069', 'name': 'test-pmccand-vm-83', 'created': '2020-04-30 20:40:51.663341', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'modified': '2020-04-30 20:40:51.663341'}, 'name': 'test-pmccand-vm-83', '_image': 'Oracle-Linux-7.7-2020.03.23-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtacfy6ysyoc77hhfad625ds6srrt66ox2uvykyaioolw6pq', '_id': ObjectId('5eab37d34c203b6b14b61598')}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 8.0,\n  "networking_bandwidth_in_gbps": 0.7,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz AMD EPYC\\u2122 7551 (Naples)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T20:39:13.694Z'}}, '_display_name': 'test-pmccand-vm-90', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-1', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_ipxe_script': None, '_launch_mode': 'PARAVIRTUALIZED', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'RUNNING', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard.E2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 8.0,
+
+  "networking_bandwidth_in_gbps": 0.7,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz AMD EPYC\u2122 7551 (Naples)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 20, 39, 14, 917000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'name': 'test-pmccand-vm-90', 'label': 'test-pmccand-vm-90', 'group': 'default', 'cloud': 'oracle', 'status': 'RUNNING', 'collection': 'oracle-vm', 'created': '2020-04-30 20:39:14.917000+00:00', 'modified': '2020-04-30 20:40:51.679357', 'driver': 'oracle', 'updated': '2020-04-30 20:40:49.958426'}, 'name': 'test-pmccand-vm-90', '_image': 'Oracle-Linux-7.7-2020.03.23-0', 'ip_public': '129.213.43.151', 'ip_private': '11.0.0.2', 'status': 'RUNNING', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtachrmsa45n7efdu4542mfmbsvnitfft6xc22a372f3kqea'}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 8.0,\n  "networking_bandwidth_in_gbps": 0.7,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz AMD EPYC\\u2122 7551 (Naples)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-28T19:34:17.458Z'}}, '_display_name': 'test-pmccand-volume-56', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-1', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_ipxe_script': None, '_launch_mode': 'NATIVE', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 15.0,
+
+  "networking_bandwidth_in_gbps": 1.0,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz Intel\u00ae Xeon\u00ae Platinum 8167M (Skylake)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 28, 19, 34, 18, 485000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'driver': 'oracle', 'cloud': 'oracle', 'updated': '2020-04-30 20:40:50.458263', 'name': 'test-pmccand-volume-56', 'created': '2020-04-30 20:40:51.694350', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'modified': '2020-04-30 20:40:51.694350'}, 'name': 'test-pmccand-volume-56', '_image': 'Oracle-Linux-7.8-2020.04.17-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtacv52jnmb4mw2qdjjgj7wpj7igkukzhvkzuke5gmkeozga', '_id': ObjectId('5eab37d34c203b6b14b61599')}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 15.0,\n  "networking_bandwidth_in_gbps": 1.0,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz Intel\\u00ae Xeon\\u00ae Platinum 8167M (Skylake)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T15:58:55.860Z'}}, '_display_name': 'test-pmccand-volume-70', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-2', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_ipxe_script': None, '_launch_mode': 'NATIVE', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 15.0,
+
+  "networking_bandwidth_in_gbps": 1.0,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz Intel\u00ae Xeon\u00ae Platinum 8167M (Skylake)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 15, 58, 57, 26000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'driver': 'oracle', 'cloud': 'oracle', 'updated': '2020-04-30 20:40:50.614407', 'name': 'test-pmccand-volume-70', 'created': '2020-04-30 20:40:51.721555', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'modified': '2020-04-30 20:40:51.721555'}, 'name': 'test-pmccand-volume-70', '_image': 'Oracle-Linux-7.8-2020.04.17-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtacinn46a25ehvca4lui3qdwcftvnehqnipiykf5ahsooeq', '_id': ObjectId('5eab37d34c203b6b14b6159a')}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 15.0,\n  "networking_bandwidth_in_gbps": 1.0,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz Intel\\u00ae Xeon\\u00ae Platinum 8167M (Skylake)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T17:25:41.010Z'}}, '_display_name': 'test-pmccand-volume-71', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-2', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_ipxe_script': None, '_launch_mode': 'NATIVE', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 15.0,
+
+  "networking_bandwidth_in_gbps": 1.0,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz Intel\u00ae Xeon\u00ae Platinum 8167M (Skylake)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 17, 25, 42, 34000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'driver': 'oracle', 'cloud': 'oracle', 'updated': '2020-04-30 20:40:50.762709', 'name': 'test-pmccand-volume-71', 'created': '2020-04-30 20:40:51.746786', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'modified': '2020-04-30 20:40:51.746786'}, 'name': 'test-pmccand-volume-71', '_image': 'Oracle-Linux-7.8-2020.04.17-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtacmuqljawt4dk3j6pjbc37blb4c4i5voptzgj5y2jbt7zq', '_id': ObjectId('5eab37d34c203b6b14b6159b')}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 15.0,\n  "networking_bandwidth_in_gbps": 1.0,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz Intel\\u00ae Xeon\\u00ae Platinum 8167M (Skylake)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T20:02:46.307Z'}}, '_display_name': 'test-pmccand-volume-83', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-1', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_ipxe_script': None, '_launch_mode': 'PARAVIRTUALIZED', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard.E2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 8.0,
+
+  "networking_bandwidth_in_gbps": 0.7,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz AMD EPYC\u2122 7551 (Naples)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 20, 2, 47, 265000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'driver': 'oracle', 'cloud': 'oracle', 'updated': '2020-04-30 20:40:51.068017', 'name': 'test-pmccand-volume-83', 'created': '2020-04-30 20:40:51.762787', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'modified': '2020-04-30 20:40:51.762787'}, 'name': 'test-pmccand-volume-83', '_image': 'Oracle-Linux-7.7-2020.03.23-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtac5bwwnu2xdsxs6usxyx5ttzybqk2swwmswzspfrsj6o4a', '_id': ObjectId('5eab37d34c203b6b14b6159c')}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 8.0,\n  "networking_bandwidth_in_gbps": 0.7,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz AMD EPYC\\u2122 7551 (Naples)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+
+
+ERROR: uploading document
+
+{'cm': {'kind': 'vm', 'name': 'test-pmccand-vm-90', 'label': 'test-pmccand-vm-90', 'group': 'default', 'cloud': 'oracle', 'status': 'available', 'collection': 'oracle-vm', 'created': '2020-04-30 20:39:09.889536', 'modified': '2020-04-30 20:40:52.048997', 'creation': '98.00'}, 'name': 'test-pmccand-vm-90', '_id': ObjectId('5eab376d4c203b6b14b6158f'), 'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T20:39:13.694Z'}}, '_display_name': 'test-pmccand-vm-90', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-1', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_ipxe_script': None, '_launch_mode': 'PARAVIRTUALIZED', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'RUNNING', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard.E2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 8.0,
+
+  "networking_bandwidth_in_gbps": 0.7,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz AMD EPYC\u2122 7551 (Naples)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 20, 39, 14, 917000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, '_image': 'Oracle-Linux-7.7-2020.03.23-0', 'ip_public': '129.213.43.151', 'ip_private': '11.0.0.2', 'status': 'RUNNING', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtachrmsa45n7efdu4542mfmbsvnitfft6xc22a372f3kqea', 'metadata': '{\'cm\': "{\'kind\': \'vm\', \'name\': \'test-pmccand-vm-90\', \'label\': \'test-pmccand-vm-90\', \'group\': \'default\', \'cloud\': \'oracle\', \'status\': \'available\', \'collection\': \'oracle-vm\', \'created\': \'2020-04-30 20:39:09.889536\', \'modified\': \'2020-04-30 20:39:09.889536\', \'creation\': \'98.00\'}", \'image\': \'Oracle-Linux-7.7-2020.03.23-0\', \'size\': \'VM.Standard.E2.1\'}'}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 8.0,\n  "networking_bandwidth_in_gbps": 0.7,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz AMD EPYC\\u2122 7551 (Naples)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
+Timer: 104.0000s Load: 2.0000s (line_strip)
+
+
+PASSED
+tests/test_01_setup.py::Test_provider_volume::test_benchmark 
+
++---------------------------+----------+---------+---------------------+--------+-----------------+--------+---------+---------------------------------+
+| Name                      | Status   |    Time | Start               | tag    | Node            | User   | OS      | Version                         |
+|---------------------------+----------+---------+---------------------+--------+-----------------+--------+---------+---------------------------------|
+| test_01_setup/test_cms_vm | ok       | 108.178 | 2020-04-30 20:39:04 | oracle | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++---------------------------+----------+---------+---------------------+--------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_01_setup/test_cms_vm,ok,108.178,2020-04-30 20:39:04,oracle,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+================== 2 passed, 1 warning in 112.96s (0:01:52) ===================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 24:<module> .\tests\test_02_volume_provider.py
+# ----------------------------------------------------------------------
+# {'cloud': 'oracle',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-90',
+#  'vm_name': 'test-pmccand-vm-90',
+#  'volume': 'test-pmccand-volume-89'}
+# ----------------------------------------------------------------------
+[0m
+Test run for oracle
+collected 6 items
+
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_create volume list --cloud=oracle
+
+# ----------------------------------------------------------------------
+# arguments
+# ----------------------------------------------------------------------
+# 118:do_volume .\cloudmesh\volume\command\volume.py
+# ----------------------------------------------------------------------
+# {'--cloud': 'oracle',
+#  '--description': None,
+#  '--dryrun': False,
+#  '--key': None,
+#  '--output': 'table',
+#  '--path': None,
+#  '--refresh': False,
+#  '--region': None,
+#  '--size': None,
+#  '--value': None,
+#  '--vm': None,
+#  '--volume_type': None,
+#  'NAME': None,
+#  'NAMES': None,
+#  'add_tag': False,
+#  'attach': False,
+#  'create': False,
+#  'delete': False,
+#  'detach': False,
+#  'list': True,
+#  'migrate': False,
+#  'purge': False,
+#  'status': False,
+#  'sync': False}
+# ----------------------------------------------------------------------
+
+None
+None
+Timer: 2.0000s Load: 2.0000s (line_strip)
+
+[35m
+# ######################################################################
+# test_provider_volume_create \tests\test_02_volume_provider.py 47
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_list 
+[35m
+# ######################################################################
+# test_provider_volume_list \tests\test_02_volume_provider.py 77
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach 
+[35m
+# ######################################################################
+# test_provider_volume_attach \tests\test_02_volume_provider.py 87
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach 
+[35m
+# ######################################################################
+# test_provider_volume_detach \tests\test_02_volume_provider.py 116
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete 
+[35m
+# ######################################################################
+# test_provider_volume_delete \tests\test_02_volume_provider.py 140
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_benchmark 
+
++-----------------------------------------------------+----------+--------+---------------------+--------+-----------------+--------+---------+---------------------------------+
+| Name                                                | Status   |   Time | Start               | tag    | Node            | User   | OS      | Version                         |
+|-----------------------------------------------------+----------+--------+---------------------+--------+-----------------+--------+---------+---------------------------------|
+| test_02_volume_provider/test_provider_volume_create | ok       | 16.748 | 2020-04-30 20:41:04 | oracle | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_list   | ok       |  0.781 | 2020-04-30 20:41:21 | oracle | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_attach | ok       | 34.09  | 2020-04-30 20:41:22 | oracle | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_detach | ok       | 63.179 | 2020-04-30 20:42:02 | oracle | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_delete | ok       | 16.317 | 2020-04-30 20:43:10 | oracle | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-----------------------------------------------------+----------+--------+---------------------+--------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_02_volume_provider/test_provider_volume_create,ok,16.748,2020-04-30 20:41:04,oracle,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_list,ok,0.781,2020-04-30 20:41:21,oracle,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_attach,ok,34.09,2020-04-30 20:41:22,oracle,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_detach,ok,63.179,2020-04-30 20:42:02,oracle,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_delete,ok,16.317,2020-04-30 20:43:10,oracle,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+================== 6 passed, 1 warning in 153.35s (0:02:33) ===================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 20:<module> .\tests\test_03_teardown.py
+# ----------------------------------------------------------------------
+# {'cloud': 'oracle',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-90',
+#  'vm_name': 'test-pmccand-vm-90',
+#  'volume': 'pmccand-volume-65'}
+# ----------------------------------------------------------------------
+[0m
+collected 2 items
+
+tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate 
+[35m
+# ######################################################################
+# test_cms_terminate \tests\test_03_teardown.py 31
+# ######################################################################
+[0m
+result vm terminate test-pmccand-vm-90
+
+Terminating instance...
+
+Instance terminated.
+
+Deleting associated resources...
+
+Associated resources deleted
+
+
+
+ERROR: uploading document
+
+{'swagger_types': {'availability_domain': 'str', 'compartment_id': 'str', 'dedicated_vm_host_id': 'str', 'defined_tags': 'dict(str, dict(str, object))', 'display_name': 'str', 'extended_metadata': 'dict(str, object)', 'fault_domain': 'str', 'freeform_tags': 'dict(str, str)', 'id': 'str', 'image_id': 'str', 'ipxe_script': 'str', 'launch_mode': 'str', 'launch_options': 'LaunchOptions', 'lifecycle_state': 'str', 'metadata': 'dict(str, str)', 'region': 'str', 'shape': 'str', 'shape_config': 'InstanceShapeConfig', 'source_details': 'InstanceSourceDetails', 'system_tags': 'dict(str, dict(str, object))', 'time_created': 'datetime', 'agent_config': 'InstanceAgentConfig', 'time_maintenance_reboot_due': 'datetime'}, 'attribute_map': {'availability_domain': 'availabilityDomain', 'compartment_id': 'compartmentId', 'dedicated_vm_host_id': 'dedicatedVmHostId', 'defined_tags': 'definedTags', 'display_name': 'displayName', 'extended_metadata': 'extendedMetadata', 'fault_domain': 'faultDomain', 'freeform_tags': 'freeformTags', 'id': 'id', 'image_id': 'imageId', 'ipxe_script': 'ipxeScript', 'launch_mode': 'launchMode', 'launch_options': 'launchOptions', 'lifecycle_state': 'lifecycleState', 'metadata': 'metadata', 'region': 'region', 'shape': 'shape', 'shape_config': 'shapeConfig', 'source_details': 'sourceDetails', 'system_tags': 'systemTags', 'time_created': 'timeCreated', 'agent_config': 'agentConfig', 'time_maintenance_reboot_due': 'timeMaintenanceRebootDue'}, '_availability_domain': 'uFHJ:US-ASHBURN-AD-1', '_compartment_id': 'ocid1.tenancy.oc1..aaaaaaaaen2lxjo5dr6rnliypawvyblzxkbmzpfgq2cpd7hgp75c3ylnfrda', '_dedicated_vm_host_id': None, '_defined_tags': {'Oracle-Tags': {'CreatedBy': 'oracleidentitycloudservice/pmccand@iu.edu', 'CreatedOn': '2020-04-30T20:39:13.694Z'}}, '_display_name': 'test-pmccand-vm-90', '_extended_metadata': {}, '_fault_domain': 'FAULT-DOMAIN-1', '_freeform_tags': {}, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_ipxe_script': None, '_launch_mode': 'PARAVIRTUALIZED', '_launch_options': {'swagger_types': {'boot_volume_type': 'str', 'firmware': 'str', 'network_type': 'str', 'remote_data_volume_type': 'str', 'is_pv_encryption_in_transit_enabled': 'bool', 'is_consistent_volume_naming_enabled': 'bool'}, 'attribute_map': {'boot_volume_type': 'bootVolumeType', 'firmware': 'firmware', 'network_type': 'networkType', 'remote_data_volume_type': 'remoteDataVolumeType', 'is_pv_encryption_in_transit_enabled': 'isPvEncryptionInTransitEnabled', 'is_consistent_volume_naming_enabled': 'isConsistentVolumeNamingEnabled'}, '_boot_volume_type': 'PARAVIRTUALIZED', '_firmware': 'UEFI_64', '_network_type': 'PARAVIRTUALIZED', '_remote_data_volume_type': 'PARAVIRTUALIZED', '_is_pv_encryption_in_transit_enabled': False, '_is_consistent_volume_naming_enabled': True}, '_lifecycle_state': 'TERMINATED', '_metadata': {'ssh_authorized_keys': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxCknmSZB7NQDhhm85vJd7orLa7XXM3jVN4HhKu80+NaND0bvAOvJoib8h12t4PQdNWB28u+lUMWu24Vortx+tLNGprXz2xIqX9ZmazLuyV+nt7qdUKqqSUigzna74SATKUl8f7u8K905WkCI84858gEIGREM181IYth8IQVWTghrZKgxOTSbnpMwEWOQGDJRs7SioDIKPjiPzpfP5sobgnik7hgS0vH9KlzP4Md5d0x8gv3K4yk8VNFB3VeCD3wfEc8b6WgzrQz7HjyysMkxLb1hGMO12pdd0QFshCAguODB9N/c9mrMsvn0XnIfzsymv3tTGCtRMDi4fAoMXfmA9 petem@DESKTOP-8KFG755\n'}, '_region': 'iad', '_shape': 'VM.Standard.E2.1', '_shape_config': {
+
+  "gpu_description": null,
+
+  "gpus": 0,
+
+  "local_disk_description": null,
+
+  "local_disks": 0,
+
+  "local_disks_total_size_in_gbs": null,
+
+  "max_vnic_attachments": 2,
+
+  "memory_in_gbs": 8.0,
+
+  "networking_bandwidth_in_gbps": 0.7,
+
+  "ocpus": 1.0,
+
+  "processor_description": "2.0 GHz AMD EPYC\u2122 7551 (Naples)"
+
+}, '_source_details': {'swagger_types': {'source_type': 'str', 'boot_volume_size_in_gbs': 'int', 'image_id': 'str', 'kms_key_id': 'str'}, 'attribute_map': {'source_type': 'sourceType', 'boot_volume_size_in_gbs': 'bootVolumeSizeInGBs', 'image_id': 'imageId', 'kms_key_id': 'kmsKeyId'}, '_source_type': 'image', '_boot_volume_size_in_gbs': None, '_image_id': 'ocid1.image.oc1.iad.aaaaaaaa6tp7lhyrcokdtf7vrbmxyp2pctgg4uxvt4jz4vc47qoc2ec4anha', '_kms_key_id': None}, '_system_tags': {}, '_time_created': datetime.datetime(2020, 4, 30, 20, 39, 14, 917000, tzinfo=tzutc()), '_agent_config': {'swagger_types': {'is_monitoring_disabled': 'bool', 'is_management_disabled': 'bool'}, 'attribute_map': {'is_monitoring_disabled': 'isMonitoringDisabled', 'is_management_disabled': 'isManagementDisabled'}, '_is_monitoring_disabled': False, '_is_management_disabled': False}, '_time_maintenance_reboot_due': None, 'cm': {'kind': 'vm', 'name': 'test-pmccand-vm-90', 'label': 'test-pmccand-vm-90', 'group': 'default', 'cloud': 'oracle', 'status': 'TERMINATED', 'collection': 'oracle-vm', 'created': '2020-04-30 20:39:14.917000+00:00', 'modified': '2020-04-30 20:46:44.334518', 'driver': 'oracle', 'updated': '2020-04-30 20:46:41.015400'}, 'name': 'test-pmccand-vm-90', '_image': 'Oracle-Linux-7.7-2020.03.23-0', 'status': 'TERMINATED', 'oracle_id': 'ocid1.instance.oc1.iad.anuwcljsaupubtachrmsa45n7efdu4542mfmbsvnitfft6xc22a372f3kqea'}
+
+-------
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+
+# e
+
+# ----------------------------------------------------------------------
+
+# 454:update C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py
+
+# ----------------------------------------------------------------------
+
+# InvalidDocument('cannot encode object: {\n  "gpu_description": null,\n  "gpus": 0,\n  "local_disk_description": null,\n  "local_disks": 0,\n  "local_disks_total_size_in_gbs": null,\n  "max_vnic_attachments": 2,\n  "memory_in_gbs": 8.0,\n  "networking_bandwidth_in_gbps": 0.7,\n  "ocpus": 1.0,\n  "processor_description": "2.0 GHz AMD EPYC\\u2122 7551 (Naples)"\n}, of type: <class \'oci.core.models.instance_shape_config.InstanceShapeConfig\'>')
+
+# ----------------------------------------------------------------------
+
+
+
++--------------------+---------+------------+------------+--------+-------------------------------+------------------+--------------+---------------+--------------+----------------------------------+--------+
+
+| Name               | Cloud   | State      | Status     | Task   | Image                         | Flavor           | Public IPs   | Private IPs   | Project ID   | Started at                       | Kind   |
+
+|--------------------+---------+------------+------------+--------+-------------------------------+------------------+--------------+---------------+--------------+----------------------------------+--------|
+
+| test-pmccand-vm-90 | oracle  | TERMINATED | TERMINATED |        | Oracle-Linux-7.7-2020.03.23-0 | VM.Standard.E2.1 |              |               |              | 2020-04-30 20:39:14.917000+00:00 | vm     |
+
++--------------------+---------+------------+------------+--------+-------------------------------+------------------+--------------+---------------+--------------+----------------------------------+--------+
+
+Timer: 190.0000s Load: 2.0000s (line_strip)
+
+
+PASSED
+tests/test_03_teardown.py::Test_provider_volume::test_benchmark 
+
++-------------------------------------+----------+---------+---------------------+--------+-----------------+--------+---------+---------------------------------+
+| Name                                | Status   |    Time | Start               | tag    | Node            | User   | OS      | Version                         |
+|-------------------------------------+----------+---------+---------------------+--------+-----------------+--------+---------+---------------------------------|
+| test_03_teardown/test_cms_terminate | ok       | 193.123 | 2020-04-30 20:43:31 | oracle | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-------------------------------------+----------+---------+---------------------+--------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_03_teardown/test_cms_terminate,ok,193.123,2020-04-30 20:43:31,oracle,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+================== 2 passed, 1 warning in 195.74s (0:03:15) ===================

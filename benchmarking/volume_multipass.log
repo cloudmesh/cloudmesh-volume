@@ -1,0 +1,246 @@
+multipass
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 26:<module> .\tests\test_01_setup.py
+# ----------------------------------------------------------------------
+# {'cloud': 'multipass',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-92',
+#  'vm_name': 'test-pmccand-vm-92',
+#  'volume': 'test-pmccand-volume-92'}
+# ----------------------------------------------------------------------
+[0m
+Test run for multipass
+collected 2 items
+
+tests/test_01_setup.py::Test_provider_volume::test_cms_vm                                                                                                                                                                 Creating test-pmccand-vm-93  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-                                                                                                                                                                 Configuring test-pmccand-vm-93  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|                                                                                                                                                                 Starting test-pmccand-vm-93  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\                                                                                                                                                                 Waiting for initialization to complete  /-\|/-\|/-\|/                                                                                 Launched: test-pmccand-vm-93
+                                                                                
+[35m
+# ######################################################################
+# test_cms_vm \tests\test_01_setup.py 59
+# ######################################################################
+[0m
+PASSED
+tests/test_01_setup.py::Test_provider_volume::test_benchmark 
+
++---------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+| Name                      | Status   |   Time | Start               | tag       | Node            | User   | OS      | Version                         |
+|---------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------|
+| test_01_setup/test_cms_vm | ok       | 63.495 | 2020-04-30 20:57:34 | multipass | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++---------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_01_setup/test_cms_vm,ok,63.495,2020-04-30 20:57:34,multipass,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+=================== 2 passed, 1 warning in 76.45s (0:01:16) ===================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 24:<module> .\tests\test_02_volume_provider.py
+# ----------------------------------------------------------------------
+# {'cloud': 'multipass',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-92',
+#  'vm_name': 'test-pmccand-vm-93',
+#  'volume': 'test-pmccand-volume-92'}
+# ----------------------------------------------------------------------
+[0m
+Test run for multipass
+collected 6 items
+
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_create volume list --cloud=multipass
+
+# ----------------------------------------------------------------------
+# arguments
+# ----------------------------------------------------------------------
+# 118:do_volume .\cloudmesh\volume\command\volume.py
+# ----------------------------------------------------------------------
+# {'--cloud': 'multipass',
+#  '--description': None,
+#  '--dryrun': False,
+#  '--key': None,
+#  '--output': 'table',
+#  '--path': None,
+#  '--refresh': False,
+#  '--region': None,
+#  '--size': None,
+#  '--value': None,
+#  '--vm': None,
+#  '--volume_type': None,
+#  'NAME': None,
+#  'NAMES': None,
+#  'add_tag': False,
+#  'attach': False,
+#  'create': False,
+#  'delete': False,
+#  'detach': False,
+#  'list': True,
+#  'migrate': False,
+#  'purge': False,
+#  'status': False,
+#  'sync': False}
+# ----------------------------------------------------------------------
+
+None
+None
+Timer: 1.0000s Load: 2.0000s (line_strip)
+
+[35m
+# ######################################################################
+# test_provider_volume_create \tests\test_02_volume_provider.py 47
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_list 
+[35m
+# ######################################################################
+# test_provider_volume_list \tests\test_02_volume_provider.py 77
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach                                                                                                                                                                 Enabling support for mounting  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-                                                                                                                                                                 
+[35m
+# ######################################################################
+# test_provider_volume_attach \tests\test_02_volume_provider.py 87
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach 
+[35m
+# ######################################################################
+# test_provider_volume_detach \tests\test_02_volume_provider.py 116
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete 
+[35m
+# ######################################################################
+# test_provider_volume_delete \tests\test_02_volume_provider.py 140
+# ######################################################################
+[0m
+PASSED
+tests/test_02_volume_provider.py::Test_provider_volume::test_benchmark 
+
++-----------------------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+| Name                                                | Status   |   Time | Start               | tag       | Node            | User   | OS      | Version                         |
+|-----------------------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------|
+| test_02_volume_provider/test_provider_volume_create | ok       |  0.286 | 2020-04-30 20:58:55 | multipass | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_list   | ok       |  0.483 | 2020-04-30 20:59:11 | multipass | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_attach | ok       | 24.944 | 2020-04-30 20:59:11 | multipass | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_detach | ok       |  1.487 | 2020-04-30 20:59:42 | multipass | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
+| test_02_volume_provider/test_provider_volume_delete | ok       |  0.734 | 2020-04-30 20:59:49 | multipass | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-----------------------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_02_volume_provider/test_provider_volume_create,ok,0.286,2020-04-30 20:58:55,multipass,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_list,ok,0.483,2020-04-30 20:59:11,multipass,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_attach,ok,24.944,2020-04-30 20:59:11,multipass,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_detach,ok,1.487,2020-04-30 20:59:42,multipass,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+# csv,test_02_volume_provider/test_provider_volume_delete,ok,0.734,2020-04-30 20:59:49,multipass,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_create
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_attach
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_detach
+tests/test_02_volume_provider.py::Test_provider_volume::test_provider_volume_delete
+  C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py:104: DeprecationWarning: collection_names is deprecated. Use list_collection_names instead.
+    names = self.db.collection_names()
+
+tests/test_02_volume_provider.py: 60 tests with warnings
+  C:\Users\petem\cm\cloudmesh-admin\cloudmesh\mongo\CmDatabase.py:182: DeprecationWarning: count is deprecated. Use Collection.count_documents instead.
+    if cursor.count() > 0:
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+================== 6 passed, 67 warnings in 61.33s (0:01:01) ==================
+============================= test session starts =============================
+platform win32 -- Python 3.8.1, pytest-5.4.1, py-1.8.1, pluggy-0.13.1 -- c:\users\petem\env3\scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\petem\cm\cloudmesh-volume, inifile: pytest.ini
+plugins: cov-2.8.1
+collecting ... [34m
+# ----------------------------------------------------------------------
+# variables.dict()
+# ----------------------------------------------------------------------
+# 20:<module> .\tests\test_03_teardown.py
+# ----------------------------------------------------------------------
+# {'cloud': 'multipass',
+#  'cloudtype': 'azure',
+#  'debug': 'True',
+#  'key': 'pmccand',
+#  'timer': 'True',
+#  'trace': 'True',
+#  'verbose': '10',
+#  'vm': 'test-pmccand-vm-92',
+#  'vm_name': 'test-pmccand-vm-93',
+#  'volume': 'test-pmccand-volume-93'}
+# ----------------------------------------------------------------------
+[0m
+collected 2 items
+
+tests/test_03_teardown.py::Test_provider_volume::test_cms_terminate 
+[35m
+# ######################################################################
+# test_cms_terminate \tests\test_03_teardown.py 31
+# ######################################################################
+[0m
+result 
+PASSED
+tests/test_03_teardown.py::Test_provider_volume::test_benchmark 
+
++-------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+| Name                                | Status   |   Time | Start               | tag       | Node            | User   | OS      | Version                         |
+|-------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------|
+| test_03_teardown/test_cms_terminate | ok       |  2.373 | 2020-04-30 20:59:54 | multipass | DESKTOP-8KFG755 | petem  | Windows | ('10', '10.0.18362', 'SP0', '') |
++-------------------------------------+----------+--------+---------------------+-----------+-----------------+--------+---------+---------------------------------+
+
+# csv,timer,status,time,start,tag,uname.node,user,uname.system,platform.version
+# csv,test_03_teardown/test_cms_terminate,ok,2.373,2020-04-30 20:59:54,multipass,DESKTOP-8KFG755,petem,Windows,('10', '10.0.18362', 'SP0', '')
+
+PASSED
+
+============================== warnings summary ===============================
+c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2
+  c:\users\petem\env3\lib\site-packages\win32\lib\pywintypes.py:2: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp, sys, os
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+======================== 2 passed, 1 warning in 4.63s =========================

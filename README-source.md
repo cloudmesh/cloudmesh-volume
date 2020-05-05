@@ -225,7 +225,7 @@ Add tag to a volume.
 If name is not specified, then tag will be added to the current volume.
 For aws, can use add_tag command to rename a volume.
 
-Example 1: To add tag {key:value} to test_volume.
+Example 1: To add tag {{key:value}} to test_volume.
 
 ```commandline
 cms volume add_tag test_volume --key=key --value=value

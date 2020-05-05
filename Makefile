@@ -1,4 +1,4 @@
-package=common
+package=volume
 UNAME=$(shell uname)
 export ROOT_DIR=${PWD}/cloudmesh/rest/server
 VERSION=`head -1 VERSION`

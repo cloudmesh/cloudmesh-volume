@@ -11,11 +11,6 @@ endef
 
 all: install
 
-readme:
-	python ../cloudmesh-common/bin/readme.py cloudmesh-$(package) $(package)
-	#-git commit -m "Upadte Readme" README.md README-source.md
-	#-git push
-
 install:
 	pip install -e .
 
@@ -26,10 +21,10 @@ source:
 	cms help
 
 requirements:
-	echo "cloudmesh-cmd5" > tmp.txt
-	echo "cloudmesh-sys" >> tmp.txt
-	echo "cloudmesh-inventory" >> tmp.txt
-	echo "cloudmesh-configuration" >> tmp.txt
+#	echo "cloudmesh-cmd5" > tmp.txt
+#	echo "cloudmesh-sys" >> tmp.txt
+#	echo "cloudmesh-inventory" >> tmp.txt
+#	echo "cloudmesh-configuration" >> tmp.txt
 	pip-compile setup.py
 	fgrep -v "# via" requirements.txt | fgrep -v "cloudmesh" >> tmp.txt
 	mv tmp.txt requirements.txt
@@ -43,7 +38,7 @@ manual:
 	echo "========" >> docs-source/source/manual/commands.rst
 	echo  >> docs-source/source/manual/commands.rst
 	tail -n +4 /tmp/commands.rst >> docs-source/source/manual/commands.rst
-	cms man --kind=rst volume > docs-source/source/manual/admin.rst
+	cms man --kind=rst abstract > docs-source/source/manual/admin.rst
 	cms man --kind=rst foo > docs-source/source/manual/banner.rst
 
 doc:

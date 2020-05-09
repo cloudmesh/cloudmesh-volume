@@ -1,80 +1,55 @@
 package=volume
 UNAME=$(shell uname)
+export ROOT_DIR=${PWD}/cloudmesh/rest/server
 VERSION=`head -1 VERSION`
 
 define banner
 	@echo
-	@echo "###################################"
-	@echo $(1)
-	@echo "###################################"
+	@echo "############################################################"
+	@echo "# $(1) "
+	@echo "############################################################"
 endef
 
-all: install
+source:
+	$(call banner, "Install cloudmesh-common")
+	pip install -e . -U
 
 readme:
+	cms debug off
 	python ../cloudmesh-common/bin/readme.py cloudmesh-$(package) $(package)
-	#-git commit -m "Upadte Readme" README.md README-source.md
-	#-git push
-
-install:
-	pip install -e .
-
-source:
-	cd ../cloudmesh.cmd5; make source
-	$(call banner, "Install cloudmesh-{package}")
-	pip install -e . -U
-	cms help
+	-git commit -m "Upadte Readme" README.md README-source.md
+	-git push
 
 requirements:
-	echo "cloudmesh-cmd5" > tmp.txt
-	echo "cloudmesh-sys" >> tmp.txt
-	echo "cloudmesh-inventory" >> tmp.txt
-	echo "cloudmesh-configuration" >> tmp.txt
+	echo "# cloudmesh-common requirements"> tmp.txt
+	#echo "cloudmesh-common" > tmp.txt
+	#echo "cloudmesh-cmd5" >> tmp.txt
 	pip-compile setup.py
-	fgrep -v "# via" requirements.txt | fgrep -v "cloudmesh" >> tmp.txt
+	cat requirements.txt >> tmp.txt
 	mv tmp.txt requirements.txt
 	-git commit -m "update requirements" requirements.txt
 	-git push
 
-manual:
-	mkdir -p docs-source/source/manual
-	cms help > /tmp/commands.rst
-	echo "Commands" > docs-source/source/manual/commands.rst
-	echo "========" >> docs-source/source/manual/commands.rst
-	echo  >> docs-source/source/manual/commands.rst
-	tail -n +4 /tmp/commands.rst >> docs-source/source/manual/commands.rst
-	cms man --kind=rst volume > docs-source/source/manual/admin.rst
-	cms man --kind=rst foo > docs-source/source/manual/banner.rst
+test:
+	pytest -v --html=.report.html
+	open .report.html
 
-doc:
-	rm -rf docs
-	mkdir -p dest
-	cd docs-source; make html
-	cp -r docs-source/build/html/ docs
-
-view:
-	open docs/index.html
-
-#
-# TODO: BUG: This is broken
-#
-#pylint:
-#	mkdir -p docs/qc/pylint/cm
-#	pylint --output-format=html cloudmesh > docs/qc/pylint/cm/cloudmesh.html
-#	pylint --output-format=html cloud > docs/qc/pylint/cm/cloud.html
+dtest:
+	pytest -v --capture=no
 
 clean:
 	$(call banner, "CLEAN")
-	rm -rf dist
 	rm -rf *.zip
 	rm -rf *.egg-info
 	rm -rf *.eggs
 	rm -rf docs/build
 	rm -rf build
+	rm -rf dist
 	find . -type d -name __pycache__ -delete
 	find . -name '*.pyc' -delete
 	rm -rf .tox
 	rm -f *.whl
+
 
 ######################################################################
 # PYPI
@@ -88,21 +63,17 @@ dist:
 	python setup.py sdist bdist_wheel
 	twine check dist/*
 
-patch: clean requirements
-	$(call banner, "bbuild")
-	bump2version --no-tag --allow-dirty patch
+patch: clean
+	$(call banner, "patch")
+	bump2version --allow-dirty patch
 	python setup.py sdist bdist_wheel
-	git push
-	# git push origin master --tags
+	git push origin master --tags
 	twine check dist/*
 	twine upload --repository testpypi  dist/*
 	# $(call banner, "install")
+	# pip search "cloudmesh" | fgrep cloudmesh-$(package)
 	# sleep 10
 	# pip install --index-url https://test.pypi.org/simple/ cloudmesh-$(package) -U
-
-	#make
-	#git commit -m "update documentation" docs
-	#git push
 
 minor: clean
 	$(call banner, "minor")
@@ -120,8 +91,8 @@ release: clean
 	$(call banner, "install")
 	@cat VERSION
 	@echo
-	#sleep 10
-	#pip install -U cloudmesh-common
+	# sleep 10
+	# pip install -U cloudmesh-common
 
 
 dev:
@@ -148,4 +119,14 @@ log:
 	git commit -m "chg: dev: Update ChangeLog" ChangeLog
 	git push
 
+# bump:
+#	git checkout master
+#	git pull
+#	tox
+#	python setup.py sdist bdist_wheel upload
+#	bumpversion --no-tag patch
+#	git push origin master --tags
 
+
+# API_JSON=$(printf '{"tag_name": "v%s","target_commitish": "master","name": "v%s","body": "Release of version %s","draft": false,"prerelease": false}' $VERSION $VERSION $VERSION)
+# curl --data "$API_JSON" https://api.github.com/repos/:owner/:repository/releases?access_token=:access_token

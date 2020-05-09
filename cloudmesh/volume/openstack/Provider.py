@@ -147,7 +147,7 @@ class Provider(VolumeABC):
         If NAME (volume_name) is not specified, it will print out info of all
           volumes
 
-        :param kwargs: contains name of volume
+        :param kwargs: contains name of volume, vm name (optional)
         :return: Dictionary of volumes
         """
         try:
@@ -165,6 +165,15 @@ class Provider(VolumeABC):
                     result = con.get_volume(name_or_id=kwargs["NAME"])
                     result = [result]
                     result = self.update_dict(result)
+                if kwargs and kwargs['vm']:
+                    server_id = con.get_server_id(name_or_id=kwargs['vm'])
+                    vol_list = []
+                    for entry in results:
+                        attach_list = entry['attachments']
+                        if len(attach_list)!=0:
+                            if attach_list[0]['server_id'] == server_id :
+                                vol_list.append(entry)
+                    result = self.update_dict(vol_list)
                 else:
                     result = self.update_dict(results)
 

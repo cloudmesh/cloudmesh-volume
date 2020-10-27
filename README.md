@@ -3,17 +3,17 @@
 
 > **Note:** The README.md page is outomatically generated, do not edit it.
 > To modify  change the content in
-> <https://github.com/cloudmesh/cloudmesh-volume/blob/master/README-source.md>
+> <https://github.com/cloudmesh/cloudmesh-volume/blob/main/README-source.md>
 > Curley brackets must use two in README-source.md
 
 
 
 [![image](https://img.shields.io/pypi/v/cloudmesh-volume.svg)](https://pypi.org/project/cloudmesh-volume/)
 [![Python](https://img.shields.io/pypi/pyversions/cloudmesh-volume.svg)](https://pypi.python.org/pypi/cloudmesh-volume)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/cloudmesh/cloudmesh-volume/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/cloudmesh/cloudmesh-volume/blob/main/LICENSE)
 [![Format](https://img.shields.io/pypi/format/cloudmesh-volume.svg)](https://pypi.python.org/pypi/cloudmesh-volume)
 [![Status](https://img.shields.io/pypi/status/cloudmesh-volume.svg)](https://pypi.python.org/pypi/cloudmesh-volume)
-[![Travis](https://travis-ci.com/cloudmesh/cloudmesh-volume.svg?branch=master)](https://travis-ci.com/cloudmesh/cloudmesh-volume)
+[![Travis](https://travis-ci.com/cloudmesh/cloudmesh-volume.svg?branch=main)](https://travis-ci.com/cloudmesh/cloudmesh-volume)
 
 
 ## Abstract
@@ -436,7 +436,7 @@ Similar to Google, in Azure, volumes are referred to as 'disks'.
 
   * Migrating from Amazon S3 to Azure Blob Storage
 
-    <https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/master/README.md>
+    <https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/main/README.md>
 
 * from Cloud Storage
 

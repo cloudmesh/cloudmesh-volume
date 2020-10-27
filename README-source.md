@@ -329,7 +329,7 @@ Similar to Google, in Azure, volumes are referred to as 'disks'.
 
   * Migrating from Amazon S3 to Azure Blob Storage
 
-    <https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/master/README.md>
+    <https://github.com/Azure-for-Startups/Amazon-S3-to-Azure-Storage-demo/blob/main/README.md>
 
 * from Cloud Storage
 
